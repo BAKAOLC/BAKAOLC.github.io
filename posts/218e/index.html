@@ -10,11 +10,16 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
     <meta name="keywords" content="Ritsukage,"> 
-    <meta name="description" content="小律影的个人Blog,Github简易使用教程
+    <meta name="description" content="小律影的个人Blog,Github简易使用教程#
 本篇文章内提到的软件均可在该百度网盘中下载：r56w  
 
 本篇文章面向零基础的用户编写，因此不会进行过于全面的讲解，仅提供基础的操作，以便快速的上手。  
-[TOC]  ,"> 
+
+
+
+
+
+准,"> 
     <meta name="author" content="Ritsukage Utsumabo"> 
     <link rel="alternative" href="atom.xml" title="Ritsukage Utsumabo" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -67,17 +72,49 @@
 
         </div>
         <div class="content markdown">
-            <h1 id="Github简易使用教程"><a href="#Github简易使用教程" class="headerlink" title="Github简易使用教程"></a>Github简易使用教程</h1><blockquote>
+            <h1><span id="github-jian-yi-shi-yong-jiao-cheng">Github简易使用教程</span><a href="#github-jian-yi-shi-yong-jiao-cheng" class="header-anchor">#</a></h1><blockquote>
 <p><em>本篇文章内提到的软件均可在该百度网盘中下载：<a href="链接：https://pan.baidu.com/s/1gv_5Ik6DQbbJ0GiEvaSrqg">r56w</a></em>  </p>
 </blockquote>
 <p>本篇文章面向零基础的用户编写，因此不会进行过于全面的讲解，仅提供基础的操作，以便快速的上手。  </p>
-<p>[TOC]  </p>
+<div class="toc">
+
+<!-- toc -->
+
+<ul>
+<li><a href="#zhun-bei-gong-zuo">准备工作</a></li>
+<li><a href="#jiang-github-cang-ku-ke-long-zhi-ben-di">将 Github 仓库克隆至本地</a><ul>
+<li><a href="#tong-guo-ming-ling-xing-jin-xing-ke-long">通过命令行进行克隆</a></li>
+<li><a href="#tong-guo-git-ming-ling-xing-jin-xing-ke-long">通过 Git 命令行进行克隆</a></li>
+<li><a href="#tong-guo-tortoisegit-jin-xing-ke-long">通过 TortoiseGit 进行克隆</a></li>
+</ul>
+</li>
+<li><a href="#ti-jiao-geng-xin-zhi-fork-cang-ku">提交更新至 Fork 仓库</a><ul>
+<li><a href="#tong-guo-git-ming-ling-xing-ti-jiao">通过 Git 命令行提交</a></li>
+<li><a href="#tong-guo-tortoisegit-ti-jiao">通过 TortoiseGit 提交</a></li>
+</ul>
+</li>
+<li><a href="#cong-fork-cang-ku-ti-jiao-geng-xin-zhi-yuan-mu-biao-cang-ku">从 Fork 仓库提交更新至原目标仓库</a><ul>
+<li><a href="#tong-guo-git-ming-ling-xing-ti-jiao-1">通过 Git 命令行提交</a></li>
+<li><a href="#tong-guo-tortoisegit-ti-jiao-1">通过 TortoiseGit 提交</a></li>
+<li><a href="#tong-guo-github-wang-ye-ti-jiao">通过 Github 网页提交</a></li>
+</ul>
+</li>
+<li><a href="#geng-xin-mu-biao-cang-ku-nei-rong-zhi-fork-cang-ku">更新目标仓库内容至 Fork 仓库</a><ul>
+<li><a href="#tong-guo-git-ming-ling-xing-geng-xin">通过 Git 命令行更新</a></li>
+<li><a href="#tong-guo-tortoisegit-geng-xin">通过 TortoiseGit 更新</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+
+</div>
+
 <hr>
-<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>在使用 <a href="https://github.com" target="_blank" rel="noopener">Github</a> 前，我们首先需要注册一个账户<br>具体怎么注册在这我就不进行过多说明了，前往官网自己注册一个就行  </p>
+<h2><span id="zhun-bei-gong-zuo">准备工作</span><a href="#zhun-bei-gong-zuo" class="header-anchor">#</a></h2><p>在使用 <a href="https://github.com" target="_blank" rel="noopener">Github</a> 前，我们首先需要注册一个账户<br>具体怎么注册在这我就不进行过多说明了，前往官网自己注册一个就行  </p>
 <p>对于需要进行文本编辑的，我在这推荐安装 <a href="https://notepad-plus-plus.org/downloads/" target="_blank" rel="noopener">Notepad++</a>  </p>
 <p>在之后，我们需要安装一个 Git 用于方便快捷的进行各种操作：<a href="https://git-scm.com/downloads" target="_blank" rel="noopener">下载地址</a>  </p>
-<img src="/posts/218e/Git1.png" class="">  
-<img src="/posts/218e/Git2.png" class="">  
+<img src="/posts/218e/Git1.png" class>  
+<img src="/posts/218e/Git2.png" class>  
 
 <blockquote>
 <p>安装时，在 <strong>Select Components</strong> 步骤请取消掉 <strong>Git GUI Here</strong> 的复选框，因为Git提供的这个窗口界面并不好用，在下面会提供更好的选择。<br>而在 <strong>Choosing the default editor used by Git</strong> 步骤，如果安装了Notepad++，可以将此项修改为 <strong>Use Notepad++ as Git’s default editor</strong><br>除此之外一路Next安装即可  </p>
@@ -87,27 +124,27 @@
 <p>它还提供了中文语言包，对于英文比较差的用户来说，这个实在是太方便了  </p>
 </blockquote>
 <p>安装完 TortoiseGit 之后，在桌面或任意文件夹 <strong>右键 -&gt; TortoiseGit -&gt; 设置</strong> 进入设置界面<br>之后点击进入 <strong>Git</strong> 设置界面，选择 <strong>全局</strong>，取消掉 <strong>用户信息</strong> 的 <strong>名称</strong> 与 <strong>Email</strong> 的继承复选框，并填写你注册的 Github 账户信息，之后点击 <strong>确定</strong> 保存配置  </p>
-<img src="/posts/218e/TortoiseGit1.png" class="">  
-<img src="/posts/218e/TortoiseGit2.png" class="">  
+<img src="/posts/218e/TortoiseGit1.png" class>  
+<img src="/posts/218e/TortoiseGit2.png" class>  
 
 <p>完成以上操作后，基础的准备工作就都完成了。</p>
 <hr>
-<h2 id="将-Github-仓库克隆至本地"><a href="#将-Github-仓库克隆至本地" class="headerlink" title="将 Github 仓库克隆至本地"></a>将 Github 仓库克隆至本地</h2><blockquote>
+<h2><span id="jiang-github-cang-ku-ke-long-zhi-ben-di">将 Github 仓库克隆至本地</span><a href="#jiang-github-cang-ku-ke-long-zhi-ben-di" class="header-anchor">#</a></h2><blockquote>
 <p>该部分内容默认用户已完成准备工作中的配置操作</p>
 </blockquote>
-<h3 id="通过命令行进行克隆"><a href="#通过命令行进行克隆" class="headerlink" title="通过命令行进行克隆"></a>通过命令行进行克隆</h3><p>准备工作完成后，我们要对 Github 上的仓库进行操作，我们首先需要对目标仓库执行 <strong>Fork</strong> 操作（进入目标仓库地址，点击右上角的 <strong>Fork</strong> 按钮，会自动继承目标仓库到自身账户中创建一个对应的仓库）<br>之后，在自身账户Fork出的仓库中，点击 <strong>Clone or Download</strong> 按钮，并复制内部的链接，之后即可在本地进行克隆操作了  </p>
-<h3 id="通过-Git-命令行进行克隆"><a href="#通过-Git-命令行进行克隆" class="headerlink" title="通过 Git 命令行进行克隆"></a>通过 Git 命令行进行克隆</h3><p>调用 CMD 使用 cd 命令至想要保存的位置或在目标位置通过 <strong>右键 -&gt; Git Bash Here</strong> 开启 Git 的命令行界面，然后输入  </p>
+<h3><span id="tong-guo-ming-ling-xing-jin-xing-ke-long">通过命令行进行克隆</span><a href="#tong-guo-ming-ling-xing-jin-xing-ke-long" class="header-anchor">#</a></h3><p>准备工作完成后，我们要对 Github 上的仓库进行操作，我们首先需要对目标仓库执行 <strong>Fork</strong> 操作（进入目标仓库地址，点击右上角的 <strong>Fork</strong> 按钮，会自动继承目标仓库到自身账户中创建一个对应的仓库）<br>之后，在自身账户Fork出的仓库中，点击 <strong>Clone or Download</strong> 按钮，并复制内部的链接，之后即可在本地进行克隆操作了  </p>
+<h3><span id="tong-guo-git-ming-ling-xing-jin-xing-ke-long">通过 Git 命令行进行克隆</span><a href="#tong-guo-git-ming-ling-xing-jin-xing-ke-long" class="header-anchor">#</a></h3><p>调用 CMD 使用 cd 命令至想要保存的位置或在目标位置通过 <strong>右键 -&gt; Git Bash Here</strong> 开启 Git 的命令行界面，然后输入  </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">git clone 你刚刚复制的链接</span></pre></td></tr></table></figure>
 <p>回车即可自动开始克隆操作<br>克隆完成后，通过 cd 命令进入到克隆出的本地仓库文件夹中，执行  </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">git remote add upstream 目标仓库的克隆链接</span></pre></td></tr></table></figure>
 <p>来创建一个名为 <strong>upstream</strong> 的远端目标，用于对目标仓库保持更新  </p>
-<h3 id="通过-TortoiseGit-进行克隆"><a href="#通过-TortoiseGit-进行克隆" class="headerlink" title="通过 TortoiseGit 进行克隆"></a>通过 TortoiseGit 进行克隆</h3><p>在本地电脑中你想要保存的位置 <strong>右键 -&gt; Git克隆…</strong>，在 URL 处填写你刚刚复制出的链接地址，点击 <strong>确定</strong> 即可自动开始克隆文件到本地。<br>克隆完成后，进入到克隆出的本地仓库文件夹中 <strong>右键 -&gt; TortoiseGit -&gt; 设置</strong> 进入设置界面<br>之后点击进入 <strong>Git - 远端</strong> 设置界面，在 <strong>远端</strong> 处输入 <strong>upstream</strong> 并在 URL 处填写目标仓库的克隆链接，再点击 <strong>添加/保存(A)</strong> 按钮来创建远端目标，用于对目标仓库保持更新，再点击 <strong>确定</strong> 保存配置  </p>
-<img src="/posts/218e/Clone1.png" class="">  
-<img src="/posts/218e/Clone2.png" class="">  
-<img src="/posts/218e/Clone3.png" class="">  
+<h3><span id="tong-guo-tortoisegit-jin-xing-ke-long">通过 TortoiseGit 进行克隆</span><a href="#tong-guo-tortoisegit-jin-xing-ke-long" class="header-anchor">#</a></h3><p>在本地电脑中你想要保存的位置 <strong>右键 -&gt; Git克隆…</strong>，在 URL 处填写你刚刚复制出的链接地址，点击 <strong>确定</strong> 即可自动开始克隆文件到本地。<br>克隆完成后，进入到克隆出的本地仓库文件夹中 <strong>右键 -&gt; TortoiseGit -&gt; 设置</strong> 进入设置界面<br>之后点击进入 <strong>Git - 远端</strong> 设置界面，在 <strong>远端</strong> 处输入 <strong>upstream</strong> 并在 URL 处填写目标仓库的克隆链接，再点击 <strong>添加/保存(A)</strong> 按钮来创建远端目标，用于对目标仓库保持更新，再点击 <strong>确定</strong> 保存配置  </p>
+<img src="/posts/218e/Clone1.png" class>  
+<img src="/posts/218e/Clone2.png" class>  
+<img src="/posts/218e/Clone3.png" class>  
 
-<h2 id="提交更新至-Fork-仓库"><a href="#提交更新至-Fork-仓库" class="headerlink" title="提交更新至 Fork 仓库"></a>提交更新至 Fork 仓库</h2><p>要对仓库文件进行修改，可以直接简单的对克隆下来的本地仓库进行文件操作。<br>在这之后，我们需要进行提交才可对目标仓库进行修改。  </p>
-<h3 id="通过-Git-命令行提交"><a href="#通过-Git-命令行提交" class="headerlink" title="通过 Git 命令行提交"></a>通过 Git 命令行提交</h3><h3 id="通过-TortoiseGit-提交"><a href="#通过-TortoiseGit-提交" class="headerlink" title="通过 TortoiseGit 提交"></a>通过 TortoiseGit 提交</h3><h2 id="从-Fork-仓库提交更新至原目标仓库"><a href="#从-Fork-仓库提交更新至原目标仓库" class="headerlink" title="从 Fork 仓库提交更新至原目标仓库"></a>从 Fork 仓库提交更新至原目标仓库</h2><h3 id="通过-Git-命令行提交-1"><a href="#通过-Git-命令行提交-1" class="headerlink" title="通过 Git 命令行提交"></a>通过 Git 命令行提交</h3><h3 id="通过-TortoiseGit-提交-1"><a href="#通过-TortoiseGit-提交-1" class="headerlink" title="通过 TortoiseGit 提交"></a>通过 TortoiseGit 提交</h3><h3 id="通过-Github-网页提交"><a href="#通过-Github-网页提交" class="headerlink" title="通过 Github 网页提交"></a>通过 Github 网页提交</h3><h2 id="更新目标仓库内容至-Fork-仓库"><a href="#更新目标仓库内容至-Fork-仓库" class="headerlink" title="更新目标仓库内容至 Fork 仓库"></a>更新目标仓库内容至 Fork 仓库</h2><h3 id="通过-Git-命令行更新"><a href="#通过-Git-命令行更新" class="headerlink" title="通过 Git 命令行更新"></a>通过 Git 命令行更新</h3><h3 id="通过-TortoiseGit-更新"><a href="#通过-TortoiseGit-更新" class="headerlink" title="通过 TortoiseGit 更新"></a>通过 TortoiseGit 更新</h3>
+<h2><span id="ti-jiao-geng-xin-zhi-fork-cang-ku">提交更新至 Fork 仓库</span><a href="#ti-jiao-geng-xin-zhi-fork-cang-ku" class="header-anchor">#</a></h2><p>要对仓库文件进行修改，可以直接简单的对克隆下来的本地仓库进行文件操作。<br>在这之后，我们需要进行提交才可对目标仓库进行修改。  </p>
+<h3><span id="tong-guo-git-ming-ling-xing-ti-jiao">通过 Git 命令行提交</span><a href="#tong-guo-git-ming-ling-xing-ti-jiao" class="header-anchor">#</a></h3><h3><span id="tong-guo-tortoisegit-ti-jiao">通过 TortoiseGit 提交</span><a href="#tong-guo-tortoisegit-ti-jiao" class="header-anchor">#</a></h3><h2><span id="cong-fork-cang-ku-ti-jiao-geng-xin-zhi-yuan-mu-biao-cang-ku">从 Fork 仓库提交更新至原目标仓库</span><a href="#cong-fork-cang-ku-ti-jiao-geng-xin-zhi-yuan-mu-biao-cang-ku" class="header-anchor">#</a></h2><h3><span id="tong-guo-git-ming-ling-xing-ti-jiao">通过 Git 命令行提交</span><a href="#tong-guo-git-ming-ling-xing-ti-jiao" class="header-anchor">#</a></h3><h3><span id="tong-guo-tortoisegit-ti-jiao">通过 TortoiseGit 提交</span><a href="#tong-guo-tortoisegit-ti-jiao" class="header-anchor">#</a></h3><h3><span id="tong-guo-github-wang-ye-ti-jiao">通过 Github 网页提交</span><a href="#tong-guo-github-wang-ye-ti-jiao" class="header-anchor">#</a></h3><h2><span id="geng-xin-mu-biao-cang-ku-nei-rong-zhi-fork-cang-ku">更新目标仓库内容至 Fork 仓库</span><a href="#geng-xin-mu-biao-cang-ku-nei-rong-zhi-fork-cang-ku" class="header-anchor">#</a></h2><h3><span id="tong-guo-git-ming-ling-xing-geng-xin">通过 Git 命令行更新</span><a href="#tong-guo-git-ming-ling-xing-geng-xin" class="header-anchor">#</a></h3><h3><span id="tong-guo-tortoisegit-geng-xin">通过 TortoiseGit 更新</span><a href="#tong-guo-tortoisegit-geng-xin" class="header-anchor">#</a></h3>
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
                 <source type="audio/mpeg" src="">
