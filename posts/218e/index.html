@@ -10,25 +10,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
     <meta name="keywords" content="Ritsukage,"> 
-    <meta name="description" content="小律影的个人Blog,
+    <meta name="description" content="小律影的个人Blog,Github简易使用教程
+本篇文章内提到的软件均可在该百度网盘中下载：r56w  
 
+本篇文章面向零基础的用户编写，因此不会进行过于全面的讲解，仅提供基础的操作，以便快速的上手。  
 
-
-
-
-Github简易使用教程
-准备工作
-将 Github 仓库克隆至本地
-提交更新至 Fork 仓库
-从 Fork 仓库提交更新至原目标仓库
-更新目标仓库内容至 Fork 仓库
-
-
-
-
-
-
-,"> 
+准备工作在使,"> 
     <meta name="author" content="Ritsukage Utsumabo"> 
     <link rel="alternative" href="atom.xml" title="Ritsukage Utsumabo" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -81,27 +68,7 @@ Github简易使用教程
 
         </div>
         <div class="content markdown">
-            <div class="side"><ol class="toc">
-<div class="toc">
-
-<!-- toc -->
-
-<ul>
-<li><a href="#github简易使用教程">Github简易使用教程</a><ul>
-<li><a href="#准备工作">准备工作</a></li>
-<li><a href="#将-github-仓库克隆至本地">将 Github 仓库克隆至本地</a></li>
-<li><a href="#提交更新至-fork-仓库">提交更新至 Fork 仓库</a></li>
-<li><a href="#从-fork-仓库提交更新至原目标仓库">从 Fork 仓库提交更新至原目标仓库</a></li>
-<li><a href="#更新目标仓库内容至-fork-仓库">更新目标仓库内容至 Fork 仓库</a></li>
-</ul>
-</li>
-</ul>
-<!-- tocstop -->
-
-</div>
-</ol></div>
-
-<h1><span id="github简易使用教程">Github简易使用教程</span><a href="#github简易使用教程" class="header-anchor"></a></h1><blockquote>
+            <h1><span id="github简易使用教程">Github简易使用教程</span><a href="#github简易使用教程" class="header-anchor"></a></h1><blockquote>
 <p>本篇文章内提到的软件均可在该百度网盘中下载：<a href="链接：https://pan.baidu.com/s/1gv_5Ik6DQbbJ0GiEvaSrqg">r56w</a>  </p>
 </blockquote>
 <p>本篇文章面向零基础的用户编写，因此不会进行过于全面的讲解，仅提供基础的操作，以便快速的上手。  </p>
@@ -129,18 +96,18 @@ Github简易使用教程
 <p>该部分内容默认用户已完成准备工作中的配置操作</p>
 </blockquote>
 <p>准备工作完成后，我们要对 Github 上的仓库进行操作，我们首先需要对目标仓库执行 <strong>Fork</strong> 操作（进入目标仓库地址，点击右上角的 <strong>Fork</strong> 按钮，会自动继承目标仓库到自身账户中创建一个对应的仓库）<br>之后，在自身账户Fork出的仓库中，点击 <strong>Clone or Download</strong> 按钮，并复制内部的链接，之后即可在本地进行克隆操作了  </p>
-<h4><span id="通过-git-命令行进行克隆">通过 Git 命令行进行克隆</span><a href="#通过-git-命令行进行克隆" class="header-anchor"></a></h4><p>调用 CMD 使用 cd 命令至想要保存的位置或在目标位置通过 <strong>右键 -&gt; Git Bash Here</strong> 开启 Git 的命令行界面，然后输入  </p>
+<h3><span id="通过-git-命令行进行克隆">通过 Git 命令行进行克隆</span><a href="#通过-git-命令行进行克隆" class="header-anchor"></a></h3><p>调用 CMD 使用 cd 命令至想要保存的位置或在目标位置通过 <strong>右键 -&gt; Git Bash Here</strong> 开启 Git 的命令行界面，然后输入  </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">git clone 你刚刚复制的链接</span></pre></td></tr></table></figure>
 <p>回车即可自动开始克隆操作<br>克隆完成后，通过 cd 命令进入到克隆出的本地仓库文件夹中，执行  </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">git remote add upstream 目标仓库的克隆链接</span></pre></td></tr></table></figure>
 <p>来创建一个名为 <strong>upstream</strong> 的远端目标，用于对目标仓库保持更新  </p>
-<h4><span id="通过-tortoisegit-进行克隆">通过 TortoiseGit 进行克隆</span><a href="#通过-tortoisegit-进行克隆" class="header-anchor"></a></h4><p>在本地电脑中你想要保存的位置 <strong>右键 -&gt; Git克隆…</strong>，在 URL 处填写你刚刚复制出的链接地址，点击 <strong>确定</strong> 即可自动开始克隆文件到本地。<br>克隆完成后，进入到克隆出的本地仓库文件夹中 <strong>右键 -&gt; TortoiseGit -&gt; 设置</strong> 进入设置界面<br>之后点击进入 <strong>Git - 远端</strong> 设置界面，在 <strong>远端</strong> 处输入 <strong>upstream</strong> 并在 URL 处填写目标仓库的克隆链接，再点击 <strong>添加/保存(A)</strong> 按钮来创建远端目标，用于对目标仓库保持更新，再点击 <strong>确定</strong> 保存配置  </p>
+<h3><span id="通过-tortoisegit-进行克隆">通过 TortoiseGit 进行克隆</span><a href="#通过-tortoisegit-进行克隆" class="header-anchor"></a></h3><p>在本地电脑中你想要保存的位置 <strong>右键 -&gt; Git克隆…</strong>，在 URL 处填写你刚刚复制出的链接地址，点击 <strong>确定</strong> 即可自动开始克隆文件到本地。<br>克隆完成后，进入到克隆出的本地仓库文件夹中 <strong>右键 -&gt; TortoiseGit -&gt; 设置</strong> 进入设置界面<br>之后点击进入 <strong>Git - 远端</strong> 设置界面，在 <strong>远端</strong> 处输入 <strong>upstream</strong> 并在 URL 处填写目标仓库的克隆链接，再点击 <strong>添加/保存(A)</strong> 按钮来创建远端目标，用于对目标仓库保持更新，再点击 <strong>确定</strong> 保存配置  </p>
 <img src="/posts/218e/Clone1.png" class>  
 <img src="/posts/218e/Clone2.png" class>  
 <img src="/posts/218e/Clone3.png" class>  
 
 <h2><span id="提交更新至-fork-仓库">提交更新至 Fork 仓库</span><a href="#提交更新至-fork-仓库" class="header-anchor"></a></h2><p>要对仓库文件进行修改，可以直接简单的对克隆下来的本地仓库进行文件操作。<br>在这之后，我们需要进行提交才可对目标仓库进行修改。  </p>
-<h4><span id="通过-git-命令行提交">通过 Git 命令行提交</span><a href="#通过-git-命令行提交" class="header-anchor"></a></h4><h4><span id="通过-tortoisegit-提交">通过 TortoiseGit 提交</span><a href="#通过-tortoisegit-提交" class="header-anchor"></a></h4><h2><span id="从-fork-仓库提交更新至原目标仓库">从 Fork 仓库提交更新至原目标仓库</span><a href="#从-fork-仓库提交更新至原目标仓库" class="header-anchor"></a></h2><h4><span id="通过-git-命令行提交">通过 Git 命令行提交</span><a href="#通过-git-命令行提交" class="header-anchor"></a></h4><h4><span id="通过-tortoisegit-提交">通过 TortoiseGit 提交</span><a href="#通过-tortoisegit-提交" class="header-anchor"></a></h4><h4><span id="通过-github-网页提交">通过 Github 网页提交</span><a href="#通过-github-网页提交" class="header-anchor"></a></h4><h2><span id="更新目标仓库内容至-fork-仓库">更新目标仓库内容至 Fork 仓库</span><a href="#更新目标仓库内容至-fork-仓库" class="header-anchor"></a></h2><h4><span id="通过-git-命令行更新">通过 Git 命令行更新</span><a href="#通过-git-命令行更新" class="header-anchor"></a></h4><h4><span id="通过-tortoisegit-更新">通过 TortoiseGit 更新</span><a href="#通过-tortoisegit-更新" class="header-anchor"></a></h4>
+<h3><span id="通过-git-命令行提交">通过 Git 命令行提交</span><a href="#通过-git-命令行提交" class="header-anchor"></a></h3><h3><span id="通过-tortoisegit-提交">通过 TortoiseGit 提交</span><a href="#通过-tortoisegit-提交" class="header-anchor"></a></h3><h2><span id="从-fork-仓库提交更新至原目标仓库">从 Fork 仓库提交更新至原目标仓库</span><a href="#从-fork-仓库提交更新至原目标仓库" class="header-anchor"></a></h2><h3><span id="通过-git-命令行提交">通过 Git 命令行提交</span><a href="#通过-git-命令行提交" class="header-anchor"></a></h3><h3><span id="通过-tortoisegit-提交">通过 TortoiseGit 提交</span><a href="#通过-tortoisegit-提交" class="header-anchor"></a></h3><h3><span id="通过-github-网页提交">通过 Github 网页提交</span><a href="#通过-github-网页提交" class="header-anchor"></a></h3><h2><span id="更新目标仓库内容至-fork-仓库">更新目标仓库内容至 Fork 仓库</span><a href="#更新目标仓库内容至-fork-仓库" class="header-anchor"></a></h2><h3><span id="通过-git-命令行更新">通过 Git 命令行更新</span><a href="#通过-git-命令行更新" class="header-anchor"></a></h3><h3><span id="通过-tortoisegit-更新">通过 TortoiseGit 更新</span><a href="#通过-tortoisegit-更新" class="header-anchor"></a></h3>
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
                 <source type="audio/mpeg" src="">
