@@ -75,7 +75,7 @@ function Init(feedType, feedPath, bgArr, senArr) {
                 data = [];
                 if (xml.querySelector("rss") != null) {
                     xml.querySelectorAll("channel item").forEach(function (v, i) {
-                        if (i > 7) { return; }
+                        if (i > 10) { return; }
                         data.push({
                             "link": v.querySelector("link").innerHTML,
                             "timestamp": dateParser(v.querySelector("pubDate").innerHTML),

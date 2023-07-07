@@ -89,6 +89,25 @@ body.locked, .content-container, .self-wrapper, .article-title {
     color: #50a4d0;
 }
 
+.external-link-item {
+    margin-top: 0;
+    margin-bottom: 35px;
+}
+
+.external-link-item:hover {
+    color: #50a4d0;
+}
+
+.external-link-title {
+    font-size: 18px;
+}
+
+.external-link-target {
+    opacity: .5;
+    font-size: 15px;
+    float: right;
+}
+
 .background-layer {
     z-index: -10;
     width: 100vw;
@@ -134,8 +153,8 @@ body.locked, .content-container, .self-wrapper, .article-title {
 }
 
 .content-container {
-    width: 320px;
-    height: 400px;
+    width: 400px;
+    height: 500px;
     background: white;
     position: relative;
     border-radius: 3px;
