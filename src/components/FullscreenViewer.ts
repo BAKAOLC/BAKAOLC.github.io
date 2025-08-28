@@ -103,7 +103,7 @@ export class FullscreenViewer {
 
     this.viewerImage.addEventListener('mousedown', (e) => {
       if (!this.canDragImage) return;
-      
+
       e.preventDefault();
       e.stopPropagation();
 
@@ -651,7 +651,8 @@ export class FullscreenViewer {
     this.viewerImage.draggable = false;
 
     this.viewerImage.onload = () => {
-      this.viewerImage.style.opacity = '1'; this.viewerImage.draggable = false;
+      this.viewerImage.style.opacity = '1';
+      this.viewerImage.draggable = false;
       this.checkImageSize();
     };
 
@@ -665,7 +666,7 @@ export class FullscreenViewer {
   private updateImageTransform(): void {
     this.viewerImage.style.transform =
       `translate(${this.translateX}px, ${this.translateY}px) scale(${this.currentScale})`;
-    
+
     this.updateMiniMapViewport();
   }
 
@@ -689,24 +690,23 @@ export class FullscreenViewer {
   }
 
   private setupMiniMap(): void {
-    // 添加点击小悬浮窗外框区域直接定位功能
+
     this.miniMap.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      
-      // 如果点击的是小悬浮窗图片但不是viewport，则进行位置跳转
+
       if (e.target === this.miniMapImage || e.target === this.miniMap) {
         this.navigateToClickPosition(e);
       }
     });
 
-    // 禁用小悬浮窗图片的拖拽
+
     this.setupMiniMapImageDragProtection();
     this.setupViewportDrag();
   }
 
   private setupMiniMapImageDragProtection(): void {
-    // 禁用小悬浮窗图片的所有拖拽行为
+
     this.miniMapImage.addEventListener('dragstart', (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -731,7 +731,6 @@ export class FullscreenViewer {
       return false;
     });
 
-    // 设置图片不可拖拽
     this.miniMapImage.draggable = false;
     this.miniMapImage.style.userSelect = 'none';
     this.miniMapImage.style.pointerEvents = 'none';
@@ -754,7 +753,6 @@ export class FullscreenViewer {
     const viewportWidth = viewerRect.width * scale;
     const viewportHeight = viewerRect.height * scale;
 
-    // 计算新的viewport位置，使点击位置居中
     const newViewportX = clickX - viewportWidth / 2;
     const newViewportY = clickY - viewportHeight / 2;
 
@@ -770,7 +768,7 @@ export class FullscreenViewer {
 
     this.miniMapViewport.addEventListener('mousedown', (e) => {
       if (!this.canDragImage) return;
-      
+
       e.preventDefault();
       e.stopPropagation();
       isDraggingViewport = true;
@@ -889,8 +887,8 @@ export class FullscreenViewer {
     const viewerRect = this.viewer.getBoundingClientRect();
     const imageRect = this.viewerImage.getBoundingClientRect();
 
-    const imageExceedsViewport = 
-      (imageRect.width * this.currentScale > viewerRect.width) || 
+    const imageExceedsViewport =
+      (imageRect.width * this.currentScale > viewerRect.width) ||
       (imageRect.height * this.currentScale > viewerRect.height);
 
     this.canDragImage = imageExceedsViewport;

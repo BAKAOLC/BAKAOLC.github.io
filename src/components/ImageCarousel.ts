@@ -87,7 +87,8 @@ export class ImageCarousel {
 
     this.imagesContainer.addEventListener('touchstart', (e) => {
       if (this.isTransitioning) {
-        e.preventDefault(); return;
+        e.preventDefault();
+        return;
       }
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
@@ -125,9 +126,9 @@ export class ImageCarousel {
   public setCharacter(character: Character): void {
     this.currentCharacter = character;
     this.currentImageIndex = 0;
-    this.isTransitioning = false; 
-    this.cleanupTransitionImages(); 
-    this.stopAutoPlay(); // 确保停止任何自动播放
+    this.isTransitioning = false;
+    this.cleanupTransitionImages();
+    this.stopAutoPlay();
     this.updateDisplay();
   }
 
@@ -136,11 +137,13 @@ export class ImageCarousel {
   }
 
   public nextImage(): void {
-    if (this.isTransitioning) return; this.nextImageWithAnimation();
+    if (this.isTransitioning) return;
+    this.nextImageWithAnimation();
   }
 
   public previousImage(): void {
-    if (this.isTransitioning) return; this.previousImageWithAnimation();
+    if (this.isTransitioning) return;
+    this.previousImageWithAnimation();
   }
 
   public goToImage(index: number): void {

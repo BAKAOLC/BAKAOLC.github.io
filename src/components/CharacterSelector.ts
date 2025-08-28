@@ -7,7 +7,8 @@ export class CharacterSelector {
   private currentCharacterId: string = '';
   private onCharacterChange?: (characterId: string) => void;
   private onCharacterSelection?: (characterId: string) => void;
-  private selectionContext: 'main' | 'fullscreen' = 'main'; private viewMode: 'grid' | 'list' = 'grid';
+  private selectionContext: 'main' | 'fullscreen' = 'main';
+  private viewMode: 'grid' | 'list' = 'grid';
   private searchTerm: string = '';
   private isExpanded: boolean = false;
 

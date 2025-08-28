@@ -254,7 +254,7 @@ export const config: SiteConfig = {
           description: '作者：喵田弥夜Miya',
           src: './assets/catagory/ritsukage-utsumabo/miscellaneous/Miya绘.jpg'
         },
-        
+
       ]
     }
   ]

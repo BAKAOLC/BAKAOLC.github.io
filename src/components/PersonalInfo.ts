@@ -33,22 +33,17 @@ export class PersonalInfo {
 
     const descEl = this.container.querySelector('#description') as HTMLElement;
     if (descEl) {
-      // 清空现有内容
       descEl.innerHTML = '';
-      
-      // 处理多行描述
+
       personal.description.forEach((line, index) => {
         if (line.trim() === '') {
-          // 空行添加换行符
           descEl.appendChild(document.createElement('br'));
         } else if (line.startsWith('==') && line.endsWith('==')) {
-          // 标题行使用特殊样式
           const titleEl = document.createElement('div');
           titleEl.textContent = line.replace(/==/g, '').trim();
           titleEl.className = 'description-title';
           descEl.appendChild(titleEl);
         } else {
-          // 普通文本行
           const lineEl = document.createElement('div');
           lineEl.textContent = line;
           lineEl.className = 'description-line';

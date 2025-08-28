@@ -24,7 +24,8 @@ export class ImageSelector {
 
   public show(character: Character, currentImageIndex: number = 0): void {
     this.currentCharacter = character;
-    this.searchTerm = ''; this.updateModalImages();
+    this.searchTerm = '';
+    this.updateModalImages();
 
     const layerManager = LayerManager.getInstance();
     layerManager.showLayer('image-selector-overlay', {
