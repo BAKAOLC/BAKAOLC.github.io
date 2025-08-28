@@ -1,1 +1,0 @@
-Powered by [Present](https://github.com/KawaiiZapic/Present) of [@KawaiiZapic](https://github.com/KawaiiZapic) 
