@@ -74,7 +74,7 @@ class PersonalHomepage {
       }
     });
 
-    // 主页面角色选择器的选择回调 - 直接打开图片列表
+
     this.characterSelector.setCharacterSelectionCallback((characterId: string) => {
       const character = config.characters.find(c => c.id === characterId);
       if (character && character.images.length > 0) {
@@ -101,7 +101,7 @@ class PersonalHomepage {
 
     imageSelector.setImageSelectionCallback((image, character, index) => {
       this.fullscreenViewer.show(image, character, index);
-      // 同时更新轮播图到对应的图片
+
       this.imageCarousel.setCharacter(character);
       this.imageCarousel.goToImage(index);
     });
@@ -134,7 +134,7 @@ class PersonalHomepage {
 
     imageSelector.setImageSelectionCallback((image, character, index) => {
       this.fullscreenViewer.show(image, character, index);
-      // 同时更新轮播图到对应的图片
+
       this.imageCarousel.setCharacter(character);
       this.imageCarousel.goToImage(index);
     });
