@@ -1,0 +1,28 @@
+{
+  "name": "personal-homepage",
+  "version": "1.0.0",
+  "description": "Personal homepage with character showcase",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "webpack --mode production",
+    "dev": "webpack serve --mode development",
+    "clean": "rimraf dist"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "copy-webpack-plugin": "^13.0.1",
+    "css-loader": "^6.8.1",
+    "html-webpack-plugin": "^5.5.3",
+    "mini-css-extract-plugin": "^2.7.6",
+    "rimraf": "^5.0.1",
+    "style-loader": "^3.3.3",
+    "ts-loader": "^9.4.4",
+    "typescript": "^5.1.6",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  },
+  "dependencies": {
+    "swiper": "^10.3.1"
+  }
+}
