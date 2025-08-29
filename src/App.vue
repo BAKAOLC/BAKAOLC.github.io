@@ -145,14 +145,14 @@ onMounted(() => {
   @apply border-b border-gray-200 dark:border-gray-700;
   @apply shadow-sm;
   @apply transition-colors duration-500;
-  height: 60px;
-  /* 固定头部高度 */
+  min-height: 60px;
+  /* 最小头部高度，允许在移动端扩展 */
 }
 
 .header-content {
   @apply container mx-auto px-4;
   @apply flex items-center justify-between;
-  height: 100%;
+  min-height: 60px;
 }
 
 .logo-link {
@@ -179,8 +179,6 @@ onMounted(() => {
   @apply transition-colors duration-500;
   @apply overflow-hidden;
   /* 防止主体区域滚动，让内部组件自己控制滚动 */
-  height: calc(100vh - 120px);
-  /* 视口高度减去头部和底部高度 */
 }
 
 .footer {
@@ -211,12 +209,22 @@ onMounted(() => {
 }
 
 @media (max-width: 640px) {
+  .header {
+    min-height: auto;
+  }
+  
   .header-content {
-    @apply flex-col items-start gap-2 py-2;
+    @apply flex-row items-center justify-between;
+    @apply py-3;
+    min-height: auto;
   }
 
+  .site-title {
+    @apply text-lg;
+  }
+  
   .header-controls {
-    @apply w-full justify-end;
+    @apply gap-2;
   }
 }
 </style>

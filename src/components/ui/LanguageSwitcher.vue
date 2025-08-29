@@ -2,7 +2,7 @@
   <div class="language-switcher">
     <button @click="toggleLanguageMenu" class="language-button" :aria-expanded="isOpen" aria-haspopup="true">
       <globe-icon class="icon" />
-      <span>{{ displayLanguage }}</span>
+      <span class="language-text">{{ displayLanguage }}</span>
       <chevron-down-icon class="arrow-icon" :class="{ 'rotate-180': isOpen }" />
     </button>
 
@@ -93,9 +93,7 @@ onBeforeUnmount(() => {
   @apply w-4 h-4;
 }
 
-.arrow-icon {
-  @apply w-4 h-4 ml-1 transition-transform duration-200;
-}
+
 
 .language-menu {
   @apply absolute right-0 mt-2 py-1;
@@ -122,5 +120,23 @@ onBeforeUnmount(() => {
   @apply bg-primary-50 dark:bg-primary-900/20;
   @apply text-primary-700 dark:text-primary-400;
   @apply font-medium;
+}
+
+.language-text {
+  @apply hidden sm:inline;
+}
+
+.arrow-icon {
+  @apply hidden sm:inline-block w-4 h-4 ml-1 transition-transform duration-200;
+}
+
+@media (max-width: 640px) {
+  .language-button {
+    @apply p-2;
+  }
+  
+  .language-menu {
+    @apply w-32;
+  }
 }
 </style>

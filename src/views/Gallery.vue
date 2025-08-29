@@ -111,13 +111,15 @@ const clearSearch = () => {
 
 // 打开查看器
 const openViewer = (event: CustomEvent) => {
-  if (event.detail && event.detail.imageId) {
+  if (event.detail && event.detail.imageId && typeof event.detail.imageId === 'string') {
     currentImageId.value = event.detail.imageId
     viewerActive.value = true
 
     // 更新 URL 但不导航到新页面
     const newUrl = `/viewer/${event.detail.imageId}`
     window.history.pushState({ imageId: event.detail.imageId }, '', newUrl)
+  } else {
+    console.warn('无效的图片ID，无法打开查看器')
   }
 }
 
@@ -131,12 +133,14 @@ const closeViewer = () => {
 
 // 监听查看器导航事件
 const handleViewerNavigate = (event: CustomEvent) => {
-  if (event.detail && event.detail.imageId) {
+  if (event.detail && event.detail.imageId && typeof event.detail.imageId === 'string') {
     currentImageId.value = event.detail.imageId
 
     // 更新 URL 但不导航到新页面
     const newUrl = `/viewer/${event.detail.imageId}`
     window.history.pushState({ imageId: event.detail.imageId }, '', newUrl)
+  } else {
+    console.warn('无效的图片ID，无法更新查看器')
   }
 }
 
@@ -166,6 +170,12 @@ onBeforeUnmount(() => {
   @apply border-b border-gray-200 dark:border-gray-700 pb-4;
 }
 
+@media (max-width: 768px) {
+  .gallery-header {
+    @apply flex-col items-center text-center gap-4;
+  }
+}
+
 .gallery-title {
   @apply text-3xl font-bold;
   @apply text-gray-900 dark:text-white;
@@ -176,6 +186,12 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .gallery-controls {
+    @apply flex-col items-center gap-3 w-full;
+  }
 }
 
 .grid-view-toggle {
@@ -208,6 +224,12 @@ onBeforeUnmount(() => {
   position: relative;
   width: 16rem;
   margin-right: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .search-container {
+    @apply w-full max-w-sm mx-0;
+  }
 }
 
 .search-input {

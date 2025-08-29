@@ -67,6 +67,11 @@ const getTagName = (tagId: string): string => {
 
 // 查看图片
 const viewImage = (image: CharacterImage) => {
+  if (!image || !image.id) {
+    console.warn('无效的图片数据，无法查看')
+    return
+  }
+  
   // 创建和触发自定义事件，由父组件处理
   const event = new CustomEvent('viewImage', { detail: { imageId: image.id } })
   window.dispatchEvent(event)
@@ -190,6 +195,12 @@ const t = (text: I18nText | string, lang?: string) => {
   @apply p-3;
 }
 
+@media (max-width: 640px) {
+  .image-info {
+    @apply text-center;
+  }
+}
+
 .image-list-item .image-info {
   @apply flex-1 flex flex-col justify-center;
 }
@@ -204,8 +215,20 @@ const t = (text: I18nText | string, lang?: string) => {
   @apply flex items-center justify-between;
 }
 
+@media (max-width: 640px) {
+  .image-meta {
+    @apply justify-center;
+  }
+}
+
 .image-tags {
   @apply flex flex-wrap gap-1;
+}
+
+@media (max-width: 640px) {
+  .image-tags {
+    @apply justify-center;
+  }
 }
 
 .image-tag {
