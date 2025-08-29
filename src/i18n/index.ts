@@ -4,7 +4,6 @@ import enUS from './en-US'
 import jaJP from './ja-JP'
 import type { Language } from '@/types'
 
-const DEFAULT_LOCALE = 'zh'
 const FALLBACK_LOCALE = 'zh'
 
 const getNavigatorLanguage = (): Language => {

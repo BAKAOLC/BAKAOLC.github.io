@@ -56,7 +56,6 @@ import CharacterSelector from '@/components/CharacterSelector.vue'
 import TypeSelector from '@/components/TypeSelector.vue'
 import ImageGallery from '@/components/ImageGallery.vue'
 import FullscreenViewer from '@/components/FullscreenViewer.vue'
-import { siteConfig } from '@/config/site'
 
 const { t: $t } = useI18n()
 const appStore = useAppStore()
