@@ -1,0 +1,92 @@
+export default {
+  app: {
+    title: '律影映幻',
+    loading: 'ロード中...',
+    error: 'エラーが発生しました！',
+    notFound: 'ページが見つかりません'
+  },
+  common: {
+    loading: 'ロード中',
+    loadingFull: 'ロード中、お待ちください...',
+    success: '成功',
+    error: 'エラー',
+    warning: '警告',
+    info: '情報',
+    confirm: '確認',
+    cancel: 'キャンセル',
+    ok: 'OK',
+    yes: 'はい',
+    no: 'いいえ',
+    close: '閉じる',
+    back: '戻る',
+    next: '次へ',
+    prev: '前へ',
+    save: '保存',
+    delete: '削除',
+    edit: '編集',
+    create: '作成',
+    update: '更新',
+    view: '表示',
+    search: '検索',
+    filter: 'フィルター',
+    sort: '並べ替え',
+    all: 'すべて'
+  },
+  nav: {
+    home: 'ホーム',
+    gallery: 'ギャラリー',
+    about: 'について'
+  },
+  theme: {
+    light: 'ライトモード',
+    dark: 'ダークモード',
+    auto: '自動モード'
+  },
+  gallery: {
+    title: 'ギャラリー',
+    filter: 'フィルター',
+    characters: 'キャラクター',
+    types: 'タイプ',
+    noImages: '画像が見つかりません',
+    imageCount: '{count} 枚の画像',
+    viewFullscreen: '全画面表示',
+    gridView: 'グリッド表示',
+    listView: 'リスト表示',
+    original: 'オリジナル',
+    artist: 'アーティスト',
+    tags: 'タグ',
+    download: 'ダウンロード',
+    share: '共有',
+    searchPlaceholder: '画像、タグ、アーティストを検索...',
+    clearSearch: '検索をクリア',
+    searchResults: '検索結果',
+    noSearchResults: '一致する画像が見つかりません'
+  },
+  personal: {
+    contactMe: 'お問い合わせ',
+    viewGallery: 'ギャラリーを見る',
+    socialLinks: 'ソーシャルリンク'
+  },
+  viewer: {
+    prev: '前へ',
+    next: '次へ',
+    zoomIn: '拡大',
+    zoomOut: '縮小',
+    resetZoom: 'ズームをリセット',
+    close: '閉じる',
+    fullscreen: '全画面',
+    exitFullscreen: '全画面終了',
+    loading: '画像をロード中...',
+    error: '画像のロードに失敗しました',
+    noImage: '画像が選択されていません',
+    imageInfo: '画像情報',
+    minimap: 'ミニマップ',
+    navigation: 'ナビゲーション'
+  },
+  loading: {
+    title: 'ロード中',
+    progress: '進捗',
+    tip: 'ヒント',
+    enteringSite: 'サイトに入ります...'
+  }
+}
