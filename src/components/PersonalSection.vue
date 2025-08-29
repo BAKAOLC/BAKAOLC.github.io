@@ -1,6 +1,6 @@
 <template>
   <section class="personal-section">
-    <div class="container mx-auto px-4 py-10 md:py-16">
+    <div class="container mx-auto px-4 py-4 sm:py-6 md:py-8 lg:py-12">
       <div class="text-center mb-8">
         <div class="avatar-container">
           <img :src="personal.avatar" :alt="t(personal.name, currentLanguage)" class="avatar" />
@@ -17,12 +17,18 @@
         </div>
 
         <div class="social-links">
-          <a v-for="link in personal.links" :key="link.url" :href="link.url" target="_blank" rel="noopener noreferrer"
-            class="social-link" :style="{ '--link-color': link.color || '#333' }"
-            :title="t(link.name, currentLanguage)">
-            <i :class="`fa fa-${link.icon}`" class="icon"></i>
-            <span class="link-name">{{ t(link.name, currentLanguage) }}</span>
-          </a>
+          <template v-for="(link, index) in personal.links" :key="link.url || index">
+            <a v-if="link.url && link.name"
+              :href="link.url" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="social-link" 
+              :style="{ '--link-color': link.color || '#333' }"
+              :title="t(link.name, currentLanguage)">
+              <i :class="`fa fa-${link.icon || 'link'}`" class="icon"></i>
+              <span class="link-name">{{ t(link.name, currentLanguage) }}</span>
+            </a>
+          </template>
         </div>
 
         <div class="action-buttons">
@@ -57,10 +63,11 @@ const t = (text: I18nText, lang: string) => {
 
 <style scoped>
 .personal-section {
-  @apply h-full flex items-center justify-center;
+  @apply min-h-full flex flex-col justify-center;
   @apply bg-gradient-to-b from-white to-gray-100;
   @apply dark:from-gray-900 dark:to-gray-800;
   @apply overflow-auto;
+  @apply py-8;
 }
 
 .avatar-container {
@@ -125,13 +132,89 @@ const t = (text: I18nText, lang: string) => {
   @apply w-5 h-5;
 }
 
+/* 高度不足时，无论屏幕宽度如何都从顶部开始布局 */
+@media (max-height: 700px) {
+  .personal-section {
+    @apply justify-start py-4;
+    min-height: auto;
+  }
+  
+  .container {
+    @apply py-2;
+  }
+  
+  .avatar {
+    @apply w-24 h-24;
+  }
+  
+  .name {
+    @apply text-3xl mb-3;
+  }
+  
+  .description {
+    @apply mb-4;
+  }
+  
+  .social-links {
+    @apply mb-4;
+  }
+}
+
+/* 极小高度时进一步压缩 */
+@media (max-height: 600px) {
+  .personal-section {
+    @apply py-2;
+  }
+  
+  .container {
+    @apply py-1;
+  }
+  
+  .avatar {
+    @apply w-20 h-20;
+  }
+  
+  .name {
+    @apply text-2xl mb-2;
+  }
+  
+  .description {
+    @apply mb-3 text-sm;
+  }
+  
+  .social-links {
+    @apply mb-3;
+  }
+  
+  .social-link {
+    @apply px-2 py-1 text-xs;
+  }
+}
+
 @media (max-width: 640px) {
+  .personal-section {
+    @apply justify-start py-4;
+    min-height: auto;
+  }
+  
   .social-links {
     @apply flex-col items-center;
   }
 
   .social-link {
     @apply w-full justify-center;
+  }
+  
+  .avatar {
+    @apply w-24 h-24;
+  }
+  
+  .name {
+    @apply text-3xl mb-3;
+  }
+  
+  .description {
+    @apply mb-6;
   }
 }
 </style>
