@@ -1,0 +1,92 @@
+export default {
+  app: {
+    title: 'Ritsukage Utsumabo',
+    loading: 'Loading...',
+    error: 'An error occurred!',
+    notFound: 'Page not found'
+  },
+  common: {
+    loading: 'Loading',
+    loadingFull: 'Loading, please wait...',
+    success: 'Success',
+    error: 'Error',
+    warning: 'Warning',
+    info: 'Information',
+    confirm: 'Confirm',
+    cancel: 'Cancel',
+    ok: 'OK',
+    yes: 'Yes',
+    no: 'No',
+    close: 'Close',
+    back: 'Back',
+    next: 'Next',
+    prev: 'Previous',
+    save: 'Save',
+    delete: 'Delete',
+    edit: 'Edit',
+    create: 'Create',
+    update: 'Update',
+    view: 'View',
+    search: 'Search',
+    filter: 'Filter',
+    sort: 'Sort',
+    all: 'All'
+  },
+  nav: {
+    home: 'Home',
+    gallery: 'Gallery',
+    about: 'About'
+  },
+  theme: {
+    light: 'Light Mode',
+    dark: 'Dark Mode',
+    auto: 'Auto Mode'
+  },
+  gallery: {
+    title: 'Gallery',
+    filter: 'Filter',
+    characters: 'Characters',
+    types: 'Types',
+    noImages: 'No images found',
+    imageCount: '{count} images',
+    viewFullscreen: 'View Fullscreen',
+    gridView: 'Grid View',
+    listView: 'List View',
+    original: 'Original',
+    artist: 'Artist',
+    tags: 'Tags',
+    download: 'Download',
+    share: 'Share',
+    searchPlaceholder: 'Search images, tags, artists...',
+    clearSearch: 'Clear search',
+    searchResults: 'Search Results',
+    noSearchResults: 'No matching images found'
+  },
+  personal: {
+    contactMe: 'Contact Me',
+    viewGallery: 'View Gallery',
+    socialLinks: 'Social Links'
+  },
+  viewer: {
+    prev: 'Previous',
+    next: 'Next',
+    zoomIn: 'Zoom In',
+    zoomOut: 'Zoom Out',
+    resetZoom: 'Reset Zoom',
+    close: 'Close',
+    fullscreen: 'Fullscreen',
+    exitFullscreen: 'Exit Fullscreen',
+    loading: 'Loading image...',
+    error: 'Failed to load image',
+    noImage: 'No image selected',
+    imageInfo: 'Image Information',
+    minimap: 'Minimap',
+    navigation: 'Navigation'
+  },
+  loading: {
+    title: 'Loading',
+    progress: 'Progress',
+    tip: 'Tip',
+    enteringSite: 'Entering site...'
+  }
+}
