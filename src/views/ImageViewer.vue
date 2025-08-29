@@ -23,11 +23,13 @@ const closeViewer = () => {
 
 // 监听查看器导航事件
 const handleViewerNavigate = (event: CustomEvent) => {
-  if (event.detail && event.detail.imageId) {
+  if (event.detail && event.detail.imageId && typeof event.detail.imageId === 'string') {
     router.push({
       name: 'image-viewer',
       params: { imageId: event.detail.imageId }
     })
+  } else {
+    console.warn('无效的图片ID，无法导航')
   }
 }
 

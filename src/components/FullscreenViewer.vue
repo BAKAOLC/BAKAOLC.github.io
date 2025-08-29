@@ -141,7 +141,12 @@ const nextImage = () => {
 
 const goToImage = (index: number) => {
   if (index >= 0 && index < imagesList.value.length) {
-    const imageId = imagesList.value[index].id
+    const imageId = imagesList.value[index]?.id
+    if (!imageId) {
+      console.warn('图片ID为空，无法导航')
+      return
+    }
+    
     // 不再关闭查看器，直接更新内部状态
 
     // 使用history API更新URL参数，不触发页面刷新
