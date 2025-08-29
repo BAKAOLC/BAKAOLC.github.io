@@ -10,7 +10,7 @@ import { useRouter } from 'vue-router'
 import FullscreenViewer from '@/components/FullscreenViewer.vue'
 
 // 获取路由参数
-const props = defineProps<{
+defineProps<{
   imageId: string
 }>()
 

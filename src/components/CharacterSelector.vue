@@ -19,7 +19,6 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { siteConfig } from '@/config/site'
 import { useAppStore } from '@/stores/app'
-import type { I18nText } from '@/types'
 
 const { t: $t } = useI18n()
 const appStore = useAppStore()

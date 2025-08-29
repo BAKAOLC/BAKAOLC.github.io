@@ -32,18 +32,16 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
 import { siteConfig } from '@/config/site'
 import { useAppStore } from '@/stores/app'
 import type { I18nText, CharacterImage } from '@/types'
 
-const props = defineProps<{
+defineProps<{
   images: CharacterImage[]
   gridView: boolean
 }>()
 
 const { t: $t } = useI18n() // 用于模板中的翻译
-const router = useRouter()
 const appStore = useAppStore()
 
 const currentLanguage = computed(() => appStore.currentLanguage)
