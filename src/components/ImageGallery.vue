@@ -4,12 +4,14 @@
       {{ $t('gallery.noImages') }}
     </div>
 
-    <transition-group 
+    <div 
       v-else
-      :name="gridView ? 'grid-item' : 'list-item'" 
-      tag="div" 
-      :class="{ 'image-grid': gridView, 'image-list': !gridView }"
-      appear
+      :class="{ 
+        'image-grid': gridView, 
+        'image-list': !gridView,
+        'transitioning': isTransitioning
+      }"
+      :key="transitionKey"
     >
         <div 
           v-for="image in images" 
@@ -24,11 +26,12 @@
               class="image"
               image-class="gallery-image"
               object-fit="contain"
-              :show-loader="true"
+              :show-loader="false"
+              :show-progress="false"
               preload-size="tiny"
               display-type="thumbnail"
               display-size="medium"
-              :delay-main-image="100"
+              :delay-main-image="50"
             />
           </div>
 
@@ -45,53 +48,80 @@
             </div>
           </div>
         </div>
-    </transition-group>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { siteConfig } from '@/config/site'
 import { useAppStore } from '@/stores/app'
 import ProgressiveImage from './ProgressiveImage.vue'
 import type { I18nText, CharacterImage } from '@/types'
 
-defineProps<{
+const props = defineProps<{
   images: CharacterImage[]
   gridView: boolean
 }>()
 
-const { t: $t } = useI18n() // 用于模板中的翻译
+const isTransitioning = ref(false)
+const transitionKey = ref(0)
+
+watch(() => props.gridView, async (newView, oldView) => {
+  if (newView !== oldView) {
+    isTransitioning.value = true
+    transitionKey.value++
+    
+
+    await nextTick()
+    
+
+    setTimeout(() => {
+      isTransitioning.value = false
+    }, 200)
+  }
+})
+
+watch(() => props.images, async (newImages, oldImages) => {
+  if (oldImages && newImages !== oldImages) {
+    isTransitioning.value = true
+    transitionKey.value++
+    
+    await nextTick()
+    
+    setTimeout(() => {
+      isTransitioning.value = false
+    }, 100)
+  }
+}, { deep: true })
+
+const { t: $t } = useI18n()
 const appStore = useAppStore()
 
 const currentLanguage = computed(() => appStore.currentLanguage)
 
-// 获取标签颜色
 const getTagColor = (tagId: string): string => {
   const tag = siteConfig.tags.find(t => t.id === tagId)
   return tag?.color || '#8b5cf6'
 }
 
-// 获取标签名称
 const getTagName = (tagId: string): string => {
   const tag = siteConfig.tags.find(t => t.id === tagId)
   return tag ? t(tag.name, currentLanguage.value) : tagId
 }
 
-// 查看图片
 const viewImage = (image: CharacterImage) => {
   if (!image || !image.id) {
     console.warn('无效的图片数据，无法查看')
     return
   }
   
-  // 创建和触发自定义事件，由父组件处理
+
   const event = new CustomEvent('viewImage', { detail: { imageId: image.id } })
   window.dispatchEvent(event)
 }
 
-// 本地化辅助函数
 const t = (text: I18nText | string, lang?: string) => {
   if (typeof text === 'string') return text
   if (!lang) return text.zh || text.en || ''
@@ -104,7 +134,7 @@ const t = (text: I18nText | string, lang?: string) => {
   @apply w-full;
 }
 
-/* 图片容器自适应样式 */
+
 .aspect-ratio-box {
   position: relative;
   width: 100%;
@@ -118,27 +148,57 @@ const t = (text: I18nText | string, lang?: string) => {
 .image-grid {
   @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3;
   padding-right: 8px;
-  /* 增加右侧空间，保证滚动条有足够显示空间 */
   width: 100%;
-  padding-bottom: 1rem; /* 确保底部有足够空间 */
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  padding-bottom: 1rem;
+  transition: all 0.2s ease-out;
   transform-origin: center;
+  position: relative;
 }
 
 @media (max-width: 640px) {
   .image-grid {
     @apply grid-cols-2 gap-2;
-    padding-bottom: 2rem; /* 移动端增加更多底部空间 */
+    padding-bottom: 2rem;
   }
 }
 
 .image-list {
   @apply flex flex-col gap-4;
   padding-right: 8px;
-  /* 增加右侧空间，保证滚动条有足够显示空间 */
   width: 100%;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease-out;
   transform-origin: center;
+  position: relative;
+}
+
+
+.transitioning {
+  pointer-events: none;
+}
+
+.transitioning .image-card,
+.transitioning .image-list-item {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: all 0.1s ease-out;
+}
+
+
+.image-card,
+.image-list-item {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+
+
+@media (prefers-reduced-motion: reduce) {
+  .transitioning .image-card,
+  .transitioning .image-list-item {
+    transition: none !important;
+    animation: none !important;
+  }
 }
 
 .image-card {
@@ -266,43 +326,7 @@ const t = (text: I18nText | string, lang?: string) => {
   }
 }
 
-/* 网格视图过渡动画 */
-.grid-item-enter-active,
-.grid-item-leave-active {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
 
-.grid-item-enter-from {
-  opacity: 0;
-  transform: translateY(20px) scale(0.95);
-}
 
-.grid-item-leave-to {
-  opacity: 0;
-  transform: translateY(-20px) scale(0.95);
-}
 
-.grid-item-move {
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* 列表视图过渡动画 */
-.list-item-enter-active,
-.list-item-leave-active {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.list-item-enter-from {
-  opacity: 0;
-  transform: translateX(-20px) scale(0.98);
-}
-
-.list-item-leave-to {
-  opacity: 0;
-  transform: translateX(20px) scale(0.98);
-}
-
-.list-item-move {
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
 </style>
