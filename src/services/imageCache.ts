@@ -1,8 +1,9 @@
 // 图片缓存服务
 enum LoadPriority {
-  LOW = 0,      // 预加载，低优先级
-  NORMAL = 1,   // 普通优先级
-  HIGH = 2      // 当前查看的图片，高优先级
+  CURRENT_THUMBNAIL = 4,  // 当前正在看的图片的缩略图（最高优先级）
+  CURRENT_IMAGE = 3,      // 当前正在看的图片本身
+  OTHER_THUMBNAIL = 2,    // 其他所有缩略图
+  OTHER_IMAGE = 1         // 当前不在看的所有图片（最低优先级）
 }
 
 interface CachedImage {
@@ -13,6 +14,7 @@ interface CachedImage {
   error: boolean
   loadingProgress: number
   priority: LoadPriority
+  isThumbnail: boolean    // 是否是缩略图
   xhr?: XMLHttpRequest
   loadPromise?: Promise<string>
 }
@@ -21,6 +23,58 @@ class ImageCacheService {
   private cache = new Map<string, CachedImage>()
   private maxCacheSize = 50 // 最大缓存数量
   private accessOrder: string[] = [] // 访问顺序，用于LRU清理
+  private pausedRequests = new Set<string>() // 暂停的请求
+  private currentImageSrc: string | null = null // 当前正在查看的图片
+  private currentThumbnailSrc: string | null = null // 当前正在查看的图片的缩略图
+
+  // 设置当前查看的图片
+  setCurrentImage(imageSrc: string, thumbnailSrc?: string): void {
+    const oldImageSrc = this.currentImageSrc
+    const oldThumbnailSrc = this.currentThumbnailSrc
+    
+    this.currentImageSrc = imageSrc
+    this.currentThumbnailSrc = thumbnailSrc || null
+    
+    // 重新评估所有图片的优先级
+    this.reevaluateAllPriorities()
+    
+    // 如果当前图片改变了，暂停低优先级请求并优先加载当前图片
+    if (oldImageSrc !== imageSrc || oldThumbnailSrc !== thumbnailSrc) {
+      this.pauseLowPriorityRequests()
+      
+      // 立即开始加载当前图片的缩略图（如果有）
+      if (thumbnailSrc) {
+        this.loadImage(thumbnailSrc, LoadPriority.CURRENT_THUMBNAIL, undefined, true).catch(() => {})
+      }
+      
+      // 然后加载当前图片本身
+      this.loadImage(imageSrc, LoadPriority.CURRENT_IMAGE, undefined, false).catch(() => {})
+    }
+  }
+
+  // 重新评估所有图片的优先级
+  private reevaluateAllPriorities(): void {
+    for (const [url, cached] of this.cache) {
+      const newPriority = this.calculatePriority(url, cached.isThumbnail)
+      if (cached.priority !== newPriority) {
+        cached.priority = newPriority
+      }
+    }
+  }
+
+  // 计算图片的优先级
+  private calculatePriority(url: string, isThumbnail: boolean): LoadPriority {
+    if (isThumbnail && url === this.currentThumbnailSrc) {
+      return LoadPriority.CURRENT_THUMBNAIL
+    }
+    if (!isThumbnail && url === this.currentImageSrc) {
+      return LoadPriority.CURRENT_IMAGE
+    }
+    if (isThumbnail) {
+      return LoadPriority.OTHER_THUMBNAIL
+    }
+    return LoadPriority.OTHER_IMAGE
+  }
 
   // 获取缓存的图片
   getCachedImage(url: string): CachedImage | null {
@@ -33,28 +87,23 @@ class ImageCacheService {
     return null
   }
 
-  // 调整加载优先级（暂时简单实现，后续可以优化）
-  private adjustLoadingPriority(url: string, priority: LoadPriority): void {
-    // 简单实现：如果是高优先级且有并发限制，可以考虑暂停低优先级的请求
-    // 这里先保持简单，只更新优先级标记
-    const cached = this.cache.get(url)
-    if (cached) {
-      cached.priority = priority
-    }
-  }
-
   // 开始加载图片
-  loadImage(url: string, priority: LoadPriority = LoadPriority.NORMAL, onProgress?: (progress: number) => void): Promise<string> {
+  loadImage(url: string, priority?: LoadPriority, onProgress?: (progress: number) => void, isThumbnail: boolean = false): Promise<string> {
+    // 如果没有指定优先级，根据当前状态自动计算
+    if (priority === undefined) {
+      priority = this.calculatePriority(url, isThumbnail)
+    }
+    
     let cached = this.getCachedImage(url)
     
     if (cached) {
-      // 更新优先级（如果新的优先级更高）
-      if (priority > cached.priority) {
-        cached.priority = priority
-        // 如果正在加载且新优先级更高，可能需要调整加载顺序
-        if (cached.loading) {
-          this.adjustLoadingPriority(url, priority)
-        }
+      // 更新缩略图标记
+      cached.isThumbnail = isThumbnail
+      
+      // 重新计算优先级
+      const newPriority = this.calculatePriority(url, isThumbnail)
+      if (newPriority > cached.priority) {
+        cached.priority = newPriority
       }
       
       // 如果已经加载完成，直接返回
@@ -88,6 +137,11 @@ class ImageCacheService {
       }
     }
 
+    // 如果是高优先级请求（当前图片或当前缩略图），暂停低优先级请求
+    if (priority >= LoadPriority.CURRENT_IMAGE) {
+      this.pauseLowPriorityRequests()
+    }
+
     // 创建新的缓存项
     if (!cached) {
       cached = {
@@ -97,7 +151,8 @@ class ImageCacheService {
         loading: true,
         error: false,
         loadingProgress: 0,
-        priority
+        priority,
+        isThumbnail
       }
       this.cache.set(url, cached)
       this.updateAccessOrder(url)
@@ -108,6 +163,7 @@ class ImageCacheService {
     cached.error = false
     cached.loadingProgress = 0
     cached.priority = priority
+    cached.isThumbnail = isThumbnail
 
     const loadPromise = new Promise<string>((resolve, reject) => {
       const xhr = new XMLHttpRequest()
@@ -134,6 +190,14 @@ class ImageCacheService {
           cached!.objectUrl = objectUrl
           cached!.loaded = true
           cached!.loading = false
+          
+          // 如果是高优先级图片加载完成，恢复被暂停的低优先级请求
+          if (cached!.priority >= LoadPriority.CURRENT_IMAGE) {
+            setTimeout(() => {
+              this.resumePausedRequests()
+            }, 100) // 稍微延迟以确保当前图片开始显示
+          }
+          
           resolve(objectUrl)
         } else {
           cached!.error = true
@@ -171,6 +235,34 @@ class ImageCacheService {
       cached.xhr.abort()
       cached.loading = false
     }
+  }
+
+  // 暂停低优先级的请求
+  pauseLowPriorityRequests(): void {
+    for (const [url, cached] of this.cache) {
+      if (cached.loading && cached.priority < LoadPriority.CURRENT_IMAGE && cached.xhr) {
+        cached.xhr.abort()
+        cached.loading = false
+        this.pausedRequests.add(url)
+      }
+    }
+  }
+
+  // 恢复被暂停的请求
+  resumePausedRequests(): void {
+    const pausedUrls = Array.from(this.pausedRequests)
+    this.pausedRequests.clear()
+    
+    pausedUrls.forEach(url => {
+      const cached = this.cache.get(url)
+      if (cached && !cached.loaded && !cached.error) {
+        // 重新开始加载，使用适当的优先级
+        const priority = this.calculatePriority(url, cached.isThumbnail)
+        this.loadImage(url, priority, undefined, cached.isThumbnail).catch(() => {
+          // 预加载失败不影响主要功能
+        })
+      }
+    })
   }
 
   // 清理指定图片的缓存
@@ -211,13 +303,13 @@ class ImageCacheService {
   }
 
   // 预加载图片
-  preloadImage(url: string, priority: LoadPriority = LoadPriority.LOW): Promise<string> {
-    return this.loadImage(url, priority)
+  preloadImage(url: string, priority: LoadPriority = LoadPriority.OTHER_IMAGE, isThumbnail: boolean = false): Promise<string> {
+    return this.loadImage(url, priority, undefined, isThumbnail)
   }
 
   // 批量预加载
-  preloadImages(urls: string[], priority: LoadPriority = LoadPriority.LOW): Promise<string[]> {
-    return Promise.all(urls.map(url => this.preloadImage(url, priority)))
+  preloadImages(urls: string[], priority: LoadPriority = LoadPriority.OTHER_IMAGE, isThumbnail: boolean = false): Promise<string[]> {
+    return Promise.all(urls.map(url => this.preloadImage(url, priority, isThumbnail)))
   }
 
   // 清理所有缓存
