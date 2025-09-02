@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "npm run generate-thumbnails && vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "generate-thumbnails": "node scripts/generate-thumbnails.cjs"
   },
