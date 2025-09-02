@@ -47,9 +47,19 @@
         <chevron-left-icon class="icon" />
       </button>
 
-      <div class="image-thumbnails-container">
-        <div class="image-thumbnails" :style="{ transform: `translateX(${thumbnailsOffset}px)` }">
-          <button v-for="(image, index) in imagesList" :key="image.id" @click="goToImage(index)"
+      <div class="image-thumbnails-container" 
+        :class="{ 'dragging': isDragging }"
+        ref="thumbnailsContainer"
+        @wheel="handleThumbnailWheel"
+        @mousedown="handleThumbnailMouseDown"
+        @touchstart="handleThumbnailTouchStart">
+        <div class="image-thumbnails" :style="{ 
+          transform: `translateX(${thumbnailsOffset}px)`
+        }">
+          <button v-for="(image, index) in imagesList" :key="image.id" 
+            @click="handleThumbnailClick(index, $event)"
+            @mousedown="handleThumbnailButtonMouseDown"
+            @touchstart="handleThumbnailButtonTouchStart"
             class="thumbnail-button" :class="{ 'active': currentIndex === index }">
             <ProgressiveImage 
               :src="image.src" 
@@ -131,6 +141,9 @@ const appStore = useAppStore()
 
 const currentLanguage = computed(() => appStore.currentLanguage)
 
+// 缩略图容器引用
+const thumbnailsContainer = ref<HTMLElement>()
+
 // 添加过渡动画状态
 const transitionActive = ref(false)
 
@@ -181,6 +194,9 @@ const goToImage = (index: number) => {
     const event = new CustomEvent('viewerNavigate', { detail: { imageId } })
     window.dispatchEvent(event)
 
+    // 强制重置用户滚动状态，确保自动定位生效
+    isUserScrolling.value = false
+    
     // 更新缩略图位置
     nextTick(() => {
       updateThumbnailsOffset()
@@ -214,24 +230,294 @@ const toggleInfoPanel = () => {
 
 // 缩略图滚动条逻辑
 const thumbnailsOffset = ref(0)
-const THUMBNAIL_WIDTH = 80 // 缩略图宽度加间隙
+const thumbnailPadding = ref(0)
+
+// 动态获取缩略图的实际尺寸（基于DOM计算而非硬编码）
+const getThumbnailDimensions = () => {
+  if (!thumbnailsContainer.value) {
+    // 后备默认值，但通常不会用到
+    return { width: 64, gap: 8 }
+  }
+  
+  const thumbnailsElement = thumbnailsContainer.value.querySelector('.image-thumbnails') as HTMLElement
+  const thumbnailButtons = thumbnailsContainer.value.querySelectorAll('.thumbnail-button')
+  
+  if (thumbnailButtons.length < 1) {
+    return { width: 64, gap: 8 }
+  }
+  
+  const firstButton = thumbnailButtons[0] as HTMLElement
+  const firstRect = firstButton.getBoundingClientRect()
+  const width = firstRect.width
+  
+  let gap = 8 // 默认值
+  
+  if (thumbnailButtons.length >= 2 && thumbnailsElement) {
+    // 通过前两个缩略图的位置计算实际间隙
+    const second = thumbnailButtons[1] as HTMLElement
+    const secondRect = second.getBoundingClientRect()
+    gap = secondRect.left - firstRect.right
+  } else if (thumbnailsElement) {
+    // 如果只有一个缩略图，尝试从CSS计算gap值
+    const computedStyle = window.getComputedStyle(thumbnailsElement)
+    const gapValue = computedStyle.gap || computedStyle.columnGap
+    if (gapValue && gapValue !== 'normal') {
+      const gapPx = parseFloat(gapValue)
+      if (!isNaN(gapPx)) {
+        gap = gapPx
+      }
+    }
+  }
+  
+  return { width, gap }
+}
+
+// 计算缩略图列表的总宽度
+const getThumbnailsListWidth = (count: number) => {
+  if (count <= 0) return 0
+  const { width, gap } = getThumbnailDimensions()
+  // 总宽度 = (数量-1) × (宽度+间隙) + 最后一个宽度
+  return (count - 1) * (width + gap) + width
+}
+
+// 计算特定索引缩略图的中心位置
+const getThumbnailCenterPosition = (index: number) => {
+  const { width, gap } = getThumbnailDimensions()
+  return index * (width + gap) + width / 2
+}
+
+// 动态获取容器的实际可用宽度
+const getThumbnailContainerWidth = () => {
+  if (!thumbnailsContainer.value) {
+    // 后备计算方式
+    return window.innerWidth - 136
+  }
+  
+  // 基于实际DOM元素计算可用宽度
+  const containerRect = thumbnailsContainer.value.getBoundingClientRect()
+  return containerRect.width
+}
 
 const updateThumbnailsOffset = () => {
-  const containerWidth = window.innerWidth - 160 // 减去导航按钮的宽度
-  const totalWidth = imagesList.value.length * THUMBNAIL_WIDTH
+  // 如果用户正在手动滚动，不要自动调整位置
+  if (isUserScrolling.value) return
+  
+  const containerWidth = getThumbnailContainerWidth()
+  const totalWidth = getThumbnailsListWidth(imagesList.value.length)
+  const containerCenter = containerWidth / 2
+
+  // 不使用占位符，直接基于实际内容计算
+  thumbnailPadding.value = 0
 
   if (totalWidth <= containerWidth) {
-    // 如果图片少于一屏，居中显示
+    // 如果内容少于一屏，整体居中显示
     thumbnailsOffset.value = (containerWidth - totalWidth) / 2
     return
   }
 
-  // 计算当前图片在缩略图中的中心位置，使当前图片永远居中显示
-  const targetOffset = -(currentIndex.value * THUMBNAIL_WIDTH - containerWidth / 2 + THUMBNAIL_WIDTH / 2)
+  // 计算当前图片的实际中心位置
+  const currentImageCenter = getThumbnailCenterPosition(currentIndex.value)
+  
+  // 计算让当前图片居中的理想偏移量
+  const idealOffset = containerCenter - currentImageCenter
 
-  // 限制范围
-  const minOffset = -(totalWidth - containerWidth)
-  thumbnailsOffset.value = Math.max(minOffset, Math.min(0, targetOffset))
+  // 计算边界限制：
+  // 左边界：第一张图片居中时的偏移量（第一张图片中心对齐容器中心）
+  const firstImageCenter = getThumbnailCenterPosition(0)
+  const maxOffset = containerCenter - firstImageCenter
+  
+  // 右边界：最后一张图片居中时的偏移量（最后一张图片中心对齐容器中心）
+  const lastImageCenter = getThumbnailCenterPosition(imagesList.value.length - 1)
+  const minOffset = containerCenter - lastImageCenter
+
+  // 应用边界限制
+  thumbnailsOffset.value = Math.max(minOffset, Math.min(maxOffset, idealOffset))
+}
+
+// 手动滚动缩略图的状态
+const isDragging = ref(false)
+const dragStartX = ref(0)
+const dragStartOffset = ref(0)
+const isUserScrolling = ref(false) // 标记用户是否在手动滚动
+
+// 手动设置缩略图偏移量（用户拖拽时）
+const setManualThumbnailOffset = (offset: number) => {
+  const containerWidth = getThumbnailContainerWidth()
+  const totalWidth = getThumbnailsListWidth(imagesList.value.length)
+  const containerCenter = containerWidth / 2
+  
+  if (totalWidth <= containerWidth) {
+    return // 如果内容不足一屏，不允许滚动
+  }
+  
+  // 使用与自动定位相同的边界计算
+  // 左边界：第一张图片居中时的偏移量
+  const firstImageCenter = getThumbnailCenterPosition(0)
+  const maxOffset = containerCenter - firstImageCenter
+  
+  // 右边界：最后一张图片居中时的偏移量
+  const lastImageCenter = getThumbnailCenterPosition(imagesList.value.length - 1)
+  const minOffset = containerCenter - lastImageCenter
+  
+  thumbnailsOffset.value = Math.max(minOffset, Math.min(maxOffset, offset))
+}
+
+// 滚轮事件处理
+const handleThumbnailWheel = (event: WheelEvent) => {
+  event.preventDefault()
+  isUserScrolling.value = true
+  
+  const scrollSpeed = 40 // 滚动速度
+  const delta = event.deltaY > 0 ? -scrollSpeed : scrollSpeed
+  setManualThumbnailOffset(thumbnailsOffset.value + delta)
+  
+  // 1秒后重置用户滚动状态
+  setTimeout(() => {
+    isUserScrolling.value = false
+  }, 1000)
+}
+
+// 鼠标拖拽处理
+const handleThumbnailMouseDown = (event: MouseEvent) => {
+  if (event.button !== 0) return // 只处理左键
+  
+  event.preventDefault()
+  isUserScrolling.value = true
+  dragStartX.value = event.clientX
+  dragStartOffset.value = thumbnailsOffset.value
+  
+  const handleMouseMove = (e: MouseEvent) => {
+    const deltaX = e.clientX - dragStartX.value
+    
+    // 降低拖拽阈值并立即启用拖拽状态以减少卡顿
+    if (Math.abs(deltaX) > 2) { // 降低阈值从 dragThreshold 到 2
+      if (!isDragging.value) {
+        isDragging.value = true
+      }
+    }
+    
+    if (isDragging.value) {
+      setManualThumbnailOffset(dragStartOffset.value + deltaX)
+    }
+  }
+  
+  const handleMouseUp = () => {
+    // 延迟重置拖拽状态，确保点击事件处理完毕
+    setTimeout(() => {
+      isDragging.value = false
+    }, 50)
+    
+    setTimeout(() => {
+      isUserScrolling.value = false
+    }, 500)
+    
+    document.removeEventListener('mousemove', handleMouseMove)
+    document.removeEventListener('mouseup', handleMouseUp)
+  }
+  
+  document.addEventListener('mousemove', handleMouseMove)
+  document.addEventListener('mouseup', handleMouseUp)
+}
+
+// 触摸拖拽处理
+const handleThumbnailTouchStart = (event: TouchEvent) => {
+  if (event.touches.length !== 1) return
+  
+  const touch = event.touches[0]
+  isUserScrolling.value = true
+  dragStartX.value = touch.clientX
+  dragStartOffset.value = thumbnailsOffset.value
+  
+  const handleTouchMove = (e: TouchEvent) => {
+    if (e.touches.length !== 1) return
+    
+    const touch = e.touches[0]
+    const deltaX = touch.clientX - dragStartX.value
+    
+    // 降低拖拽阈值并立即启用拖拽状态以减少卡顿
+    if (Math.abs(deltaX) > 2) { // 降低阈值从 dragThreshold 到 2
+      if (!isDragging.value) {
+        isDragging.value = true
+        e.preventDefault() // 防止页面滚动
+      }
+    }
+    
+    if (isDragging.value) {
+      e.preventDefault() // 防止页面滚动
+      setManualThumbnailOffset(dragStartOffset.value + deltaX)
+    }
+  }
+  
+  const handleTouchEnd = () => {
+    // 延迟重置拖拽状态，确保点击事件处理完毕
+    setTimeout(() => {
+      isDragging.value = false
+    }, 50)
+    
+    setTimeout(() => {
+      isUserScrolling.value = false
+    }, 500)
+    
+    thumbnailsContainer.value?.removeEventListener('touchmove', handleTouchMove as any)
+    thumbnailsContainer.value?.removeEventListener('touchend', handleTouchEnd)
+  }
+  
+  thumbnailsContainer.value?.addEventListener('touchmove', handleTouchMove as any, { passive: false })
+  thumbnailsContainer.value?.addEventListener('touchend', handleTouchEnd)
+}
+
+// 拖拽相关状态
+const clickStartTime = ref(0)
+const clickStartPosition = ref({ x: 0, y: 0 })
+const dragThreshold = 5 // 拖拽阈值，超过这个距离算作拖拽而非点击
+
+// 缩略图按钮点击处理（区分点击和拖拽）
+const handleThumbnailClick = (index: number, event: MouseEvent) => {
+  // 如果是拖拽操作，则不触发点击
+  if (isDragging.value) {
+    event.preventDefault()
+    return
+  }
+  
+  // 检查是否是真正的点击（而非拖拽结束）
+  const currentTime = Date.now()
+  const timeDiff = currentTime - clickStartTime.value
+  const currentPos = { x: event.clientX, y: event.clientY }
+  const distance = Math.sqrt(
+    Math.pow(currentPos.x - clickStartPosition.value.x, 2) + 
+    Math.pow(currentPos.y - clickStartPosition.value.y, 2)
+  )
+  
+  // 如果时间太长或移动距离太大，认为是拖拽而非点击
+  if (timeDiff > 500 || distance > dragThreshold) {
+    event.preventDefault()
+    return
+  }
+  
+  goToImage(index)
+}
+
+// 缩略图按钮鼠标按下处理
+const handleThumbnailButtonMouseDown = (event: MouseEvent) => {
+  if (event.button !== 0) return // 只处理左键
+  
+  clickStartTime.value = Date.now()
+  clickStartPosition.value = { x: event.clientX, y: event.clientY }
+  
+  // 调用原有的拖拽逻辑
+  handleThumbnailMouseDown(event)
+}
+
+// 缩略图按钮触摸开始处理
+const handleThumbnailButtonTouchStart = (event: TouchEvent) => {
+  if (event.touches.length !== 1) return
+  
+  const touch = event.touches[0]
+  clickStartTime.value = Date.now()
+  clickStartPosition.value = { x: touch.clientX, y: touch.clientY }
+  
+  // 调用原有的触摸拖拽逻辑
+  handleThumbnailTouchStart(event)
 }
 
 // 获取标签颜色
@@ -342,7 +628,16 @@ watch(() => props.isActive, (newValue) => {
 
 // 监听窗口大小变化
 const handleResize = () => {
+  // 窗口大小变化时，强制重新计算位置（忽略用户滚动状态）
+  const wasUserScrolling = isUserScrolling.value
+  isUserScrolling.value = false
   updateThumbnailsOffset()
+  // 如果用户之前在滚动，延迟恢复状态
+  if (wasUserScrolling) {
+    setTimeout(() => {
+      isUserScrolling.value = true
+    }, 100)
+  }
 }
 
 onMounted(() => {
@@ -350,11 +645,6 @@ onMounted(() => {
   window.addEventListener('resize', handleResize)
   nextTick(() => {
     updateThumbnailsOffset()
-    // 滚动到当前图片位置
-    const activeThumb = document.querySelector('.thumbnail-button.active')
-    if (activeThumb) {
-      activeThumb.scrollIntoView({ behavior: 'smooth', inline: 'center' })
-    }
   })
 })
 
@@ -513,6 +803,14 @@ const t = (text: I18nText | string | undefined, lang?: string) => {
 
 .image-thumbnails-container {
   @apply flex-1 overflow-hidden mx-3;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.image-thumbnails-container.dragging {
+  cursor: grabbing;
 }
 
 .image-thumbnails {
@@ -520,11 +818,25 @@ const t = (text: I18nText | string | undefined, lang?: string) => {
   @apply transition-transform duration-300 ease-out;
 }
 
+/* 拖拽时禁用动画以避免卡顿 */
+.image-thumbnails-container.dragging .image-thumbnails {
+  transition: none !important;
+}
+
 .thumbnail-button {
   @apply w-16 h-16 rounded-md overflow-hidden;
   @apply border-2 border-transparent;
   @apply transition-all duration-200;
   @apply flex-shrink-0;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.image-thumbnails-container.dragging .thumbnail-button {
+  cursor: grabbing;
 }
 
 .thumbnail-button.active {
