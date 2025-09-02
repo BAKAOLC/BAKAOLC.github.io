@@ -3,7 +3,14 @@
     <div class="container mx-auto px-4 py-4 sm:py-6 md:py-8 lg:py-12">
       <div class="text-center mb-8">
         <div class="avatar-container">
-          <img :src="personal.avatar" :alt="t(personal.name, currentLanguage)" class="avatar" />
+          <ProgressiveImage 
+            :src="personal.avatar" 
+            :alt="t(personal.name, currentLanguage)" 
+            class="avatar"
+            image-class="avatar-img"
+            object-fit="cover"
+            :show-loader="false"
+          />
         </div>
 
         <h1 class="name">
@@ -47,6 +54,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { siteConfig } from '@/config/site'
 import { useAppStore } from '@/stores/app'
+import ProgressiveImage from './ProgressiveImage.vue'
 import type { I18nText } from '@/types'
 
 const { t: translate } = useI18n()
