@@ -45,6 +45,7 @@ export default {
   gallery: {
     title: 'ギャラリー',
     filter: 'フィルター',
+    filters: 'フィルター',
     characters: 'キャラクター',
     types: 'タイプ',
     noImages: '画像が見つかりません',
@@ -54,13 +55,21 @@ export default {
     listView: 'リスト表示',
     original: 'オリジナル',
     artist: 'アーティスト',
+    date: '作成日',
     tags: 'タグ',
     download: 'ダウンロード',
     share: '共有',
+    toggleInfo: '情報の表示/非表示',
     searchPlaceholder: '画像、タグ、アーティストを検索...',
     clearSearch: '検索をクリア',
     searchResults: '検索結果',
-    noSearchResults: '一致する画像が見つかりません'
+    noSearchResults: '一致する画像が見つかりません',
+    sortBy: '並び順',
+    sortName: '名前順',
+    sortArtist: 'アーティスト順',
+    sortDate: '日付順',
+    sortAsc: '昇順',
+    sortDesc: '降順'
   },
   personal: {
     contactMe: 'お問い合わせ',

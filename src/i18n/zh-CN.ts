@@ -55,6 +55,7 @@ export default {
     listView: '列表视图',
     original: '原图',
     artist: '艺术家',
+    date: '创作时间',
     tags: '标签',
     download: '下载',
     share: '分享',
@@ -62,7 +63,13 @@ export default {
     searchPlaceholder: '搜索图片、标签、作者...',
     clearSearch: '清除搜索',
     searchResults: '搜索结果',
-    noSearchResults: '没有找到匹配的图片'
+    noSearchResults: '没有找到匹配的图片',
+    sortBy: '排序方式',
+    sortName: '按名称',
+    sortArtist: '按作者',
+    sortDate: '按时间',
+    sortAsc: '正序',
+    sortDesc: '倒序'
   },
   personal: {
     contactMe: '联系我',
