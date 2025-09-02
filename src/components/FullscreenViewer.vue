@@ -25,9 +25,17 @@
     <div class="viewer-content">
       <div class="image-container">
         <transition name="fade" mode="out-in">
-          <img v-if="currentImage" :key="currentImage.id" :src="currentImage.src"
-            :alt="t(currentImage.name, currentLanguage)" class="image" ref="imageRef" @load="onImageLoad"
-            draggable="false" />
+          <ProgressiveImage 
+            v-if="currentImage" 
+            :key="currentImage.id" 
+            :src="currentImage.src"
+            :alt="t(currentImage.name, currentLanguage)" 
+            class="image"
+            image-class="fullscreen-image"
+            object-fit="contain"
+            :show-loader="true"
+            @load="onImageLoad"
+          />
         </transition>
       </div>
     </div>
@@ -41,8 +49,16 @@
         <div class="image-thumbnails" :style="{ transform: `translateX(${thumbnailsOffset}px)` }">
           <button v-for="(image, index) in imagesList" :key="image.id" @click="goToImage(index)"
             class="thumbnail-button" :class="{ 'active': currentIndex === index }">
-            <img :src="getOptimizedImageUrl(image.src)" :alt="t(image.name, currentLanguage)" class="thumbnail-image"
-              draggable="false" />
+            <ProgressiveImage 
+              :src="image.src" 
+              :alt="t(image.name, currentLanguage)" 
+              class="thumbnail-image"
+              object-fit="cover"
+              :show-loader="false"
+              preload-size="tiny"
+              display-type="thumbnail"
+              display-size="small"
+            />
           </button>
         </div>
       </div>
@@ -95,6 +111,7 @@ import { useI18n } from 'vue-i18n'
 import { XIcon, ChevronLeftIcon, ChevronRightIcon, InfoIcon } from 'lucide-vue-next'
 import { siteConfig } from '@/config/site'
 import { useAppStore } from '@/stores/app'
+import ProgressiveImage from './ProgressiveImage.vue'
 import type { I18nText } from '@/types'
 
 const props = defineProps<{
@@ -109,7 +126,6 @@ const emit = defineEmits<{
 const { t: $t } = useI18n()
 const appStore = useAppStore()
 
-const imageRef = ref<HTMLImageElement | null>(null)
 const currentLanguage = computed(() => appStore.currentLanguage)
 
 // 添加过渡动画状态
@@ -213,11 +229,6 @@ const updateThumbnailsOffset = () => {
   // 限制范围
   const minOffset = -(totalWidth - containerWidth)
   thumbnailsOffset.value = Math.max(minOffset, Math.min(0, targetOffset))
-}
-
-// 获取优化后的图片URL（缩略图）
-const getOptimizedImageUrl = (src: string): string => {
-  return src
 }
 
 // 获取标签颜色

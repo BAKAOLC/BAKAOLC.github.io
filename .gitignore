@@ -12,6 +12,11 @@ node_modules
 .pnp
 .pnp.js
 
+# Generated thumbnails and cache (should be generated on each build)
+public/assets/thumbnails/
+.thumbnail-cache.json
+src/assets/thumbnail-map.json
+
 # Local env files
 .env
 .env.local
