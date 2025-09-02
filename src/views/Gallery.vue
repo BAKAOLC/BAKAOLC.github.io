@@ -3,41 +3,37 @@
     <div class="container mx-auto px-4 py-4 flex-1 h-full overflow-hidden">
       <div class="gallery-header">
         <h1 class="gallery-title">{{ $t('gallery.title') }}</h1>
+        <!-- 统一搜索栏 -->
+        <div class="unified-search-bar">
+          <div class="search-container">
+            <input type="text" :value="searchQuery"
+              @input="e => updateSearchQuery((e.target as HTMLInputElement).value)"
+              :placeholder="$t('gallery.searchPlaceholder')" class="search-input" />
+            <button v-if="searchQuery" @click="clearSearch" class="search-clear">
+              <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+          </div>
 
-      </div>
-
-      <!-- 统一搜索栏 -->
-      <div class="unified-search-bar">
-        <div class="search-container">
-          <input 
-            type="text" 
-            :value="searchQuery"
-            @input="e => updateSearchQuery((e.target as HTMLInputElement).value)" 
-            :placeholder="$t('gallery.searchPlaceholder')" 
-            class="search-input"
-          />
-          <button v-if="searchQuery" @click="clearSearch" class="search-clear">
-            <i class="fa fa-times" aria-hidden="true"></i>
-          </button>
-        </div>
-        
-        <div class="search-controls">
-          <select v-model="sortBy" class="sort-select">
-            <option value="name">{{ $t('gallery.sortName') }}</option>
-            <option value="artist">{{ $t('gallery.sortArtist') }}</option>
-            <option value="date">{{ $t('gallery.sortDate') }}</option>
-          </select>
-          <button @click="toggleSortOrder" class="sort-order-button" :title="$t(sortOrder === 'asc' ? 'gallery.sortAsc' : 'gallery.sortDesc')">
-            <i :class="sortOrder === 'asc' ? 'fa fa-sort-amount-down' : 'fa fa-sort-amount-up'"></i>
-            <span class="sort-order-text">{{ $t(sortOrder === 'asc' ? 'gallery.sortAsc' : 'gallery.sortDesc') }}</span>
-          </button>
-          <button class="grid-view-toggle" @click="toggleGridView">
-            <i :class="isGridView ? 'fa fa-th-large' : 'fa fa-th-list'"></i>
-            <span class="grid-view-text">{{ $t(isGridView ? 'gallery.listView' : 'gallery.gridView') }}</span>
-          </button>
+          <div class="search-controls">
+            <select v-model="sortBy" class="sort-select">
+              <option value="name">{{ $t('gallery.sortName') }}</option>
+              <option value="artist">{{ $t('gallery.sortArtist') }}</option>
+              <option value="date">{{ $t('gallery.sortDate') }}</option>
+            </select>
+            <button @click="toggleSortOrder" class="sort-order-button"
+              :title="$t(sortOrder === 'asc' ? 'gallery.sortAsc' : 'gallery.sortDesc')">
+              <i :class="sortOrder === 'asc' ? 'fa fa-sort-amount-down' : 'fa fa-sort-amount-up'"></i>
+              <span class="sort-order-text">{{ $t(sortOrder === 'asc' ? 'gallery.sortAsc' : 'gallery.sortDesc')
+              }}</span>
+            </button>
+            <button class="grid-view-toggle" @click="toggleGridView">
+              <i :class="isGridView ? 'fa fa-th-large' : 'fa fa-th-list'"></i>
+              <span class="grid-view-text">{{ $t(isGridView ? 'gallery.listView' : 'gallery.gridView') }}</span>
+            </button>
+          </div>
         </div>
       </div>
-      
+
       <div class="gallery-content">
         <aside class="gallery-sidebar">
           <div class="sidebar-toggle md:hidden" @click="toggleMobileSidebar">
@@ -73,12 +69,8 @@
     </div>
 
     <!-- 返回顶部按钮 -->
-    <button 
-      v-if="showScrollToTop" 
-      @click="scrollToTop" 
-      class="scroll-to-top-button"
-      :style="{ bottom: scrollToTopBottom + 'px' }"
-    >
+    <button v-if="showScrollToTop" @click="scrollToTop" class="scroll-to-top-button"
+      :style="{ bottom: scrollToTopBottom + 'px' }">
       <i class="fa fa-chevron-up"></i>
     </button>
 
@@ -146,14 +138,14 @@ const closeMobileSidebar = () => {
 // 处理滚动事件
 const handleScroll = () => {
   if (!galleryMain.value) return
-  
+
   const scrollTop = galleryMain.value.scrollTop
-  
+
   lastScrollTop.value = scrollTop
-  
+
   // 显示/隐藏返回顶部按钮
   showScrollToTop.value = scrollTop > 200
-  
+
   // 更新返回顶部按钮位置
   updateScrollToTopPosition()
 }
@@ -164,7 +156,7 @@ const updateScrollToTopPosition = () => {
   if (footer) {
     const footerRect = footer.getBoundingClientRect()
     const viewportHeight = window.innerHeight
-    
+
     if (footerRect.top < viewportHeight) {
       // Footer在视口内，按钮应该在footer上方
       const distanceFromBottom = viewportHeight - footerRect.top + 20
@@ -196,7 +188,7 @@ const handleResize = () => {
     // 恢复背景滚动
     document.body.style.overflow = ''
   }
-  
+
   // 更新返回顶部按钮位置
   updateScrollToTopPosition()
 }
@@ -207,11 +199,11 @@ const updateSearchQuery = (value: string) => {
   if (searchDebounceTimeout.value) {
     clearTimeout(searchDebounceTimeout.value)
   }
-  
+
   searchDebounceTimeout.value = setTimeout(() => {
     // 使用 store 的方法更新搜索查询
     appStore.setSearchQuery(value)
-    
+
     // 搜索处理完成
     searchDebounceTimeout.value = null
   }, 300) as unknown as number
@@ -278,7 +270,7 @@ onMounted(() => {
   window.addEventListener('viewImage', openViewer as EventListener)
   window.addEventListener('viewerNavigate', handleViewerNavigate as EventListener)
   window.addEventListener('resize', handleResize)
-  
+
   // 初始化返回顶部按钮位置
   updateScrollToTopPosition()
 })
@@ -287,7 +279,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('viewImage', openViewer as EventListener)
   window.removeEventListener('viewerNavigate', handleViewerNavigate as EventListener)
   window.removeEventListener('resize', handleResize)
-  
+
   // 清理body样式
   document.body.style.overflow = ''
 })
@@ -304,9 +296,9 @@ onBeforeUnmount(() => {
 }
 
 .gallery-header {
-  @apply flex flex-wrap items-center justify-between mb-6;
-  @apply border-b border-gray-200 dark:border-gray-700 pb-4;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  @apply flex flex-wrap items-center justify-between mb-4;
+  @apply border-b border-gray-200 dark:border-gray-700 pb-3;
+  transition: transform 0.3s ease, opacity 0.3s ease, margin-bottom 0.3s ease;
 }
 
 .gallery-header.hidden-mobile {
@@ -317,17 +309,27 @@ onBeforeUnmount(() => {
 
 @media (max-width: 768px) {
   .gallery-header {
-    @apply flex-col items-center text-center gap-4;
+    @apply flex-col items-center text-center gap-2 mb-3;
+    padding-bottom: 0.75rem;
   }
-  
+
   .gallery-header.hidden-mobile {
     margin-bottom: 0;
   }
 }
 
 .gallery-title {
-  @apply text-3xl font-bold;
+  @apply text-2xl font-bold;
   @apply text-gray-900 dark:text-white;
+  transition: font-size 0.3s ease, margin-bottom 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .gallery-title {
+    @apply text-xl;
+    margin-bottom: 0.5rem;
+    transition: font-size 0.3s ease, margin-bottom 0.3s ease;
+  }
 }
 
 .gallery-controls {
@@ -337,25 +339,38 @@ onBeforeUnmount(() => {
   flex-wrap: wrap;
 }
 
-@media (max-width: 768px) {
-  .gallery-header {
-    display: none;
-  }
-}
-
 /* 统一搜索栏样式 */
 .unified-search-bar {
   display: flex;
   align-items: center;
-  justify-content: center; /* 居中对齐 */
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-  padding: 0.75rem;
+  justify-content: center;
+  /* 居中对齐 */
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem;
   background-color: white;
   border: 1px solid rgb(229, 231, 235);
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
   flex-wrap: wrap;
+  position: relative;
+  transition: gap 0.3s ease, padding 0.3s ease, margin-bottom 0.3s ease;
+}
+
+.unified-search-bar::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 1px;
+  height: 60%;
+  background-color: rgb(229, 231, 235);
+  opacity: 0.5;
+}
+
+.dark .unified-search-bar::after {
+  background-color: rgb(75, 85, 99);
 }
 
 .dark .unified-search-bar {
@@ -381,7 +396,8 @@ onBeforeUnmount(() => {
   background-color: white;
   color: rgb(17, 24, 39);
   transition: border-color 0.2s, box-shadow 0.2s;
-  height: 2.25rem; /* 设置固定高度 */
+  height: 2.25rem;
+  /* 设置固定高度 */
   box-sizing: border-box;
 }
 
@@ -432,7 +448,8 @@ onBeforeUnmount(() => {
 .unified-search-bar .search-controls {
   display: flex;
   align-items: center;
-  justify-content: center; /* 居中对齐 */
+  justify-content: center;
+  /* 居中对齐 */
   gap: 0.5rem;
   flex-wrap: wrap;
 }
@@ -445,7 +462,8 @@ onBeforeUnmount(() => {
   min-width: 100px;
   background-color: white;
   color: rgb(17, 24, 39);
-  height: 2.25rem; /* 设置固定高度 */
+  height: 2.25rem;
+  /* 设置固定高度 */
   box-sizing: border-box;
 }
 
@@ -470,7 +488,8 @@ onBeforeUnmount(() => {
   font-weight: 500;
   transition: all 0.2s;
   white-space: nowrap;
-  height: 2.25rem; /* 设置固定高度 */
+  height: 2.25rem;
+  /* 设置固定高度 */
   box-sizing: border-box;
 }
 
@@ -495,24 +514,46 @@ onBeforeUnmount(() => {
 
 /* 移动端响应式调整 */
 @media (max-width: 768px) {
+  .unified-search-bar {
+    gap: 0.25rem;
+    padding: 0.375rem;
+    margin-bottom: 0.5rem;
+    transition: gap 0.3s ease, padding 0.3s ease, margin-bottom 0.3s ease;
+  }
+
+  .unified-search-bar::after {
+    display: none; /* 移动端隐藏分隔线 */
+    transition: opacity 0.3s ease;
+  }
+
   .unified-search-bar .sort-order-button .sort-order-text,
   .unified-search-bar .grid-view-toggle .grid-view-text {
     display: none;
   }
-  
+
   .unified-search-bar .sort-order-button,
   .unified-search-bar .grid-view-toggle {
     min-width: 44px;
-    padding: 0.5rem;
+    padding: 0.375rem;
+    height: 2rem;
   }
-  
+
   .unified-search-bar .sort-select {
     min-width: 80px;
+    height: 2rem;
+    padding: 0.375rem;
+  }
+
+  .unified-search-bar .search-input {
+    height: 2rem;
+    padding: 0.375rem;
+    padding-right: 2rem;
   }
 }
 
 /* 桌面端显示文字标签 */
 @media (min-width: 769px) {
+
   .unified-search-bar .sort-order-text,
   .unified-search-bar .grid-view-text {
     display: inline;
@@ -536,13 +577,15 @@ onBeforeUnmount(() => {
   height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - var(--gallery-header-height, 0px) - 2rem);
   /* 动态计算高度：100vh - 应用头部 - 应用底部 - 画廊头部 - 额外边距 */
   padding-bottom: 2rem;
-  transition: height 0.3s ease, margin-top 0.3s ease; /* 添加高度和margin的过渡动画 */
+  transition: height 0.3s ease, margin-top 0.3s ease, flex-direction 0.3s ease, gap 0.3s ease;
+  /* 添加高度、margin、布局方向和间距的过渡动画 */
 }
 
 .gallery-content.header-hidden-mobile {
   height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - 2rem);
   /* 隐藏画廊头部时的高度计算 */
-  margin-top: calc(-1 * var(--gallery-header-height, 10rem)); /* 使用动态计算的header高度 */
+  margin-top: calc(-1 * var(--gallery-header-height, 10rem));
+  /* 使用动态计算的header高度 */
 }
 
 @media (min-width: 768px) {
@@ -550,10 +593,12 @@ onBeforeUnmount(() => {
     flex-direction: row;
     height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - var(--gallery-header-height, 0px) - 2rem);
     /* 桌面端使用固定高度计算 */
+    transition: height 0.3s ease, margin-top 0.3s ease, flex-direction 0.3s ease, gap 0.3s ease;
   }
-  
+
   .gallery-content.header-hidden-mobile {
-    margin-top: 0; /* 桌面端不需要调整 */
+    margin-top: 0;
+    /* 桌面端不需要调整 */
     height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - var(--gallery-header-height, 0px) - 2rem);
   }
 }
@@ -562,9 +607,10 @@ onBeforeUnmount(() => {
   .gallery-content {
     /* 移动端确保有足够的底部空间 */
     height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - var(--gallery-header-height, 0px) - 4rem);
-    padding-bottom: 3rem; /* 移动端增加底部内边距 */
+    padding-bottom: 3rem;
+    /* 移动端增加底部内边距 */
   }
-  
+
   .gallery-content.header-hidden-mobile {
     height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - 4rem);
     /* 移动端隐藏头部时的高度计算 */
@@ -574,6 +620,7 @@ onBeforeUnmount(() => {
 .gallery-sidebar {
   width: 100%;
   flex-shrink: 0;
+  transition: width 0.3s ease, position 0.3s ease, top 0.3s ease;
 }
 
 .sidebar-toggle {
@@ -604,6 +651,7 @@ onBeforeUnmount(() => {
     width: 16rem;
     position: sticky;
     top: 1rem;
+    transition: width 0.3s ease, position 0.3s ease, top 0.3s ease;
   }
 
   .sidebar-toggle {
@@ -633,6 +681,7 @@ onBeforeUnmount(() => {
   /* 顶部内边距 */
   padding-bottom: 2rem;
   /* 底部内边距 */
+  transition: padding-left 0.3s ease, padding-right 0.3s ease;
 }
 
 /* 移动端全屏筛选弹窗 */
@@ -646,7 +695,8 @@ onBeforeUnmount(() => {
   z-index: 1000;
   display: flex;
   align-items: flex-end;
-  touch-action: none; /* 防止触摸滚动穿透 */
+  touch-action: none;
+  /* 防止触摸滚动穿透 */
 }
 
 .mobile-filter-content {
@@ -748,6 +798,79 @@ onBeforeUnmount(() => {
     height: 2.5rem;
     font-size: 0.875rem;
   }
+}
+
+
+
+/* 响应式布局过渡动画 */
+@media (prefers-reduced-motion: no-preference) {
+  .gallery-page {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .gallery-header,
+  .gallery-content,
+  .gallery-sidebar,
+  .gallery-main,
+  .unified-search-bar {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* 为减少动画偏好的用户禁用过渡 */
+@media (prefers-reduced-motion: reduce) {
+  .gallery-page,
+  .gallery-header,
+  .gallery-content,
+  .gallery-sidebar,
+  .gallery-main,
+  .unified-search-bar,
+  .layout-transition-enter-active,
+  .layout-transition-leave-active {
+    transition: none !important;
+  }
+}
+
+/* 为切换按钮添加过渡效果 */
+.unified-search-bar .grid-view-toggle {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  transform-origin: center;
+}
+
+.unified-search-bar .grid-view-toggle:active {
+  transform: scale(0.95);
+}
+
+.unified-search-bar .grid-view-toggle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.unified-search-bar .grid-view-toggle:hover::before {
+  left: 100%;
+}
+
+.dark .unified-search-bar .grid-view-toggle::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+}
+
+/* 为所有控制按钮添加统一的点击效果 */
+.unified-search-bar .sort-order-button,
+.unified-search-bar .sort-select {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.unified-search-bar .sort-order-button:active,
+.unified-search-bar .sort-select:active {
+  transform: scale(0.98);
 }
 
 /* 删除了gallery-info相关样式 */
