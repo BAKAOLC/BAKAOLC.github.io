@@ -221,9 +221,14 @@ const toggleInfoPanel = () => {
 
   // 动画结束后重置状态 - 从CSS读取动画时长
   const duration = AnimationDurations.getInfoPanelTransition()
-  setTimeout(() => {
+  if (duration === 0) {
+    // 如果没有动画或动画时长为0，立即重置状态
     infoPanelAnimating.value = false
-  }, duration || 400) // 400ms作为后备值
+  } else {
+    setTimeout(() => {
+      infoPanelAnimating.value = false
+    }, duration)
+  }
 }
 
 // 已移除小地图计算功能
@@ -544,11 +549,18 @@ const close = () => {
   
   // 从CSS读取过渡动画时长
   const duration = AnimationDurations.getViewerTransition()
-  setTimeout(() => {
+  if (duration === 0) {
+    // 如果没有动画或动画时长为0，立即关闭
     emit('close')
     // 重置关闭状态，以便下次打开
     isClosing.value = false
-  }, duration || 400) // 400ms作为后备值
+  } else {
+    setTimeout(() => {
+      emit('close')
+      // 重置关闭状态，以便下次打开
+      isClosing.value = false
+    }, duration)
+  }
 }
 
 // 键盘事件
