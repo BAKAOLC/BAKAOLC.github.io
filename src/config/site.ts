@@ -158,16 +158,16 @@ export const siteConfig: SiteConfig = {
       color: '#06b6d4'
     },
     {
-      id: 'illustration',
+      id: 'miscellaneous',
       name: {
-        en: 'Illustration',
-        zh: '插图',
-        jp: 'イラスト'
+        en: 'Miscellaneous',
+        zh: '杂项',
+        jp: 'その他'
       },
       description: {
-        en: 'Artistic illustrations and artwork',
-        zh: '艺术插图和作品',
-        jp: 'アートイラストと作品'
+        en: 'Various miscellaneous content',
+        zh: '各种杂项内容',
+        jp: '様々なその他のコンテンツ'
       },
       icon: 'image',
       color: '#f59e0b'
@@ -216,6 +216,51 @@ export const siteConfig: SiteConfig = {
         jp: 'オリジナル'
       },
       color: '#8b5cf6'
+    },
+    {
+      id: 'illustration',
+      name: {
+        en: 'Illustration',
+        zh: '插画',
+        jp: 'イラスト'
+      },
+      color: '#f472b6'
+    },
+    {
+      id: 'chibi',
+      name: {
+        en: 'Chibi',
+        zh: 'Q版',
+        jp: 'ちび'
+      },
+      color: '#06b6d4'
+    },
+    {
+      id: 'avatar',
+      name: {
+        en: 'Avatar',
+        zh: '头像',
+        jp: 'アバター'
+      },
+      color: '#10b981'
+    },
+    {
+      id: 'sketch',
+      name: {
+        en: 'Sketch',
+        zh: '速绘',
+        jp: 'スケッチ'
+      },
+      color: '#8b5cf6'
+    },
+    {
+      id: 'emoji',
+      name: {
+        en: 'Emoji',
+        zh: '表情包',
+        jp: '絵文字'
+      },
+      color: '#ec4899'
     }
   ],
 
@@ -377,7 +422,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/original.png',
       tags: ['commission'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
     {
       id: 'illust-psyche-1',
@@ -397,9 +442,9 @@ export const siteConfig: SiteConfig = {
         jp: 'プシュケーLo'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-1.png',
-      tags: ['commission'],
+      tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
     {
       id: 'illust-psyche-2',
@@ -419,9 +464,9 @@ export const siteConfig: SiteConfig = {
         jp: 'プシュケーLo'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-2.png',
-      tags: ['commission'],
+      tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
     {
       id: 'illust-psyche-3',
@@ -441,9 +486,9 @@ export const siteConfig: SiteConfig = {
         jp: 'プシュケーLo'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-3.png',
-      tags: ['commission'],
+      tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
     {
       id: 'illust-lemonade',
@@ -463,9 +508,9 @@ export const siteConfig: SiteConfig = {
         jp: '江欣'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/柠檬水小律影.png',
-      tags: ['commission'],
+      tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
     {
       id: 'illust-moon',
@@ -485,9 +530,9 @@ export const siteConfig: SiteConfig = {
         jp: '流月'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/流月绘.jpg',
-      tags: ['gift'],
+      tags: ['gift', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
     {
       id: 'illust-halfhang',
@@ -507,9 +552,9 @@ export const siteConfig: SiteConfig = {
         jp: '半挂'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/半挂绘.jpg',
-      tags: ['gift'],
+      tags: ['gift', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
     {
       id: 'illust-mist-1',
@@ -529,9 +574,9 @@ export const siteConfig: SiteConfig = {
         jp: '霧鈴桐喻'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/雾酱绘.png',
-      tags: ['gift'],
+      tags: ['gift', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
     {
       id: 'illust-yukata',
@@ -551,9 +596,9 @@ export const siteConfig: SiteConfig = {
         jp: '霧鈴桐喻'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/雾酱绘浴衣律影.jpg',
-      tags: ['commission'],
+      tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
     {
       id: 'illust-bug',
@@ -573,9 +618,31 @@ export const siteConfig: SiteConfig = {
         jp: '霧鈴桐喻'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/BUG 律影.png',
-      tags: ['gift'],
+      tags: ['gift', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
+    },
+    {
+      id: 'illust-hoodie',
+      name: {
+        en: 'Hoodie Ritsukage',
+        zh: '兜帽律影',
+        jp: 'フード付き律影'
+      },
+      description: {
+        en: 'Cat ear hoodie Ritsukage',
+        zh: '猫耳兜帽小律影',
+        jp: '猫耳フード付き律影'
+      },
+      artist: {
+        en: 'HanPian',
+        zh: '含片',
+        jp: '含片'
+      },
+      src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/含片绘兜帽律影.jpg',
+      tags: ['gift', 'illustration'],
+      characters: ['ritsukage-utsumabo'],
+      types: ['miscellaneous']
     },
     {
       id: 'illust-bluesky',
@@ -595,9 +662,9 @@ export const siteConfig: SiteConfig = {
         jp: '霧鈴桐喻'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/青空之影.jpg',
-      tags: ['gift'],
+      tags: ['gift', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
     {
       id: 'illust-miauji',
@@ -617,9 +684,9 @@ export const siteConfig: SiteConfig = {
         jp: '喵叽'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/喵叽绘.jpg',
-      tags: ['gift'],
+      tags: ['gift', 'avatar'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
     {
       id: 'illust-park',
@@ -639,9 +706,9 @@ export const siteConfig: SiteConfig = {
         jp: 'hiyakata'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/公园律影.png',
-      tags: ['commission'],
+      tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
     {
       id: 'illust-sunshine',
@@ -661,10 +728,55 @@ export const siteConfig: SiteConfig = {
         jp: '猫村ゆゆこ'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/阳光律影.png',
-      tags: ['commission'],
+      tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
+    {
+      id: 'illust-qqman',
+      name: {
+        en: 'QQ-style Little Ritsukage',
+        zh: 'Q版小律影',
+        jp: 'Q版小律影'
+      },
+      description: {
+        en: 'QQ-style chibi artwork',
+        zh: 'Q版小律影，QQ人风格',
+        jp: 'QQスタイルのちび律影'
+      },
+      artist: {
+        en: 'Yuetuo Yayoi',
+        zh: '月兔弥生',
+        jp: '月兔弥生'
+      },
+      src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/QQ人小律影.png',
+      tags: ['commission', 'chibi'],
+      characters: ['ritsukage-utsumabo'],
+      types: ['miscellaneous']
+    },
+    {
+      id: 'illust-noripasuta',
+      name: {
+        en: 'Ritsukage by syakegayu',
+        zh: '律影 by しゃけ',
+        jp: '律影 by しゃけ'
+      },
+      description: {
+        en: 'Artwork of Ritsukage by syakegayu',
+        zh: 'しゃけ绘制的律影插画',
+        jp: 'しゃけによる律影のイラスト'
+      },
+      artist: {
+        en: 'syakegayu',
+        zh: 'しゃけ',
+        jp: 'しゃけ'
+      },
+      src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/律影.png',
+      tags: ['commission', 'illustration'],
+      characters: ['ritsukage-utsumabo'],
+      types: ['miscellaneous']
+    },
+
     {
       id: 'illust-tarot',
       name: {
@@ -683,9 +795,9 @@ export const siteConfig: SiteConfig = {
         jp: '栗粟Liz'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/塔罗牌 女皇 律影.jpg',
-      tags: ['commission'],
+      tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
     {
       id: 'illust-softcat',
@@ -705,9 +817,9 @@ export const siteConfig: SiteConfig = {
         jp: 'ちゅばき'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/软软猫律影.png',
-      tags: ['commission'],
+      tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
     {
       id: 'illust-speedart',
@@ -727,9 +839,9 @@ export const siteConfig: SiteConfig = {
         jp: 'Twuos'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/速绘小律影头.png',
-      tags: ['commission'],
+      tags: ['commission', 'avatar', 'sketch'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
     {
       id: 'illust-blue',
@@ -749,9 +861,9 @@ export const siteConfig: SiteConfig = {
         jp: 'いーたん＆mikokoたん'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/蓝蓝的小律影.png',
-      tags: ['commission'],
+      tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
     {
       id: 'illust-newyear',
@@ -771,14 +883,14 @@ export const siteConfig: SiteConfig = {
         jp: '花本'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/新年头像.png',
-      tags: ['commission'],
+      tags: ['commission', 'avatar'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
     {
       id: 'illust-q1',
       name: {
-        en: 'Q-style Little Ritsukage 1',
+        en: 'Q-style Ritsukage',
         zh: 'Q版小律影',
         jp: 'Q版小律影'
       },
@@ -793,14 +905,14 @@ export const siteConfig: SiteConfig = {
         jp: '岚舞'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/Q版小律影-1.png',
-      tags: ['commission'],
+      tags: ['commission', 'chibi'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
     {
       id: 'illust-q2',
       name: {
-        en: 'Q-style Little Ritsukage 2',
+        en: 'Q-style Ritsukage',
         zh: 'Q版小律影',
         jp: 'Q版小律影'
       },
@@ -815,14 +927,14 @@ export const siteConfig: SiteConfig = {
         jp: '獭祭'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/Q版小律影-2.png',
-      tags: ['commission'],
+      tags: ['commission', 'chibi'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
     {
       id: 'illust-q3',
       name: {
-        en: 'Q-style Little Ritsukage 3',
+        en: 'Q-style Ritsukage',
         zh: 'Q版小律影',
         jp: 'Q版小律影'
       },
@@ -837,9 +949,9 @@ export const siteConfig: SiteConfig = {
         jp: '米白勺子'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/Q版小律影-3.png',
-      tags: ['commission'],
+      tags: ['commission', 'chibi'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
     {
       id: 'illust-miya',
@@ -859,9 +971,9 @@ export const siteConfig: SiteConfig = {
         jp: '喵田弥夜Miya'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/Miya绘.jpg',
-      tags: ['commission'],
+      tags: ['commission', 'chibi'],
       characters: ['ritsukage-utsumabo'],
-      types: ['illustration']
+      types: ['miscellaneous']
     },
 
     // 表情包
@@ -883,9 +995,9 @@ export const siteConfig: SiteConfig = {
         jp: '点炮叉腰姬'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/阿巴阿巴小律影.png',
-      tags: ['commission'],
+      tags: ['commission', 'avatar', 'chibi', 'emoji'],
       characters: ['ritsukage-utsumabo'],
-      types: ['emoji']
+      types: ['miscellaneous']
     },
     {
       id: 'emoji-wow',
@@ -905,9 +1017,9 @@ export const siteConfig: SiteConfig = {
         jp: '樱井纱奈'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/哇小律影.png',
-      tags: ['commission'],
+      tags: ['commission', 'emoji'],
       characters: ['ritsukage-utsumabo'],
-      types: ['emoji']
+      types: ['miscellaneous']
     },
     {
       id: 'emoji-checkin',
@@ -927,9 +1039,9 @@ export const siteConfig: SiteConfig = {
         jp: '再来两笼奶包'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/小律影打卡.gif',
-      tags: ['commission'],
+      tags: ['commission', 'emoji'],
       characters: ['ritsukage-utsumabo'],
-      types: ['emoji']
+      types: ['miscellaneous']
     },
     {
       id: 'emoji-punch',
@@ -949,9 +1061,9 @@ export const siteConfig: SiteConfig = {
         jp: '空酱'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/打拳表情包.png',
-      tags: ['commission'],
+      tags: ['commission', 'emoji'],
       characters: ['ritsukage-utsumabo'],
-      types: ['emoji']
+      types: ['miscellaneous']
     }
   ]
 }
