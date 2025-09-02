@@ -7,6 +7,7 @@
       :alt="alt"
       class="thumbnail"
       :class="{ 'fade-out': imageLoaded }"
+      draggable="false"
       @load="onThumbnailLoad"
       @error="onThumbnailError"
     />
@@ -17,6 +18,7 @@
       :src="displayImageSrc"
       :alt="alt"
       :class="[imageClass, { 'fade-in': imageLoaded }]"
+      draggable="false"
       @load="onImageLoad"
       @error="onImageError"
     />
@@ -27,6 +29,7 @@
       :src="progressImageUrl"
       :alt="alt"
       :class="[imageClass, { 'fade-in': imageLoaded }]"
+      draggable="false"
       @load="onProgressImageLoad"
       @error="onImageError"
     />
@@ -305,6 +308,14 @@ onUnmounted(() => {
   z-index: 1;
   /* 添加轻微的模糊效果以表明这是预览图 */
   filter: blur(1px);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  /* 禁止拖拽 */
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  pointer-events: auto;
 }
 
 .thumbnail.fade-out {
@@ -322,6 +333,14 @@ onUnmounted(() => {
   opacity: 0;
   transition: opacity 0.5s ease-in;
   z-index: 2;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  /* 禁止拖拽 */
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  pointer-events: auto;
 }
 
 .progressive-image img.fade-in {

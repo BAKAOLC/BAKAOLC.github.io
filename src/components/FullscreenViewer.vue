@@ -384,6 +384,18 @@ const t = (text: I18nText | string | undefined, lang?: string) => {
   opacity: 0;
   outline: none;
   will-change: opacity, visibility;
+  /* 默认禁用选择，但允许文本元素覆盖此设置 */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* 全局禁止图片拖拽 */
+.fullscreen-viewer img {
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  pointer-events: auto;
 }
 
 .fullscreen-viewer.active {
@@ -410,6 +422,10 @@ const t = (text: I18nText | string | undefined, lang?: string) => {
 
 .viewer-title {
   @apply text-white text-lg font-medium truncate;
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
 }
 
 .viewer-controls {
@@ -455,6 +471,13 @@ const t = (text: I18nText | string | undefined, lang?: string) => {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  /* 禁止拖拽 */
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
 }
 
 /* 图像切换过渡动画 */
@@ -511,6 +534,13 @@ const t = (text: I18nText | string | undefined, lang?: string) => {
 .thumbnail-image {
   @apply w-full h-full object-contain;
   background-color: rgba(0, 0, 0, 0.2);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  /* 禁止拖拽 */
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
 }
 
 /* 已删除小地图相关样式 */
@@ -566,6 +596,10 @@ const t = (text: I18nText | string | undefined, lang?: string) => {
   will-change: opacity, transform;
   transform: translateY(0);
   opacity: 1;
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
 }
 
 .info-group {
@@ -591,5 +625,9 @@ const t = (text: I18nText | string | undefined, lang?: string) => {
 .tag {
   @apply px-2 py-0.5 rounded-full;
   @apply text-xs text-white;
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
 }
 </style>
