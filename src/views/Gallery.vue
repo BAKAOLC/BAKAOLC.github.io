@@ -5,7 +5,7 @@
         <h1 class="gallery-title">{{ $t('gallery.title') }}</h1>
         <!-- 统一搜索栏 -->
         <div class="unified-search-bar">
-          <div class="search-container">
+          <div class="search-input-container">
             <input type="text" :value="searchQuery"
               @input="e => updateSearchQuery((e.target as HTMLInputElement).value)"
               :placeholder="$t('gallery.searchPlaceholder')" class="search-input" />
@@ -13,13 +13,9 @@
               <i class="fa fa-times" aria-hidden="true"></i>
             </button>
           </div>
-
-          <div class="search-controls">
-            <select v-model="sortBy" class="sort-select">
-              <option value="name">{{ $t('gallery.sortName') }}</option>
-              <option value="artist">{{ $t('gallery.sortArtist') }}</option>
-              <option value="date">{{ $t('gallery.sortDate') }}</option>
-            </select>
+          
+          <div class="control-buttons-group">
+            <SortSelector />
             <button @click="toggleSortOrder" class="sort-order-button"
               :title="$t(sortOrder === 'asc' ? 'gallery.sortAsc' : 'gallery.sortDesc')">
               <i :class="sortOrder === 'asc' ? 'fa fa-sort-amount-down' : 'fa fa-sort-amount-up'"></i>
@@ -87,6 +83,7 @@ import CharacterSelector from '@/components/CharacterSelector.vue'
 import TagSelector from '@/components/TagSelector.vue'
 import ImageGallery from '@/components/ImageGallery.vue'
 import FullscreenViewer from '@/components/FullscreenViewer.vue'
+import SortSelector from '@/components/ui/SortSelector.vue'
 
 const { t: $t } = useI18n()
 const appStore = useAppStore()
@@ -216,11 +213,6 @@ const clearSearch = () => {
 }
 
 // 排序相关
-const sortBy = computed({
-  get: () => appStore.sortBy,
-  set: (value) => appStore.sortBy = value
-})
-
 const sortOrder = computed({
   get: () => appStore.sortOrder,
   set: (value) => appStore.sortOrder = value
@@ -357,33 +349,26 @@ onBeforeUnmount(() => {
   transition: gap 0.3s ease, padding 0.3s ease, margin-bottom 0.3s ease;
 }
 
-.unified-search-bar::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 1px;
-  height: 60%;
-  background-color: rgb(229, 231, 235);
-  opacity: 0.5;
-}
 
-.dark .unified-search-bar::after {
-  background-color: rgb(75, 85, 99);
-}
 
 .dark .unified-search-bar {
   background-color: rgb(31, 41, 55);
   border-color: rgb(75, 85, 99);
 }
 
-.unified-search-bar .search-container {
+.unified-search-bar .search-input-container {
   flex: 1;
   min-width: 200px;
   display: flex;
   align-items: center;
   position: relative;
+}
+
+.unified-search-bar .control-buttons-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .unified-search-bar .search-input {
@@ -445,33 +430,9 @@ onBeforeUnmount(() => {
   background-color: rgb(55, 65, 81);
 }
 
-.unified-search-bar .search-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* 居中对齐 */
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
 
-.unified-search-bar .sort-select {
-  padding: 0.5rem;
-  border: 1px solid rgb(209, 213, 219);
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  min-width: 100px;
-  background-color: white;
-  color: rgb(17, 24, 39);
-  height: 2.25rem;
-  /* 设置固定高度 */
-  box-sizing: border-box;
-}
 
-.dark .unified-search-bar .sort-select {
-  background-color: rgb(55, 65, 81);
-  border-color: rgb(75, 85, 99);
-  color: rgb(243, 244, 246);
-}
+
 
 .unified-search-bar .sort-order-button,
 .unified-search-bar .grid-view-toggle {
@@ -515,16 +476,17 @@ onBeforeUnmount(() => {
 /* 移动端响应式调整 */
 @media (max-width: 768px) {
   .unified-search-bar {
-    gap: 0.25rem;
+    gap: 0.375rem;
     padding: 0.375rem;
     margin-bottom: 0.5rem;
     transition: gap 0.3s ease, padding 0.3s ease, margin-bottom 0.3s ease;
   }
 
-  .unified-search-bar::after {
-    display: none; /* 移动端隐藏分隔线 */
-    transition: opacity 0.3s ease;
+  .unified-search-bar .control-buttons-group {
+    gap: 0.375rem;
   }
+
+
 
   .unified-search-bar .sort-order-button .sort-order-text,
   .unified-search-bar .grid-view-toggle .grid-view-text {
@@ -538,11 +500,9 @@ onBeforeUnmount(() => {
     height: 2rem;
   }
 
-  .unified-search-bar .sort-select {
-    min-width: 80px;
-    height: 2rem;
-    padding: 0.375rem;
-  }
+
+
+
 
   .unified-search-bar .search-input {
     height: 2rem;
