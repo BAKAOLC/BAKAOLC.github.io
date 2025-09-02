@@ -88,18 +88,26 @@ const t = (text: I18nText, lang: string) => {
   @apply shadow-lg;
   @apply transition-transform duration-500;
   @apply hover:scale-110;
+  animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
 }
 
 .name {
   @apply text-4xl font-bold mb-4;
   @apply text-gray-900 dark:text-white;
   @apply animate-text;
+  animation: slideInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+  animation-delay: 0.2s;
 }
 
 .description {
   @apply max-w-md mx-auto mb-8;
   @apply text-gray-600 dark:text-gray-300;
   @apply space-y-2;
+  animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+  animation-delay: 0.3s;
 }
 
 .description-line {
@@ -108,6 +116,7 @@ const t = (text: I18nText, lang: string) => {
 
 .social-links {
   @apply flex flex-wrap justify-center gap-2 mb-8;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .social-link {
@@ -118,6 +127,30 @@ const t = (text: I18nText, lang: string) => {
   background-color: var(--link-color);
   @apply text-white;
   @apply shadow-md hover:shadow-lg;
+  animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+  transform-origin: center;
+}
+
+/* 响应式变化时的特殊动画 */
+@media (max-width: 640px) {
+  .social-link {
+    animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1), layoutTransition 0.3s ease-in-out 0.1s;
+  }
+}
+
+.social-link:nth-child(1) { animation-delay: 0.1s; }
+.social-link:nth-child(2) { animation-delay: 0.2s; }
+.social-link:nth-child(3) { animation-delay: 0.3s; }
+.social-link:nth-child(4) { animation-delay: 0.4s; }
+.social-link:nth-child(5) { animation-delay: 0.5s; }
+.social-link:nth-child(6) { animation-delay: 0.6s; }
+
+/* 桌面端悬停效果 */
+@media (min-width: 641px) {
+  .social-link:hover {
+    transform: scale(1.05) translateY(-3px);
+  }
 }
 
 .icon {
@@ -134,6 +167,9 @@ const t = (text: I18nText, lang: string) => {
   @apply rounded-lg shadow-md hover:shadow-lg;
   @apply transition-all duration-300;
   @apply font-medium;
+  animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+  animation-delay: 0.7s;
 }
 
 .button-icon {
@@ -199,6 +235,30 @@ const t = (text: I18nText, lang: string) => {
   }
 }
 
+/* 动画关键帧 */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes layoutTransition {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 @media (max-width: 640px) {
   .personal-section {
     @apply justify-start py-4;
@@ -207,10 +267,17 @@ const t = (text: I18nText, lang: string) => {
   
   .social-links {
     @apply flex-col items-center;
+    gap: 0.75rem;
   }
 
   .social-link {
     @apply w-full justify-center;
+    max-width: 280px;
+    transform: scale(0.98);
+  }
+  
+  .social-link:hover {
+    transform: scale(1.02) translateY(-2px);
   }
   
   .avatar {

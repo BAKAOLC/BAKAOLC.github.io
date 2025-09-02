@@ -25,10 +25,19 @@ const toggleTheme = () => {
 
 <style scoped>
 .theme-toggle {
-  @apply p-2 rounded-full transition-colors duration-200;
+  @apply p-2 rounded-full transition-all duration-300;
   @apply text-gray-500 hover:text-gray-700;
   @apply dark:text-gray-400 dark:hover:text-gray-200;
   @apply focus:outline-none focus:ring-2 focus:ring-primary-500;
+  transform-origin: center;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
 }
 
 .icon {
