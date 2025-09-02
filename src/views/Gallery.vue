@@ -36,12 +36,40 @@
         </div>
       </div>
 
-
+      <!-- 移动端搜索栏 -->
+      <div class="mobile-search-bar md:hidden">
+        <div class="search-container">
+          <input 
+            type="text" 
+            :value="searchQuery"
+            @input="e => updateSearchQuery((e.target as HTMLInputElement).value)" 
+            :placeholder="$t('gallery.searchPlaceholder')" 
+            class="search-input"
+          />
+          <button v-if="searchQuery" @click="clearSearch" class="search-clear">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </button>
+        </div>
+        
+        <div class="mobile-controls">
+          <select v-model="sortBy" class="sort-select mobile">
+            <option value="name">{{ $t('gallery.sortName') }}</option>
+            <option value="artist">{{ $t('gallery.sortArtist') }}</option>
+            <option value="date">{{ $t('gallery.sortDate') }}</option>
+          </select>
+          <button @click="toggleSortOrder" class="sort-order-button mobile" :title="$t(sortOrder === 'asc' ? 'gallery.sortAsc' : 'gallery.sortDesc')">
+            <i :class="sortOrder === 'asc' ? 'fa fa-sort-amount-down' : 'fa fa-sort-amount-up'"></i>
+          </button>
+          <button class="grid-view-toggle mobile" @click="toggleGridView">
+            <i :class="isGridView ? 'fa fa-th-large' : 'fa fa-th-list'"></i>
+          </button>
+        </div>
+      </div>
       
       <div class="gallery-content">
         <aside class="gallery-sidebar">
-          <div class="sidebar-toggle md:hidden" @click="toggleSidebar">
-            <i :class="isSidebarOpen ? 'fa fa-times' : 'fa fa-filter'" class="icon"></i>
+          <div class="sidebar-toggle md:hidden" @click="toggleMobileSidebar">
+            <i class="fa fa-filter icon"></i>
             {{ $t('gallery.filters') }}
           </div>
           <div class="sidebar-content" :class="{ 'active': isSidebarOpen }">
@@ -50,11 +78,37 @@
           </div>
         </aside>
 
-        <div class="gallery-main">
+        <div class="gallery-main" ref="galleryMain" @scroll="handleScroll">
           <image-gallery :images="characterImages" :grid-view="isGridView" />
         </div>
       </div>
     </div>
+
+    <!-- 移动端全屏筛选弹窗 -->
+    <div v-if="isMobileSidebarOpen" class="mobile-filter-overlay" @click="closeMobileSidebar">
+      <div class="mobile-filter-content" @click.stop>
+        <div class="mobile-filter-header">
+          <h3>{{ $t('gallery.filters') }}</h3>
+          <button @click="closeMobileSidebar" class="close-button">
+            <i class="fa fa-times"></i>
+          </button>
+        </div>
+        <div class="mobile-filter-body">
+          <character-selector />
+          <tag-selector />
+        </div>
+      </div>
+    </div>
+
+    <!-- 返回顶部按钮 -->
+    <button 
+      v-if="showScrollToTop" 
+      @click="scrollToTop" 
+      class="scroll-to-top-button"
+      :style="{ bottom: scrollToTopBottom + 'px' }"
+    >
+      <i class="fa fa-chevron-up"></i>
+    </button>
 
     <!-- 在画廊页面内显示全屏查看器 -->
     <fullscreen-viewer v-if="viewerActive" :image-id="currentImageId" :is-active="viewerActive" @close="closeViewer" />
@@ -75,7 +129,12 @@ const appStore = useAppStore()
 
 const isGridView = ref(true)
 const isSidebarOpen = ref(false)
+const isMobileSidebarOpen = ref(false)
 const searchDebounceTimeout = ref<number | null>(null)
+const galleryMain = ref<HTMLElement | null>(null)
+const showScrollToTop = ref(false)
+const scrollToTopBottom = ref(80) // 默认距离底部80px
+const lastScrollTop = ref(0)
 
 // 将搜索查询绑定到 appStore
 const searchQuery = computed({
@@ -95,9 +154,79 @@ const toggleGridView = () => {
   isGridView.value = !isGridView.value
 }
 
-// 切换侧边栏
-const toggleSidebar = () => {
-  isSidebarOpen.value = !isSidebarOpen.value
+// 移动端筛选弹窗相关
+const toggleMobileSidebar = () => {
+  isMobileSidebarOpen.value = !isMobileSidebarOpen.value
+  // 阻止背景滚动
+  if (isMobileSidebarOpen.value) {
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.style.overflow = ''
+  }
+}
+
+const closeMobileSidebar = () => {
+  isMobileSidebarOpen.value = false
+  // 恢复背景滚动
+  document.body.style.overflow = ''
+}
+
+// 处理滚动事件
+const handleScroll = () => {
+  if (!galleryMain.value) return
+  
+  const scrollTop = galleryMain.value.scrollTop
+  
+  lastScrollTop.value = scrollTop
+  
+  // 显示/隐藏返回顶部按钮
+  showScrollToTop.value = scrollTop > 200
+  
+  // 更新返回顶部按钮位置
+  updateScrollToTopPosition()
+}
+
+// 更新返回顶部按钮位置
+const updateScrollToTopPosition = () => {
+  const footer = document.querySelector('.footer') as HTMLElement
+  if (footer) {
+    const footerRect = footer.getBoundingClientRect()
+    const viewportHeight = window.innerHeight
+    
+    if (footerRect.top < viewportHeight) {
+      // Footer在视口内，按钮应该在footer上方
+      const distanceFromBottom = viewportHeight - footerRect.top + 20
+      scrollToTopBottom.value = Math.max(distanceFromBottom, 80)
+    } else {
+      // Footer不在视口内，使用默认位置
+      scrollToTopBottom.value = 80
+    }
+  }
+}
+
+// 滚动到顶部
+const scrollToTop = () => {
+  if (galleryMain.value) {
+    galleryMain.value.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+  }
+}
+
+// 监听窗口大小变化
+const handleResize = () => {
+  const isMobile = window.innerWidth < 768
+  if (!isMobile) {
+    // 切换到桌面端时关闭移动端功能
+    isMobileSidebarOpen.value = false
+    isSidebarOpen.value = false
+    // 恢复背景滚动
+    document.body.style.overflow = ''
+  }
+  
+  // 更新返回顶部按钮位置
+  updateScrollToTopPosition()
 }
 
 // 更新搜索查询并触发搜索
@@ -176,11 +305,19 @@ const handleViewerNavigate = (event: CustomEvent) => {
 onMounted(() => {
   window.addEventListener('viewImage', openViewer as EventListener)
   window.addEventListener('viewerNavigate', handleViewerNavigate as EventListener)
+  window.addEventListener('resize', handleResize)
+  
+  // 初始化返回顶部按钮位置
+  updateScrollToTopPosition()
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('viewImage', openViewer as EventListener)
   window.removeEventListener('viewerNavigate', handleViewerNavigate as EventListener)
+  window.removeEventListener('resize', handleResize)
+  
+  // 清理body样式
+  document.body.style.overflow = ''
 })
 </script>
 
@@ -197,11 +334,22 @@ onBeforeUnmount(() => {
 .gallery-header {
   @apply flex flex-wrap items-center justify-between mb-6;
   @apply border-b border-gray-200 dark:border-gray-700 pb-4;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.gallery-header.hidden-mobile {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 @media (max-width: 768px) {
   .gallery-header {
     @apply flex-col items-center text-center gap-4;
+  }
+  
+  .gallery-header.hidden-mobile {
+    margin-bottom: 0;
   }
 }
 
@@ -221,6 +369,112 @@ onBeforeUnmount(() => {
   .gallery-controls {
     @apply flex-col items-center gap-3 w-full;
   }
+  
+  .gallery-header {
+    display: none;
+  }
+}
+
+/* 移动端搜索栏样式 */
+.mobile-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: white;
+  border: 1px solid rgb(229, 231, 235);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* 确保在桌面端隐藏移动端搜索栏 */
+@media (min-width: 768px) {
+  .mobile-search-bar {
+    display: none !important;
+  }
+}
+
+.dark .mobile-search-bar {
+  background-color: rgb(31, 41, 55);
+  border-color: rgb(75, 85, 99);
+}
+
+.mobile-search-bar .search-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.mobile-search-bar .search-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  background-color: white;
+  color: rgb(17, 24, 39);
+}
+
+.dark .mobile-search-bar .search-input {
+  background-color: rgb(55, 65, 81);
+  border-color: rgb(75, 85, 99);
+  color: rgb(243, 244, 246);
+}
+
+.mobile-search-bar .mobile-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mobile-search-bar .sort-select.mobile {
+  padding: 0.5rem;
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  min-width: 80px;
+  background-color: white;
+}
+
+.dark .mobile-search-bar .sort-select.mobile {
+  background-color: rgb(55, 65, 81);
+  border-color: rgb(75, 85, 99);
+  color: rgb(243, 244, 246);
+}
+
+.mobile-search-bar .sort-order-button.mobile,
+.mobile-search-bar .grid-view-toggle.mobile {
+  padding: 0.5rem;
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.375rem;
+  background-color: white;
+  color: rgb(107, 114, 128);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  transition: all 0.2s;
+}
+
+.dark .mobile-search-bar .sort-order-button.mobile,
+.dark .mobile-search-bar .grid-view-toggle.mobile {
+  background-color: rgb(55, 65, 81);
+  border-color: rgb(75, 85, 99);
+  color: rgb(156, 163, 175);
+}
+
+.mobile-search-bar .sort-order-button.mobile:hover,
+.mobile-search-bar .grid-view-toggle.mobile:hover {
+  background-color: rgb(243, 244, 246);
+  color: rgb(55, 65, 81);
+}
+
+.dark .mobile-search-bar .sort-order-button.mobile:hover,
+.dark .mobile-search-bar .grid-view-toggle.mobile:hover {
+  background-color: rgb(75, 85, 99);
+  color: rgb(209, 213, 219);
 }
 
 .grid-view-toggle {
@@ -394,14 +648,41 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  height: calc(100vh - 12rem);
-  /* 设置固定高度减去header和footer高度 */
+  height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - var(--gallery-header-height, 0px) - 2rem);
+  /* 动态计算高度：100vh - 应用头部 - 应用底部 - 画廊头部 - 额外边距 */
   padding-bottom: 2rem;
+  transition: height 0.3s ease, margin-top 0.3s ease; /* 添加高度和margin的过渡动画 */
+}
+
+.gallery-content.header-hidden-mobile {
+  height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - 2rem);
+  /* 隐藏画廊头部时的高度计算 */
+  margin-top: calc(-1 * var(--gallery-header-height, 10rem)); /* 使用动态计算的header高度 */
 }
 
 @media (min-width: 768px) {
   .gallery-content {
     flex-direction: row;
+    height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - var(--gallery-header-height, 0px) - 2rem);
+    /* 桌面端使用固定高度计算 */
+  }
+  
+  .gallery-content.header-hidden-mobile {
+    margin-top: 0; /* 桌面端不需要调整 */
+    height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - var(--gallery-header-height, 0px) - 2rem);
+  }
+}
+
+@media (max-width: 767px) {
+  .gallery-content {
+    /* 移动端确保有足够的底部空间 */
+    height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - var(--gallery-header-height, 0px) - 4rem);
+    padding-bottom: 3rem; /* 移动端增加底部内边距 */
+  }
+  
+  .gallery-content.header-hidden-mobile {
+    height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - 4rem);
+    /* 移动端隐藏头部时的高度计算 */
   }
 }
 
@@ -467,6 +748,121 @@ onBeforeUnmount(() => {
   /* 顶部内边距 */
   padding-bottom: 2rem;
   /* 底部内边距 */
+}
+
+/* 移动端全屏筛选弹窗 */
+.mobile-filter-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  touch-action: none; /* 防止触摸滚动穿透 */
+}
+
+.mobile-filter-content {
+  width: 100%;
+  max-height: 80vh;
+  background: white;
+  border-radius: 1rem 1rem 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dark .mobile-filter-content {
+  background: rgb(31, 41, 55);
+}
+
+.mobile-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgb(229, 231, 235);
+}
+
+.dark .mobile-filter-header {
+  border-bottom-color: rgb(75, 85, 99);
+}
+
+.mobile-filter-header h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: rgb(17, 24, 39);
+}
+
+.dark .mobile-filter-header h3 {
+  color: rgb(243, 244, 246);
+}
+
+.close-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: rgb(243, 244, 246);
+  color: rgb(75, 85, 99);
+  transition: background-color 0.2s;
+}
+
+.dark .close-button {
+  background: rgb(55, 65, 81);
+  color: rgb(209, 213, 219);
+}
+
+.close-button:hover {
+  background: rgb(229, 231, 235);
+}
+
+.dark .close-button:hover {
+  background: rgb(75, 85, 99);
+}
+
+.mobile-filter-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
+/* 返回顶部按钮 */
+.scroll-to-top-button {
+  position: fixed;
+  right: 1.5rem;
+  width: 3rem;
+  height: 3rem;
+  background: rgb(59, 130, 246);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  z-index: 999;
+  cursor: pointer;
+}
+
+.scroll-to-top-button:hover {
+  background: rgb(37, 99, 235);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .scroll-to-top-button {
+    right: 1rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 0.875rem;
+  }
 }
 
 /* 删除了gallery-info相关样式 */
