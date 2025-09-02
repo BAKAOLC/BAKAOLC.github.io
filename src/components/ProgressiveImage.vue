@@ -2,17 +2,18 @@
   <div class="progressive-image">
     <!-- 预加载缩略图 -->
     <img
-      v-if="preloadThumbnailSrc && showThumbnail"
+      v-if="preloadThumbnailSrc && showThumbnail && !thumbnailHidden"
       :src="preloadThumbnailSrc"
       :alt="alt"
       class="thumbnail"
       :class="{ 'fade-out': imageLoaded }"
       @load="onThumbnailLoad"
+      @error="onThumbnailError"
     />
     
     <!-- 实际显示的图像 -->
     <img
-      v-if="displayImageSrc"
+      v-if="displayImageSrc && shouldShowMainImage"
       :src="displayImageSrc"
       :alt="alt"
       :class="[imageClass, { 'fade-in': imageLoaded }]"
@@ -42,6 +43,8 @@ interface Props {
   // 实际显示的图像类型和尺寸
   displayType?: 'original' | 'thumbnail'
   displaySize?: 'tiny' | 'small' | 'medium'
+  // 延迟加载主图的时间（毫秒）
+  delayMainImage?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -51,7 +54,8 @@ const props = withDefaults(defineProps<Props>(), {
   objectFit: 'cover',
   preloadSize: 'tiny',
   displayType: 'original',
-  displaySize: 'medium'
+  displaySize: 'medium',
+  delayMainImage: 200
 })
 
 const emit = defineEmits<{
@@ -63,6 +67,9 @@ const imageLoaded = ref(false)
 const isLoading = ref(true)
 const showThumbnail = ref(false)
 const thumbnailLoaded = ref(false)
+const thumbnailHidden = ref(false)
+const shouldShowMainImage = ref(false)
+const mainImageStartedLoading = ref(false)
 
 // 从映射中获取预加载缩略图路径
 const preloadThumbnailSrc = computed(() => {
@@ -86,11 +93,35 @@ const displayImageSrc = computed(() => {
 const onThumbnailLoad = () => {
   thumbnailLoaded.value = true
   showThumbnail.value = true
+  
+  // 缩略图加载完成后，延迟开始加载主图
+  if (!mainImageStartedLoading.value) {
+    mainImageStartedLoading.value = true
+    setTimeout(() => {
+      shouldShowMainImage.value = true
+    }, props.delayMainImage)
+  }
+}
+
+const onThumbnailError = () => {
+  console.warn('缩略图加载失败:', preloadThumbnailSrc.value)
+  // 如果缩略图加载失败，立即开始加载主图
+  if (!mainImageStartedLoading.value) {
+    mainImageStartedLoading.value = true
+    shouldShowMainImage.value = true
+  }
 }
 
 const onImageLoad = () => {
   imageLoaded.value = true
   isLoading.value = false
+  
+  // 主图加载完成后，等待fade-out动画完成再隐藏缩略图
+  // 这样可以避免透明图片的光晕效果
+  setTimeout(() => {
+    thumbnailHidden.value = true
+  }, 250) // 略大于fade-out过渡时间(200ms)
+  
   emit('load')
 }
 
@@ -100,24 +131,31 @@ const onImageError = () => {
 }
 
 // 监听src变化，重置状态
-watch(() => props.src, () => {
-  if (props.src) {
+watch(() => props.src, (newSrc) => {
+  if (newSrc) {
+    // 重置所有状态
     imageLoaded.value = false
     isLoading.value = true
     showThumbnail.value = false
     thumbnailLoaded.value = false
+    thumbnailHidden.value = false
+    shouldShowMainImage.value = false
+    mainImageStartedLoading.value = false
     
-    // 如果有预加载缩略图，立即显示
+    // 如果有预加载缩略图，立即开始加载
     if (preloadThumbnailSrc.value) {
+      // 立即显示缩略图元素，让浏览器开始加载
       showThumbnail.value = true
+    } else {
+      // 如果没有缩略图，直接加载主图
+      shouldShowMainImage.value = true
+      mainImageStartedLoading.value = true
     }
   }
 }, { immediate: true })
 
 onMounted(() => {
-  if (props.src && preloadThumbnailSrc.value) {
-    showThumbnail.value = true
-  }
+  // 组件挂载时的初始化逻辑已在 watch 中处理
 })
 </script>
 
@@ -127,6 +165,13 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  background-color: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+  .progressive-image {
+    background-color: transparent;
+  }
 }
 
 .thumbnail {
@@ -136,23 +181,27 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   object-fit: v-bind(objectFit);
-  transition: opacity 0.4s ease;
+  opacity: 1;
+  transition: opacity 0.3s ease-out;
   z-index: 1;
+  /* 添加轻微的模糊效果以表明这是预览图 */
+  filter: blur(1px);
 }
 
 .thumbnail.fade-out {
   opacity: 0;
+  transition: opacity 0.2s ease-out;
 }
 
-.progressive-image img {
+.progressive-image img:not(.thumbnail) {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   object-fit: v-bind(objectFit);
-  opacity: 1;
-  transition: opacity 0.4s ease;
+  opacity: 0;
+  transition: opacity 0.5s ease-in;
   z-index: 2;
 }
 
@@ -166,12 +215,22 @@ onMounted(() => {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 3;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  padding: 6px;
+  backdrop-filter: blur(4px);
+}
+
+@media (prefers-color-scheme: dark) {
+  .loading-spinner {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
 }
 
 .spinner {
   width: 24px;
   height: 24px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(59, 130, 246, 0.3);
   border-top: 2px solid #3b82f6;
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -185,8 +244,20 @@ onMounted(() => {
 /* 深色模式下的loading spinner */
 @media (prefers-color-scheme: dark) {
   .spinner {
-    border: 2px solid rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(96, 165, 250, 0.3);
     border-top: 2px solid #60a5fa;
+  }
+}
+
+/* 响应式优化 */
+@media (max-width: 640px) {
+  .spinner {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .loading-spinner {
+    padding: 6px;
   }
 }
 </style>
