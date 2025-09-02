@@ -126,6 +126,7 @@ import { useAppStore } from '@/stores/app'
 import ProgressiveImage from './ProgressiveImage.vue'
 import { imageCache, LoadPriority } from '@/services/imageCache'
 import { AnimationDurations } from '@/utils/animations'
+import thumbnailMap from '@/assets/thumbnail-map.json'
 import type { I18nText } from '@/types'
 
 const props = defineProps<{
@@ -595,7 +596,7 @@ const preloadAdjacentImages = () => {
   
   // 异步预加载相邻图片
   imagesToPreload.forEach(src => {
-    imageCache.preloadImage(src, LoadPriority.NORMAL).catch(() => {
+    imageCache.preloadImage(src, LoadPriority.OTHER_IMAGE).catch(() => {
       // 预加载失败不影响主要功能
     })
   })
@@ -609,20 +610,41 @@ const preloadAdjacentImages = () => {
     lowPriorityImages.push(imagesList.value[currentIdx + 2].src)
   }
   
-  // 低优先级预加载
-  lowPriorityImages.forEach(src => {
-    imageCache.preloadImage(src, LoadPriority.LOW).catch(() => {
-      // 预加载失败不影响主要功能
+  // 低优先级预加载 - 延迟执行以确保当前图片优先
+  setTimeout(() => {
+    lowPriorityImages.forEach(src => {
+      imageCache.preloadImage(src, LoadPriority.OTHER_IMAGE).catch(() => {
+        // 预加载失败不影响主要功能
+      })
     })
-  })
+  }, 300) // 延迟300ms，给当前图片足够的加载时间
 }
 
 // 监听图片变化
-watch(currentImage, () => {
-  updateThumbnailsOffset()
-  // 预加载相邻图片
-  preloadAdjacentImages()
+watch(currentImage, (newImage) => {
+  if (newImage) {
+    // 获取当前图片的缩略图URL
+    const thumbnailSrc = getThumbnailUrl(newImage.src, 'tiny')
+    
+    // 设置当前图片，这会触发优先级重新评估
+    imageCache.setCurrentImage(newImage.src, thumbnailSrc || undefined)
+    
+    // 延迟触发预加载，确保当前图片优先
+    nextTick(() => {
+      setTimeout(() => {
+        updateThumbnailsOffset()
+        // 预加载相邻图片
+        preloadAdjacentImages()
+      }, 150) // 给当前图片150ms的优先加载时间
+    })
+  }
 })
+
+// 获取缩略图URL的辅助函数
+const getThumbnailUrl = (originalSrc: string, size: 'tiny' | 'small' | 'medium') => {
+  const thumbnails = (thumbnailMap as any)[originalSrc] as Record<string, string> | undefined
+  return thumbnails?.[size] || null
+}
 
 // 监听激活状态
 watch(() => props.isActive, (newValue) => {

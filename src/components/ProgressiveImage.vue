@@ -105,17 +105,27 @@ const useProgressLoading = ref(false)
 // 转换优先级字符串到枚举
 const getPriority = () => {
   switch (props.priority) {
-    case 'high': return LoadPriority.HIGH
-    case 'low': return LoadPriority.LOW
-    default: return LoadPriority.NORMAL
+    case 'high': return LoadPriority.CURRENT_IMAGE
+    case 'low': return LoadPriority.OTHER_IMAGE  
+    default: return LoadPriority.OTHER_THUMBNAIL
+  }
+}
+
+// 获取缩略图优先级（总是比主图优先级高一级）
+const getThumbnailPriority = () => {
+  switch (props.priority) {
+    case 'high': return LoadPriority.CURRENT_THUMBNAIL
+    case 'low': return LoadPriority.OTHER_THUMBNAIL
+    default: return LoadPriority.OTHER_THUMBNAIL
   }
 }
 
 // 使用缓存服务加载图片并跟踪进度
-const loadImageWithProgress = (url: string): Promise<string> => {
-  return imageCache.loadImage(url, getPriority(), (progress: number) => {
+const loadImageWithProgress = (url: string, isThumbnail: boolean = false): Promise<string> => {
+  const priority = isThumbnail ? getThumbnailPriority() : getPriority()
+  return imageCache.loadImage(url, priority, (progress: number) => {
     loadingProgress.value = progress
-  })
+  }, isThumbnail)
 }
 
 // 从映射中获取预加载缩略图路径
@@ -144,9 +154,11 @@ const onThumbnailLoad = () => {
   // 缩略图加载完成后，延迟开始加载主图
   if (!mainImageStartedLoading.value) {
     mainImageStartedLoading.value = true
+    // 对于高优先级图片，减少延迟时间
+    const delay = props.priority === 'high' ? 50 : props.delayMainImage
     setTimeout(() => {
       startMainImageLoading()
-    }, props.delayMainImage)
+    }, delay)
   }
 }
 
@@ -167,7 +179,8 @@ const startMainImageLoading = () => {
   
   if (useProgressLoading.value) {
     // 使用带进度的加载
-    loadImageWithProgress(displayImageSrc.value)
+    const isThumbnailLoading = props.displayType !== 'original'
+    loadImageWithProgress(displayImageSrc.value, isThumbnailLoading)
       .then((objectUrl) => {
         progressImageUrl.value = objectUrl
       })
@@ -271,7 +284,11 @@ watch(() => props.src, (newSrc) => {
     } else {
       // 如果没有缩略图，直接加载主图
       mainImageStartedLoading.value = true
-      startMainImageLoading()
+      // 对于高优先级图片，立即开始加载
+      const delay = props.priority === 'high' ? 0 : 100
+      setTimeout(() => {
+        startMainImageLoading()
+      }, delay)
     }
   }
 }, { immediate: true })
