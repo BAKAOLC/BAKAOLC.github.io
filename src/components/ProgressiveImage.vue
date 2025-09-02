@@ -6,7 +6,10 @@
       :src="preloadThumbnailSrc"
       :alt="alt"
       class="thumbnail"
-      :class="{ 'fade-out': imageLoaded }"
+      :class="{ 
+        'fade-out': imageLoaded,
+        'loaded': thumbnailLoaded
+      }"
       draggable="false"
       @load="onThumbnailLoad"
       @error="onThumbnailError"
@@ -344,7 +347,11 @@ onUnmounted(() => {
 
 .thumbnail.fade-out {
   opacity: 0;
-  transition: opacity 0.2s ease-out;
+  transition: opacity 0.4s ease-out;
+}
+
+.thumbnail.loaded {
+  filter: blur(0.2px);
 }
 
 .progressive-image img:not(.thumbnail) {
@@ -355,7 +362,7 @@ onUnmounted(() => {
   height: 100%;
   object-fit: v-bind(objectFit);
   opacity: 0;
-  transition: opacity 0.5s ease-in;
+  transition: opacity 0.4s ease-in;
   z-index: 2;
   user-select: none;
   -webkit-user-select: none;
