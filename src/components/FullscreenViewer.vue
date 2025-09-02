@@ -34,6 +34,8 @@
             image-class="fullscreen-image"
             object-fit="contain"
             :show-loader="true"
+            display-type="original"
+            priority="high"
             @load="onImageLoad"
           />
         </transition>
@@ -112,6 +114,7 @@ import { XIcon, ChevronLeftIcon, ChevronRightIcon, InfoIcon } from 'lucide-vue-n
 import { siteConfig } from '@/config/site'
 import { useAppStore } from '@/stores/app'
 import ProgressiveImage from './ProgressiveImage.vue'
+import { imageCache, LoadPriority } from '@/services/imageCache'
 import type { I18nText } from '@/types'
 
 const props = defineProps<{
@@ -275,9 +278,48 @@ const handleKeyDown = (event: KeyboardEvent) => {
   }
 }
 
+// 预加载相邻图片
+const preloadAdjacentImages = () => {
+  const currentIdx = currentIndex.value
+  const imagesToPreload: string[] = []
+  
+  // 预加载前一张和后一张图片（普通优先级）
+  if (currentIdx > 0) {
+    imagesToPreload.push(imagesList.value[currentIdx - 1].src)
+  }
+  if (currentIdx < imagesList.value.length - 1) {
+    imagesToPreload.push(imagesList.value[currentIdx + 1].src)
+  }
+  
+  // 异步预加载相邻图片
+  imagesToPreload.forEach(src => {
+    imageCache.preloadImage(src, LoadPriority.NORMAL).catch(() => {
+      // 预加载失败不影响主要功能
+    })
+  })
+  
+  // 预加载前两张和后两张图片（低优先级）
+  const lowPriorityImages: string[] = []
+  if (currentIdx > 1) {
+    lowPriorityImages.push(imagesList.value[currentIdx - 2].src)
+  }
+  if (currentIdx < imagesList.value.length - 2) {
+    lowPriorityImages.push(imagesList.value[currentIdx + 2].src)
+  }
+  
+  // 低优先级预加载
+  lowPriorityImages.forEach(src => {
+    imageCache.preloadImage(src, LoadPriority.LOW).catch(() => {
+      // 预加载失败不影响主要功能
+    })
+  })
+}
+
 // 监听图片变化
 watch(currentImage, () => {
   updateThumbnailsOffset()
+  // 预加载相邻图片
+  preloadAdjacentImages()
 })
 
 // 监听激活状态
