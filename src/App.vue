@@ -52,23 +52,13 @@ const loadingProgress = ref(0)
 const totalAssets = ref(0)
 const loadedAssets = ref(0)
 
-// 预加载所有图像
+// 预加载基本图像（不包括画廊图片）
 const preloadImages = async () => {
-  // 获取所有图片URL
+  // 获取基本图片URL
   const imageUrls = new Set<string>()
 
-  // 添加基本图像
+  // 添加基本图像（如头像）
   imageUrls.add('/assets/avatar.png')
-
-  // 添加图像
-  siteConfig.images.forEach(image => {
-    if (image.src) {
-      imageUrls.add(image.src)
-    }
-    if (image.thumbnail) {
-      imageUrls.add(image.thumbnail)
-    }
-  })
 
   // 添加角色头像
   siteConfig.characters.forEach(character => {
@@ -76,6 +66,9 @@ const preloadImages = async () => {
       imageUrls.add(character.avatar)
     }
   })
+
+  // 注意：不再预加载画廊图片，因为已经有预览图处理
+  // 画廊图片将在需要时按需加载
 
   totalAssets.value = imageUrls.size
 
