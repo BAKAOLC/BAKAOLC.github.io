@@ -108,8 +108,6 @@ onBeforeUnmount(() => {
   flex-shrink: 0;
 }
 
-
-
 .language-menu {
   @apply absolute right-0 mt-2 py-1;
   @apply bg-white dark:bg-gray-800;

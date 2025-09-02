@@ -5,6 +5,9 @@
 :root {
   --transition-duration: 0.3s;
   --transition-timing: ease;
+  --app-header-height: 60px;
+  --app-footer-height: 60px;
+  --gallery-header-height: 0px;
 }
 
 html, body {

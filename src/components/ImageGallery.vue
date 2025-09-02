@@ -134,7 +134,6 @@ const t = (text: I18nText | string, lang?: string) => {
   @apply w-full;
 }
 
-
 .aspect-ratio-box {
   position: relative;
   width: 100%;
@@ -171,7 +170,6 @@ const t = (text: I18nText | string, lang?: string) => {
   position: relative;
 }
 
-
 .transitioning {
   pointer-events: none;
 }
@@ -183,15 +181,12 @@ const t = (text: I18nText | string, lang?: string) => {
   transition: all 0.1s ease-out;
 }
 
-
 .image-card,
 .image-list-item {
   will-change: transform, opacity;
   backface-visibility: hidden;
   transform-style: preserve-3d;
 }
-
-
 
 @media (prefers-reduced-motion: reduce) {
   .transitioning .image-card,
@@ -325,8 +320,5 @@ const t = (text: I18nText | string, lang?: string) => {
     font-size: 10px; /* 更小的字体 */
   }
 }
-
-
-
 
 </style>
