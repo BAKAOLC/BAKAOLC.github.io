@@ -69,6 +69,11 @@
             <p>{{ currentImage ? t(currentImage.artist, currentLanguage) : '' }}</p>
           </div>
 
+          <div v-if="currentImage?.date" class="info-group">
+            <h4 class="info-subtitle">{{ $t('gallery.date') }}</h4>
+            <p>{{ currentImage.date }}</p>
+          </div>
+
           <div class="info-group">
             <h4 class="info-subtitle">{{ $t('gallery.tags') }}</h4>
             <div class="tags-list">

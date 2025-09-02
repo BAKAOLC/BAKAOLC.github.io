@@ -25,6 +25,7 @@ export interface ImageTag {
   id: string;
   name: I18nText;
   color?: string;
+  icon?: string;
 }
 
 export interface CharacterImage {
@@ -36,16 +37,7 @@ export interface CharacterImage {
   thumbnail?: string;
   tags: string[]; // tag IDs
   characters: string[]; // character IDs  
-  types: string[]; // image type IDs
-  createdAt?: string;
-}
-
-export interface ImageType {
-  id: string;
-  name: I18nText;
-  description: I18nText;
-  icon?: string;
-  color?: string;
+  date?: string; // yyyy-MM-dd format
 }
 
 export interface Character {
@@ -59,7 +51,6 @@ export interface Character {
 export interface SiteConfig {
   personal: PersonalInfo;
   characters: Character[];
-  imageTypes: ImageType[];
   tags: ImageTag[];
   images: CharacterImage[];
 }

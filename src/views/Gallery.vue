@@ -16,6 +16,19 @@
               <i class="fa fa-times" aria-hidden="true"></i>
             </button>
           </div>
+          
+          <div class="sort-container">
+            <select v-model="sortBy" class="sort-select">
+              <option value="name">{{ $t('gallery.sortName') }}</option>
+              <option value="artist">{{ $t('gallery.sortArtist') }}</option>
+              <option value="date">{{ $t('gallery.sortDate') }}</option>
+            </select>
+            <button @click="toggleSortOrder" class="sort-order-button" :title="$t(sortOrder === 'asc' ? 'gallery.sortAsc' : 'gallery.sortDesc')">
+              <i :class="sortOrder === 'asc' ? 'fa fa-sort-amount-down' : 'fa fa-sort-amount-up'" class="icon"></i>
+              <span class="sort-order-text">{{ $t(sortOrder === 'asc' ? 'gallery.sortAsc' : 'gallery.sortDesc') }}</span>
+            </button>
+          </div>
+          
           <button class="grid-view-toggle" @click="toggleGridView">
             <i :class="isGridView ? 'fa fa-th-large' : 'fa fa-th-list'" class="icon"></i>
             {{ $t(isGridView ? 'gallery.listView' : 'gallery.gridView') }}
@@ -33,7 +46,7 @@
           </div>
           <div class="sidebar-content" :class="{ 'active': isSidebarOpen }">
             <character-selector />
-            <type-selector />
+            <tag-selector />
           </div>
         </aside>
 
@@ -53,7 +66,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAppStore } from '@/stores/app'
 import CharacterSelector from '@/components/CharacterSelector.vue'
-import TypeSelector from '@/components/TypeSelector.vue'
+import TagSelector from '@/components/TagSelector.vue'
 import ImageGallery from '@/components/ImageGallery.vue'
 import FullscreenViewer from '@/components/FullscreenViewer.vue'
 
@@ -107,6 +120,22 @@ const updateSearchQuery = (value: string) => {
 const clearSearch = () => {
   // 使用Store的清空搜索方法
   appStore.clearSearch()
+}
+
+// 排序相关
+const sortBy = computed({
+  get: () => appStore.sortBy,
+  set: (value) => appStore.sortBy = value
+})
+
+const sortOrder = computed({
+  get: () => appStore.sortOrder,
+  set: (value) => appStore.sortOrder = value
+})
+
+// 切换排序顺序
+const toggleSortOrder = () => {
+  sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
 }
 
 // 打开查看器
@@ -224,6 +253,73 @@ onBeforeUnmount(() => {
   position: relative;
   width: 16rem;
   margin-right: 0.5rem;
+}
+
+.sort-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.sort-select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.375rem;
+  background-color: white;
+  color: rgb(55, 65, 81);
+  font-size: 0.875rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.dark .sort-select {
+  background-color: rgb(31, 41, 55);
+  border-color: rgb(75, 85, 99);
+  color: rgb(229, 231, 235);
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: rgb(99, 102, 241);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.sort-order-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  background-color: rgb(243, 244, 246);
+  color: rgb(55, 65, 81);
+  transition: background-color 0.2s;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.dark .sort-order-button {
+  background-color: rgb(31, 41, 55);
+  color: rgb(209, 213, 219);
+}
+
+.sort-order-button:hover {
+  background-color: rgb(229, 231, 235);
+}
+
+.dark .sort-order-button:hover {
+  background-color: rgb(55, 65, 81);
+}
+
+.sort-order-text {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .sort-order-text {
+    display: inline;
+  }
 }
 
 @media (max-width: 768px) {

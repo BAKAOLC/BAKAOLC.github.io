@@ -126,69 +126,6 @@ export const siteConfig: SiteConfig = {
     }
   ],
 
-  imageTypes: [
-    {
-      id: 'design',
-      name: {
-        en: 'Character Design',
-        zh: '设定图',
-        jp: '設定図'
-      },
-      description: {
-        en: 'Character design references and concept art',
-        zh: '角色设定参考图和概念艺术',
-        jp: 'キャラクター設定資料とコンセプトアート'
-      },
-      icon: 'image',
-      color: '#8b5cf6'
-    },
-    {
-      id: 'wallpaper',
-      name: {
-        en: 'Wallpaper',
-        zh: '壁纸',
-        jp: '壁紙'
-      },
-      description: {
-        en: 'High-quality wallpapers and background images',
-        zh: '高质量壁纸和背景图片',
-        jp: '高品質の壁紙と背景画像'
-      },
-      icon: 'image',
-      color: '#06b6d4'
-    },
-    {
-      id: 'miscellaneous',
-      name: {
-        en: 'Miscellaneous',
-        zh: '杂项',
-        jp: 'その他'
-      },
-      description: {
-        en: 'Various miscellaneous content',
-        zh: '各种杂项内容',
-        jp: '様々なその他のコンテンツ'
-      },
-      icon: 'image',
-      color: '#f59e0b'
-    },
-    {
-      id: 'emoji',
-      name: {
-        en: 'Emoji/Sticker',
-        zh: '表情包',
-        jp: 'スタンプ'
-      },
-      description: {
-        en: 'Emoji, stickers and expressions',
-        zh: '表情包、贴纸和表情',
-        jp: '絵文字、ステッカー、表情'
-      },
-      icon: 'image',
-      color: '#ec4899'
-    }
-  ],
-
   tags: [
     {
       id: 'commission',
@@ -197,7 +134,8 @@ export const siteConfig: SiteConfig = {
         zh: '约稿',
         jp: '依頼'
       },
-      color: '#10b981'
+      color: '#10b981',
+      icon: 'handshake'
     },
     {
       id: 'gift',
@@ -206,7 +144,8 @@ export const siteConfig: SiteConfig = {
         zh: '赠送',
         jp: 'プレゼント'
       },
-      color: '#f59e0b'
+      color: '#f59e0b',
+      icon: 'gift'
     },
     {
       id: 'original',
@@ -215,7 +154,28 @@ export const siteConfig: SiteConfig = {
         zh: '原创',
         jp: 'オリジナル'
       },
-      color: '#8b5cf6'
+      color: '#8b5cf6',
+      icon: 'lightbulb'
+    },
+    {
+      id: 'design',
+      name: {
+        en: 'Character Design',
+        zh: '角色设定',
+        jp: 'キャラクターデザイン'
+      },
+      color: '#4f46e5',
+      icon: 'image'
+    },
+    {
+      id: 'wallpaper',
+      name: {
+        en: 'Wallpaper',
+        zh: '壁纸',
+        jp: '壁紙'
+      },
+      color: '#f472b6',
+      icon: 'image'
     },
     {
       id: 'illustration',
@@ -224,7 +184,8 @@ export const siteConfig: SiteConfig = {
         zh: '插画',
         jp: 'イラスト'
       },
-      color: '#f472b6'
+      color: '#f472b6',
+      icon: 'palette'
     },
     {
       id: 'chibi',
@@ -233,7 +194,8 @@ export const siteConfig: SiteConfig = {
         zh: 'Q版',
         jp: 'ちび'
       },
-      color: '#06b6d4'
+      color: '#06b6d4',
+      icon: 'baby'
     },
     {
       id: 'avatar',
@@ -242,7 +204,8 @@ export const siteConfig: SiteConfig = {
         zh: '头像',
         jp: 'アバター'
       },
-      color: '#10b981'
+      color: '#10b981',
+      icon: 'user-circle'
     },
     {
       id: 'sketch',
@@ -251,7 +214,8 @@ export const siteConfig: SiteConfig = {
         zh: '速绘',
         jp: 'スケッチ'
       },
-      color: '#8b5cf6'
+      color: '#8b5cf6',
+      icon: 'edit'
     },
     {
       id: 'emoji',
@@ -260,7 +224,8 @@ export const siteConfig: SiteConfig = {
         zh: '表情包',
         jp: '絵文字'
       },
-      color: '#ec4899'
+      color: '#ec4899',
+      icon: 'smile'
     }
   ],
 
@@ -284,9 +249,8 @@ export const siteConfig: SiteConfig = {
         jp: '橙灵光'
       },
       src: '/assets/catagory/ritsukage-utsumabo/design/1.png',
-      tags: ['commission'],
+      tags: ['commission', 'design'],
       characters: ['ritsukage-utsumabo'],
-      types: ['design']
     },
     {
       id: 'design-2',
@@ -306,9 +270,8 @@ export const siteConfig: SiteConfig = {
         jp: '橙灵光'
       },
       src: '/assets/catagory/ritsukage-utsumabo/design/2.png',
-      tags: ['commission'],
+      tags: ['commission', 'design'],
       characters: ['ritsukage-utsumabo'],
-      types: ['design']
     },
 
     // 壁纸
@@ -330,9 +293,8 @@ export const siteConfig: SiteConfig = {
         jp: '木月'
       },
       src: '/assets/catagory/ritsukage-utsumabo/wallpaper/1.png',
-      tags: ['commission'],
+      tags: ['commission', 'wallpaper'],
       characters: ['ritsukage-utsumabo'],
-      types: ['wallpaper']
     },
     {
       id: 'wallpaper-2',
@@ -352,9 +314,8 @@ export const siteConfig: SiteConfig = {
         jp: '破皮皮'
       },
       src: '/assets/catagory/ritsukage-utsumabo/wallpaper/2.png',
-      tags: ['commission'],
+      tags: ['commission', 'wallpaper'],
       characters: ['ritsukage-utsumabo'],
-      types: ['wallpaper']
     },
     {
       id: 'wallpaper-3-1',
@@ -374,9 +335,8 @@ export const siteConfig: SiteConfig = {
         jp: 'Re-ViVi'
       },
       src: '/assets/catagory/ritsukage-utsumabo/wallpaper/3-1.png',
-      tags: ['commission'],
+      tags: ['commission', 'wallpaper'],
       characters: ['ritsukage-utsumabo'],
-      types: ['wallpaper']
     },
     {
       id: 'wallpaper-3-2',
@@ -396,9 +356,8 @@ export const siteConfig: SiteConfig = {
         jp: 'Re-ViVi'
       },
       src: '/assets/catagory/ritsukage-utsumabo/wallpaper/3-2.png',
-      tags: ['commission'],
+      tags: ['commission', 'wallpaper'],
       characters: ['ritsukage-utsumabo'],
-      types: ['wallpaper']
     },
 
     // 插图
@@ -420,9 +379,8 @@ export const siteConfig: SiteConfig = {
         jp: 'ID'
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/original.png',
-      tags: ['commission'],
+      tags: ['commission', 'design'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-psyche-1',
@@ -444,7 +402,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-1.png',
       tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-psyche-2',
@@ -466,7 +423,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-2.png',
       tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-psyche-3',
@@ -488,7 +444,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-3.png',
       tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-lemonade',
@@ -510,7 +465,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/柠檬水小律影.png',
       tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-moon',
@@ -532,7 +486,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/流月绘.jpg',
       tags: ['gift', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-halfhang',
@@ -554,7 +507,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/半挂绘.jpg',
       tags: ['gift', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-mist-1',
@@ -576,7 +528,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/雾酱绘.png',
       tags: ['gift', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-yukata',
@@ -598,7 +549,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/雾酱绘浴衣律影.jpg',
       tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-bug',
@@ -620,7 +570,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/BUG 律影.png',
       tags: ['gift', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-hoodie',
@@ -642,7 +591,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/含片绘兜帽律影.jpg',
       tags: ['gift', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-bluesky',
@@ -664,7 +612,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/青空之影.jpg',
       tags: ['gift', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-miauji',
@@ -686,7 +633,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/喵叽绘.jpg',
       tags: ['gift', 'avatar'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-park',
@@ -708,7 +654,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/公园律影.png',
       tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-sunshine',
@@ -730,7 +675,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/阳光律影.png',
       tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-qqman',
@@ -752,7 +696,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/QQ人小律影.png',
       tags: ['commission', 'chibi'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-noripasuta',
@@ -774,7 +717,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/律影.png',
       tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
 
     {
@@ -797,7 +739,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/塔罗牌 女皇 律影.jpg',
       tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-softcat',
@@ -819,7 +760,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/软软猫律影.png',
       tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-speedart',
@@ -841,7 +781,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/速绘小律影头.png',
       tags: ['commission', 'avatar', 'sketch'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-blue',
@@ -863,7 +802,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/蓝蓝的小律影.png',
       tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-newyear',
@@ -885,7 +823,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/新年头像.png',
       tags: ['commission', 'avatar'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-q1',
@@ -907,7 +844,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/Q版小律影-1.png',
       tags: ['commission', 'chibi'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-q2',
@@ -929,7 +865,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/Q版小律影-2.png',
       tags: ['commission', 'chibi'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-q3',
@@ -951,7 +886,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/Q版小律影-3.png',
       tags: ['commission', 'chibi'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'illust-miya',
@@ -973,7 +907,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/Miya绘.jpg',
       tags: ['commission', 'chibi'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
 
     // 表情包
@@ -997,7 +930,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/阿巴阿巴小律影.png',
       tags: ['commission', 'avatar', 'chibi', 'emoji'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'emoji-wow',
@@ -1019,7 +951,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/哇小律影.png',
       tags: ['commission', 'emoji'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'emoji-checkin',
@@ -1041,7 +972,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/小律影打卡.gif',
       tags: ['commission', 'emoji'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     },
     {
       id: 'emoji-punch',
@@ -1063,7 +993,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/打拳表情包.png',
       tags: ['commission', 'emoji'],
       characters: ['ritsukage-utsumabo'],
-      types: ['miscellaneous']
     }
   ]
 }
