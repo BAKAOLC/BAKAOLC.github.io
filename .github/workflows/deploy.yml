@@ -34,7 +34,7 @@ jobs:
         id: cache-thumbnail-cache
         with:
           path: .thumbnail-cache.json
-          key: thumbnail-cache-${{ hashFiles('public/assets/**/*') }}
+          key: thumbnail-cache-v1
           restore-keys: |
             thumbnail-cache-
             
@@ -43,33 +43,51 @@ jobs:
         id: cache-thumbnails
         with:
           path: public/assets/thumbnails
-          key: thumbnails-${{ hashFiles('public/assets/**/*') }}-${{ hashFiles('scripts/generate-thumbnails.cjs') }}
+          key: thumbnails-v1-${{ hashFiles('scripts/generate-thumbnails.cjs') }}
           restore-keys: |
-            thumbnails-${{ hashFiles('public/assets/**/*') }}-
+            thumbnails-v1-
             thumbnails-
           
       - name: Install dependencies
         run: npm ci
         
+      - name: Check cache status
+        run: |
+          echo "Thumbnail cache hit: ${{ steps.cache-thumbnails.outputs.cache-hit }}"
+          echo "Cache file hit: ${{ steps.cache-thumbnail-cache.outputs.cache-hit }}"
+          if [ -d "public/assets/thumbnails" ]; then
+            echo "Thumbnails directory exists with $(find public/assets/thumbnails -type f | wc -l) files"
+          else
+            echo "Thumbnails directory does not exist"
+          fi
+          if [ -f ".thumbnail-cache.json" ]; then
+            echo "Cache file exists with $(wc -l < .thumbnail-cache.json) lines"
+          else
+            echo "Cache file does not exist"
+          fi
+        
       - name: Create thumbnails directory if not exists
         run: mkdir -p public/assets/thumbnails
+        
+      - name: Generate thumbnails (with incremental update)
+        run: npm run generate-thumbnails
         
       - name: Build
         run: npm run build
         
       - name: Save thumbnail cache file
         uses: actions/cache/save@v4
-        if: always()
+        if: always() && steps.cache-thumbnail-cache.outputs.cache-hit != 'true'
         with:
           path: .thumbnail-cache.json
-          key: thumbnail-cache-${{ hashFiles('public/assets/**/*') }}
+          key: thumbnail-cache-v1
           
       - name: Save generated thumbnails
         uses: actions/cache/save@v4
-        if: always()
+        if: always() && steps.cache-thumbnails.outputs.cache-hit != 'true'
         with:
           path: public/assets/thumbnails
-          key: thumbnails-${{ hashFiles('public/assets/**/*') }}-${{ hashFiles('scripts/generate-thumbnails.cjs') }}
+          key: thumbnails-v1-${{ hashFiles('scripts/generate-thumbnails.cjs') }}
         
       - name: Setup Pages
         uses: actions/configure-pages@v4
