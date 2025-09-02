@@ -189,10 +189,11 @@ const onImageLoad = () => {
   // 主图加载完成后，等待fade-out动画完成再隐藏缩略图
   // 这样可以避免透明图片的光晕效果
   const transitions = AnimationDurations.getProgressiveImageTransitions()
-  const fadeOutDuration = transitions.thumbnailFade || 200 // 后备值200ms
+  const fadeOutDuration = transitions.thumbnailFade
+  const waitTime = fadeOutDuration + 50
   setTimeout(() => {
     thumbnailHidden.value = true
-  }, fadeOutDuration + 50) // 略大于fade-out过渡时间
+  }, waitTime) // 如果没有动画则等待50ms，有动画则等待动画时长+50ms
   
   emit('load')
 }
@@ -202,9 +203,12 @@ const onProgressImageLoad = () => {
   isLoading.value = false
   
   // 主图加载完成后，等待fade-out动画完成再隐藏缩略图
+  const transitions = AnimationDurations.getProgressiveImageTransitions()
+  const fadeOutDuration = transitions.thumbnailFade
+  const waitTime = fadeOutDuration + 50
   setTimeout(() => {
     thumbnailHidden.value = true
-  }, 250)
+  }, waitTime) // 如果没有动画则等待50ms，有动画则等待动画时长+50ms
   
   emit('load')
 }
