@@ -43,6 +43,15 @@ const displayLanguage = computed(() => {
 })
 
 const toggleLanguageMenu = () => {
+  // 添加点击动画效果
+  const button = event?.target as HTMLElement
+  if (button) {
+    button.style.transform = 'scale(0.95)'
+    setTimeout(() => {
+      button.style.transform = ''
+    }, 150)
+  }
+  
   isOpen.value = !isOpen.value
 }
 
@@ -85,12 +94,18 @@ onBeforeUnmount(() => {
   @apply text-gray-700 dark:text-gray-300;
   @apply border border-gray-200 dark:border-gray-700;
   @apply hover:bg-gray-50 dark:hover:bg-gray-700;
-  @apply transition-colors duration-200;
+  @apply transition-all duration-300;
   @apply focus:outline-none focus:ring-2 focus:ring-primary-500;
+  transform-origin: center;
+}
+
+.language-button:hover {
+  transform: scale(1.02);
 }
 
 .icon {
   @apply w-4 h-4;
+  flex-shrink: 0;
 }
 
 
@@ -102,18 +117,25 @@ onBeforeUnmount(() => {
   @apply rounded-lg shadow-lg;
   @apply w-40 z-10;
   @apply opacity-0 scale-95 origin-top-right;
-  @apply transition-all duration-200;
+  @apply transition-all duration-300;
+  transform: translateY(-10px) scale(0.95);
 }
 
 .menu-open {
   @apply opacity-100 scale-100;
+  transform: translateY(0) scale(1);
 }
 
 .language-option {
   @apply flex items-center w-full px-4 py-2;
   @apply text-left text-sm text-gray-700 dark:text-gray-300;
   @apply hover:bg-gray-100 dark:hover:bg-gray-700;
-  @apply transition-colors duration-150;
+  @apply transition-all duration-200;
+  transform-origin: left center;
+}
+
+.language-option:hover {
+  transform: translateX(4px);
 }
 
 .language-option.active {
@@ -123,16 +145,45 @@ onBeforeUnmount(() => {
 }
 
 .language-text {
-  @apply hidden sm:inline;
+  @apply sm:inline;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .language-text {
+    width: 0;
+    opacity: 0;
+    margin: 0;
+    flex-shrink: 1;
+  }
 }
 
 .arrow-icon {
-  @apply hidden sm:inline-block w-4 h-4 ml-1 transition-transform duration-200;
+  @apply w-4 h-4 ml-1 transition-all duration-300 ease-in-out;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .arrow-icon {
+    width: 0;
+    opacity: 0;
+    margin: 0;
+    flex-shrink: 1;
+  }
 }
 
 @media (max-width: 640px) {
   .language-button {
     @apply p-2;
+    gap: 0;
+    min-width: 2.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    justify-content: center;
   }
   
   .language-menu {

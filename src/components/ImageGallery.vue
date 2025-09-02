@@ -4,38 +4,48 @@
       {{ $t('gallery.noImages') }}
     </div>
 
-    <div v-else :class="{ 'image-grid': gridView, 'image-list': !gridView }">
-      <div v-for="image in images" :key="image.id" :class="{ 'image-card': gridView, 'image-list-item': !gridView }"
-        @click="viewImage(image)">
-        <div class="image-container">
-          <ProgressiveImage 
-            :src="image.src" 
-            :alt="t(image.name, currentLanguage)" 
-            class="image"
-            image-class="gallery-image"
-            object-fit="contain"
-            :show-loader="true"
-            preload-size="tiny"
-            display-type="thumbnail"
-            display-size="medium"
-            :delay-main-image="100"
-          />
-        </div>
+    <transition-group 
+      v-else
+      :name="gridView ? 'grid-item' : 'list-item'" 
+      tag="div" 
+      :class="{ 'image-grid': gridView, 'image-list': !gridView }"
+      appear
+    >
+        <div 
+          v-for="image in images" 
+          :key="image.id" 
+          :class="{ 'image-card': gridView, 'image-list-item': !gridView }"
+          @click="viewImage(image)"
+        >
+          <div class="image-container">
+            <ProgressiveImage 
+              :src="image.src" 
+              :alt="t(image.name, currentLanguage)" 
+              class="image"
+              image-class="gallery-image"
+              object-fit="contain"
+              :show-loader="true"
+              preload-size="tiny"
+              display-type="thumbnail"
+              display-size="medium"
+              :delay-main-image="100"
+            />
+          </div>
 
-        <div class="image-info">
-          <h3 class="image-name">{{ t(image.name, currentLanguage) }}</h3>
+          <div class="image-info">
+            <h3 class="image-name">{{ t(image.name, currentLanguage) }}</h3>
 
-          <div class="image-meta">
-            <div class="image-tags">
-              <span v-for="tagId in image.tags" :key="tagId" class="image-tag"
-                :style="{ backgroundColor: getTagColor(tagId) }">
-                {{ getTagName(tagId) }}
-              </span>
+            <div class="image-meta">
+              <div class="image-tags">
+                <span v-for="tagId in image.tags" :key="tagId" class="image-tag"
+                  :style="{ backgroundColor: getTagColor(tagId) }">
+                  {{ getTagName(tagId) }}
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+    </transition-group>
   </div>
 </template>
 
@@ -111,6 +121,8 @@ const t = (text: I18nText | string, lang?: string) => {
   /* 增加右侧空间，保证滚动条有足够显示空间 */
   width: 100%;
   padding-bottom: 1rem; /* 确保底部有足够空间 */
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
 }
 
 @media (max-width: 640px) {
@@ -125,6 +137,8 @@ const t = (text: I18nText | string, lang?: string) => {
   padding-right: 8px;
   /* 增加右侧空间，保证滚动条有足够显示空间 */
   width: 100%;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
 }
 
 .image-card {
@@ -250,5 +264,45 @@ const t = (text: I18nText | string, lang?: string) => {
     @apply px-1 py-0.5 text-xs; /* 移动端更紧凑的标签 */
     font-size: 10px; /* 更小的字体 */
   }
+}
+
+/* 网格视图过渡动画 */
+.grid-item-enter-active,
+.grid-item-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.grid-item-enter-from {
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+}
+
+.grid-item-leave-to {
+  opacity: 0;
+  transform: translateY(-20px) scale(0.95);
+}
+
+.grid-item-move {
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 列表视图过渡动画 */
+.list-item-enter-active,
+.list-item-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.list-item-enter-from {
+  opacity: 0;
+  transform: translateX(-20px) scale(0.98);
+}
+
+.list-item-leave-to {
+  opacity: 0;
+  transform: translateX(20px) scale(0.98);
+}
+
+.list-item-move {
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 </style>
