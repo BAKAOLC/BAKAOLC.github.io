@@ -14,10 +14,11 @@
             class="image"
             image-class="gallery-image"
             object-fit="contain"
-            :show-loader="false"
+            :show-loader="true"
             preload-size="tiny"
             display-type="thumbnail"
             display-size="medium"
+            :delay-main-image="100"
           />
         </div>
 
@@ -140,7 +141,6 @@ const t = (text: I18nText | string, lang?: string) => {
 
 .image-container {
   @apply overflow-hidden;
-  @apply bg-gray-100 dark:bg-gray-900;
 }
 
 .image-card .image-container {
@@ -151,7 +151,7 @@ const t = (text: I18nText | string, lang?: string) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  @apply bg-gray-100 dark:bg-gray-800 rounded-lg;
+  @apply rounded-lg;
   margin-bottom: 1rem;
 }
 
@@ -164,7 +164,7 @@ const t = (text: I18nText | string, lang?: string) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  @apply bg-gray-100 dark:bg-gray-800 rounded-lg;
+  @apply rounded-lg;
   margin-right: 1rem;
 }
 
