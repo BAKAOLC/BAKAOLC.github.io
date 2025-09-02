@@ -137,7 +137,7 @@ onMounted(() => {
   @apply bg-white dark:bg-gray-800;
   @apply border-b border-gray-200 dark:border-gray-700;
   @apply shadow-sm;
-  @apply transition-colors duration-500;
+  @apply transition-all duration-500;
   min-height: 60px;
   /* 最小头部高度，允许在移动端扩展 */
 }
@@ -146,24 +146,29 @@ onMounted(() => {
   @apply container mx-auto px-4;
   @apply flex items-center justify-between;
   min-height: 60px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .logo-link {
   @apply flex items-center gap-3;
   @apply text-gray-900 dark:text-white;
   @apply no-underline;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .logo {
   @apply w-8 h-8 rounded-full;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .site-title {
   @apply text-xl font-bold;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .header-controls {
   @apply flex items-center gap-3;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .main {
@@ -210,6 +215,15 @@ onMounted(() => {
     @apply flex-row items-center justify-between;
     @apply py-3;
     min-height: auto;
+    gap: 0.5rem;
+  }
+
+  .logo-link {
+    gap: 0.5rem;
+  }
+
+  .logo {
+    @apply w-6 h-6;
   }
 
   .site-title {
