@@ -29,11 +29,47 @@ jobs:
           node-version: '24'
           cache: 'npm'
           
+      - name: Restore thumbnail cache file
+        uses: actions/cache/restore@v4
+        id: cache-thumbnail-cache
+        with:
+          path: .thumbnail-cache.json
+          key: thumbnail-cache-${{ hashFiles('public/assets/**/*') }}
+          restore-keys: |
+            thumbnail-cache-
+            
+      - name: Restore generated thumbnails
+        uses: actions/cache/restore@v4
+        id: cache-thumbnails
+        with:
+          path: public/assets/thumbnails
+          key: thumbnails-${{ hashFiles('public/assets/**/*') }}-${{ hashFiles('scripts/generate-thumbnails.cjs') }}
+          restore-keys: |
+            thumbnails-${{ hashFiles('public/assets/**/*') }}-
+            thumbnails-
+          
       - name: Install dependencies
         run: npm ci
         
+      - name: Create thumbnails directory if not exists
+        run: mkdir -p public/assets/thumbnails
+        
       - name: Build
         run: npm run build
+        
+      - name: Save thumbnail cache file
+        uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: .thumbnail-cache.json
+          key: thumbnail-cache-${{ hashFiles('public/assets/**/*') }}
+          
+      - name: Save generated thumbnails
+        uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: public/assets/thumbnails
+          key: thumbnails-${{ hashFiles('public/assets/**/*') }}-${{ hashFiles('scripts/generate-thumbnails.cjs') }}
         
       - name: Setup Pages
         uses: actions/configure-pages@v4
