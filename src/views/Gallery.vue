@@ -3,41 +3,11 @@
     <div class="container mx-auto px-4 py-4 flex-1 h-full overflow-hidden">
       <div class="gallery-header">
         <h1 class="gallery-title">{{ $t('gallery.title') }}</h1>
-        <div class="gallery-controls">
-          <div class="search-container">
-            <input 
-              type="text" 
-              :value="searchQuery"
-              @input="e => updateSearchQuery((e.target as HTMLInputElement).value)" 
-              :placeholder="$t('gallery.searchPlaceholder')" 
-              class="search-input"
-            />
-            <button v-if="searchQuery" @click="clearSearch" class="search-clear">
-              <i class="fa fa-times" aria-hidden="true"></i>
-            </button>
-          </div>
-          
-          <div class="sort-container">
-            <select v-model="sortBy" class="sort-select">
-              <option value="name">{{ $t('gallery.sortName') }}</option>
-              <option value="artist">{{ $t('gallery.sortArtist') }}</option>
-              <option value="date">{{ $t('gallery.sortDate') }}</option>
-            </select>
-            <button @click="toggleSortOrder" class="sort-order-button" :title="$t(sortOrder === 'asc' ? 'gallery.sortAsc' : 'gallery.sortDesc')">
-              <i :class="sortOrder === 'asc' ? 'fa fa-sort-amount-down' : 'fa fa-sort-amount-up'" class="icon"></i>
-              <span class="sort-order-text">{{ $t(sortOrder === 'asc' ? 'gallery.sortAsc' : 'gallery.sortDesc') }}</span>
-            </button>
-          </div>
-          
-          <button class="grid-view-toggle" @click="toggleGridView">
-            <i :class="isGridView ? 'fa fa-th-large' : 'fa fa-th-list'" class="icon"></i>
-            {{ $t(isGridView ? 'gallery.listView' : 'gallery.gridView') }}
-          </button>
-        </div>
+
       </div>
 
-      <!-- 移动端搜索栏 -->
-      <div class="mobile-search-bar md:hidden">
+      <!-- 统一搜索栏 -->
+      <div class="unified-search-bar">
         <div class="search-container">
           <input 
             type="text" 
@@ -51,17 +21,19 @@
           </button>
         </div>
         
-        <div class="mobile-controls">
-          <select v-model="sortBy" class="sort-select mobile">
+        <div class="search-controls">
+          <select v-model="sortBy" class="sort-select">
             <option value="name">{{ $t('gallery.sortName') }}</option>
             <option value="artist">{{ $t('gallery.sortArtist') }}</option>
             <option value="date">{{ $t('gallery.sortDate') }}</option>
           </select>
-          <button @click="toggleSortOrder" class="sort-order-button mobile" :title="$t(sortOrder === 'asc' ? 'gallery.sortAsc' : 'gallery.sortDesc')">
+          <button @click="toggleSortOrder" class="sort-order-button" :title="$t(sortOrder === 'asc' ? 'gallery.sortAsc' : 'gallery.sortDesc')">
             <i :class="sortOrder === 'asc' ? 'fa fa-sort-amount-down' : 'fa fa-sort-amount-up'"></i>
+            <span class="sort-order-text">{{ $t(sortOrder === 'asc' ? 'gallery.sortAsc' : 'gallery.sortDesc') }}</span>
           </button>
-          <button class="grid-view-toggle mobile" @click="toggleGridView">
+          <button class="grid-view-toggle" @click="toggleGridView">
             <i :class="isGridView ? 'fa fa-th-large' : 'fa fa-th-list'"></i>
+            <span class="grid-view-text">{{ $t(isGridView ? 'gallery.listView' : 'gallery.gridView') }}</span>
           </button>
         </div>
       </div>
@@ -366,19 +338,16 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 768px) {
-  .gallery-controls {
-    @apply flex-col items-center gap-3 w-full;
-  }
-  
   .gallery-header {
     display: none;
   }
 }
 
-/* 移动端搜索栏样式 */
-.mobile-search-bar {
+/* 统一搜索栏样式 */
+.unified-search-bar {
   display: flex;
   align-items: center;
+  justify-content: center; /* 居中对齐 */
   gap: 0.75rem;
   margin-bottom: 1rem;
   padding: 0.75rem;
@@ -386,232 +355,54 @@ onBeforeUnmount(() => {
   border: 1px solid rgb(229, 231, 235);
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
 }
 
-/* 确保在桌面端隐藏移动端搜索栏 */
-@media (min-width: 768px) {
-  .mobile-search-bar {
-    display: none !important;
-  }
-}
-
-.dark .mobile-search-bar {
+.dark .unified-search-bar {
   background-color: rgb(31, 41, 55);
   border-color: rgb(75, 85, 99);
 }
 
-.mobile-search-bar .search-container {
+.unified-search-bar .search-container {
   flex: 1;
+  min-width: 200px;
   display: flex;
   align-items: center;
   position: relative;
 }
 
-.mobile-search-bar .search-input {
+.unified-search-bar .search-input {
   width: 100%;
   padding: 0.5rem;
+  padding-right: 2.5rem;
   border: 1px solid rgb(209, 213, 219);
   border-radius: 0.375rem;
   font-size: 0.875rem;
   background-color: white;
   color: rgb(17, 24, 39);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  height: 2.25rem; /* 设置固定高度 */
+  box-sizing: border-box;
 }
 
-.dark .mobile-search-bar .search-input {
+.dark .unified-search-bar .search-input {
   background-color: rgb(55, 65, 81);
   border-color: rgb(75, 85, 99);
   color: rgb(243, 244, 246);
 }
 
-.mobile-search-bar .mobile-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.mobile-search-bar .sort-select.mobile {
-  padding: 0.5rem;
-  border: 1px solid rgb(209, 213, 219);
-  border-radius: 0.375rem;
-  font-size: 0.75rem;
-  min-width: 80px;
-  background-color: white;
-}
-
-.dark .mobile-search-bar .sort-select.mobile {
-  background-color: rgb(55, 65, 81);
-  border-color: rgb(75, 85, 99);
-  color: rgb(243, 244, 246);
-}
-
-.mobile-search-bar .sort-order-button.mobile,
-.mobile-search-bar .grid-view-toggle.mobile {
-  padding: 0.5rem;
-  border: 1px solid rgb(209, 213, 219);
-  border-radius: 0.375rem;
-  background-color: white;
-  color: rgb(107, 114, 128);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 40px;
-  transition: all 0.2s;
-}
-
-.dark .mobile-search-bar .sort-order-button.mobile,
-.dark .mobile-search-bar .grid-view-toggle.mobile {
-  background-color: rgb(55, 65, 81);
-  border-color: rgb(75, 85, 99);
-  color: rgb(156, 163, 175);
-}
-
-.mobile-search-bar .sort-order-button.mobile:hover,
-.mobile-search-bar .grid-view-toggle.mobile:hover {
-  background-color: rgb(243, 244, 246);
-  color: rgb(55, 65, 81);
-}
-
-.dark .mobile-search-bar .sort-order-button.mobile:hover,
-.dark .mobile-search-bar .grid-view-toggle.mobile:hover {
-  background-color: rgb(75, 85, 99);
-  color: rgb(209, 213, 219);
-}
-
-.grid-view-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.5rem;
-  background-color: rgb(243, 244, 246);
-  color: rgb(55, 65, 81);
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: background-color 0.2s;
-}
-
-.dark .grid-view-toggle {
-  background-color: rgb(31, 41, 55);
-  color: rgb(209, 213, 219);
-}
-
-.grid-view-toggle:hover {
-  background-color: rgb(229, 231, 235);
-}
-
-.dark .grid-view-toggle:hover {
-  background-color: rgb(55, 65, 81);
-}
-
-.search-container {
-  position: relative;
-  width: 16rem;
-  margin-right: 0.5rem;
-}
-
-.sort-container {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-right: 0.5rem;
-}
-
-.sort-select {
-  padding: 0.5rem 0.75rem;
-  border: 1px solid rgb(209, 213, 219);
-  border-radius: 0.375rem;
-  background-color: white;
-  color: rgb(55, 65, 81);
-  font-size: 0.875rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.dark .sort-select {
-  background-color: rgb(31, 41, 55);
-  border-color: rgb(75, 85, 99);
-  color: rgb(229, 231, 235);
-}
-
-.sort-select:focus {
-  outline: none;
-  border-color: rgb(99, 102, 241);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-}
-
-.sort-order-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.375rem;
-  background-color: rgb(243, 244, 246);
-  color: rgb(55, 65, 81);
-  transition: background-color 0.2s;
-  font-size: 0.875rem;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.dark .sort-order-button {
-  background-color: rgb(31, 41, 55);
-  color: rgb(209, 213, 219);
-}
-
-.sort-order-button:hover {
-  background-color: rgb(229, 231, 235);
-}
-
-.dark .sort-order-button:hover {
-  background-color: rgb(55, 65, 81);
-}
-
-.sort-order-text {
-  display: none;
-}
-
-@media (min-width: 640px) {
-  .sort-order-text {
-    display: inline;
-  }
-}
-
-@media (max-width: 768px) {
-  .search-container {
-    @apply w-full max-w-sm mx-0;
-  }
-}
-
-.search-input {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  padding-right: 2.5rem;
-  border: 1px solid rgb(209, 213, 219);
-  border-radius: 0.375rem;
-  background-color: white;
-  color: rgb(55, 65, 81);
-  font-size: 0.875rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.dark .search-input {
-  background-color: rgb(31, 41, 55);
-  border-color: rgb(75, 85, 99);
-  color: rgb(229, 231, 235);
-}
-
-.search-input:focus {
+.unified-search-bar .search-input:focus {
   outline: none;
   border-color: rgb(59, 130, 246);
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
-.dark .search-input:focus {
+.dark .unified-search-bar .search-input:focus {
   border-color: rgb(96, 165, 250);
   box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
 }
 
-.search-clear {
+.unified-search-bar .search-clear {
   position: absolute;
   right: 0.5rem;
   top: 50%;
@@ -628,15 +419,109 @@ onBeforeUnmount(() => {
   justify-content: center;
 }
 
-.search-clear:hover {
+.unified-search-bar .search-clear:hover {
   color: rgb(107, 114, 128);
   background-color: rgb(243, 244, 246);
 }
 
-.dark .search-clear:hover {
+.dark .unified-search-bar .search-clear:hover {
   color: rgb(209, 213, 219);
   background-color: rgb(55, 65, 81);
 }
+
+.unified-search-bar .search-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* 居中对齐 */
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.unified-search-bar .sort-select {
+  padding: 0.5rem;
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  min-width: 100px;
+  background-color: white;
+  color: rgb(17, 24, 39);
+  height: 2.25rem; /* 设置固定高度 */
+  box-sizing: border-box;
+}
+
+.dark .unified-search-bar .sort-select {
+  background-color: rgb(55, 65, 81);
+  border-color: rgb(75, 85, 99);
+  color: rgb(243, 244, 246);
+}
+
+.unified-search-bar .sort-order-button,
+.unified-search-bar .grid-view-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.375rem;
+  background-color: white;
+  color: rgb(107, 114, 128);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  white-space: nowrap;
+  height: 2.25rem; /* 设置固定高度 */
+  box-sizing: border-box;
+}
+
+.dark .unified-search-bar .sort-order-button,
+.dark .unified-search-bar .grid-view-toggle {
+  background-color: rgb(55, 65, 81);
+  border-color: rgb(75, 85, 99);
+  color: rgb(156, 163, 175);
+}
+
+.unified-search-bar .sort-order-button:hover,
+.unified-search-bar .grid-view-toggle:hover {
+  background-color: rgb(243, 244, 246);
+  color: rgb(55, 65, 81);
+}
+
+.dark .unified-search-bar .sort-order-button:hover,
+.dark .unified-search-bar .grid-view-toggle:hover {
+  background-color: rgb(75, 85, 99);
+  color: rgb(209, 213, 219);
+}
+
+/* 移动端响应式调整 */
+@media (max-width: 768px) {
+  .unified-search-bar .sort-order-button .sort-order-text,
+  .unified-search-bar .grid-view-toggle .grid-view-text {
+    display: none;
+  }
+  
+  .unified-search-bar .sort-order-button,
+  .unified-search-bar .grid-view-toggle {
+    min-width: 44px;
+    padding: 0.5rem;
+  }
+  
+  .unified-search-bar .sort-select {
+    min-width: 80px;
+  }
+}
+
+/* 桌面端显示文字标签 */
+@media (min-width: 769px) {
+  .unified-search-bar .sort-order-text,
+  .unified-search-bar .grid-view-text {
+    display: inline;
+  }
+}
+
+
+
+
 
 
 
