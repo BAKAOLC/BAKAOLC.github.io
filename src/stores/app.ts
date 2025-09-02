@@ -18,7 +18,7 @@ export const useAppStore = defineStore('app', () => {
   
   // 存储搜索前的状态，以便清除搜索时恢复
   const previousCharacterId = ref('')
-  const previousImageType = ref('')
+  const previousTagId = ref('')
 
   // 主题相关
   const isDarkMode = ref(localStorage.getItem('theme') === 'dark' ||
@@ -48,8 +48,12 @@ export const useAppStore = defineStore('app', () => {
   // 当前选择的角色
   const selectedCharacterId = ref(siteConfig.characters[0]?.id || '')
 
-  // 当前选择的图像类型
-  const selectedImageType = ref('all')
+  // 当前选择的标签
+  const selectedTag = ref('all')
+
+  // 排序设置
+  const sortBy = ref<'name' | 'artist' | 'date'>('name')
+  const sortOrder = ref<'asc' | 'desc'>('asc')
 
   // 当前选择的角色
   const selectedCharacter = computed(() => {
@@ -70,13 +74,44 @@ export const useAppStore = defineStore('app', () => {
       images = images.filter(image => image.characters.includes(selectedCharacterId.value))
     }
 
-    // 按类型过滤
-    if (selectedImageType.value !== 'all') {
-      return images.filter(image => image.types.includes(selectedImageType.value))
+    // 按标签过滤
+    if (selectedTag.value !== 'all') {
+      images = images.filter(image => image.tags.includes(selectedTag.value))
     }
+
+    // 排序
+    images = sortImages(images)
 
     return images
   })
+
+  // 图像排序函数
+  const sortImages = (images: CharacterImage[]) => {
+    return [...images].sort((a, b) => {
+      let comparison = 0
+      
+      switch (sortBy.value) {
+        case 'name':
+          const aName = getSearchableText(a.name)
+          const bName = getSearchableText(b.name)
+          comparison = aName.localeCompare(bName)
+          break
+        case 'artist':
+          const aArtist = getSearchableText(a.artist)
+          const bArtist = getSearchableText(b.artist)
+          comparison = aArtist.localeCompare(bArtist)
+          break
+        case 'date':
+          // 将无日期的项目视为最早的作品
+          const aDate = a.date || '0000-00-00'
+          const bDate = b.date || '0000-00-00'
+          comparison = aDate.localeCompare(bDate)
+          break
+      }
+      
+      return sortOrder.value === 'asc' ? comparison : -comparison
+    })
+  }
   
   // 按搜索条件过滤图片
   const filterImagesBySearch = (images: CharacterImage[], query: string): CharacterImage[] => {
@@ -123,8 +158,8 @@ export const useAppStore = defineStore('app', () => {
       .toLowerCase()
   }
 
-  // 图像类型计数
-  const imageTypeCounts = computed(() => {
+  // 标签计数
+  const tagCounts = computed(() => {
     const counts: Record<string, number> = { all: 0 }
     
     let imagesToCount = siteConfig.images
@@ -142,16 +177,16 @@ export const useAppStore = defineStore('app', () => {
       )
     }
 
-    // 计算每个类型的数量
-    siteConfig.imageTypes.forEach(type => {
+    // 计算每个标签的数量
+    siteConfig.tags.forEach(tag => {
       const count = imagesToCount.filter(image =>
-        image.types.includes(type.id)
+        image.tags.includes(tag.id)
       ).length
 
-      counts[type.id] = count
+      counts[tag.id] = count
     })
     
-    // "all"选项的计数是所有匹配的图像总数，而不是所有类型计数的总和
+    // "all"选项的计数是所有匹配的图像总数
     counts.all = imagesToCount.length
 
     return counts
@@ -202,11 +237,11 @@ export const useAppStore = defineStore('app', () => {
       // 如果没有保存之前的选择，则保存
       if (!previousCharacterId.value) {
         previousCharacterId.value = selectedCharacterId.value
-        previousImageType.value = selectedImageType.value
+        previousTagId.value = selectedTag.value
         
-        // 切换到"全部"角色和类型
+        // 切换到"全部"角色和标签
         selectedCharacterId.value = 'all'
-        selectedImageType.value = 'all'
+        selectedTag.value = 'all'
       }
     } else {
       // 如果清空了搜索，恢复之前的选择
@@ -215,9 +250,9 @@ export const useAppStore = defineStore('app', () => {
         previousCharacterId.value = ''
       }
       
-      if (previousImageType.value) {
-        selectedImageType.value = previousImageType.value
-        previousImageType.value = ''
+      if (previousTagId.value) {
+        selectedTag.value = previousTagId.value
+        previousTagId.value = ''
       }
     }
   }
@@ -251,11 +286,15 @@ export const useAppStore = defineStore('app', () => {
     
     // 画廊相关
     selectedCharacterId,
-    selectedImageType,
+    selectedTag,
     selectedCharacter,
     characterImages,
-    imageTypeCounts,
+    tagCounts,
     getCharacterMatchCount,
+
+    // 排序相关
+    sortBy,
+    sortOrder,
 
     // 图像查询
     getImageById,

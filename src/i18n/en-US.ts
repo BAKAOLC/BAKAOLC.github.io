@@ -45,6 +45,7 @@ export default {
   gallery: {
     title: 'Gallery',
     filter: 'Filter',
+    filters: 'Filters',
     characters: 'Characters',
     types: 'Types',
     noImages: 'No images found',
@@ -54,13 +55,21 @@ export default {
     listView: 'List View',
     original: 'Original',
     artist: 'Artist',
+    date: 'Date',
     tags: 'Tags',
     download: 'Download',
     share: 'Share',
+    toggleInfo: 'Show/Hide Info',
     searchPlaceholder: 'Search images, tags, artists...',
     clearSearch: 'Clear search',
     searchResults: 'Search Results',
-    noSearchResults: 'No matching images found'
+    noSearchResults: 'No matching images found',
+    sortBy: 'Sort by',
+    sortName: 'Name',
+    sortArtist: 'Artist',
+    sortDate: 'Date',
+    sortAsc: 'Ascending',
+    sortDesc: 'Descending'
   },
   personal: {
     contactMe: 'Contact Me',
