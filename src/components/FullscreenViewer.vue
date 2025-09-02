@@ -125,6 +125,7 @@ import { siteConfig } from '@/config/site'
 import { useAppStore } from '@/stores/app'
 import ProgressiveImage from './ProgressiveImage.vue'
 import { imageCache, LoadPriority } from '@/services/imageCache'
+import { AnimationDurations } from '@/utils/animations'
 import type { I18nText } from '@/types'
 
 const props = defineProps<{
@@ -218,10 +219,11 @@ const toggleInfoPanel = () => {
   infoPanelAnimating.value = true
   showInfoPanel.value = !showInfoPanel.value
 
-  // 动画结束后重置状态
+  // 动画结束后重置状态 - 从CSS读取动画时长
+  const duration = AnimationDurations.getInfoPanelTransition()
   setTimeout(() => {
     infoPanelAnimating.value = false
-  }, 400) // 与动画时长一致
+  }, duration || 400) // 400ms作为后备值
 }
 
 // 已移除小地图计算功能
@@ -540,11 +542,13 @@ const close = () => {
   // 先添加淡出过渡动画，再关闭查看器
   transitionActive.value = false
   
+  // 从CSS读取过渡动画时长
+  const duration = AnimationDurations.getViewerTransition()
   setTimeout(() => {
     emit('close')
     // 重置关闭状态，以便下次打开
     isClosing.value = false
-  }, 400) // 等待过渡动画完成
+  }, duration || 400) // 400ms作为后备值
 }
 
 // 键盘事件
