@@ -106,10 +106,18 @@ const t = (text: I18nText | string, lang?: string) => {
 }
 
 .image-grid {
-  @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5;
+  @apply grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3;
   padding-right: 8px;
   /* 增加右侧空间，保证滚动条有足够显示空间 */
   width: 100%;
+  padding-bottom: 1rem; /* 确保底部有足够空间 */
+}
+
+@media (max-width: 640px) {
+  .image-grid {
+    @apply grid-cols-2 gap-2;
+    padding-bottom: 2rem; /* 移动端增加更多底部空间 */
+  }
 }
 
 .image-list {
@@ -145,14 +153,21 @@ const t = (text: I18nText | string, lang?: string) => {
 
 .image-card .image-container {
   width: 100%;
-  height: 200px;
+  height: 160px; /* 减小默认高度 */
   position: relative;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   @apply rounded-lg;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem; /* 减小间距 */
+}
+
+@media (max-width: 640px) {
+  .image-card .image-container {
+    height: 120px; /* 移动端进一步减小高度 */
+    margin-bottom: 0.5rem;
+  }
 }
 
 .image-list-item .image-container {
@@ -183,7 +198,7 @@ const t = (text: I18nText | string, lang?: string) => {
 
 @media (max-width: 640px) {
   .image-info {
-    @apply text-center;
+    @apply text-center p-2; /* 移动端减小内边距 */
   }
 }
 
@@ -195,6 +210,12 @@ const t = (text: I18nText | string, lang?: string) => {
   @apply font-medium text-sm;
   @apply text-gray-900 dark:text-gray-100;
   @apply mb-2 truncate;
+}
+
+@media (max-width: 640px) {
+  .image-name {
+    @apply text-xs mb-1; /* 移动端更小的字体和间距 */
+  }
 }
 
 .image-meta {
@@ -222,5 +243,12 @@ const t = (text: I18nText | string, lang?: string) => {
   @apply text-white text-xs;
   @apply whitespace-nowrap;
   @apply opacity-90;
+}
+
+@media (max-width: 640px) {
+  .image-tag {
+    @apply px-1 py-0.5 text-xs; /* 移动端更紧凑的标签 */
+    font-size: 10px; /* 更小的字体 */
+  }
 }
 </style>
