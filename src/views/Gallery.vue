@@ -13,18 +13,20 @@
               <i class="fa fa-times" aria-hidden="true"></i>
             </button>
           </div>
-          
+
           <div class="control-buttons-group">
             <SortSelector />
             <button @click="toggleSortOrder" class="sort-order-button"
               :title="$t(sortOrder === 'asc' ? 'gallery.sortAsc' : 'gallery.sortDesc')">
               <i :class="sortOrder === 'asc' ? 'fa fa-sort-amount-down' : 'fa fa-sort-amount-up'"></i>
-              <span class="sort-order-text">{{ $t(sortOrder === 'asc' ? 'gallery.sortAsc' : 'gallery.sortDesc')
-              }}</span>
+              <span class="sort-order-text">{{ $t(sortOrder === 'asc' ? 'gallery.sortAsc' :
+                'gallery.sortDesc')
+                }}</span>
             </button>
             <button class="grid-view-toggle" @click="toggleGridView">
               <i :class="isGridView ? 'fa fa-th-large' : 'fa fa-th-list'"></i>
-              <span class="grid-view-text">{{ $t(isGridView ? 'gallery.listView' : 'gallery.gridView') }}</span>
+              <span class="grid-view-text">{{ $t(isGridView ? 'gallery.listView' : 'gallery.gridView')
+                }}</span>
             </button>
           </div>
         </div>
@@ -76,7 +78,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAppStore } from '@/stores/app'
 import CharacterSelector from '@/components/CharacterSelector.vue'
@@ -87,6 +89,28 @@ import SortSelector from '@/components/ui/SortSelector.vue'
 
 const { t: $t } = useI18n()
 const appStore = useAppStore()
+
+// 动态高度计算
+const updateDynamicHeights = () => {
+  // 获取header元素的实际高度
+  const headerEl = document.querySelector('.header') as HTMLElement
+  const footerEl = document.querySelector('.footer') as HTMLElement
+  const galleryHeaderEl = document.querySelector('.gallery-header') as HTMLElement
+  
+  if (headerEl) {
+    document.documentElement.style.setProperty('--app-header-height', `${headerEl.offsetHeight}px`)
+  }
+  
+  if (footerEl) {
+    document.documentElement.style.setProperty('--app-footer-height', `${footerEl.offsetHeight}px`)
+  }
+  
+  if (galleryHeaderEl) {
+    document.documentElement.style.setProperty('--gallery-header-height', `${galleryHeaderEl.offsetHeight}px`)
+  }
+}
+
+
 
 const isGridView = ref(true)
 const isSidebarOpen = ref(false)
@@ -188,6 +212,12 @@ const handleResize = () => {
 
   // 更新返回顶部按钮位置
   updateScrollToTopPosition()
+  
+  // 使用nextTick更新动态高度
+  nextTick(() => {
+    updateDynamicHeights()
+  })
+
 }
 
 // 更新搜索查询并触发搜索
@@ -265,6 +295,12 @@ onMounted(() => {
 
   // 初始化返回顶部按钮位置
   updateScrollToTopPosition()
+  
+  // 使用nextTick确保DOM完全渲染后更新动态高度
+  nextTick(() => {
+    updateDynamicHeights()
+  })
+
 })
 
 onBeforeUnmount(() => {
@@ -293,21 +329,12 @@ onBeforeUnmount(() => {
   transition: transform 0.3s ease, opacity 0.3s ease, margin-bottom 0.3s ease;
 }
 
-.gallery-header.hidden-mobile {
-  transform: translateY(-100%);
-  opacity: 0;
-  pointer-events: none;
-}
-
 @media (max-width: 768px) {
   .gallery-header {
     @apply flex-col items-center text-center gap-2 mb-3;
     padding-bottom: 0.75rem;
   }
 
-  .gallery-header.hidden-mobile {
-    margin-bottom: 0;
-  }
 }
 
 .gallery-title {
@@ -348,8 +375,6 @@ onBeforeUnmount(() => {
   position: relative;
   transition: gap 0.3s ease, padding 0.3s ease, margin-bottom 0.3s ease;
 }
-
-
 
 .dark .unified-search-bar {
   background-color: rgb(31, 41, 55);
@@ -430,10 +455,6 @@ onBeforeUnmount(() => {
   background-color: rgb(55, 65, 81);
 }
 
-
-
-
-
 .unified-search-bar .sort-order-button,
 .unified-search-bar .grid-view-toggle {
   display: flex;
@@ -486,8 +507,6 @@ onBeforeUnmount(() => {
     gap: 0.375rem;
   }
 
-
-
   .unified-search-bar .sort-order-button .sort-order-text,
   .unified-search-bar .grid-view-toggle .grid-view-text {
     display: none;
@@ -499,10 +518,6 @@ onBeforeUnmount(() => {
     padding: 0.375rem;
     height: 2rem;
   }
-
-
-
-
 
   .unified-search-bar .search-input {
     height: 2rem;
@@ -520,60 +535,23 @@ onBeforeUnmount(() => {
   }
 }
 
-
-
-
-
-
-
 .icon {
   @apply w-4 h-4;
 }
 
 .gallery-content {
   display: flex;
-  flex-direction: column;
   gap: 1.5rem;
-  height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - var(--gallery-header-height, 0px) - 2rem);
-  /* 动态计算高度：100vh - 应用头部 - 应用底部 - 画廊头部 - 额外边距 */
-  padding-bottom: 2rem;
-  transition: height 0.3s ease, margin-top 0.3s ease, flex-direction 0.3s ease, gap 0.3s ease;
-  /* 添加高度、margin、布局方向和间距的过渡动画 */
-}
-
-.gallery-content.header-hidden-mobile {
-  height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - 2rem);
-  /* 隐藏画廊头部时的高度计算 */
-  margin-top: calc(-1 * var(--gallery-header-height, 10rem));
-  /* 使用动态计算的header高度 */
-}
-
-@media (min-width: 768px) {
-  .gallery-content {
-    flex-direction: row;
-    height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - var(--gallery-header-height, 0px) - 2rem);
-    /* 桌面端使用固定高度计算 */
-    transition: height 0.3s ease, margin-top 0.3s ease, flex-direction 0.3s ease, gap 0.3s ease;
-  }
-
-  .gallery-content.header-hidden-mobile {
-    margin-top: 0;
-    /* 桌面端不需要调整 */
-    height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - var(--gallery-header-height, 0px) - 2rem);
-  }
+  flex-direction: row;
+  height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - var(--gallery-header-height, 0px) - 3rem);
+  transition: height 0.3s ease, flex-direction 0.3s ease, gap 0.3s ease;
+  /* 添加高度、布局方向和间距的过渡动画 */
 }
 
 @media (max-width: 767px) {
   .gallery-content {
-    /* 移动端确保有足够的底部空间 */
-    height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - var(--gallery-header-height, 0px) - 4rem);
-    padding-bottom: 3rem;
-    /* 移动端增加底部内边距 */
-  }
-
-  .gallery-content.header-hidden-mobile {
-    height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - 4rem);
-    /* 移动端隐藏头部时的高度计算 */
+    flex-direction: column;
+    height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - var(--gallery-header-height, 0px) - 3rem);
   }
 }
 
@@ -639,8 +617,8 @@ onBeforeUnmount(() => {
   /* 增加右侧内边距，解决空间过窄的问题 */
   padding-top: 2rem;
   /* 顶部内边距 */
-  padding-bottom: 2rem;
-  /* 底部内边距 */
+  padding-bottom: 1rem;
+  /* 减少底部内边距，避免过多空白 */
   transition: padding-left 0.3s ease, padding-right 0.3s ease;
 }
 
@@ -760,14 +738,12 @@ onBeforeUnmount(() => {
   }
 }
 
-
-
 /* 响应式布局过渡动画 */
 @media (prefers-reduced-motion: no-preference) {
   .gallery-page {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
+
   .gallery-header,
   .gallery-content,
   .gallery-sidebar,
@@ -779,6 +755,7 @@ onBeforeUnmount(() => {
 
 /* 为减少动画偏好的用户禁用过渡 */
 @media (prefers-reduced-motion: reduce) {
+
   .gallery-page,
   .gallery-header,
   .gallery-content,
