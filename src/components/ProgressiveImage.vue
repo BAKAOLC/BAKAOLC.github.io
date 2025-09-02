@@ -54,6 +54,7 @@
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import thumbnailMap from '@/assets/thumbnail-map.json'
 import { imageCache, LoadPriority } from '@/services/imageCache'
+import { AnimationDurations } from '@/utils/animations'
 
 interface Props {
   src: string
@@ -187,9 +188,11 @@ const onImageLoad = () => {
   
   // 主图加载完成后，等待fade-out动画完成再隐藏缩略图
   // 这样可以避免透明图片的光晕效果
+  const transitions = AnimationDurations.getProgressiveImageTransitions()
+  const fadeOutDuration = transitions.thumbnailFade || 200 // 后备值200ms
   setTimeout(() => {
     thumbnailHidden.value = true
-  }, 250) // 略大于fade-out过渡时间(200ms)
+  }, fadeOutDuration + 50) // 略大于fade-out过渡时间
   
   emit('load')
 }
