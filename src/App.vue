@@ -37,7 +37,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 
 import LoadingScreen from '@/components/LoadingScreen.vue';
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher.vue';
@@ -46,7 +45,6 @@ import { siteConfig } from '@/config/site';
 import { useAppStore } from '@/stores/app';
 
 const { t } = useI18n();
-const router = useRouter();
 const appStore = useAppStore();
 
 // 加载状态

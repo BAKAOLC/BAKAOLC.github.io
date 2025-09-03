@@ -28,7 +28,7 @@ const router = createRouter({
 });
 
 // 路由守卫：处理GitHub Pages重定向后的状态恢复
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   // 检查是否有GitHub Pages重定向信息
   const redirectPath = sessionStorage.getItem('github-pages-redirect');
   
@@ -48,7 +48,7 @@ router.beforeEach((to, from, next) => {
 });
 
 // 路由后置守卫：确保重定向后页面状态正确
-router.afterEach((to, from) => {
+router.afterEach((to, _from) => {
   // 确保页面滚动到顶部（除非有hash）
   if (!to.hash) {
     window.scrollTo(0, 0);
