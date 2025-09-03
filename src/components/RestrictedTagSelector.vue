@@ -58,21 +58,47 @@ import { useAppStore } from '@/stores/app';
 const { t: $t } = useI18n();
 const appStore = useAppStore();
 
+// 递归检查标签的所有前置条件是否满足
+const checkPrerequisitesRecursively = (tagId: string, visited = new Set<string>()): boolean => {
+  // 防止循环依赖
+  if (visited.has(tagId)) {
+    console.warn(`检测到循环依赖: ${tagId}`);
+    return false;
+  }
+
+  visited.add(tagId);
+
+  const tag = siteConfig.tags.find(t => t.id === tagId);
+  if (!tag || !tag.prerequisiteTags || tag.prerequisiteTags.length === 0) {
+    return true;
+  }
+
+  // 检查所有直接前置标签
+  return tag.prerequisiteTags.every(prerequisiteTagId => {
+    // 前置标签必须被选中
+    const isSelected = appStore.getRestrictedTagState(prerequisiteTagId);
+    if (!isSelected) {
+      return false;
+    }
+
+    // 递归检查前置标签的前置条件
+    return checkPrerequisitesRecursively(prerequisiteTagId, new Set(visited));
+  });
+};
+
 // 可见的特殊标签列表
 const visibleRestrictedTags = computed(() => {
   let restrictedTags = [...siteConfig.tags].filter(tag => tag.isRestricted);
 
-  // 首先根据前置标签关系过滤
+  // 首先根据前置标签关系过滤（支持链条关系）
   restrictedTags = restrictedTags.filter(tag => {
     // 如果标签没有前置标签要求，直接显示
     if (!tag.prerequisiteTags || tag.prerequisiteTags.length === 0) {
       return true;
     }
 
-    // 检查所有前置标签是否都已被选中
-    return tag.prerequisiteTags.every(prerequisiteTagId => {
-      return appStore.getRestrictedTagState(prerequisiteTagId);
-    });
+    // 递归检查所有前置标签条件
+    return checkPrerequisitesRecursively(tag.id);
   });
 
   // 计算在特殊标签过滤之前的图片数量
