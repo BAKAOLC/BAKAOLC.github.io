@@ -228,6 +228,9 @@ export const useAppStore = defineStore('app', () => {
   const isFullscreenViewer = ref(false);
   const currentViewingImage = ref<CharacterImage | null>(null);
 
+  // 跟踪用户是否从画廊进入查看器（用于区分直接访问）
+  const isFromGallery = ref(false);
+
   // 设置搜索查询
   const setSearchQuery = (query: string): void => {
     // 先设置查询
@@ -262,6 +265,11 @@ export const useAppStore = defineStore('app', () => {
   const clearSearch = (): void => {
     // 设置空字符串会触发setSearchQuery中的恢复逻辑
     setSearchQuery('');
+  };
+
+  // 设置从画廊进入查看器的标记
+  const setFromGallery = (value: boolean): void => {
+    isFromGallery.value = value;
   };
 
   return {
@@ -305,5 +313,7 @@ export const useAppStore = defineStore('app', () => {
     // 查看器状态
     isFullscreenViewer,
     currentViewingImage,
+    isFromGallery,
+    setFromGallery,
   };
 });
