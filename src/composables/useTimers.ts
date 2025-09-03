@@ -31,7 +31,7 @@ export function useTimers(): TimerManager {
         timeouts.value.delete(id);
       }
     }, delay);
-    
+
     timeouts.value.add(id);
     return id;
   };
@@ -78,7 +78,7 @@ export function useTimers(): TimerManager {
     intervals.value.clear();
   };
 
-  const getActiveTimersCount = () => {
+  const getActiveTimersCount = (): { timeouts: number; intervals: number } => {
     return {
       timeouts: timeouts.value.size,
       intervals: intervals.value.size,

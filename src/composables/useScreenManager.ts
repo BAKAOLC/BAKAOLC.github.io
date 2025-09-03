@@ -1,4 +1,4 @@
-import { ref, computed, onMounted, type ComputedRef } from 'vue';
+import { ref, computed, onMounted, type ComputedRef, type Ref } from 'vue';
 
 /**
  * 屏幕尺寸变化回调函数类型
@@ -93,10 +93,10 @@ const updateScreenInfo = (): void => {
   const newDevicePixelRatio = window.devicePixelRatio || 1;
 
   // 检查是否有实际变化
-  const hasChanged = 
-    screenWidth.value !== newWidth ||
-    screenHeight.value !== newHeight ||
-    devicePixelRatio.value !== newDevicePixelRatio;
+  const hasChanged
+    = screenWidth.value !== newWidth
+    || screenHeight.value !== newHeight
+    || devicePixelRatio.value !== newDevicePixelRatio;
 
   if (hasChanged) {
     screenWidth.value = newWidth;
@@ -207,7 +207,7 @@ export function useScreenManager(): ScreenManager {
     // 返回取消注册函数
     return () => {
       callbacks.delete(callback);
-      
+
       // 如果没有回调了，清理全局监听器
       if (callbacks.size === 0) {
         cleanupGlobalListener();
@@ -247,16 +247,21 @@ export function useScreenManager(): ScreenManager {
  * 简化版的移动端检测 Hook
  * 适用于只需要移动端状态的组件
  */
-export function useMobileDetection() {
+export function useMobileDetection(): {
+  isMobile: Ref<boolean>;
+  isTablet: Ref<boolean>;
+  isDesktop: Ref<boolean>;
+  onScreenChange: (callback: (isMobile: boolean, isTablet: boolean, isDesktop: boolean) => void) => () => void;
+} {
   const { isMobile, isTablet, isDesktop, onScreenChange } = useScreenManager();
-  
+
   return {
     isMobile,
     isTablet,
     isDesktop,
     onScreenChange: (callback: (isMobile: boolean, isTablet: boolean, isDesktop: boolean) => void) => {
-      return onScreenChange((screenInfo) => {
-        callback(screenInfo.isMobile, screenInfo.isTablet, screenInfo.isDesktop);
+      return onScreenChange((info) => {
+        callback(info.isMobile, info.isTablet, info.isDesktop);
       });
     },
   };
@@ -266,13 +271,16 @@ export function useMobileDetection() {
  * 屏幕尺寸检测 Hook
  * 适用于需要具体尺寸信息的组件
  */
-export function useScreenSize() {
+export function useScreenSize(): {
+  width: ComputedRef<number>;
+  height: ComputedRef<number>;
+  onScreenChange: (callback: (width: number, height: number) => void) => () => void;
+} {
   const { screenInfo, onScreenChange } = useScreenManager();
-  
+
   return {
     width: computed(() => screenInfo.value.width),
     height: computed(() => screenInfo.value.height),
-    screenInfo,
     onScreenChange: (callback: (width: number, height: number) => void) => {
       return onScreenChange((info) => {
         callback(info.width, info.height);

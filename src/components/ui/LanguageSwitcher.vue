@@ -20,10 +20,9 @@ import { GlobeIcon, ChevronDownIcon } from 'lucide-vue-next';
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { useTimers } from '@/composables/useTimers';
-
 import type { Language } from '@/types';
 
+import { useTimers } from '@/composables/useTimers';
 import { useAppStore } from '@/stores/app';
 
 const { locale } = useI18n();

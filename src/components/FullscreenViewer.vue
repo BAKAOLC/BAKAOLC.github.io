@@ -1,11 +1,9 @@
 <template>
-  <div class="fullscreen-viewer"
-    :class="{
-      'active': isActive,
-      'transition-active': transitionActive,
-      'closing': isClosing
-    }"
-    @keydown.esc="close" tabindex="0">
+  <div class="fullscreen-viewer" :class="{
+    'active': isActive,
+    'transition-active': transitionActive,
+    'closing': isClosing
+  }" @keydown.esc="close" tabindex="0">
     <div class="viewer-header">
       <div class="viewer-title">
         {{ currentImage ? t(currentImage.name, currentLanguage) : '' }}
@@ -21,7 +19,8 @@
         <button class="control-button zoom-button" @click="zoomIn" :title="$t('viewer.zoomIn')">
           <zoom-in-icon class="icon" />
         </button>
-        <button class="control-button" @click="toggleInfoPanel" :class="{ 'disabled': infoPanelAnimating || mobileInfoOverlayAnimating }"
+        <button class="control-button" @click="toggleInfoPanel"
+          :class="{ 'disabled': infoPanelAnimating || mobileInfoOverlayAnimating }"
           :disabled="infoPanelAnimating || mobileInfoOverlayAnimating" :title="getInfoButtonTitle()">
           <info-icon class="icon" />
         </button>
@@ -32,54 +31,25 @@
     </div>
 
     <div class="viewer-content">
-      <div 
-        class="image-container" 
-        ref="imageContainer"
-        @wheel="handleImageWheel"
-        @mousedown="handleImageMouseDown"
-        @touchstart="handleImageTouchStart"
-        @touchmove="handleImageTouchMove"
-        @touchend="handleImageTouchEnd"
-      >
+      <div class="image-container" ref="imageContainer" @wheel="handleImageWheel" @mousedown="handleImageMouseDown"
+        @touchstart="handleImageTouchStart" @touchmove="handleImageTouchMove" @touchend="handleImageTouchEnd">
         <transition name="fade" mode="out-in">
-          <ProgressiveImage
-            v-if="currentImage"
-            :key="currentImage.id"
-            :src="currentImage.src"
-            :alt="t(currentImage.name, currentLanguage)"
-            class="image"
-            image-class="fullscreen-image"
-            object-fit="contain"
-            :show-loader="true"
-            display-type="original"
-            priority="high"
-            @load="onImageLoad"
-            ref="imageElement"
-            :style="{ 
+          <ProgressiveImage v-if="currentImage" :key="currentImage.id" :src="currentImage.src"
+            :alt="t(currentImage.name, currentLanguage)" class="image" image-class="fullscreen-image"
+            object-fit="contain" :show-loader="true" display-type="original" priority="high" @load="onImageLoad"
+            ref="imageElement" :style="{
               transform: imageTransform,
               transition: imageTransitionStyle
-            }"
-          />
+            }" />
         </transition>
-        
+
         <!-- 小地图控件 -->
-        <div 
-          v-if="showMinimap" 
-          class="minimap-container"
-          @mousedown="handleMinimapMouseDown"
-          @touchstart="handleMinimapTouchStart"
-        >
+        <div v-if="showMinimap" class="minimap-container" @mousedown="handleMinimapMouseDown"
+          @touchstart="handleMinimapTouchStart">
           <div class="minimap-image-container">
-            <img 
-              :src="currentImage?.src" 
-              :alt="t(currentImage?.name, currentLanguage)"
-              class="minimap-image"
-              ref="minimapImage"
-            />
-            <div 
-              class="minimap-viewport"
-              :style="viewportStyle"
-            ></div>
+            <img :src="currentImage?.src" :alt="t(currentImage?.name, currentLanguage)" class="minimap-image"
+              ref="minimapImage" />
+            <div class="minimap-viewport" :style="viewportStyle"></div>
           </div>
         </div>
       </div>
@@ -90,30 +60,17 @@
         <chevron-left-icon class="icon" />
       </button>
 
-      <div class="image-thumbnails-container"
-        :class="{ 'dragging': isDragging }"
-        ref="thumbnailsContainer"
-        @wheel="handleThumbnailWheel"
-        @mousedown="handleThumbnailMouseDown"
-        @touchstart="handleThumbnailTouchStart">
+      <div class="image-thumbnails-container" :class="{ 'dragging': isDragging }" ref="thumbnailsContainer"
+        @wheel="handleThumbnailWheel" @mousedown="handleThumbnailMouseDown" @touchstart="handleThumbnailTouchStart">
         <div class="image-thumbnails" :style="{
           transform: `translateX(${thumbnailsOffset}px)`
         }">
-          <button v-for="(image, index) in imagesList" :key="image.id"
-            @click="handleThumbnailClick(index, $event)"
-            @mousedown="handleThumbnailButtonMouseDown"
-            @touchstart="handleThumbnailButtonTouchStart"
+          <button v-for="(image, index) in imagesList" :key="image.id" @click="handleThumbnailClick(index, $event)"
+            @mousedown="handleThumbnailButtonMouseDown" @touchstart="handleThumbnailButtonTouchStart"
             class="thumbnail-button" :class="{ 'active': currentIndex === index }">
-            <ProgressiveImage
-              :src="image.src"
-              :alt="t(image.name, currentLanguage)"
-              class="thumbnail-image"
-              object-fit="cover"
-              :show-loader="false"
-              preload-size="tiny"
-              display-type="thumbnail"
-              display-size="small"
-            />
+            <ProgressiveImage :src="image.src" :alt="t(image.name, currentLanguage)" class="thumbnail-image"
+              object-fit="cover" :show-loader="false" preload-size="tiny" display-type="thumbnail"
+              display-size="small" />
           </button>
         </div>
       </div>
@@ -170,7 +127,7 @@
                 <x-icon class="icon" />
               </button>
             </div>
-            
+
             <div class="mobile-info-content">
               <div class="info-group">
                 <h3 class="info-title">{{ t(currentImage?.name, currentLanguage) }}</h3>
@@ -210,15 +167,14 @@ import { XIcon, ChevronLeftIcon, ChevronRightIcon, InfoIcon, ZoomInIcon, ZoomOut
 import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { useTimers } from '@/composables/useTimers';
-import { useEventManager } from '@/composables/useEventManager';
-import { useMobileDetection } from '@/composables/useScreenManager';
-
 import ProgressiveImage from './ProgressiveImage.vue';
 
 import type { I18nText } from '@/types';
 
 import thumbnailMap from '@/assets/thumbnail-map.json';
+import { useEventManager } from '@/composables/useEventManager';
+import { useMobileDetection } from '@/composables/useScreenManager';
+import { useTimers } from '@/composables/useTimers';
 import { siteConfig } from '@/config/site';
 import { imageCache, LoadPriority } from '@/services/imageCache';
 import { useAppStore } from '@/stores/app';
@@ -304,8 +260,6 @@ const goToImage = (index: number): void => {
       return;
     }
 
-    // 不再关闭查看器，直接更新内部状态
-
     // 使用history API更新URL参数，不触发页面刷新
     const newUrl = window.location.pathname.replace(/\/[^/]+$/, `/${imageId}`);
     window.history.pushState({ imageId }, '', newUrl);
@@ -359,7 +313,20 @@ const resetImageTransform = (): void => {
 };
 
 // 获取图像的实际显示信息（考虑object-fit: contain）
-const getImageDisplayInfo = () => {
+const getImageDisplayInfo = (): {
+  naturalWidth: number;
+  naturalHeight: number;
+  displayWidth: number;
+  displayHeight: number;
+  scaledWidth: number;
+  scaledHeight: number;
+  imageX: number;
+  imageY: number;
+  containerWidth: number;
+  containerHeight: number;
+  offsetX: number;
+  offsetY: number;
+} | null => {
   if (!imageElement.value || !imageContainer.value) {
     return null;
   }
@@ -372,15 +339,15 @@ const getImageDisplayInfo = () => {
   }
 
   const containerRect = imageContainer.value.getBoundingClientRect();
-  
+
   // 获取图像的原始尺寸
-  const naturalWidth = image.naturalWidth;
-  const naturalHeight = image.naturalHeight;
-  
+  const { naturalWidth } = image;
+  const { naturalHeight } = image;
+
   // 计算contain模式下的实际显示尺寸
   const containerAspect = containerRect.width / containerRect.height;
   const imageAspect = naturalWidth / naturalHeight;
-  
+
   let displayWidth, displayHeight;
   if (imageAspect > containerAspect) {
     // 图像更宽，以宽度为准
@@ -391,15 +358,15 @@ const getImageDisplayInfo = () => {
     displayHeight = containerRect.height;
     displayWidth = containerRect.height * imageAspect;
   }
-  
+
   // 应用用户缩放
   const scaledWidth = displayWidth * imageScale.value;
   const scaledHeight = displayHeight * imageScale.value;
-  
+
   // 计算图像在容器中的位置（居中）
   const imageX = (containerRect.width - scaledWidth) / 2;
   const imageY = (containerRect.height - scaledHeight) / 2;
-  
+
   return {
     naturalWidth,
     naturalHeight,
@@ -410,28 +377,30 @@ const getImageDisplayInfo = () => {
     imageX,
     imageY,
     containerWidth: containerRect.width,
-    containerHeight: containerRect.height
+    containerHeight: containerRect.height,
+    offsetX: (containerRect.width - displayWidth) / 2,
+    offsetY: (containerRect.height - displayHeight) / 2,
   };
 };
 
 // 计算拖拽限制
-const calculateDragLimits = (): { 
-  minX: number; 
-  maxX: number; 
-  minY: number; 
+const calculateDragLimits = (): {
+  minX: number;
+  maxX: number;
+  minY: number;
   maxY: number;
 } => {
   const info = getImageDisplayInfo();
   if (!info) {
     return { minX: 0, maxX: 0, minY: 0, maxY: 0 };
   }
-  
+
   // 防止除零错误和极端值
-  if (info.containerWidth <= 0 || info.containerHeight <= 0 || 
-      info.scaledWidth <= 0 || info.scaledHeight <= 0) {
+  if (info.containerWidth <= 0 || info.containerHeight <= 0
+    || info.scaledWidth <= 0 || info.scaledHeight <= 0) {
     return { minX: 0, maxX: 0, minY: 0, maxY: 0 };
   }
-  
+
   // 图像以容器中心为原点缩放
   // imageOffset是相对于图像默认居中位置的偏移
   // 缩放后图像的实际位置：
@@ -439,16 +408,16 @@ const calculateDragLimits = (): {
   // 右边界：containerWidth/2 + scaledWidth/2 + imageOffset.x
   // 上边界：containerHeight/2 - scaledHeight/2 + imageOffset.y
   // 下边界：containerHeight/2 + scaledHeight/2 + imageOffset.y
-  
+
   // 限制条件：
   // 左边界 >= 0: containerWidth/2 - scaledWidth/2 + imageOffset.x >= 0
   // 右边界 <= containerWidth: containerWidth/2 + scaledWidth/2 + imageOffset.x <= containerWidth
   // 上边界 >= 0: containerHeight/2 - scaledHeight/2 + imageOffset.y >= 0
   // 下边界 <= containerHeight: containerHeight/2 + scaledHeight/2 + imageOffset.y <= containerHeight
-  
+
   // 解出imageOffset的限制：
   let minX, maxX, minY, maxY;
-  
+
   if (info.scaledWidth <= info.containerWidth) {
     // 图像宽度小于等于容器宽度，水平居中，不允许水平拖拽
     minX = maxX = 0;
@@ -458,7 +427,7 @@ const calculateDragLimits = (): {
     minX = -halfWidthDiff;
     maxX = halfWidthDiff;
   }
-  
+
   if (info.scaledHeight <= info.containerHeight) {
     // 图像高度小于等于容器高度，垂直居中，不允许垂直拖拽
     minY = maxY = 0;
@@ -468,20 +437,20 @@ const calculateDragLimits = (): {
     minY = -halfHeightDiff;
     maxY = halfHeightDiff;
   }
-  
+
   // 确保限制值是有限数值
   minX = isFinite(minX) ? minX : 0;
   maxX = isFinite(maxX) ? maxX : 0;
   minY = isFinite(minY) ? minY : 0;
   maxY = isFinite(maxY) ? maxY : 0;
-  
+
   return { minX, maxX, minY, maxY };
 };
 
 // 应用拖拽限制
 const applyDragLimits = (): void => {
   const limits = calculateDragLimits();
-  
+
   // 限制在边界内
   imageOffset.value.x = Math.max(limits.minX, Math.min(limits.maxX, imageOffset.value.x));
   imageOffset.value.y = Math.max(limits.minY, Math.min(limits.maxY, imageOffset.value.y));
@@ -494,13 +463,13 @@ const updateMinimapVisibility = (): void => {
     showMinimap.value = false;
     return;
   }
-  
+
   // 检查图像是否超出容器边界或已缩放
   const isImageLarger = info.scaledWidth > info.containerWidth || info.scaledHeight > info.containerHeight;
   const isScaled = imageScale.value > 1;
-  
+
   showMinimap.value = isImageLarger || isScaled;
-  
+
   if (showMinimap.value) {
     nextTick(() => {
       updateMinimapViewport();
@@ -523,7 +492,7 @@ const updateMinimapViewport = (): void => {
   // 小地图使用object-fit: contain，所以需要计算实际图像在小地图中的位置和尺寸
   const minimapAspect = minimapRect.width / minimapRect.height;
   const imageAspect = info.displayWidth / info.displayHeight;
-  
+
   let minimapImageWidth, minimapImageHeight, minimapImageX, minimapImageY;
   if (imageAspect > minimapAspect) {
     // 图像更宽，以宽度为准
@@ -542,13 +511,13 @@ const updateMinimapViewport = (): void => {
   // 计算当前视口在缩放后图像中的位置
   const imageLeft = info.imageX + imageOffset.value.x;
   const imageTop = info.imageY + imageOffset.value.y;
-  
+
   // 计算视口在缩放后图像中的相对位置
   const viewportInScaledImageLeft = Math.max(0, -imageLeft);
   const viewportInScaledImageTop = Math.max(0, -imageTop);
   const viewportInScaledImageRight = Math.min(info.scaledWidth, info.containerWidth - imageLeft);
   const viewportInScaledImageBottom = Math.min(info.scaledHeight, info.containerHeight - imageTop);
-  
+
   const viewportInScaledImageWidth = Math.max(0, viewportInScaledImageRight - viewportInScaledImageLeft);
   const viewportInScaledImageHeight = Math.max(0, viewportInScaledImageBottom - viewportInScaledImageTop);
 
@@ -606,7 +575,7 @@ const toggleInfoPanel = (): void => {
 
     infoPanelAnimating.value = true;
     showInfoPanel.value = !showInfoPanel.value;
-    
+
     // 记录用户对固定信息栏的偏好
     userInfoPanelPreference.value = showInfoPanel.value;
 
@@ -650,7 +619,7 @@ const toggleMobileInfoOverlay = (): void => {
 // 关闭移动端信息覆盖层
 const closeMobileInfoOverlay = (): void => {
   if (mobileInfoOverlayAnimating.value) return;
-  
+
   mobileInfoOverlayAnimating.value = true;
   showMobileInfoOverlay.value = false;
 
@@ -662,10 +631,6 @@ const closeMobileInfoOverlay = (): void => {
     // 移动端覆盖层不会改变图像容器大小，无需额外处理
   }, 300);
 };
-
-// 已移除小地图计算功能
-
-// 已移除小地图相关代码
 
 // 缩略图滚动条逻辑
 const thumbnailsOffset = ref(0);
@@ -974,10 +939,10 @@ const getTagName = (tagId: string): string => {
 // 图像缩放和拖拽处理
 const handleImageWheel = (event: WheelEvent): void => {
   event.preventDefault();
-  
+
   const delta = event.deltaY > 0 ? -0.1 : 0.1;
   const newScale = Math.max(0.5, Math.min(5, imageScale.value + delta));
-  
+
   if (newScale !== imageScale.value) {
     imageScale.value = newScale;
     // 缩放后应用拖拽限制
@@ -988,36 +953,36 @@ const handleImageWheel = (event: WheelEvent): void => {
 
 const handleImageMouseDown = (event: MouseEvent): void => {
   if (event.button !== 0) return;
-  
+
   event.preventDefault();
   enableImageTransition.value = false; // 禁用过渡动画
   isDraggingImage.value = true;
   dragStart.value = { x: event.clientX, y: event.clientY };
-  
+
   const handleMouseMove = (e: MouseEvent): void => {
     if (!isDraggingImage.value) return;
-    
+
     const deltaX = e.clientX - dragStart.value.x;
     const deltaY = e.clientY - dragStart.value.y;
-    
+
     // 直接应用移动
     imageOffset.value.x += deltaX;
     imageOffset.value.y += deltaY;
-    
+
     // 应用边界限制
     applyDragLimits();
-    
+
     dragStart.value = { x: e.clientX, y: e.clientY };
     updateMinimapViewport();
   };
-  
+
   const handleMouseUp = (): void => {
     isDraggingImage.value = false;
     enableImageTransition.value = true; // 重新启用过渡动画
     document.removeEventListener('mousemove', handleMouseMove);
     document.removeEventListener('mouseup', handleMouseUp);
   };
-  
+
   document.addEventListener('mousemove', handleMouseMove);
   document.addEventListener('mouseup', handleMouseUp);
 };
@@ -1037,8 +1002,8 @@ const handleImageTouchStart = (event: TouchEvent): void => {
     const touch1 = event.touches[0];
     const touch2 = event.touches[1];
     lastTouchDistance.value = Math.sqrt(
-      Math.pow(touch2.clientX - touch1.clientX, 2) + 
-      Math.pow(touch2.clientY - touch1.clientY, 2)
+      Math.pow(touch2.clientX - touch1.clientX, 2)
+      + Math.pow(touch2.clientY - touch1.clientY, 2),
     );
   }
 };
@@ -1050,14 +1015,14 @@ const handleImageTouchMove = (event: TouchEvent): void => {
     const touch = event.touches[0];
     const deltaX = touch.clientX - dragStart.value.x;
     const deltaY = touch.clientY - dragStart.value.y;
-    
+
     // 直接应用移动
     imageOffset.value.x += deltaX;
     imageOffset.value.y += deltaY;
-    
+
     // 应用边界限制
     applyDragLimits();
-    
+
     dragStart.value = { x: touch.clientX, y: touch.clientY };
     updateMinimapViewport();
   } else if (event.touches.length === 2 && isZooming.value) {
@@ -1066,13 +1031,13 @@ const handleImageTouchMove = (event: TouchEvent): void => {
     const touch1 = event.touches[0];
     const touch2 = event.touches[1];
     const currentDistance = Math.sqrt(
-      Math.pow(touch2.clientX - touch1.clientX, 2) + 
-      Math.pow(touch2.clientY - touch1.clientY, 2)
+      Math.pow(touch2.clientX - touch1.clientX, 2)
+      + Math.pow(touch2.clientY - touch1.clientY, 2),
     );
-    
+
     const scaleChange = currentDistance / lastTouchDistance.value;
     const newScale = Math.max(0.5, Math.min(5, imageScale.value * scaleChange));
-    
+
     if (newScale !== imageScale.value) {
       imageScale.value = newScale;
       lastTouchDistance.value = currentDistance;
@@ -1093,20 +1058,20 @@ const handleImageTouchEnd = (): void => {
 const handleMinimapMouseDown = (event: MouseEvent): void => {
   event.preventDefault();
   event.stopPropagation();
-  
+
   if (!imageElement.value || !imageContainer.value || !minimapImage.value) return;
-  
+
   const info = getImageDisplayInfo();
   if (!info) return;
-  
+
   const minimapRect = minimapImage.value.getBoundingClientRect();
   const clickX = event.clientX - minimapRect.left;
   const clickY = event.clientY - minimapRect.top;
-  
+
   // 计算小地图中实际显示的图像区域
   const minimapAspect = minimapRect.width / minimapRect.height;
   const imageAspect = info.displayWidth / info.displayHeight;
-  
+
   let minimapImageWidth, minimapImageHeight, minimapImageX, minimapImageY;
   if (imageAspect > minimapAspect) {
     minimapImageWidth = minimapRect.width;
@@ -1119,64 +1084,64 @@ const handleMinimapMouseDown = (event: MouseEvent): void => {
     minimapImageX = (minimapRect.width - minimapImageWidth) / 2;
     minimapImageY = 0;
   }
-  
+
   // 检查是否点击在图像区域内
-  const isClickInImage = clickX >= minimapImageX && clickX <= minimapImageX + minimapImageWidth &&
-                        clickY >= minimapImageY && clickY <= minimapImageY + minimapImageHeight;
-  
+  const isClickInImage = clickX >= minimapImageX && clickX <= minimapImageX + minimapImageWidth
+    && clickY >= minimapImageY && clickY <= minimapImageY + minimapImageHeight;
+
   if (!isClickInImage) return; // 点击在图像区域外，忽略
-  
+
   // 检查是否点击在视口框内
   const viewport = viewportRect.value;
-  const isClickInViewport = clickX >= viewport.x && clickX <= viewport.x + viewport.width &&
-                           clickY >= viewport.y && clickY <= viewport.y + viewport.height;
-  
+  const isClickInViewport = clickX >= viewport.x && clickX <= viewport.x + viewport.width
+    && clickY >= viewport.y && clickY <= viewport.y + viewport.height;
+
   if (isClickInViewport) {
     // 点击在视口框内，开始拖拽视口
     enableImageTransition.value = false; // 禁用过渡动画
     isDraggingMinimap.value = true;
     minimapDragStart.value = { x: clickX, y: clickY };
-    
+
     const handleMinimapMouseMove = (e: MouseEvent): void => {
       if (!isDraggingMinimap.value) return;
-      
+
       const minimapRect = minimapImage.value!.getBoundingClientRect();
       const currentX = e.clientX - minimapRect.left;
       const currentY = e.clientY - minimapRect.top;
-      
+
       const deltaX = currentX - minimapDragStart.value.x;
       const deltaY = currentY - minimapDragStart.value.y;
-      
+
       // 计算小地图中图像区域到原始图像的缩放比例
       const scaleX = info.displayWidth / minimapImageWidth;
       const scaleY = info.displayHeight / minimapImageHeight;
-      
+
       // 将小地图中的移动转换为原始图像中的移动
       const deltaXInOriginal = deltaX * scaleX;
       const deltaYInOriginal = deltaY * scaleY;
-      
+
       // 转换为缩放后图像中的移动
       const deltaXInScaled = deltaXInOriginal * imageScale.value;
       const deltaYInScaled = deltaYInOriginal * imageScale.value;
-      
+
       // 应用移动（注意方向相反）
       imageOffset.value.x -= deltaXInScaled;
       imageOffset.value.y -= deltaYInScaled;
-      
+
       // 应用边界限制
       applyDragLimits();
-      
+
       minimapDragStart.value = { x: currentX, y: currentY };
       updateMinimapViewport();
     };
-    
+
     const handleMinimapMouseUp = (): void => {
       isDraggingMinimap.value = false;
       enableImageTransition.value = true; // 重新启用过渡动画
       document.removeEventListener('mousemove', handleMinimapMouseMove);
       document.removeEventListener('mouseup', handleMinimapMouseUp);
     };
-    
+
     document.addEventListener('mousemove', handleMinimapMouseMove);
     document.addEventListener('mouseup', handleMinimapMouseUp);
   } else {
@@ -1184,104 +1149,104 @@ const handleMinimapMouseDown = (event: MouseEvent): void => {
     // 将点击位置转换为相对于图像区域的坐标
     const clickXInImage = clickX - minimapImageX;
     const clickYInImage = clickY - minimapImageY;
-    
+
     // 计算小地图中图像区域到原始图像的缩放比例
     const scaleX = info.displayWidth / minimapImageWidth;
     const scaleY = info.displayHeight / minimapImageHeight;
-    
+
     // 计算点击位置在原始图像中的位置（相对于图像左上角）
     const targetXInOriginal = clickXInImage * scaleX;
     const targetYInOriginal = clickYInImage * scaleY;
-    
+
     // 计算点击位置相对于原始图像中心的偏移
     const targetOffsetFromCenterX = targetXInOriginal - info.displayWidth / 2;
     const targetOffsetFromCenterY = targetYInOriginal - info.displayHeight / 2;
-    
+
     // 转换为缩放后图像中相对于中心的偏移
     const targetOffsetScaledX = targetOffsetFromCenterX * imageScale.value;
     const targetOffsetScaledY = targetOffsetFromCenterY * imageScale.value;
-    
+
     // 计算需要的imageOffset，使点击位置居中
     // imageOffset是相对于图像默认居中位置的偏移
     imageOffset.value = {
       x: -targetOffsetScaledX,
       y: -targetOffsetScaledY,
     };
-    
+
     // 应用拖拽限制
     applyDragLimits();
-    
+
     // 设置拖拽状态，允许接着拖拽
     isDraggingMinimap.value = true;
     minimapDragStart.value = { x: clickX, y: clickY };
-    
+
     const handleMinimapMouseMove = (e: MouseEvent): void => {
       if (!isDraggingMinimap.value) return;
-      
+
       const minimapRect = minimapImage.value!.getBoundingClientRect();
       const currentX = e.clientX - minimapRect.left;
       const currentY = e.clientY - minimapRect.top;
-      
+
       const deltaX = currentX - minimapDragStart.value.x;
       const deltaY = currentY - minimapDragStart.value.y;
-      
+
       // 计算小地图中图像区域到原始图像的缩放比例
       const scaleX = info.displayWidth / minimapImageWidth;
       const scaleY = info.displayHeight / minimapImageHeight;
-      
+
       // 将小地图中的移动转换为原始图像中的移动
       const deltaXInOriginal = deltaX * scaleX;
       const deltaYInOriginal = deltaY * scaleY;
-      
+
       // 转换为缩放后图像中的移动
       const deltaXInScaled = deltaXInOriginal * imageScale.value;
       const deltaYInScaled = deltaYInOriginal * imageScale.value;
-      
+
       // 应用移动（注意方向相反）
       imageOffset.value.x -= deltaXInScaled;
       imageOffset.value.y -= deltaYInScaled;
-      
+
       // 应用边界限制
       applyDragLimits();
-      
+
       minimapDragStart.value = { x: currentX, y: currentY };
       updateMinimapViewport();
     };
-    
+
     const handleMinimapMouseUp = (): void => {
       isDraggingMinimap.value = false;
       enableImageTransition.value = true; // 重新启用过渡动画
       document.removeEventListener('mousemove', handleMinimapMouseMove);
       document.removeEventListener('mouseup', handleMinimapMouseUp);
     };
-    
+
     document.addEventListener('mousemove', handleMinimapMouseMove);
     document.addEventListener('mouseup', handleMinimapMouseUp);
-    
+
     updateMinimapViewport();
   }
 };
 
 const handleMinimapTouchStart = (event: TouchEvent): void => {
   if (event.touches.length !== 1) return;
-  
+
   event.preventDefault();
   event.stopPropagation();
-  
+
   if (!imageElement.value || !imageContainer.value || !minimapImage.value) return;
-  
+
   const info = getImageDisplayInfo();
   if (!info) return;
-  
+
   const touch = event.touches[0];
   const minimapRect = minimapImage.value.getBoundingClientRect();
   const clickX = touch.clientX - minimapRect.left;
   const clickY = touch.clientY - minimapRect.top;
-  
+
   // 计算小地图中实际显示的图像区域
   const minimapAspect = minimapRect.width / minimapRect.height;
   const imageAspect = info.displayWidth / info.displayHeight;
-  
+
   let minimapImageWidth, minimapImageHeight, minimapImageX, minimapImageY;
   if (imageAspect > minimapAspect) {
     minimapImageWidth = minimapRect.width;
@@ -1294,68 +1259,68 @@ const handleMinimapTouchStart = (event: TouchEvent): void => {
     minimapImageX = (minimapRect.width - minimapImageWidth) / 2;
     minimapImageY = 0;
   }
-  
+
   // 检查是否点击在图像区域内
-  const isClickInImage = clickX >= minimapImageX && clickX <= minimapImageX + minimapImageWidth &&
-                        clickY >= minimapImageY && clickY <= minimapImageY + minimapImageHeight;
-  
+  const isClickInImage = clickX >= minimapImageX && clickX <= minimapImageX + minimapImageWidth
+    && clickY >= minimapImageY && clickY <= minimapImageY + minimapImageHeight;
+
   if (!isClickInImage) return; // 点击在图像区域外，忽略
-  
+
   // 检查是否点击在视口框内
   const viewport = viewportRect.value;
-  const isClickInViewport = clickX >= viewport.x && clickX <= viewport.x + viewport.width &&
-                           clickY >= viewport.y && clickY <= viewport.y + viewport.height;
-  
+  const isClickInViewport = clickX >= viewport.x && clickX <= viewport.x + viewport.width
+    && clickY >= viewport.y && clickY <= viewport.y + viewport.height;
+
   if (isClickInViewport) {
     // 点击在视口框内，开始拖拽视口
     enableImageTransition.value = false; // 禁用过渡动画
     isDraggingMinimap.value = true;
     minimapDragStart.value = { x: clickX, y: clickY };
-    
+
     const handleMinimapTouchMove = (e: TouchEvent): void => {
       if (!isDraggingMinimap.value || e.touches.length !== 1) return;
-      
+
       e.preventDefault();
       e.stopPropagation();
-      
+
       const touch = e.touches[0];
       const minimapRect = minimapImage.value!.getBoundingClientRect();
       const currentX = touch.clientX - minimapRect.left;
       const currentY = touch.clientY - minimapRect.top;
-      
+
       const deltaX = currentX - minimapDragStart.value.x;
       const deltaY = currentY - minimapDragStart.value.y;
-      
+
       // 计算小地图中图像区域到原始图像的缩放比例
       const scaleX = info.displayWidth / minimapImageWidth;
       const scaleY = info.displayHeight / minimapImageHeight;
-      
+
       // 将小地图中的移动转换为原始图像中的移动
       const deltaXInOriginal = deltaX * scaleX;
       const deltaYInOriginal = deltaY * scaleY;
-      
+
       // 转换为缩放后图像中的移动
       const deltaXInScaled = deltaXInOriginal * imageScale.value;
       const deltaYInScaled = deltaYInOriginal * imageScale.value;
-      
+
       // 应用移动（注意方向相反）
       imageOffset.value.x -= deltaXInScaled;
       imageOffset.value.y -= deltaYInScaled;
-      
+
       // 应用边界限制
       applyDragLimits();
-      
+
       minimapDragStart.value = { x: currentX, y: currentY };
       updateMinimapViewport();
     };
-    
+
     const handleMinimapTouchEnd = (): void => {
       isDraggingMinimap.value = false;
       enableImageTransition.value = true; // 重新启用过渡动画
       document.removeEventListener('touchmove', handleMinimapTouchMove);
       document.removeEventListener('touchend', handleMinimapTouchEnd);
     };
-    
+
     document.addEventListener('touchmove', handleMinimapTouchMove, { passive: false });
     document.addEventListener('touchend', handleMinimapTouchEnd);
   } else {
@@ -1363,84 +1328,84 @@ const handleMinimapTouchStart = (event: TouchEvent): void => {
     // 将点击位置转换为相对于图像区域的坐标
     const clickXInImage = clickX - minimapImageX;
     const clickYInImage = clickY - minimapImageY;
-    
+
     // 计算小地图中图像区域到原始图像的缩放比例
     const scaleX = info.displayWidth / minimapImageWidth;
     const scaleY = info.displayHeight / minimapImageHeight;
-    
+
     // 计算点击位置在原始图像中的位置（相对于图像左上角）
     const targetXInOriginal = clickXInImage * scaleX;
     const targetYInOriginal = clickYInImage * scaleY;
-    
+
     // 计算点击位置相对于原始图像中心的偏移
     const targetOffsetFromCenterX = targetXInOriginal - info.displayWidth / 2;
     const targetOffsetFromCenterY = targetYInOriginal - info.displayHeight / 2;
-    
+
     // 转换为缩放后图像中相对于中心的偏移
     const targetOffsetScaledX = targetOffsetFromCenterX * imageScale.value;
     const targetOffsetScaledY = targetOffsetFromCenterY * imageScale.value;
-    
+
     // 计算需要的imageOffset，使点击位置居中
     // imageOffset是相对于图像默认居中位置的偏移
     imageOffset.value = {
       x: -targetOffsetScaledX,
       y: -targetOffsetScaledY,
     };
-    
+
     // 应用拖拽限制
     applyDragLimits();
-    
+
     // 设置拖拽状态，允许接着拖拽
     isDraggingMinimap.value = true;
     minimapDragStart.value = { x: clickX, y: clickY };
-    
+
     const handleMinimapTouchMove = (e: TouchEvent): void => {
       if (!isDraggingMinimap.value || e.touches.length !== 1) return;
-      
+
       e.preventDefault();
       e.stopPropagation();
-      
+
       const touch = e.touches[0];
       const minimapRect = minimapImage.value!.getBoundingClientRect();
       const currentX = touch.clientX - minimapRect.left;
       const currentY = touch.clientY - minimapRect.top;
-      
+
       const deltaX = currentX - minimapDragStart.value.x;
       const deltaY = currentY - minimapDragStart.value.y;
-      
+
       // 计算小地图中图像区域到原始图像的缩放比例
       const scaleX = info.displayWidth / minimapImageWidth;
       const scaleY = info.displayHeight / minimapImageHeight;
-      
+
       // 将小地图中的移动转换为原始图像中的移动
       const deltaXInOriginal = deltaX * scaleX;
       const deltaYInOriginal = deltaY * scaleY;
-      
+
       // 转换为缩放后图像中的移动
       const deltaXInScaled = deltaXInOriginal * imageScale.value;
       const deltaYInScaled = deltaYInOriginal * imageScale.value;
-      
+
       // 应用移动（注意方向相反）
       imageOffset.value.x -= deltaXInScaled;
       imageOffset.value.y -= deltaYInScaled;
-      
+
       // 应用边界限制
       applyDragLimits();
-      
+
       minimapDragStart.value = { x: currentX, y: currentY };
       updateMinimapViewport();
     };
-    
+
     const handleMinimapTouchEnd = (): void => {
       isDraggingMinimap.value = false;
       enableImageTransition.value = true; // 重新启用过渡动画
       document.removeEventListener('touchmove', handleMinimapTouchMove);
       document.removeEventListener('touchend', handleMinimapTouchEnd);
     };
-    
+
     document.addEventListener('touchmove', handleMinimapTouchMove, { passive: false });
     document.addEventListener('touchend', handleMinimapTouchEnd);
-    
+
     updateMinimapViewport();
   }
 };
@@ -1562,7 +1527,7 @@ watch(currentImage, (newImage) => {
   if (newImage) {
     // 重置图像变换状态
     resetImageTransform();
-    
+
     // 获取当前图片的缩略图URL
     const thumbnailSrc = getThumbnailUrl(newImage.src, 'tiny');
 
@@ -1608,34 +1573,34 @@ watch(() => props.isActive, (newValue) => {
 const getImageFitStatus = (): { canFitWidth: boolean; canFitHeight: boolean } => {
   const info = getImageDisplayInfo();
   if (!info) return { canFitWidth: false, canFitHeight: false };
-  
+
   // 分别检查宽度和高度是否能完全显示在容器中
   const canFitWidth = info.scaledWidth <= info.containerWidth;
   const canFitHeight = info.scaledHeight <= info.containerHeight;
-  
+
   return { canFitWidth, canFitHeight };
 };
 
 // 自动居中图像（分别处理宽度和高度）
 const autoCenterImage = (): void => {
   const { canFitWidth, canFitHeight } = getImageFitStatus();
-  
+
   // 只有当宽度或高度能完全显示时，才对相应方向进行居中
   let needsUpdate = false;
   const newOffset = { ...imageOffset.value };
-  
+
   if (canFitWidth) {
     // 如果图像宽度能完全显示，重置水平偏移量使其水平居中
     newOffset.x = 0;
     needsUpdate = true;
   }
-  
+
   if (canFitHeight) {
     // 如果图像高度能完全显示，重置垂直偏移量使其垂直居中
     newOffset.y = 0;
     needsUpdate = true;
   }
-  
+
   if (needsUpdate) {
     imageOffset.value = newOffset;
     // 启用过渡动画使居中更平滑
@@ -1655,24 +1620,22 @@ let containerResizeDebounceTimer: number | null = null;
 
 // 处理图像容器尺寸变化
 const handleImageContainerResize = (): void => {
-  // 清除之前的防抖定时器
   if (containerResizeDebounceTimer !== null) {
     timers.clearTimeout(containerResizeDebounceTimer);
   }
 
-  // 使用较短的防抖延迟，确保动画过程中的响应性
   containerResizeDebounceTimer = timers.setTimeout(() => {
     // 立即应用拖拽限制修正，确保图像在新的容器尺寸下保持在有效范围内
     applyDragLimits();
-    
+
     // 更新小地图
     updateMinimapVisibility();
-    
+
     // 检查图像是否能完全显示，如果可以则自动居中
     autoCenterImage();
-    
+
     containerResizeDebounceTimer = null;
-  }, 16); // 约60fps的更新频率，确保动画流畅
+  }, 16);
 };
 
 // 处理屏幕变化（移动端状态切换等）
@@ -1684,9 +1647,8 @@ const handleScreenChange = (wasMobile: boolean, currentIsMobile: boolean): void 
     mobileInfoOverlayAnimating.value = false;
     // 根据用户对固定信息栏的偏好设置桌面端信息面板状态
     showInfoPanel.value = userInfoPanelPreference.value;
-  }
-  // 如果从桌面端切换到移动端
-  else if (!wasMobile && currentIsMobile) {
+  } else if (!wasMobile && currentIsMobile) {
+    // 如果从桌面端切换到移动端
     // 移动端不显示桌面端的固定信息面板
     showInfoPanel.value = false;
     // 移动端信息浮窗保持关闭状态（临时弹窗不持久化）
@@ -1711,18 +1673,18 @@ const handleResizeDebounced = (): void => {
   const wasUserScrolling = isUserScrolling.value;
   isUserScrolling.value = false;
   updateThumbnailsOffset();
-  
+
   // 立即应用拖拽限制修正，确保图像在新的容器尺寸下保持在有效范围内
   applyDragLimits();
-  
+
   // 更新小地图
   updateMinimapVisibility();
-  
+
   // 检查图像是否能完全显示，如果可以则自动居中
   nextTick(() => {
     autoCenterImage();
   });
-  
+
   // 如果用户之前在滚动，延迟恢复状态
   if (wasUserScrolling) {
     timers.setTimeout(() => {
@@ -1751,7 +1713,7 @@ onMounted(() => {
   });
 
   window.addEventListener('keydown', handleKeyDown);
-  
+
   // 设置图像容器的 ResizeObserver
   nextTick(() => {
     if (imageContainer.value && 'ResizeObserver' in window) {
@@ -1764,41 +1726,41 @@ onMounted(() => {
           }
         }
       });
-      
+
       imageContainerResizeObserver.observe(imageContainer.value);
     }
-    
+
     updateThumbnailsOffset();
   });
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleKeyDown);
-  
+
   // 取消屏幕变化监听器
   if (unsubscribeScreenChange) {
     unsubscribeScreenChange();
     unsubscribeScreenChange = null;
   }
-  
+
   // 清理resize防抖定时器
   if (resizeDebounceTimer !== null) {
     timers.clearTimeout(resizeDebounceTimer);
     resizeDebounceTimer = null;
   }
-  
+
   // 清理容器resize防抖定时器
   if (containerResizeDebounceTimer !== null) {
     timers.clearTimeout(containerResizeDebounceTimer);
     containerResizeDebounceTimer = null;
   }
-  
+
   // 清理 ResizeObserver
   if (imageContainerResizeObserver) {
     imageContainerResizeObserver.disconnect();
     imageContainerResizeObserver = null;
   }
-  
+
   // 清理移动端覆盖层状态
   if (showMobileInfoOverlay.value) {
     document.body.style.overflow = '';
@@ -2272,11 +2234,11 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   .mobile-info-panel {
     max-height: 80vh;
   }
-  
+
   .mobile-info-content {
     @apply p-4;
   }
-  
+
   .mobile-info-header {
     @apply py-3 px-4;
   }

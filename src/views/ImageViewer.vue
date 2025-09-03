@@ -8,9 +8,8 @@
 import { onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { useEventManager } from '@/composables/useEventManager';
-
 import FullscreenViewer from '@/components/FullscreenViewer.vue';
+import { useEventManager } from '@/composables/useEventManager';
 
 // 获取路由参数
 defineProps<{

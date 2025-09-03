@@ -27,6 +27,7 @@ export default [
         HTMLElement: 'readonly',
         HTMLDivElement: 'readonly',
         HTMLButtonElement: 'readonly',
+        HTMLImageElement: 'readonly',
         Element: 'readonly',
         NodeJS: 'readonly',
         localStorage: 'readonly',
@@ -52,6 +53,7 @@ export default [
         EventListener: 'readonly',
         EventTarget: 'readonly',
         event: 'readonly',
+        ResizeObserver: 'readonly',
       },
     },
     plugins: {
@@ -190,6 +192,18 @@ export default [
           allowConciseArrowFunctionExpressionsStartingWithVoid: true,
         },
       ],
+      // 禁用接口和函数签名中的未使用参数检查
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          args: 'none', // 不检查函数参数
+          varsIgnorePattern: '^_', // 忽略以_开头的变量
+          argsIgnorePattern: '^_', // 忽略以_开头的参数
+          ignoreRestSiblings: true,
+        },
+      ],
+      // 禁用原生的no-unused-vars规则，使用TypeScript版本
+      'no-unused-vars': 'off',
     },
   },
   // Vue 文件配置
@@ -215,6 +229,7 @@ export default [
         HTMLElement: 'readonly',
         HTMLDivElement: 'readonly',
         HTMLButtonElement: 'readonly',
+        HTMLImageElement: 'readonly',
         Element: 'readonly',
         NodeJS: 'readonly',
         localStorage: 'readonly',
@@ -240,6 +255,7 @@ export default [
         EventListener: 'readonly',
         EventTarget: 'readonly',
         event: 'readonly',
+        ResizeObserver: 'readonly',
       },
     },
     plugins: {
@@ -255,6 +271,21 @@ export default [
       '@stylistic/semi': ['error', 'always'],
       '@stylistic/comma-dangle': ['error', 'always-multiline'],
       // Vue 特定规则可以在这里覆盖
+      // 禁用CSS相关的警告
+      'vue/no-unknown-at-rule': 'off',
+      'vue/valid-style': 'off',
+      // 禁用接口和函数签名中的未使用参数检查
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          args: 'none', // 不检查函数参数
+          varsIgnorePattern: '^_', // 忽略以_开头的变量
+          argsIgnorePattern: '^_', // 忽略以_开头的参数
+          ignoreRestSiblings: true,
+        },
+      ],
+      // 禁用原生的no-unused-vars规则，使用TypeScript版本
+      'no-unused-vars': 'off',
     },
   },
   {

@@ -80,10 +80,10 @@ const preloadImages = async (): Promise<void> => {
   const promises = Array.from(imageUrls).map(url => {
     return new Promise<void>((resolve) => {
       const img = new Image();
-      
+
       // 添加到预加载图片列表中，用于后续清理
       preloadedImages.value.push(img);
-      
+
       img.onload = () => {
         loadedAssets.value++;
         loadingProgress.value = (loadedAssets.value / totalAssets.value) * 100;
