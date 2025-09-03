@@ -10,7 +10,15 @@
   <meta name="theme-color" content="#1e293b" media="(prefers-color-scheme: dark)">
   <script>
     // 单页应用的 GitHub Pages 404 重定向
-    sessionStorage.redirect = location.href;
+    const currentUrl = location.href;
+    const baseUrl = location.origin;
+    const pathAndSearch = location.pathname + location.search + location.hash;
+    
+    // 如果当前路径不是根路径，保存重定向信息
+    if (pathAndSearch !== '/') {
+      sessionStorage.setItem('github-pages-redirect', pathAndSearch);
+      sessionStorage.setItem('github-pages-redirect-full', currentUrl);
+    }
   </script>
   <meta http-equiv="refresh" content="0;URL='/'">
 </head>

@@ -37,6 +37,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
 import LoadingScreen from '@/components/LoadingScreen.vue';
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher.vue';
@@ -45,6 +46,7 @@ import { siteConfig } from '@/config/site';
 import { useAppStore } from '@/stores/app';
 
 const { t } = useI18n();
+const router = useRouter();
 const appStore = useAppStore();
 
 // 加载状态
@@ -116,10 +118,15 @@ onMounted(() => {
   }
 
   // 处理GitHub Pages 404重定向
-  const { redirect } = sessionStorage;
-  delete sessionStorage.redirect;
-  if (redirect && redirect !== location.href) {
-    history.replaceState(null, '', redirect);
+  // 注意：重定向逻辑现在主要由路由守卫处理
+  // 这里只做必要的清理工作
+  const redirectPath = sessionStorage.getItem('github-pages-redirect');
+  if (redirectPath) {
+    // 如果当前不在根路径，说明重定向已经生效，清理重定向信息
+    if (location.pathname !== '/') {
+      sessionStorage.removeItem('github-pages-redirect');
+      sessionStorage.removeItem('github-pages-redirect-full');
+    }
   }
 
   // 开始预加载图像
