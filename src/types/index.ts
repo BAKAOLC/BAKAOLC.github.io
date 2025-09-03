@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 export interface I18nText {
   en: string;
   zh: string;
@@ -27,6 +26,7 @@ export interface ImageTag {
   name: I18nText;
   color?: string;
   icon?: string;
+  isRestricted?: boolean; // 标识是否为限制级标签
 }
 
 export interface CharacterImage {

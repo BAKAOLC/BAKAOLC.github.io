@@ -227,6 +227,51 @@ export const siteConfig: SiteConfig = {
       color: '#ec4899',
       icon: 'smile',
     },
+    // 限制级标签
+    {
+      id: 'nsfw',
+      name: {
+        en: 'NSFW',
+        zh: 'NSFW',
+        jp: 'NSFW',
+      },
+      color: '#dc2626',
+      icon: 'exclamation-triangle',
+      isRestricted: true,
+    },
+    {
+      id: 'r18',
+      name: {
+        en: 'R18',
+        zh: 'R18',
+        jp: 'R18',
+      },
+      color: '#b91c1c',
+      icon: 'ban',
+      isRestricted: true,
+    },
+    {
+      id: 'furry',
+      name: {
+        en: 'Furry',
+        zh: 'Furry',
+        jp: 'Furry',
+      },
+      color: '#7c2d12',
+      icon: 'paw',
+      isRestricted: true,
+    },
+    {
+      id: 'guro',
+      name: {
+        en: 'Guro',
+        zh: 'Guro',
+        jp: 'Guro',
+      },
+      color: '#450a0a',
+      icon: 'skull',
+      isRestricted: true,
+    },
   ],
 
   images: [
@@ -356,7 +401,7 @@ export const siteConfig: SiteConfig = {
         jp: 'Re-ViVi',
       },
       src: '/assets/catagory/ritsukage-utsumabo/wallpaper/3-2.png',
-      tags: ['commission', 'wallpaper'],
+      tags: ['commission', 'wallpaper', 'nsfw'],
       characters: ['ritsukage-utsumabo'],
     },
 
@@ -400,7 +445,7 @@ export const siteConfig: SiteConfig = {
         jp: 'プシュケーLo',
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-1.png',
-      tags: ['commission', 'illustration'],
+      tags: ['commission', 'illustration', 'nsfw'],
       characters: ['ritsukage-utsumabo'],
     },
     {
@@ -421,7 +466,7 @@ export const siteConfig: SiteConfig = {
         jp: 'プシュケーLo',
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-2.png',
-      tags: ['commission', 'illustration'],
+      tags: ['commission', 'illustration', 'nsfw', 'r18'],
       characters: ['ritsukage-utsumabo'],
     },
     {
@@ -442,7 +487,7 @@ export const siteConfig: SiteConfig = {
         jp: 'プシュケーLo',
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-3.png',
-      tags: ['commission', 'illustration'],
+      tags: ['commission', 'illustration', 'nsfw'],
       characters: ['ritsukage-utsumabo'],
     },
     {
@@ -758,7 +803,7 @@ export const siteConfig: SiteConfig = {
         jp: 'ちゅばき',
       },
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/软软猫律影.png',
-      tags: ['commission', 'illustration'],
+      tags: ['commission', 'illustration', 'nsfw'],
       characters: ['ritsukage-utsumabo'],
     },
     {

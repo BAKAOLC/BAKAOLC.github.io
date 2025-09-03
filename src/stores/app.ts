@@ -53,6 +53,9 @@ export const useAppStore = defineStore('app', () => {
   // 当前选择的标签
   const selectedTag = ref('all');
 
+  // 特殊标签的选择状态（默认都不选中）
+  const selectedRestrictedTags = ref<Record<string, boolean>>({});
+
   // 排序设置
   const sortBy = ref<'name' | 'artist' | 'date'>('name');
   const sortOrder = ref<'asc' | 'desc'>('asc');
@@ -80,6 +83,23 @@ export const useAppStore = defineStore('app', () => {
     if (selectedTag.value !== 'all') {
       images = images.filter(image => image.tags.includes(selectedTag.value));
     }
+
+    // 特殊标签过滤：如果图片有任一特殊tag不满足启用状态，便不会加入结果中
+    images = images.filter(image => {
+      const restrictedTags = siteConfig.tags.filter(tag => tag.isRestricted);
+
+      for (const restrictedTag of restrictedTags) {
+        const imageHasTag = image.tags.includes(restrictedTag.id);
+        const tagIsEnabled = selectedRestrictedTags.value[restrictedTag.id] || false;
+
+        // 如果图片有这个特殊标签，但是这个标签没有被启用，则过滤掉
+        if (imageHasTag && !tagIsEnabled) {
+          return false;
+        }
+      }
+
+      return true;
+    });
 
     // 排序
     images = sortImages(images);
@@ -180,6 +200,23 @@ export const useAppStore = defineStore('app', () => {
       imagesToCount = imagesToCount.filter(image => image.characters.includes(selectedCharacterId.value));
     }
 
+    // 应用特殊标签过滤
+    imagesToCount = imagesToCount.filter(image => {
+      const restrictedTags = siteConfig.tags.filter(tag => tag.isRestricted);
+
+      for (const restrictedTag of restrictedTags) {
+        const imageHasTag = image.tags.includes(restrictedTag.id);
+        const tagIsEnabled = selectedRestrictedTags.value[restrictedTag.id] || false;
+
+        // 如果图片有这个特殊标签，但是这个标签没有被启用，则过滤掉
+        if (imageHasTag && !tagIsEnabled) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+
     // 计算每个标签的数量
     siteConfig.tags.forEach(tag => {
       const count = imagesToCount.filter(image => image.tags.includes(tag.id)).length;
@@ -195,17 +232,35 @@ export const useAppStore = defineStore('app', () => {
 
   // 获取每个角色的匹配图像数量
   const getCharacterMatchCount = (characterId: string): number => {
-    // 如果没有搜索查询
-    if (!searchQuery.value.trim()) return siteConfig.images.length;
+    let imagesToCount = siteConfig.images;
 
-    // 先按搜索过滤
-    const filteredImages = filterImagesBySearch(siteConfig.images, searchQuery.value.trim());
+    // 如果有搜索查询，先按搜索过滤
+    if (searchQuery.value.trim()) {
+      imagesToCount = filterImagesBySearch(imagesToCount, searchQuery.value.trim());
+    }
 
-    // 如果是"全部"选项，返回所有匹配图像的总数（不重复计算）
-    if (characterId === 'all') return filteredImages.length;
+    // 应用限制级标签过滤
+    imagesToCount = imagesToCount.filter(image => {
+      const restrictedTags = siteConfig.tags.filter(tag => tag.isRestricted);
+
+      for (const restrictedTag of restrictedTags) {
+        const imageHasTag = image.tags.includes(restrictedTag.id);
+        const tagIsEnabled = selectedRestrictedTags.value[restrictedTag.id] || false;
+
+        // 如果图片有这个特殊标签，但是这个标签没有被启用，则过滤掉
+        if (imageHasTag && !tagIsEnabled) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+
+    // 如果是"全部"选项，返回所有匹配图像的总数
+    if (characterId === 'all') return imagesToCount.length;
 
     // 计算该角色的匹配数量
-    return filteredImages.filter(img => img.characters.includes(characterId)).length;
+    return imagesToCount.filter(img => img.characters.includes(characterId)).length;
   };
 
   // 获取单个图像
@@ -272,6 +327,16 @@ export const useAppStore = defineStore('app', () => {
     isFromGallery.value = value;
   };
 
+  // 设置特殊标签的选择状态
+  const setRestrictedTagState = (tagId: string, enabled: boolean): void => {
+    selectedRestrictedTags.value[tagId] = enabled;
+  };
+
+  // 获取特殊标签的选择状态
+  const getRestrictedTagState = (tagId: string): boolean => {
+    return selectedRestrictedTags.value[tagId] || false;
+  };
+
   return {
     // 加载状态
     isLoading,
@@ -300,6 +365,11 @@ export const useAppStore = defineStore('app', () => {
     characterImages,
     tagCounts,
     getCharacterMatchCount,
+
+    // 特殊标签相关
+    selectedRestrictedTags,
+    setRestrictedTagState,
+    getRestrictedTagState,
 
     // 排序相关
     sortBy,

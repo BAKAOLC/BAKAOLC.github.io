@@ -70,6 +70,7 @@ export default {
     sortDate: '按时间',
     sortAsc: '正序',
     sortDesc: '倒序',
+    restrictedTags: '限制级标签',
   },
   personal: {
     contactMe: '联系我',
