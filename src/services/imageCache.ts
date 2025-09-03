@@ -282,8 +282,16 @@ class ImageCacheService {
   clearCachedImage(url: string): void {
     const cached = this.cache.get(url);
     if (cached) {
-      if (cached.xhr && cached.loading) {
-        cached.xhr.abort();
+      if (cached.xhr) {
+        if (cached.loading) {
+          cached.xhr.abort();
+        }
+        // 完全清理XMLHttpRequest对象的所有回调引用
+        cached.xhr.onload = null;
+        cached.xhr.onerror = null;
+        cached.xhr.onprogress = null;
+        cached.xhr.onabort = null;
+        cached.xhr = undefined;
       }
       if (cached.objectUrl) {
         URL.revokeObjectURL(cached.objectUrl);
@@ -335,9 +343,11 @@ class ImageCacheService {
 
   // 清理所有缓存
   clearAllCache(): void {
-    for (const [url] of this.cache) {
+    // 使用数组副本避免在迭代过程中修改Map
+    const urlsToClean = Array.from(this.cache.keys());
+    urlsToClean.forEach(url => {
       this.clearCachedImage(url);
-    }
+    });
   }
 
   // 获取缓存统计信息

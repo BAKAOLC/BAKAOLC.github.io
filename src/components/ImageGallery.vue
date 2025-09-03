@@ -56,6 +56,8 @@
 import { computed, ref, watch, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import { useEventManager } from '@/composables/useEventManager';
+
 import ProgressiveImage from './ProgressiveImage.vue';
 
 import type { I18nText, CharacterImage } from '@/types';
@@ -99,6 +101,7 @@ watch(() => props.images, async (newImages, oldImages) => {
 
 const { t: $t } = useI18n();
 const appStore = useAppStore();
+const eventManager = useEventManager();
 
 const currentLanguage = computed(() => appStore.currentLanguage);
 
@@ -118,8 +121,7 @@ const viewImage = (image: CharacterImage): void => {
     return;
   }
 
-  const event = new CustomEvent('viewImage', { detail: { imageId: image.id } });
-  window.dispatchEvent(event);
+  eventManager.dispatchEvent('viewImage', { imageId: image.id });
 };
 
 const t = (text: I18nText | string, lang?: string): string => {
