@@ -424,6 +424,12 @@ const calculateDragLimits = (): {
     return { minX: 0, maxX: 0, minY: 0, maxY: 0 };
   }
   
+  // 防止除零错误和极端值
+  if (info.containerWidth <= 0 || info.containerHeight <= 0 || 
+      info.scaledWidth <= 0 || info.scaledHeight <= 0) {
+    return { minX: 0, maxX: 0, minY: 0, maxY: 0 };
+  }
+  
   // 图像以容器中心为原点缩放
   // imageOffset是相对于图像默认居中位置的偏移
   // 缩放后图像的实际位置：
@@ -439,10 +445,33 @@ const calculateDragLimits = (): {
   // 下边界 <= containerHeight: containerHeight/2 + scaledHeight/2 + imageOffset.y <= containerHeight
   
   // 解出imageOffset的限制：
-  const minX = info.scaledWidth <= info.containerWidth ? 0 : -(info.scaledWidth - info.containerWidth) / 2;
-  const maxX = info.scaledWidth <= info.containerWidth ? 0 : (info.scaledWidth - info.containerWidth) / 2;
-  const minY = info.scaledHeight <= info.containerHeight ? 0 : -(info.scaledHeight - info.containerHeight) / 2;
-  const maxY = info.scaledHeight <= info.containerHeight ? 0 : (info.scaledHeight - info.containerHeight) / 2;
+  let minX, maxX, minY, maxY;
+  
+  if (info.scaledWidth <= info.containerWidth) {
+    // 图像宽度小于等于容器宽度，水平居中，不允许水平拖拽
+    minX = maxX = 0;
+  } else {
+    // 图像宽度大于容器宽度，允许在限制范围内拖拽
+    const halfWidthDiff = (info.scaledWidth - info.containerWidth) / 2;
+    minX = -halfWidthDiff;
+    maxX = halfWidthDiff;
+  }
+  
+  if (info.scaledHeight <= info.containerHeight) {
+    // 图像高度小于等于容器高度，垂直居中，不允许垂直拖拽
+    minY = maxY = 0;
+  } else {
+    // 图像高度大于容器高度，允许在限制范围内拖拽
+    const halfHeightDiff = (info.scaledHeight - info.containerHeight) / 2;
+    minY = -halfHeightDiff;
+    maxY = halfHeightDiff;
+  }
+  
+  // 确保限制值是有限数值
+  minX = isFinite(minX) ? minX : 0;
+  maxX = isFinite(maxX) ? maxX : 0;
+  minY = isFinite(minY) ? minY : 0;
+  maxY = isFinite(maxY) ? maxY : 0;
   
   return { minX, maxX, minY, maxY };
 };
@@ -592,6 +621,9 @@ const toggleInfoPanel = (): void => {
   }
 };
 
+// 注意：handleInfoPanelToggleComplete 函数已被移除，
+// 其功能已由 handleImageContainerResize 通过 ResizeObserver 实现
+
 // 移动端信息覆盖层切换
 const toggleMobileInfoOverlay = (): void => {
   if (mobileInfoOverlayAnimating.value) return;
@@ -609,6 +641,7 @@ const toggleMobileInfoOverlay = (): void => {
   // 动画结束后重置状态
   timers.setTimeout(() => {
     mobileInfoOverlayAnimating.value = false;
+    // 移动端覆盖层不会改变图像容器大小，无需额外处理
   }, 300); // 覆盖层动画时长
 };
 
@@ -624,6 +657,7 @@ const closeMobileInfoOverlay = (): void => {
 
   timers.setTimeout(() => {
     mobileInfoOverlayAnimating.value = false;
+    // 移动端覆盖层不会改变图像容器大小，无需额外处理
   }, 300);
 };
 
@@ -1610,8 +1644,38 @@ const autoCenterImage = (): void => {
   }
 };
 
+// resize事件防抖定时器
+let resizeDebounceTimer: number | null = null;
+
+// ResizeObserver 用于监听图像容器尺寸变化
+let imageContainerResizeObserver: ResizeObserver | null = null;
+let containerResizeDebounceTimer: number | null = null;
+
+// 处理图像容器尺寸变化
+const handleImageContainerResize = (): void => {
+  // 清除之前的防抖定时器
+  if (containerResizeDebounceTimer !== null) {
+    timers.clearTimeout(containerResizeDebounceTimer);
+  }
+
+  // 使用较短的防抖延迟，确保动画过程中的响应性
+  containerResizeDebounceTimer = timers.setTimeout(() => {
+    // 立即应用拖拽限制修正，确保图像在新的容器尺寸下保持在有效范围内
+    applyDragLimits();
+    
+    // 更新小地图
+    updateMinimapVisibility();
+    
+    // 检查图像是否能完全显示，如果可以则自动居中
+    autoCenterImage();
+    
+    containerResizeDebounceTimer = null;
+  }, 16); // 约60fps的更新频率，确保动画流畅
+};
+
 // 监听窗口大小变化
 const handleResize = (): void => {
+  // 立即处理移动端检测，这个不需要防抖
   const wasMobile = isMobile.value;
   checkIsMobile();
   
@@ -1630,10 +1694,28 @@ const handleResize = (): void => {
     showMobileInfoOverlay.value = false;
   }
 
+  // 清除之前的防抖定时器
+  if (resizeDebounceTimer !== null) {
+    timers.clearTimeout(resizeDebounceTimer);
+  }
+
+  // 使用防抖处理图像相关的更新，避免频繁重新计算
+  resizeDebounceTimer = timers.setTimeout(() => {
+    handleResizeDebounced();
+    resizeDebounceTimer = null;
+  }, 150); // 150ms防抖延迟
+};
+
+// 防抖后的resize处理函数
+const handleResizeDebounced = (): void => {
   // 窗口大小变化时，强制重新计算位置（忽略用户滚动状态）
   const wasUserScrolling = isUserScrolling.value;
   isUserScrolling.value = false;
   updateThumbnailsOffset();
+  
+  // 立即应用拖拽限制修正，确保图像在新的容器尺寸下保持在有效范围内
+  applyDragLimits();
+  
   // 更新小地图
   updateMinimapVisibility();
   
@@ -1663,7 +1745,23 @@ onMounted(() => {
 
   window.addEventListener('keydown', handleKeyDown);
   window.addEventListener('resize', handleResize);
+  
+  // 设置图像容器的 ResizeObserver
   nextTick(() => {
+    if (imageContainer.value && 'ResizeObserver' in window) {
+      imageContainerResizeObserver = new ResizeObserver((entries) => {
+        // 只有当容器尺寸确实发生变化时才处理
+        for (const entry of entries) {
+          if (entry.target === imageContainer.value) {
+            handleImageContainerResize();
+            break;
+          }
+        }
+      });
+      
+      imageContainerResizeObserver.observe(imageContainer.value);
+    }
+    
     updateThumbnailsOffset();
   });
 });
@@ -1671,6 +1769,24 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleKeyDown);
   window.removeEventListener('resize', handleResize);
+  
+  // 清理resize防抖定时器
+  if (resizeDebounceTimer !== null) {
+    timers.clearTimeout(resizeDebounceTimer);
+    resizeDebounceTimer = null;
+  }
+  
+  // 清理容器resize防抖定时器
+  if (containerResizeDebounceTimer !== null) {
+    timers.clearTimeout(containerResizeDebounceTimer);
+    containerResizeDebounceTimer = null;
+  }
+  
+  // 清理 ResizeObserver
+  if (imageContainerResizeObserver) {
+    imageContainerResizeObserver.disconnect();
+    imageContainerResizeObserver = null;
+  }
   
   // 清理移动端覆盖层状态
   if (showMobileInfoOverlay.value) {
