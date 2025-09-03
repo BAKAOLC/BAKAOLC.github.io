@@ -21,8 +21,8 @@
         <button class="control-button zoom-button" @click="zoomIn" :title="$t('viewer.zoomIn')">
           <zoom-in-icon class="icon" />
         </button>
-        <button class="control-button" @click="toggleInfoPanel" :class="{ 'disabled': infoPanelAnimating }"
-          :disabled="infoPanelAnimating" :title="t(showInfoPanel ? 'viewer.hideInfo' : 'viewer.showInfo')">
+        <button class="control-button" @click="toggleInfoPanel" :class="{ 'disabled': infoPanelAnimating || mobileInfoOverlayAnimating }"
+          :disabled="infoPanelAnimating || mobileInfoOverlayAnimating" :title="getInfoButtonTitle()">
           <info-icon class="icon" />
         </button>
         <button class="control-button close-button" @click="close" :title="t('viewer.close')">
@@ -123,8 +123,9 @@
       </button>
     </div>
 
+    <!-- 桌面端信息面板 -->
     <transition name="slide-fade">
-      <div v-show="showInfoPanel" class="viewer-footer">
+      <div v-show="showInfoPanel && !isMobile" class="viewer-footer">
         <div class="info-toggle-button" @click="toggleInfoPanel" style="display: none;">
           <!-- 信息切换按钮已移至顶部控制栏 -->
         </div>
@@ -155,6 +156,49 @@
             </div>
           </div>
         </div>
+      </div>
+    </transition>
+
+    <!-- 移动端信息覆盖层 -->
+    <transition name="mobile-overlay-fade">
+      <div v-show="showMobileInfoOverlay && isMobile" class="mobile-info-overlay" @click="closeMobileInfoOverlay">
+        <transition name="mobile-info-slide">
+          <div v-show="showMobileInfoOverlay" class="mobile-info-panel" @click.stop>
+            <div class="mobile-info-header">
+              <h3 class="mobile-info-title">{{ $t('viewer.imageInfo') }}</h3>
+              <button class="mobile-info-close" @click="closeMobileInfoOverlay">
+                <x-icon class="icon" />
+              </button>
+            </div>
+            
+            <div class="mobile-info-content">
+              <div class="info-group">
+                <h3 class="info-title">{{ t(currentImage?.name, currentLanguage) }}</h3>
+                <p class="info-description">{{ t(currentImage?.description, currentLanguage) }}</p>
+              </div>
+
+              <div class="info-group">
+                <h4 class="info-subtitle">{{ $t('gallery.artist') }}</h4>
+                <p>{{ currentImage ? t(currentImage.artist, currentLanguage) : '' }}</p>
+              </div>
+
+              <div v-if="currentImage?.date" class="info-group">
+                <h4 class="info-subtitle">{{ $t('gallery.date') }}</h4>
+                <p>{{ currentImage.date }}</p>
+              </div>
+
+              <div class="info-group">
+                <h4 class="info-subtitle">{{ $t('gallery.tags') }}</h4>
+                <div class="tags-list">
+                  <span v-for="tagId in currentImage?.tags || []" :key="tagId" class="tag"
+                    :style="{ backgroundColor: getTagColor(tagId) }">
+                    {{ getTagName(tagId) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </transition>
       </div>
     </transition>
   </div>
@@ -508,26 +552,79 @@ const updateMinimapViewport = (): void => {
   };
 };
 
+// 移动端检测
+const isMobile = ref(false);
+
+// 检测是否为移动端
+const checkIsMobile = (): void => {
+  isMobile.value = window.innerWidth < 768;
+};
+
 // 信息面板控制
 const showInfoPanel = ref(true);
 const infoPanelAnimating = ref(false);
 
+// 移动端覆盖层信息面板控制
+const showMobileInfoOverlay = ref(false);
+const mobileInfoOverlayAnimating = ref(false);
+
 const toggleInfoPanel = (): void => {
-  if (infoPanelAnimating.value) return; // 防止动画过程中重复触发
-
-  infoPanelAnimating.value = true;
-  showInfoPanel.value = !showInfoPanel.value;
-
-  // 动画结束后重置状态 - 从CSS读取动画时长
-  const duration = AnimationDurations.getInfoPanelTransition();
-  if (duration === 0) {
-    // 如果没有动画或动画时长为0，立即重置状态
-    infoPanelAnimating.value = false;
+  if (isMobile.value) {
+    // 移动端：切换覆盖层显示
+    toggleMobileInfoOverlay();
   } else {
-    timers.setTimeout(() => {
+    // 桌面端：保持原有逻辑
+    if (infoPanelAnimating.value) return; // 防止动画过程中重复触发
+
+    infoPanelAnimating.value = true;
+    showInfoPanel.value = !showInfoPanel.value;
+
+    // 动画结束后重置状态 - 从CSS读取动画时长
+    const duration = AnimationDurations.getInfoPanelTransition();
+    if (duration === 0) {
+      // 如果没有动画或动画时长为0，立即重置状态
       infoPanelAnimating.value = false;
-    }, duration);
+    } else {
+      timers.setTimeout(() => {
+        infoPanelAnimating.value = false;
+      }, duration);
+    }
   }
+};
+
+// 移动端信息覆盖层切换
+const toggleMobileInfoOverlay = (): void => {
+  if (mobileInfoOverlayAnimating.value) return;
+
+  mobileInfoOverlayAnimating.value = true;
+  showMobileInfoOverlay.value = !showMobileInfoOverlay.value;
+
+  // 防止背景滚动
+  if (showMobileInfoOverlay.value) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
+
+  // 动画结束后重置状态
+  timers.setTimeout(() => {
+    mobileInfoOverlayAnimating.value = false;
+  }, 300); // 覆盖层动画时长
+};
+
+// 关闭移动端信息覆盖层
+const closeMobileInfoOverlay = (): void => {
+  if (mobileInfoOverlayAnimating.value) return;
+  
+  mobileInfoOverlayAnimating.value = true;
+  showMobileInfoOverlay.value = false;
+
+  // 恢复背景滚动
+  document.body.style.overflow = '';
+
+  timers.setTimeout(() => {
+    mobileInfoOverlayAnimating.value = false;
+  }, 300);
 };
 
 // 已移除小地图计算功能
@@ -1515,6 +1612,24 @@ const autoCenterImage = (): void => {
 
 // 监听窗口大小变化
 const handleResize = (): void => {
+  const wasMobile = isMobile.value;
+  checkIsMobile();
+  
+  // 如果从移动端切换到桌面端
+  if (wasMobile && !isMobile.value) {
+    // 关闭移动端覆盖层
+    showMobileInfoOverlay.value = false;
+    mobileInfoOverlayAnimating.value = false;
+    // 桌面端默认显示信息面板
+    showInfoPanel.value = true;
+  }
+  // 如果从桌面端切换到移动端
+  else if (!wasMobile && isMobile.value) {
+    // 移动端默认不显示信息面板
+    showInfoPanel.value = false;
+    showMobileInfoOverlay.value = false;
+  }
+
   // 窗口大小变化时，强制重新计算位置（忽略用户滚动状态）
   const wasUserScrolling = isUserScrolling.value;
   isUserScrolling.value = false;
@@ -1536,6 +1651,16 @@ const handleResize = (): void => {
 };
 
 onMounted(() => {
+  // 初始化移动端检测
+  checkIsMobile();
+  
+  // 根据设备类型设置初始状态
+  if (isMobile.value) {
+    showInfoPanel.value = false; // 移动端默认不显示信息面板
+  } else {
+    showInfoPanel.value = true;  // 桌面端默认显示信息面板
+  }
+
   window.addEventListener('keydown', handleKeyDown);
   window.addEventListener('resize', handleResize);
   nextTick(() => {
@@ -1546,7 +1671,21 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleKeyDown);
   window.removeEventListener('resize', handleResize);
+  
+  // 清理移动端覆盖层状态
+  if (showMobileInfoOverlay.value) {
+    document.body.style.overflow = '';
+  }
 });
+
+// 获取信息按钮标题
+const getInfoButtonTitle = (): string => {
+  if (isMobile.value) {
+    return showMobileInfoOverlay.value ? $t('viewer.hideInfo') : $t('viewer.showInfo');
+  } else {
+    return showInfoPanel.value ? $t('viewer.hideInfo') : $t('viewer.showInfo');
+  }
+};
 
 // 本地化辅助函数
 const t = (text: I18nText | string | undefined, lang?: string): string => {
@@ -1926,5 +2065,93 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   -webkit-user-select: text;
   -moz-user-select: text;
   -ms-user-select: text;
+}
+
+/* 移动端信息覆盖层样式 */
+.mobile-info-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  touch-action: none;
+}
+
+.mobile-info-panel {
+  width: 100%;
+  max-height: 70vh;
+  background-color: rgba(0, 0, 0, 0.95);
+  border-radius: 1rem 1rem 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-info-header {
+  @apply flex items-center justify-between;
+  @apply py-4 px-6;
+  @apply border-b border-gray-600;
+  flex-shrink: 0;
+}
+
+.mobile-info-title {
+  @apply text-white text-lg font-semibold;
+}
+
+.mobile-info-close {
+  @apply p-2 rounded-full;
+  @apply text-gray-300 hover:text-white;
+  @apply bg-gray-700/60 hover:bg-gray-600/60;
+  @apply transition-colors duration-200;
+}
+
+.mobile-info-content {
+  @apply flex-1 overflow-y-auto;
+  @apply p-6;
+  @apply text-white;
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+}
+
+/* 移动端覆盖层动画 */
+.mobile-overlay-fade-enter-active,
+.mobile-overlay-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.mobile-overlay-fade-enter-from,
+.mobile-overlay-fade-leave-to {
+  opacity: 0;
+}
+
+.mobile-info-slide-enter-active,
+.mobile-info-slide-leave-active {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-info-slide-enter-from,
+.mobile-info-slide-leave-to {
+  transform: translateY(100%);
+}
+
+/* 确保移动端覆盖层在小屏幕上正确显示 */
+@media (max-width: 768px) {
+  .mobile-info-panel {
+    max-height: 80vh;
+  }
+  
+  .mobile-info-content {
+    @apply p-4;
+  }
+  
+  .mobile-info-header {
+    @apply py-3 px-4;
+  }
 }
 </style>

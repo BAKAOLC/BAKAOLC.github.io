@@ -89,6 +89,8 @@ export default {
     error: '加载图片失败',
     noImage: '未选择图片',
     imageInfo: '图片信息',
+    showInfo: '显示信息',
+    hideInfo: '隐藏信息',
     minimap: '小地图',
     navigation: '导航',
   },
