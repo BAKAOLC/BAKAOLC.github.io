@@ -330,6 +330,19 @@ export const useAppStore = defineStore('app', () => {
   // 设置特殊标签的选择状态
   const setRestrictedTagState = (tagId: string, enabled: boolean): void => {
     selectedRestrictedTags.value[tagId] = enabled;
+
+    // 如果取消选择一个标签，需要检查并取消选择所有依赖它的子标签
+    if (!enabled) {
+      const dependentTags = siteConfig.tags.filter(tag => tag.isRestricted
+        && tag.prerequisiteTags
+        && tag.prerequisiteTags.includes(tagId));
+
+      dependentTags.forEach(dependentTag => {
+        if (selectedRestrictedTags.value[dependentTag.id]) {
+          selectedRestrictedTags.value[dependentTag.id] = false;
+        }
+      });
+    }
   };
 
   // 获取特殊标签的选择状态

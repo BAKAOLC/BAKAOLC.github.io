@@ -27,6 +27,7 @@ export interface ImageTag {
   color?: string;
   icon?: string;
   isRestricted?: boolean; // 标识是否为限制级标签
+  prerequisiteTags?: string[]; // 前置标签ID数组，只有当这些标签被选中时，当前标签才会显示
 }
 
 export interface CharacterImage {
