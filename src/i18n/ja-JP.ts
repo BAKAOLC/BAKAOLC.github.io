@@ -70,6 +70,7 @@ export default {
     sortDate: '日付順',
     sortAsc: '昇順',
     sortDesc: '降順',
+    restrictedTags: '制限タグ',
   },
   personal: {
     contactMe: 'お問い合わせ',
