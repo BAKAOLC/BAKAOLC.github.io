@@ -6,13 +6,13 @@
           <div class="logo-inner"></div>
         </div>
       </div>
-      
+
       <div class="loading-progress">
         <div class="progress-bar">
           <div class="progress-fill" :style="{ width: `${progress}%` }"></div>
         </div>
       </div>
-      
+
       <div class="loading-animation">
         <div class="dot dot-1"></div>
         <div class="dot dot-2"></div>
@@ -24,62 +24,62 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 
 const props = defineProps<{
-  onComplete?: () => void
-}>()
+  onComplete?: () => void;
+}>();
 
 const emit = defineEmits<{
-  (e: 'complete'): void
-}>()
+  complete: [];
+}>();
 
-const fadeOut = ref(false)
-const progress = ref(0)
-const animationFrameId = ref<number | null>(null)
+const fadeOut = ref(false);
+const progress = ref(0);
+const animationFrameId = ref<number | null>(null);
 
 // 伪加载进度函数
-const updateProgress = (startTime: number) => {
-  const now = Date.now()
-  const elapsedTime = now - startTime
-  const progressValue = Math.min(100, (elapsedTime / 2000) * 100) // 2秒内完成进度
-  
-  progress.value = progressValue
-  
+const updateProgress = (startTime: number): void => {
+  const now = Date.now();
+  const elapsedTime = now - startTime;
+  const progressValue = Math.min(100, (elapsedTime / 2000) * 100); // 2秒内完成进度
+
+  progress.value = progressValue;
+
   if (progressValue < 100) {
     // 继续更新进度
-    animationFrameId.value = requestAnimationFrame(() => updateProgress(startTime))
+    animationFrameId.value = requestAnimationFrame(() => updateProgress(startTime));
   } else {
     // 进度达到100%，等待0.5秒后开始淡出
     setTimeout(() => {
-      fadeOut.value = true
+      fadeOut.value = true;
       setTimeout(() => {
-        emit('complete')
-        if (props.onComplete) props.onComplete()
-      }, 500) // 500ms是淡出动画的时间
-    }, 500) // 等待0.5秒
+        emit('complete');
+        if (props.onComplete) props.onComplete();
+      }, 500); // 500ms是淡出动画的时间
+    }, 500); // 等待0.5秒
   }
-}
+};
 
 // 初始化加载
 onMounted(() => {
-  document.body.style.overflow = 'hidden'
-  
+  document.body.style.overflow = 'hidden';
+
   // 延迟0.5秒后开始填充进度条
   setTimeout(() => {
-    const startTime = Date.now()
+    const startTime = Date.now();
     // 开始伪进度加载
-    animationFrameId.value = requestAnimationFrame(() => updateProgress(startTime))
-  }, 500) // 延迟0.5秒开始
-})
+    animationFrameId.value = requestAnimationFrame(() => updateProgress(startTime));
+  }, 500); // 延迟0.5秒开始
+});
 
 // 清理
 onBeforeUnmount(() => {
-  document.body.style.overflow = ''
+  document.body.style.overflow = '';
   if (animationFrameId.value !== null) {
-    cancelAnimationFrame(animationFrameId.value)
+    cancelAnimationFrame(animationFrameId.value);
   }
-})
+});
 </script>
 
 <style scoped>

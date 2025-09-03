@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -6,25 +6,25 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('@/views/Home.vue')
+      component: () => import('@/views/Home.vue'),
     },
     {
       path: '/gallery',
       name: 'gallery',
-      component: () => import('@/views/Gallery.vue')
+      component: () => import('@/views/Gallery.vue'),
     },
     {
       path: '/viewer/:imageId',
       name: 'image-viewer',
       component: () => import('@/views/ImageViewer.vue'),
-      props: true
+      props: true,
     },
     {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
-      component: () => import('@/views/NotFound.vue')
-    }
-  ]
-})
+      component: () => import('@/views/NotFound.vue'),
+    },
+  ],
+});
 
-export default router
+export default router;

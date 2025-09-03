@@ -3,9 +3,9 @@
     <div class="container mx-auto px-4 py-4 sm:py-6 md:py-8 lg:py-12">
       <div class="text-center mb-8">
         <div class="avatar-container">
-          <ProgressiveImage 
-            :src="personal.avatar" 
-            :alt="t(personal.name, currentLanguage)" 
+          <ProgressiveImage
+            :src="personal.avatar"
+            :alt="t(personal.name, currentLanguage)"
             class="avatar"
             image-class="avatar-img"
             object-fit="cover"
@@ -26,10 +26,10 @@
         <div class="social-links">
           <template v-for="(link, index) in personal.links" :key="link.url || index">
             <a v-if="link.url && link.name"
-              :href="link.url" 
-              target="_blank" 
+              :href="link.url"
+              target="_blank"
               rel="noopener noreferrer"
-              class="social-link" 
+              class="social-link"
               :style="{ '--link-color': link.color || '#333' }"
               :title="t(link.name, currentLanguage)">
               <i :class="`fa fa-${link.icon || 'link'}`" class="icon"></i>
@@ -50,23 +50,26 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { siteConfig } from '@/config/site'
-import { useAppStore } from '@/stores/app'
-import ProgressiveImage from './ProgressiveImage.vue'
-import type { I18nText } from '@/types'
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-const { t: translate } = useI18n()
-const appStore = useAppStore()
+import ProgressiveImage from './ProgressiveImage.vue';
 
-const personal = siteConfig.personal
-const currentLanguage = computed(() => appStore.currentLanguage)
+import type { I18nText } from '@/types';
+
+import { siteConfig } from '@/config/site';
+import { useAppStore } from '@/stores/app';
+
+const { t: translate } = useI18n();
+const appStore = useAppStore();
+
+const { personal } = siteConfig;
+const currentLanguage = computed(() => appStore.currentLanguage);
 
 // 本地化辅助函数
-const t = (text: I18nText, lang: string) => {
-  return text[lang as keyof I18nText] || text.en || ''
-}
+const t = (text: I18nText, lang: string): string => {
+  return text[lang as keyof I18nText] || text.en || '';
+};
 </script>
 
 <style scoped>
@@ -182,23 +185,23 @@ const t = (text: I18nText, lang: string) => {
     @apply justify-start py-4;
     min-height: auto;
   }
-  
+
   .container {
     @apply py-2;
   }
-  
+
   .avatar {
     @apply w-24 h-24;
   }
-  
+
   .name {
     @apply text-3xl mb-3;
   }
-  
+
   .description {
     @apply mb-4;
   }
-  
+
   .social-links {
     @apply mb-4;
   }
@@ -209,27 +212,27 @@ const t = (text: I18nText, lang: string) => {
   .personal-section {
     @apply py-2;
   }
-  
+
   .container {
     @apply py-1;
   }
-  
+
   .avatar {
     @apply w-20 h-20;
   }
-  
+
   .name {
     @apply text-2xl mb-2;
   }
-  
+
   .description {
     @apply mb-3 text-sm;
   }
-  
+
   .social-links {
     @apply mb-3;
   }
-  
+
   .social-link {
     @apply px-2 py-1 text-xs;
   }
@@ -264,7 +267,7 @@ const t = (text: I18nText, lang: string) => {
     @apply justify-start py-4;
     min-height: auto;
   }
-  
+
   .social-links {
     @apply flex-col items-center;
     gap: 0.75rem;
@@ -275,19 +278,19 @@ const t = (text: I18nText, lang: string) => {
     max-width: 280px;
     transform: scale(0.98);
   }
-  
+
   .social-link:hover {
     transform: scale(1.02) translateY(-2px);
   }
-  
+
   .avatar {
     @apply w-24 h-24;
   }
-  
+
   .name {
     @apply text-3xl mb-3;
   }
-  
+
   .description {
     @apply mb-6;
   }

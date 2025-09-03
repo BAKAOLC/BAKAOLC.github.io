@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 export interface I18nText {
   en: string;
   zh: string;
@@ -36,7 +37,7 @@ export interface CharacterImage {
   src: string;
   thumbnail?: string;
   tags: string[]; // tag IDs
-  characters: string[]; // character IDs  
+  characters: string[]; // character IDs
   date?: string; // yyyy-MM-dd format
 }
 
@@ -59,4 +60,89 @@ export interface LoadingConfig {
   minLoadTime: number;
   messages: I18nText[];
   tips: I18nText[];
+}
+
+// 缓存统计信息
+export interface CacheStats {
+  size: number;
+  maxSize: number;
+  items: Array<{
+    url: string;
+    loaded: boolean;
+    loading: boolean;
+    error: boolean;
+    progress: number;
+  }>;
+}
+
+// 错误处理回调类型
+export type ErrorCallback = (error?: Error) => void;
+export type ProgressCallback = (progress?: number) => void;
+export type LoadCallback = () => void;
+
+// 通用事件处理器类型
+export type EventHandler<T = Event> = (event: T) => void;
+export type KeyboardEventHandler = EventHandler<KeyboardEvent>;
+export type MouseEventHandler = EventHandler<MouseEvent>;
+export type TouchEventHandler = EventHandler<TouchEvent>;
+
+// 图片尺寸信息
+export interface ImageDimensions {
+  width: number;
+  height: number;
+}
+
+// 动画配置类型
+export interface AnimationConfig {
+  duration?: number;
+  easing?: string;
+  delay?: number;
+}
+
+// 图片加载状态
+export interface ImageLoadState {
+  loaded: boolean;
+  loading: boolean;
+  error: boolean;
+  dimensions?: ImageDimensions;
+}
+
+// 手势处理相关类型
+export interface GestureState {
+  scale: number;
+  x: number;
+  y: number;
+  isDragging: boolean;
+  isZooming: boolean;
+}
+
+// 排序选项类型
+export type SortOption = 'date-desc' | 'date-asc' | 'name-asc' | 'name-desc';
+
+// 筛选状态
+export interface FilterState {
+  selectedCharacters: string[];
+  selectedTags: string[];
+  sortBy: SortOption;
+}
+
+// 全屏查看器方法类型
+export interface FullscreenViewerMethods {
+  show: (index: number) => void;
+  hide: () => void;
+  next: () => void;
+  prev: () => void;
+}
+
+// 图片操作方法类型
+export interface ImageOperationMethods {
+  resetZoom: () => void;
+  zoomIn: () => void;
+  zoomOut: () => void;
+  toggleFullscreen: () => void;
+}
+
+// 键盘快捷键配置
+export interface KeyboardShortcuts {
+  [key: string]: () => void;
 }

@@ -1,0 +1,38 @@
+{
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.addMissingImports": "explicit"
+  },
+  "editor.wordWrapColumn": 120,
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/node_modules": true,
+    "**/dist": true
+  },
+  "eslint.quiet": false,
+  "eslint.probe": [
+    "javascript",
+    "typescript",
+    "vue"
+  ],
+  "typescript.autoClosingTags": false,
+  "eslint.format.enable": true,
+  "[python]": {
+    "editor.formatOnType": true
+  },
+  "editor.inlineSuggest.enabled": true,
+  "terminal.integrated.defaultProfile.windows": "Command Prompt",
+  "files.eol": "\n",
+  "editor.tabSize": 2,
+  "window.title": "${rootName}",
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+}
