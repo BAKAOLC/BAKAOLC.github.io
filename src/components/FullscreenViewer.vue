@@ -1471,6 +1471,48 @@ watch(() => props.isActive, (newValue) => {
   }
 }, { immediate: true });
 
+// 检查图像宽度和高度是否能分别完全显示在当前容器中
+const getImageFitStatus = (): { canFitWidth: boolean; canFitHeight: boolean } => {
+  const info = getImageDisplayInfo();
+  if (!info) return { canFitWidth: false, canFitHeight: false };
+  
+  // 分别检查宽度和高度是否能完全显示在容器中
+  const canFitWidth = info.scaledWidth <= info.containerWidth;
+  const canFitHeight = info.scaledHeight <= info.containerHeight;
+  
+  return { canFitWidth, canFitHeight };
+};
+
+// 自动居中图像（分别处理宽度和高度）
+const autoCenterImage = (): void => {
+  const { canFitWidth, canFitHeight } = getImageFitStatus();
+  
+  // 只有当宽度或高度能完全显示时，才对相应方向进行居中
+  let needsUpdate = false;
+  const newOffset = { ...imageOffset.value };
+  
+  if (canFitWidth) {
+    // 如果图像宽度能完全显示，重置水平偏移量使其水平居中
+    newOffset.x = 0;
+    needsUpdate = true;
+  }
+  
+  if (canFitHeight) {
+    // 如果图像高度能完全显示，重置垂直偏移量使其垂直居中
+    newOffset.y = 0;
+    needsUpdate = true;
+  }
+  
+  if (needsUpdate) {
+    imageOffset.value = newOffset;
+    // 启用过渡动画使居中更平滑
+    enableImageTransition.value = true;
+    timers.setTimeout(() => {
+      enableImageTransition.value = false;
+    }, 150);
+  }
+};
+
 // 监听窗口大小变化
 const handleResize = (): void => {
   // 窗口大小变化时，强制重新计算位置（忽略用户滚动状态）
@@ -1479,6 +1521,12 @@ const handleResize = (): void => {
   updateThumbnailsOffset();
   // 更新小地图
   updateMinimapVisibility();
+  
+  // 检查图像是否能完全显示，如果可以则自动居中
+  nextTick(() => {
+    autoCenterImage();
+  });
+  
   // 如果用户之前在滚动，延迟恢复状态
   if (wasUserScrolling) {
     timers.setTimeout(() => {
