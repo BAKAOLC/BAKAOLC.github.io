@@ -44,11 +44,12 @@
         </transition>
 
         <!-- 小地图控件 -->
-        <div v-if="showMinimap" class="minimap-container" @mousedown="handleMinimapMouseDown"
-          @touchstart="handleMinimapTouchStart">
+        <div v-if="showMinimap" class="minimap-container" :class="{ 'dragging': isDraggingMinimap }"
+          @mousedown="handleMinimapMouseDown" @touchstart="handleMinimapTouchStart">
           <div class="minimap-image-container">
             <img :src="currentImage?.src" :alt="t(currentImage?.name, currentLanguage)" class="minimap-image"
               ref="minimapImage" />
+            <div class="minimap-image-border" :style="imageBorderStyle"></div>
             <div class="minimap-viewport" :style="viewportStyle"></div>
           </div>
         </div>
@@ -305,6 +306,45 @@ const viewportStyle = computed(() => {
   };
 });
 
+// 小地图图像边框样式
+const imageBorderStyle = computed(() => {
+  if (!minimapImage.value || !currentImage.value) {
+    return { display: 'none' };
+  }
+
+  const minimapRect = minimapImage.value.getBoundingClientRect();
+  const info = getImageDisplayInfo();
+  if (!info) {
+    return { display: 'none' };
+  }
+
+  // 计算小地图中实际显示的图像区域
+  const minimapAspect = minimapRect.width / minimapRect.height;
+  const imageAspect = info.displayWidth / info.displayHeight;
+
+  let imageBorderWidth, imageBorderHeight, imageBorderX, imageBorderY;
+  if (imageAspect > minimapAspect) {
+    // 图像更宽，以宽度为准
+    imageBorderWidth = minimapRect.width;
+    imageBorderHeight = minimapRect.width / imageAspect;
+    imageBorderX = 0;
+    imageBorderY = (minimapRect.height - imageBorderHeight) / 2;
+  } else {
+    // 图像更高，以高度为准
+    imageBorderHeight = minimapRect.height;
+    imageBorderWidth = minimapRect.height * imageAspect;
+    imageBorderX = (minimapRect.width - imageBorderWidth) / 2;
+    imageBorderY = 0;
+  }
+
+  return {
+    left: `${imageBorderX}px`,
+    top: `${imageBorderY}px`,
+    width: `${imageBorderWidth}px`,
+    height: `${imageBorderHeight}px`,
+  };
+});
+
 // 重置图像变换
 const resetImageTransform = (): void => {
   imageScale.value = 1;
@@ -539,8 +579,14 @@ const updateMinimapViewport = (): void => {
   const minimapViewportHeight = viewportInOriginalImageHeight * minimapScaleY;
 
   // 确保视口框不超出小地图中图像的实际显示范围
-  const clampedX = Math.max(minimapImageX, Math.min(minimapViewportX, minimapImageX + minimapImageWidth));
-  const clampedY = Math.max(minimapImageY, Math.min(minimapViewportY, minimapImageY + minimapImageHeight));
+  const clampedX = Math.max(
+    minimapImageX,
+    Math.min(minimapViewportX, minimapImageX + minimapImageWidth - minimapViewportWidth),
+  );
+  const clampedY = Math.max(
+    minimapImageY,
+    Math.min(minimapViewportY, minimapImageY + minimapImageHeight - minimapViewportHeight),
+  );
   const clampedWidth = Math.max(0, Math.min(minimapViewportWidth, minimapImageX + minimapImageWidth - clampedX));
   const clampedHeight = Math.max(0, Math.min(minimapViewportHeight, minimapImageY + minimapImageHeight - clampedY));
 
@@ -2009,7 +2055,6 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 .minimap-container:hover {
   border-color: rgba(255, 255, 255, 0.5);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-  transform: scale(1.02);
 }
 
 .minimap-image-container {
@@ -2032,6 +2077,13 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   transition: opacity 0.2s ease;
 }
 
+.minimap-image-border {
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+  transition: border-color 0.2s ease;
+}
+
 .minimap-viewport {
   position: absolute;
   border: 2px solid #3b82f6;
@@ -2045,10 +2097,21 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   opacity: 0.9;
 }
 
+.minimap-container:hover .minimap-image-border {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
 .minimap-container:hover .minimap-viewport {
   border-color: #60a5fa;
   background-color: rgba(96, 165, 250, 0.3);
   box-shadow: 0 0 12px rgba(96, 165, 250, 0.5);
+}
+
+/* 拖拽时保持视口框样式稳定，避免hover效果影响 */
+.minimap-container.dragging .minimap-viewport {
+  border-color: #3b82f6 !important;
+  background-color: rgba(59, 130, 246, 0.2) !important;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4) !important;
 }
 
 /* 响应式设计 */
