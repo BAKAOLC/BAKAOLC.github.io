@@ -30,7 +30,7 @@ export function useEventManager(): EventManager {
     try {
       // 添加到window
       window.addEventListener(eventName, handler);
-      
+
       // 记录到管理器中
       if (!eventListeners.value.has(eventName)) {
         eventListeners.value.set(eventName, new Set());
@@ -45,7 +45,7 @@ export function useEventManager(): EventManager {
     try {
       // 从window移除
       window.removeEventListener(eventName, handler);
-      
+
       // 从管理器中移除
       const handlers = eventListeners.value.get(eventName);
       if (handlers) {

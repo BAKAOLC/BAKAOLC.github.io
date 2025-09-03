@@ -49,6 +49,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue';
+
 import { useScreenManager, type ScreenInfo } from '@/composables/useScreenManager';
 
 const { screenInfo, isMobile, isTablet, isDesktop, onScreenChange, getActiveListenersCount } = useScreenManager();
@@ -59,7 +60,7 @@ const changeLog = ref<Array<{ timestamp: string; message: string }>>([]);
 // 屏幕变化监听器取消函数
 let unsubscribeScreenChange: (() => void) | null = null;
 
-const addLogEntry = (message: string) => {
+const addLogEntry = (message: string): void => {
   const timestamp = new Date().toLocaleTimeString();
   changeLog.value.unshift({ timestamp, message });
   // 只保留最近10条记录
@@ -68,11 +69,11 @@ const addLogEntry = (message: string) => {
   }
 };
 
-const handleScreenChange = (info: ScreenInfo) => {
+const handleScreenChange = (info: ScreenInfo): void => {
   const deviceType = info.isMobile ? '移动端' : info.isTablet ? '平板' : '桌面端';
   const message = `屏幕变化: ${info.width}x${info.height} (${deviceType}, ${info.orientation === 'landscape' ? '横屏' : '竖屏'})`;
   addLogEntry(message);
-  
+
   // 更新活跃监听器数量
   activeListeners.value = getActiveListenersCount();
 };
@@ -80,10 +81,10 @@ const handleScreenChange = (info: ScreenInfo) => {
 onMounted(() => {
   // 注册屏幕变化监听器
   unsubscribeScreenChange = onScreenChange(handleScreenChange);
-  
+
   // 初始化活跃监听器数量
   activeListeners.value = getActiveListenersCount();
-  
+
   addLogEntry('屏幕管理器测试组件已挂载');
 });
 
@@ -93,7 +94,7 @@ onBeforeUnmount(() => {
     unsubscribeScreenChange();
     unsubscribeScreenChange = null;
   }
-  
+
   addLogEntry('屏幕管理器测试组件已卸载');
 });
 </script>
@@ -192,7 +193,7 @@ onBeforeUnmount(() => {
   .info-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .info-item {
     flex-direction: column;
     align-items: flex-start;

@@ -19,7 +19,6 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 
 import { useTimers } from '@/composables/useTimers';
-
 import { useAppStore } from '@/stores/app';
 
 const appStore = useAppStore();

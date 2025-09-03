@@ -56,12 +56,11 @@
 import { computed, ref, watch, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { useEventManager } from '@/composables/useEventManager';
-
 import ProgressiveImage from './ProgressiveImage.vue';
 
 import type { I18nText, CharacterImage } from '@/types';
 
+import { useEventManager } from '@/composables/useEventManager';
 import { siteConfig } from '@/config/site';
 import { useAppStore } from '@/stores/app';
 
