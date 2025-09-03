@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import PersonalSection from '@/components/PersonalSection.vue'
+import PersonalSection from '@/components/PersonalSection.vue';
 </script>
 
 <style scoped>

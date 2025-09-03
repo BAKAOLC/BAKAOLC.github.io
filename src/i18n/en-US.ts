@@ -3,7 +3,7 @@ export default {
     title: 'Ritsukage Utsumabo',
     loading: 'Loading...',
     error: 'An error occurred!',
-    notFound: 'Page not found'
+    notFound: 'Page not found',
   },
   common: {
     loading: 'Loading',
@@ -30,17 +30,17 @@ export default {
     search: 'Search',
     filter: 'Filter',
     sort: 'Sort',
-    all: 'All'
+    all: 'All',
   },
   nav: {
     home: 'Home',
     gallery: 'Gallery',
-    about: 'About'
+    about: 'About',
   },
   theme: {
     light: 'Light Mode',
     dark: 'Dark Mode',
-    auto: 'Auto Mode'
+    auto: 'Auto Mode',
   },
   gallery: {
     title: 'Gallery',
@@ -69,12 +69,12 @@ export default {
     sortArtist: 'Artist',
     sortDate: 'Date',
     sortAsc: 'Ascending',
-    sortDesc: 'Descending'
+    sortDesc: 'Descending',
   },
   personal: {
     contactMe: 'Contact Me',
     viewGallery: 'View Gallery',
-    socialLinks: 'Social Links'
+    socialLinks: 'Social Links',
   },
   viewer: {
     prev: 'Previous',
@@ -90,12 +90,12 @@ export default {
     noImage: 'No image selected',
     imageInfo: 'Image Information',
     minimap: 'Minimap',
-    navigation: 'Navigation'
+    navigation: 'Navigation',
   },
   loading: {
     title: 'Loading',
     progress: 'Progress',
     tip: 'Tip',
-    enteringSite: 'Entering site...'
-  }
-}
+    enteringSite: 'Entering site...',
+  },
+};

@@ -22,45 +22,46 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { siteConfig } from '@/config/site'
-import { useAppStore } from '@/stores/app'
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-const { t: $t } = useI18n()
-const appStore = useAppStore()
+import { siteConfig } from '@/config/site';
+import { useAppStore } from '@/stores/app';
+
+const { t: $t } = useI18n();
+const appStore = useAppStore();
 
 // 按名称排序的标签列表
 const sortedTags = computed(() => {
-  let tags = [...siteConfig.tags]
-  
+  let tags = [...siteConfig.tags];
+
   // 过滤掉数量为0的标签
   tags = tags.filter(tag => {
     const tagCount = appStore.tagCounts[tag.id];
     return tagCount > 0;
   });
-  
+
   // 按当前语言的名称排序
   tags.sort((a, b) => {
     const aName = a.name[appStore.currentLanguage] || a.name.en || a.id;
     const bName = b.name[appStore.currentLanguage] || b.name.en || b.id;
     return aName.localeCompare(bName);
   });
-  
+
   return tags;
 });
 
 const selectedTag = computed({
   get: () => appStore.selectedTag,
-  set: (value) => appStore.selectedTag = value
-})
+  set: (value) => appStore.selectedTag = value,
+});
 
-const currentLanguage = computed(() => appStore.currentLanguage)
-const tagCounts = computed(() => appStore.tagCounts)
+const currentLanguage = computed(() => appStore.currentLanguage);
+const tagCounts = computed(() => appStore.tagCounts);
 
-const selectTag = (id: string) => {
-  selectedTag.value = id
-}
+const selectTag = (id: string): void => {
+  selectedTag.value = id;
+};
 </script>
 
 <style scoped>

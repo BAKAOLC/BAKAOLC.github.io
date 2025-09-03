@@ -15,60 +15,61 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { siteConfig } from '@/config/site'
-import { useAppStore } from '@/stores/app'
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-const { t: $t } = useI18n()
-const appStore = useAppStore()
+import { siteConfig } from '@/config/site';
+import { useAppStore } from '@/stores/app';
+
+const { t: $t } = useI18n();
+const appStore = useAppStore();
 
 // 判断是否在搜索
-const isSearching = computed(() => appStore.isSearching)
+const isSearching = computed(() => appStore.isSearching);
 
 // 全部角色选项
 const allOption = {
   id: 'all',
   name: { en: 'All', zh: '全部', jp: 'すべて' },
-  color: '#667eea'
-}
+  color: '#667eea',
+};
 
 // 所有可选角色
 const allCharacters = computed(() => {
   // 如果在搜索，则添加"全部"选项
   if (isSearching.value) {
-    return [allOption, ...siteConfig.characters]
+    return [allOption, ...siteConfig.characters];
   }
-  return siteConfig.characters
-})
+  return siteConfig.characters;
+});
 
 // 根据搜索过滤要显示的角色
 const characters = computed(() => {
-  if (!isSearching.value) return allCharacters.value
-  
+  if (!isSearching.value) return allCharacters.value;
+
   // 如果正在搜索，只显示有匹配图像的角色
   return allCharacters.value.filter(char => {
-    if (char.id === 'all') return true // "全部"始终显示
-    
+    if (char.id === 'all') return true; // "全部"始终显示
+
     // 检查该角色是否有匹配的图像
-    const count = appStore.getCharacterMatchCount(char.id)
-    return count > 0
-  })
-})
+    const count = appStore.getCharacterMatchCount(char.id);
+    return count > 0;
+  });
+});
 
 const selectedCharacterId = computed({
   get: () => appStore.selectedCharacterId,
-  set: (value) => appStore.selectedCharacterId = value
-})
-const currentLanguage = computed(() => appStore.currentLanguage)
+  set: (value) => appStore.selectedCharacterId = value,
+});
+const currentLanguage = computed(() => appStore.currentLanguage);
 
 // 删除未使用的getCharacterCount函数
 
-const selectCharacter = (id: string) => {
-  selectedCharacterId.value = id
-}
+const selectCharacter = (id: string): void => {
+  selectedCharacterId.value = id;
+};
 
-  // 不再需要监听搜索状态变化，由app store统一管理
+// 不再需要监听搜索状态变化，由app store统一管理
 </script>
 
 <style scoped>
