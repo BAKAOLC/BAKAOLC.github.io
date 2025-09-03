@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import LoadingScreen from '@/components/LoadingScreen.vue';
@@ -46,6 +46,9 @@ import { useAppStore } from '@/stores/app';
 
 const { t } = useI18n();
 const appStore = useAppStore();
+
+// 存储预加载的图片引用，用于清理
+const preloadedImages = ref<HTMLImageElement[]>([]);
 
 // 加载状态
 const isLoading = computed(() => appStore.isLoading);
@@ -77,6 +80,10 @@ const preloadImages = async (): Promise<void> => {
   const promises = Array.from(imageUrls).map(url => {
     return new Promise<void>((resolve) => {
       const img = new Image();
+      
+      // 添加到预加载图片列表中，用于后续清理
+      preloadedImages.value.push(img);
+      
       img.onload = () => {
         loadedAssets.value++;
         loadingProgress.value = (loadedAssets.value / totalAssets.value) * 100;
@@ -129,6 +136,19 @@ onMounted(() => {
 
   // 开始预加载图像
   preloadImages();
+});
+
+// 组件销毁时清理预加载的图片
+onBeforeUnmount(() => {
+  // 清理所有预加载的图片引用
+  preloadedImages.value.forEach(img => {
+    // 清理事件监听器
+    img.onload = null;
+    img.onerror = null;
+    // 清空src以停止可能正在进行的加载
+    img.src = '';
+  });
+  preloadedImages.value = [];
 });
 </script>
 

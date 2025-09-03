@@ -81,6 +81,9 @@
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import { useTimers } from '@/composables/useTimers';
+import { useEventManager } from '@/composables/useEventManager';
+
 import CharacterSelector from '@/components/CharacterSelector.vue';
 import FullscreenViewer from '@/components/FullscreenViewer.vue';
 import ImageGallery from '@/components/ImageGallery.vue';
@@ -90,6 +93,8 @@ import { useAppStore } from '@/stores/app';
 
 const { t: $t } = useI18n();
 const appStore = useAppStore();
+const timers = useTimers();
+const eventManager = useEventManager();
 
 // 动态高度计算
 const updateDynamicHeights = (): void => {
@@ -222,10 +227,10 @@ const handleResize = (): void => {
 const updateSearchQuery = (value: string): void => {
   // 防抖处理
   if (searchDebounceTimeout.value) {
-    clearTimeout(searchDebounceTimeout.value);
+    timers.clearTimeout(searchDebounceTimeout.value);
   }
 
-  searchDebounceTimeout.value = setTimeout(() => {
+  searchDebounceTimeout.value = timers.setTimeout(() => {
     // 使用 store 的方法更新搜索查询
     appStore.setSearchQuery(value);
 
@@ -287,8 +292,8 @@ const handleViewerNavigate = (event: CustomEvent): void => {
 };
 
 onMounted(() => {
-  window.addEventListener('viewImage', openViewer as EventListener);
-  window.addEventListener('viewerNavigate', handleViewerNavigate as EventListener);
+  eventManager.addEventListener('viewImage', openViewer as EventListener);
+  eventManager.addEventListener('viewerNavigate', handleViewerNavigate as EventListener);
   window.addEventListener('resize', handleResize);
 
   // 初始化返回顶部按钮位置
@@ -301,8 +306,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('viewImage', openViewer as EventListener);
-  window.removeEventListener('viewerNavigate', handleViewerNavigate as EventListener);
+  // 自定义事件会通过eventManager自动清理
   window.removeEventListener('resize', handleResize);
 
   // 清理body样式

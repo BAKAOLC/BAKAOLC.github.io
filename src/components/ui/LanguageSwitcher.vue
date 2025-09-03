@@ -20,12 +20,15 @@ import { GlobeIcon, ChevronDownIcon } from 'lucide-vue-next';
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import { useTimers } from '@/composables/useTimers';
+
 import type { Language } from '@/types';
 
 import { useAppStore } from '@/stores/app';
 
 const { locale } = useI18n();
 const appStore = useAppStore();
+const timers = useTimers();
 
 const isOpen = ref(false);
 const menuRef = ref<HTMLDivElement | null>(null);
@@ -49,7 +52,7 @@ const toggleLanguageMenu = (): void => {
   const button = event?.target as HTMLElement;
   if (button) {
     button.style.transform = 'scale(0.95)';
-    setTimeout(() => {
+    timers.setTimeout(() => {
       button.style.transform = '';
     }, 150);
   }

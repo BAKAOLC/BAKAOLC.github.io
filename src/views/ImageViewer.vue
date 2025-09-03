@@ -8,6 +8,8 @@
 import { onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 
+import { useEventManager } from '@/composables/useEventManager';
+
 import FullscreenViewer from '@/components/FullscreenViewer.vue';
 
 // 获取路由参数
@@ -16,6 +18,7 @@ defineProps<{
 }>();
 
 const router = useRouter();
+const eventManager = useEventManager();
 
 // 关闭查看器
 const closeViewer = (): void => {
@@ -35,11 +38,11 @@ const handleViewerNavigate = (event: CustomEvent): void => {
 };
 
 onMounted(() => {
-  window.addEventListener('viewerNavigate', handleViewerNavigate as EventListener);
+  eventManager.addEventListener('viewerNavigate', handleViewerNavigate as EventListener);
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('viewerNavigate', handleViewerNavigate as EventListener);
+  // 事件会通过eventManager自动清理
 });
 </script>
 
