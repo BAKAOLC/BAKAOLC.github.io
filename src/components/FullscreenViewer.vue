@@ -166,6 +166,9 @@ import { XIcon, ChevronLeftIcon, ChevronRightIcon, InfoIcon, ZoomInIcon, ZoomOut
 import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import { useTimers } from '@/composables/useTimers';
+import { useEventManager } from '@/composables/useEventManager';
+
 import ProgressiveImage from './ProgressiveImage.vue';
 
 import type { I18nText } from '@/types';
@@ -187,6 +190,8 @@ const emit = defineEmits<{
 
 const { t: $t } = useI18n();
 const appStore = useAppStore();
+const timers = useTimers();
+const eventManager = useEventManager();
 
 const currentLanguage = computed(() => appStore.currentLanguage);
 
@@ -260,8 +265,7 @@ const goToImage = (index: number): void => {
     window.history.pushState({ imageId }, '', newUrl);
 
     // 触发自定义事件通知父组件
-    const event = new CustomEvent('viewerNavigate', { detail: { imageId } });
-    window.dispatchEvent(event);
+    eventManager.dispatchEvent('viewerNavigate', { imageId });
 
     // 强制重置用户滚动状态，确保自动定位生效
     isUserScrolling.value = false;
@@ -520,7 +524,7 @@ const toggleInfoPanel = (): void => {
     // 如果没有动画或动画时长为0，立即重置状态
     infoPanelAnimating.value = false;
   } else {
-    setTimeout(() => {
+    timers.setTimeout(() => {
       infoPanelAnimating.value = false;
     }, duration);
   }
@@ -674,7 +678,7 @@ const handleThumbnailWheel = (event: WheelEvent): void => {
   setManualThumbnailOffset(thumbnailsOffset.value + delta);
 
   // 1秒后重置用户滚动状态
-  setTimeout(() => {
+  timers.setTimeout(() => {
     isUserScrolling.value = false;
   }, 1000);
 };
@@ -705,11 +709,11 @@ const handleThumbnailMouseDown = (event: MouseEvent): void => {
 
   const handleMouseUp = (): void => {
     // 延迟重置拖拽状态，确保点击事件处理完毕
-    setTimeout(() => {
+    timers.setTimeout(() => {
       isDragging.value = false;
     }, 50);
 
-    setTimeout(() => {
+    timers.setTimeout(() => {
       isUserScrolling.value = false;
     }, 500);
 
@@ -752,11 +756,11 @@ const handleThumbnailTouchStart = (event: TouchEvent): void => {
 
   const handleTouchEnd = (): void => {
     // 延迟重置拖拽状态，确保点击事件处理完毕
-    setTimeout(() => {
+    timers.setTimeout(() => {
       isDragging.value = false;
     }, 50);
 
-    setTimeout(() => {
+    timers.setTimeout(() => {
       isUserScrolling.value = false;
     }, 500);
 
@@ -1324,7 +1328,7 @@ const close = (): void => {
     // 重置关闭状态，以便下次打开
     isClosing.value = false;
   } else {
-    setTimeout(() => {
+    timers.setTimeout(() => {
       emit('close');
       // 重置关闭状态，以便下次打开
       isClosing.value = false;
@@ -1411,7 +1415,7 @@ const preloadAdjacentImages = (): void => {
   }
 
   // 低优先级预加载 - 延迟执行以确保当前图片优先
-  setTimeout(() => {
+  timers.setTimeout(() => {
     lowPriorityImages.forEach(src => {
       imageCache.preloadImage(src, LoadPriority.OTHER_IMAGE).catch(() => {
         // 预加载失败不影响主要功能
@@ -1434,7 +1438,7 @@ watch(currentImage, (newImage) => {
 
     // 延迟触发预加载，确保当前图片优先
     nextTick(() => {
-      setTimeout(() => {
+      timers.setTimeout(() => {
         updateThumbnailsOffset();
         // 预加载相邻图片
         preloadAdjacentImages();
@@ -1457,7 +1461,7 @@ watch(() => props.isActive, (newValue) => {
 
     // 组件激活时，先添加可见样式，然后再添加过渡动画样式
     nextTick(() => {
-      setTimeout(() => {
+      timers.setTimeout(() => {
         transitionActive.value = true;
       }, 50);
     });
@@ -1477,7 +1481,7 @@ const handleResize = (): void => {
   updateMinimapVisibility();
   // 如果用户之前在滚动，延迟恢复状态
   if (wasUserScrolling) {
-    setTimeout(() => {
+    timers.setTimeout(() => {
       isUserScrolling.value = true;
     }, 100);
   }

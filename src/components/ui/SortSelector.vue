@@ -18,9 +18,12 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 
+import { useTimers } from '@/composables/useTimers';
+
 import { useAppStore } from '@/stores/app';
 
 const appStore = useAppStore();
+const timers = useTimers();
 
 const isOpen = ref(false);
 const menuRef = ref<HTMLDivElement | null>(null);
@@ -44,7 +47,7 @@ const toggleSortMenu = (): void => {
   const button = event?.target as HTMLElement;
   if (button) {
     button.style.transform = 'scale(0.95)';
-    setTimeout(() => {
+    timers.setTimeout(() => {
       button.style.transform = '';
     }, 150);
   }
