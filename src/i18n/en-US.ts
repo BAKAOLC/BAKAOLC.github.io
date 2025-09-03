@@ -70,6 +70,7 @@ export default {
     sortDate: 'Date',
     sortAsc: 'Ascending',
     sortDesc: 'Descending',
+    restrictedTags: 'Restricted Tags',
   },
   personal: {
     contactMe: 'Contact Me',

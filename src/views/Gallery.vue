@@ -41,6 +41,7 @@
           <div class="sidebar-content" :class="{ 'active': isSidebarOpen }">
             <character-selector />
             <tag-selector />
+            <restricted-tag-selector />
           </div>
         </aside>
 
@@ -62,6 +63,7 @@
         <div class="mobile-filter-body">
           <character-selector />
           <tag-selector />
+          <restricted-tag-selector />
         </div>
       </div>
     </div>
@@ -84,6 +86,7 @@ import { useI18n } from 'vue-i18n';
 import CharacterSelector from '@/components/CharacterSelector.vue';
 import FullscreenViewer from '@/components/FullscreenViewer.vue';
 import ImageGallery from '@/components/ImageGallery.vue';
+import RestrictedTagSelector from '@/components/RestrictedTagSelector.vue';
 import TagSelector from '@/components/TagSelector.vue';
 import SortSelector from '@/components/ui/SortSelector.vue';
 import { useEventManager } from '@/composables/useEventManager';
@@ -592,7 +595,7 @@ onBeforeUnmount(() => {
 }
 
 .sidebar-content {
-  @apply flex flex-col gap-4;
+  @apply flex flex-col gap-3;
   @apply overflow-hidden max-h-0 transition-all duration-300;
   @apply bg-white dark:bg-gray-800 rounded-lg p-0;
   @apply border border-transparent;
@@ -602,11 +605,12 @@ onBeforeUnmount(() => {
   @apply max-h-[500px] p-4 mb-4;
   @apply border-gray-200 dark:border-gray-700;
   @apply overflow-y-auto;
+  scrollbar-gutter: stable;
 }
 
 @media (min-width: 768px) {
   .gallery-sidebar {
-    width: 16rem;
+    width: 18rem;
     position: sticky;
     top: 1rem;
     transition: width 0.3s ease, position 0.3s ease, top 0.3s ease;
@@ -618,12 +622,67 @@ onBeforeUnmount(() => {
   }
 
   .sidebar-content {
-    @apply max-h-[calc(100vh-16rem)] p-4;
+    @apply max-h-[calc(100vh-16rem)];
+    @apply flex flex-col gap-3;
+    padding: 1rem;
     @apply bg-white dark:bg-gray-800 rounded-lg;
     @apply border border-gray-200 dark:border-gray-700;
     @apply shadow-sm overflow-y-auto;
     @apply sticky top-4;
+    scrollbar-gutter: stable;
   }
+
+  /* 细滚动条样式 */
+  .sidebar-content::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .sidebar-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .sidebar-content::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.5);
+    border-radius: 3px;
+  }
+
+  .sidebar-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(156, 163, 175, 0.7);
+  }
+
+  .dark .sidebar-content::-webkit-scrollbar-thumb {
+    background: rgba(75, 85, 99, 0.5);
+  }
+
+  .dark .sidebar-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(75, 85, 99, 0.7);
+  }
+}
+
+/* 移动端滚动条样式 */
+.sidebar-content.active::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-content.active::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-content.active::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.5);
+  border-radius: 3px;
+}
+
+.sidebar-content.active::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.7);
+}
+
+.dark .sidebar-content.active::-webkit-scrollbar-thumb {
+  background: rgba(75, 85, 99, 0.5);
+}
+
+.dark .sidebar-content.active::-webkit-scrollbar-thumb:hover {
+  background: rgba(75, 85, 99, 0.7);
 }
 
 .gallery-main {
@@ -722,6 +781,7 @@ onBeforeUnmount(() => {
   flex: 1;
   overflow-y: auto;
   padding: 1.5rem;
+  @apply flex flex-col gap-3;
 }
 
 /* 返回顶部按钮 */
