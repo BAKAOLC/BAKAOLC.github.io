@@ -327,19 +327,41 @@ export const useAppStore = defineStore('app', () => {
     isFromGallery.value = value;
   };
 
+  // 递归获取所有依赖某个标签的子标签
+  const getAllDependentTags = (tagId: string, visited = new Set<string>()): string[] => {
+    if (visited.has(tagId)) {
+      return []; // 防止循环依赖
+    }
+
+    visited.add(tagId);
+    const dependentTags: string[] = [];
+
+    // 找到所有直接依赖当前标签的子标签
+    const directDependents = siteConfig.tags.filter(tag => tag.isRestricted
+      && tag.prerequisiteTags
+      && tag.prerequisiteTags.includes(tagId));
+
+    directDependents.forEach(dependentTag => {
+      dependentTags.push(dependentTag.id);
+      // 递归获取子标签的依赖标签
+      const subDependents = getAllDependentTags(dependentTag.id, new Set(visited));
+      dependentTags.push(...subDependents);
+    });
+
+    return dependentTags;
+  };
+
   // 设置特殊标签的选择状态
   const setRestrictedTagState = (tagId: string, enabled: boolean): void => {
     selectedRestrictedTags.value[tagId] = enabled;
 
-    // 如果取消选择一个标签，需要检查并取消选择所有依赖它的子标签
+    // 如果取消选择一个标签，需要递归取消选择所有依赖它的子标签
     if (!enabled) {
-      const dependentTags = siteConfig.tags.filter(tag => tag.isRestricted
-        && tag.prerequisiteTags
-        && tag.prerequisiteTags.includes(tagId));
+      const allDependentTags = getAllDependentTags(tagId);
 
-      dependentTags.forEach(dependentTag => {
-        if (selectedRestrictedTags.value[dependentTag.id]) {
-          selectedRestrictedTags.value[dependentTag.id] = false;
+      allDependentTags.forEach(dependentTagId => {
+        if (selectedRestrictedTags.value[dependentTagId]) {
+          selectedRestrictedTags.value[dependentTagId] = false;
         }
       });
     }
