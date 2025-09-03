@@ -6,6 +6,7 @@
     "source.fixAll.eslint": "explicit",
     "source.addMissingImports": "explicit"
   },
+  "editor.formatOnSave": true,
   "editor.wordWrapColumn": 120,
   "files.exclude": {
     "**/.git": true,
@@ -16,14 +17,34 @@
     "**/node_modules": true,
     "**/dist": true
   },
+  "eslint.enable": true,
   "eslint.quiet": false,
   "eslint.probe": [
     "javascript",
     "typescript",
     "vue"
   ],
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "vue"
+  ],
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
   "typescript.autoClosingTags": false,
   "eslint.format.enable": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
   "[python]": {
     "editor.formatOnType": true
   },
