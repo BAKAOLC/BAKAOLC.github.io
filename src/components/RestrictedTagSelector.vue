@@ -62,6 +62,19 @@ const appStore = useAppStore();
 const visibleRestrictedTags = computed(() => {
   let restrictedTags = [...siteConfig.tags].filter(tag => tag.isRestricted);
 
+  // 首先根据前置标签关系过滤
+  restrictedTags = restrictedTags.filter(tag => {
+    // 如果标签没有前置标签要求，直接显示
+    if (!tag.prerequisiteTags || tag.prerequisiteTags.length === 0) {
+      return true;
+    }
+
+    // 检查所有前置标签是否都已被选中
+    return tag.prerequisiteTags.every(prerequisiteTagId => {
+      return appStore.getRestrictedTagState(prerequisiteTagId);
+    });
+  });
+
   // 计算在特殊标签过滤之前的图片数量
   let imagesToCount = siteConfig.images;
 
