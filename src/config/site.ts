@@ -249,6 +249,7 @@ export const siteConfig: SiteConfig = {
       color: '#b91c1c',
       icon: 'ban',
       isRestricted: true,
+      prerequisiteTags: ['nsfw'],
     },
     {
       id: 'furry',
@@ -271,6 +272,7 @@ export const siteConfig: SiteConfig = {
       color: '#450a0a',
       icon: 'skull',
       isRestricted: true,
+      prerequisiteTags: ['nsfw'],
     },
   ],
 
