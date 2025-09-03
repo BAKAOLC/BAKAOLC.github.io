@@ -10,6 +10,7 @@ import { useRouter } from 'vue-router';
 
 import FullscreenViewer from '@/components/FullscreenViewer.vue';
 import { useEventManager } from '@/composables/useEventManager';
+import { useAppStore } from '@/stores/app';
 
 // 获取路由参数
 defineProps<{
@@ -18,10 +19,17 @@ defineProps<{
 
 const router = useRouter();
 const eventManager = useEventManager();
+const appStore = useAppStore();
 
 // 关闭查看器
 const closeViewer = (): void => {
-  router.push({ name: 'gallery' });
+  // 检查是否有来源页面可以返回
+  if (window.history.length > 1) {
+    router.back();
+  } else {
+    // 如果没有历史记录，默认跳转到画廊
+    router.push({ name: 'gallery' });
+  }
 };
 
 // 监听查看器导航事件
@@ -37,6 +45,9 @@ const handleViewerNavigate = (event: CustomEvent): void => {
 };
 
 onMounted(() => {
+  // 直接访问图像查看器时，重置从画廊进入的标记
+  appStore.setFromGallery(false);
+
   eventManager.addEventListener('viewerNavigate', handleViewerNavigate as EventListener);
 });
 

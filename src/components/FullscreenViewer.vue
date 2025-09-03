@@ -224,15 +224,36 @@ const viewportRect = ref({ x: 0, y: 0, width: 0, height: 0 });
 const isDraggingMinimap = ref(false);
 const minimapDragStart = ref({ x: 0, y: 0 });
 
+// 检测是否是直接访问（通过URL直接打开图像查看器）
+const isDirectAccess = computed(() => {
+  // 使用应用状态中的标记来判断是否从画廊进入
+  return !appStore.isFromGallery;
+});
+
 // 当前图片索引和图片列表
-const imagesList = computed(() => appStore.characterImages);
+const imagesList = computed(() => {
+  if (isDirectAccess.value) {
+    // 直接访问时，只显示当前这一个图像
+    const currentImage = appStore.getImageById(props.imageId);
+    if (currentImage) {
+      return [currentImage];
+    }
+    // 如果找不到当前图像，返回空数组
+    return [];
+  }
+  // 从画廊访问时，使用当前筛选的图像列表
+  return appStore.characterImages;
+});
+
 const currentIndex = computed(() => {
   if (!props.imageId) return 0;
   return imagesList.value.findIndex(img => img.id === props.imageId);
 });
+
 const currentImage = computed(() => {
   if (currentIndex.value < 0 || currentIndex.value >= imagesList.value.length) {
-    return null;
+    // 如果在当前列表中找不到，尝试直接从配置中获取
+    return appStore.getImageById(props.imageId) || null;
   }
   return imagesList.value[currentIndex.value];
 });
