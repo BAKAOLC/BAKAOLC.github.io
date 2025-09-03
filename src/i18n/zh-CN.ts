@@ -3,7 +3,7 @@ export default {
     title: '律影映幻',
     loading: '加载中...',
     error: '出错了！',
-    notFound: '页面不存在'
+    notFound: '页面不存在',
   },
   common: {
     loading: '加载中',
@@ -30,17 +30,17 @@ export default {
     search: '搜索',
     filter: '筛选',
     sort: '排序',
-    all: '全部'
+    all: '全部',
   },
   nav: {
     home: '首页',
     gallery: '画廊',
-    about: '关于'
+    about: '关于',
   },
   theme: {
     light: '浅色模式',
     dark: '深色模式',
-    auto: '自动模式'
+    auto: '自动模式',
   },
   gallery: {
     title: '画廊',
@@ -69,12 +69,12 @@ export default {
     sortArtist: '按作者',
     sortDate: '按时间',
     sortAsc: '正序',
-    sortDesc: '倒序'
+    sortDesc: '倒序',
   },
   personal: {
     contactMe: '联系我',
     viewGallery: '查看画廊',
-    socialLinks: '社交链接'
+    socialLinks: '社交链接',
   },
   viewer: {
     prev: '上一个',
@@ -90,12 +90,12 @@ export default {
     noImage: '未选择图片',
     imageInfo: '图片信息',
     minimap: '小地图',
-    navigation: '导航'
+    navigation: '导航',
   },
   loading: {
     title: '正在加载',
     progress: '进度',
     tip: '提示',
-    enteringSite: '正在进入网站...'
-  }
-}
+    enteringSite: '正在进入网站...',
+  },
+};

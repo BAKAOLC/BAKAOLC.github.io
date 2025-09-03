@@ -1,27 +1,28 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import { resolve } from 'path'
-import { createRequire } from 'module'
+import { createRequire } from 'module';
+import { resolve } from 'path';
 
-const require = createRequire(import.meta.url)
-const { thumbnailPlugin } = require('./vite-plugins/thumbnail-plugin.cjs')
+import vue from '@vitejs/plugin-vue';
+import { defineConfig } from 'vite';
+
+const require = createRequire(import.meta.url);
+const { thumbnailPlugin } = require('./vite-plugins/thumbnail-plugin.cjs');
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     thumbnailPlugin(),
-    vue()
+    vue(),
   ],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src')
-    }
+      '@': resolve(__dirname, 'src'),
+    },
   },
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html')
-      }
-    }
-  }
-})
+        main: resolve(__dirname, 'index.html'),
+      },
+    },
+  },
+});

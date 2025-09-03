@@ -3,7 +3,7 @@ export default {
     title: '律影映幻',
     loading: 'ロード中...',
     error: 'エラーが発生しました！',
-    notFound: 'ページが見つかりません'
+    notFound: 'ページが見つかりません',
   },
   common: {
     loading: 'ロード中',
@@ -30,17 +30,17 @@ export default {
     search: '検索',
     filter: 'フィルター',
     sort: '並べ替え',
-    all: 'すべて'
+    all: 'すべて',
   },
   nav: {
     home: 'ホーム',
     gallery: 'ギャラリー',
-    about: 'について'
+    about: 'について',
   },
   theme: {
     light: 'ライトモード',
     dark: 'ダークモード',
-    auto: '自動モード'
+    auto: '自動モード',
   },
   gallery: {
     title: 'ギャラリー',
@@ -69,12 +69,12 @@ export default {
     sortArtist: 'アーティスト順',
     sortDate: '日付順',
     sortAsc: '昇順',
-    sortDesc: '降順'
+    sortDesc: '降順',
   },
   personal: {
     contactMe: 'お問い合わせ',
     viewGallery: 'ギャラリーを見る',
-    socialLinks: 'ソーシャルリンク'
+    socialLinks: 'ソーシャルリンク',
   },
   viewer: {
     prev: '前へ',
@@ -90,12 +90,12 @@ export default {
     noImage: '画像が選択されていません',
     imageInfo: '画像情報',
     minimap: 'ミニマップ',
-    navigation: 'ナビゲーション'
+    navigation: 'ナビゲーション',
   },
   loading: {
     title: 'ロード中',
     progress: '進捗',
     tip: 'ヒント',
-    enteringSite: 'サイトに入ります...'
-  }
-}
+    enteringSite: 'サイトに入ります...',
+  },
+};

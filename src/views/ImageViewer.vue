@@ -5,41 +5,42 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount } from 'vue'
-import { useRouter } from 'vue-router'
-import FullscreenViewer from '@/components/FullscreenViewer.vue'
+import { onMounted, onBeforeUnmount } from 'vue';
+import { useRouter } from 'vue-router';
+
+import FullscreenViewer from '@/components/FullscreenViewer.vue';
 
 // 获取路由参数
 defineProps<{
-  imageId: string
-}>()
+  imageId: string;
+}>();
 
-const router = useRouter()
+const router = useRouter();
 
 // 关闭查看器
-const closeViewer = () => {
-  router.push({ name: 'gallery' })
-}
+const closeViewer = (): void => {
+  router.push({ name: 'gallery' });
+};
 
 // 监听查看器导航事件
-const handleViewerNavigate = (event: CustomEvent) => {
+const handleViewerNavigate = (event: CustomEvent): void => {
   if (event.detail && event.detail.imageId && typeof event.detail.imageId === 'string') {
     router.push({
       name: 'image-viewer',
-      params: { imageId: event.detail.imageId }
-    })
+      params: { imageId: event.detail.imageId },
+    });
   } else {
-    console.warn('无效的图片ID，无法导航')
+    console.warn('无效的图片ID，无法导航');
   }
-}
+};
 
 onMounted(() => {
-  window.addEventListener('viewerNavigate', handleViewerNavigate as EventListener)
-})
+  window.addEventListener('viewerNavigate', handleViewerNavigate as EventListener);
+});
 
 onBeforeUnmount(() => {
-  window.removeEventListener('viewerNavigate', handleViewerNavigate as EventListener)
-})
+  window.removeEventListener('viewerNavigate', handleViewerNavigate as EventListener);
+});
 </script>
 
 <style scoped>

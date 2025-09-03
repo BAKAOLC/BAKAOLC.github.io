@@ -16,71 +16,73 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { GlobeIcon, ChevronDownIcon } from 'lucide-vue-next'
-import { useAppStore } from '@/stores/app'
-import type { Language } from '@/types'
+import { GlobeIcon, ChevronDownIcon } from 'lucide-vue-next';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-const { locale } = useI18n()
-const appStore = useAppStore()
+import type { Language } from '@/types';
 
-const isOpen = ref(false)
-const menuRef = ref<HTMLDivElement | null>(null)
-const buttonRef = ref<HTMLButtonElement | null>(null)
+import { useAppStore } from '@/stores/app';
+
+const { locale } = useI18n();
+const appStore = useAppStore();
+
+const isOpen = ref(false);
+const menuRef = ref<HTMLDivElement | null>(null);
+const buttonRef = ref<HTMLButtonElement | null>(null);
 
 const languages = [
   { label: '简体中文', value: 'zh' as Language },
   { label: 'English', value: 'en' as Language },
-  { label: '日本語', value: 'jp' as Language }
-]
+  { label: '日本語', value: 'jp' as Language },
+];
 
-const currentLanguage = computed(() => appStore.currentLanguage)
+const currentLanguage = computed(() => appStore.currentLanguage);
 
 const displayLanguage = computed(() => {
-  const lang = languages.find(l => l.value === currentLanguage.value)
-  return lang ? lang.label : '简体中文'
-})
+  const lang = languages.find(l => l.value === currentLanguage.value);
+  return lang ? lang.label : '简体中文';
+});
 
-const toggleLanguageMenu = () => {
+const toggleLanguageMenu = (): void => {
   // 添加点击动画效果
-  const button = event?.target as HTMLElement
+  const button = event?.target as HTMLElement;
   if (button) {
-    button.style.transform = 'scale(0.95)'
+    button.style.transform = 'scale(0.95)';
     setTimeout(() => {
-      button.style.transform = ''
-    }, 150)
+      button.style.transform = '';
+    }, 150);
   }
-  
-  isOpen.value = !isOpen.value
-}
 
-const changeLanguage = (lang: Language) => {
-  appStore.setLanguage(lang)
-  locale.value = lang
-  isOpen.value = false
-}
+  isOpen.value = !isOpen.value;
+};
 
-const handleClickOutside = (event: MouseEvent) => {
-  const target = event.target as HTMLElement
+const changeLanguage = (lang: Language): void => {
+  appStore.setLanguage(lang);
+  locale.value = lang;
+  isOpen.value = false;
+};
+
+const handleClickOutside = (event: MouseEvent): void => {
+  const target = event.target as HTMLElement;
   if (
-    isOpen.value &&
-    menuRef.value &&
-    buttonRef.value &&
-    !menuRef.value.contains(target) &&
-    !buttonRef.value.contains(target)
+    isOpen.value
+    && menuRef.value
+    && buttonRef.value
+    && !menuRef.value.contains(target)
+    && !buttonRef.value.contains(target)
   ) {
-    isOpen.value = false
+    isOpen.value = false;
   }
-}
+};
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-})
+  document.addEventListener('click', handleClickOutside);
+});
 
 onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
+  document.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 <style scoped>
@@ -183,7 +185,7 @@ onBeforeUnmount(() => {
     height: 2.5rem;
     justify-content: center;
   }
-  
+
   .language-menu {
     @apply w-32;
   }

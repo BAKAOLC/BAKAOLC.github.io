@@ -8,19 +8,20 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { SunIcon, MoonIcon } from 'lucide-vue-next'
-import { useAppStore } from '@/stores/app'
+import { SunIcon, MoonIcon } from 'lucide-vue-next';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n()
-const appStore = useAppStore()
+import { useAppStore } from '@/stores/app';
 
-const isDarkMode = computed(() => appStore.isDarkMode)
+const { t } = useI18n();
+const appStore = useAppStore();
 
-const toggleTheme = () => {
-  appStore.toggleDarkMode()
-}
+const isDarkMode = computed(() => appStore.isDarkMode);
+
+const toggleTheme = (): void => {
+  appStore.toggleDarkMode();
+};
 </script>
 
 <style scoped>

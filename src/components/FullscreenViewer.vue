@@ -1,9 +1,9 @@
 <template>
-  <div class="fullscreen-viewer" 
-    :class="{ 
-      'active': isActive, 
-      'transition-active': transitionActive, 
-      'closing': isClosing 
+  <div class="fullscreen-viewer"
+    :class="{
+      'active': isActive,
+      'transition-active': transitionActive,
+      'closing': isClosing
     }"
     @keydown.esc="close" tabindex="0">
     <div class="viewer-header">
@@ -25,11 +25,11 @@
     <div class="viewer-content">
       <div class="image-container">
         <transition name="fade" mode="out-in">
-          <ProgressiveImage 
-            v-if="currentImage" 
-            :key="currentImage.id" 
+          <ProgressiveImage
+            v-if="currentImage"
+            :key="currentImage.id"
             :src="currentImage.src"
-            :alt="t(currentImage.name, currentLanguage)" 
+            :alt="t(currentImage.name, currentLanguage)"
             class="image"
             image-class="fullscreen-image"
             object-fit="contain"
@@ -47,23 +47,23 @@
         <chevron-left-icon class="icon" />
       </button>
 
-      <div class="image-thumbnails-container" 
+      <div class="image-thumbnails-container"
         :class="{ 'dragging': isDragging }"
         ref="thumbnailsContainer"
         @wheel="handleThumbnailWheel"
         @mousedown="handleThumbnailMouseDown"
         @touchstart="handleThumbnailTouchStart">
-        <div class="image-thumbnails" :style="{ 
+        <div class="image-thumbnails" :style="{
           transform: `translateX(${thumbnailsOffset}px)`
         }">
-          <button v-for="(image, index) in imagesList" :key="image.id" 
+          <button v-for="(image, index) in imagesList" :key="image.id"
             @click="handleThumbnailClick(index, $event)"
             @mousedown="handleThumbnailButtonMouseDown"
             @touchstart="handleThumbnailButtonTouchStart"
             class="thumbnail-button" :class="{ 'active': currentIndex === index }">
-            <ProgressiveImage 
-              :src="image.src" 
-              :alt="t(image.name, currentLanguage)" 
+            <ProgressiveImage
+              :src="image.src"
+              :alt="t(image.name, currentLanguage)"
               class="thumbnail-image"
               object-fit="cover"
               :show-loader="false"
@@ -118,586 +118,590 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { XIcon, ChevronLeftIcon, ChevronRightIcon, InfoIcon } from 'lucide-vue-next'
-import { siteConfig } from '@/config/site'
-import { useAppStore } from '@/stores/app'
-import ProgressiveImage from './ProgressiveImage.vue'
-import { imageCache, LoadPriority } from '@/services/imageCache'
-import { AnimationDurations } from '@/utils/animations'
-import thumbnailMap from '@/assets/thumbnail-map.json'
-import type { I18nText } from '@/types'
+
+import { XIcon, ChevronLeftIcon, ChevronRightIcon, InfoIcon } from 'lucide-vue-next';
+import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+import ProgressiveImage from './ProgressiveImage.vue';
+
+import type { I18nText } from '@/types';
+
+import thumbnailMap from '@/assets/thumbnail-map.json';
+import { siteConfig } from '@/config/site';
+import { imageCache, LoadPriority } from '@/services/imageCache';
+import { useAppStore } from '@/stores/app';
+import { AnimationDurations } from '@/utils/animations';
 
 const props = defineProps<{
-  imageId: string
-  isActive: boolean
-}>()
+  imageId: string;
+  isActive: boolean;
+}>();
 
 const emit = defineEmits<{
-  (e: 'close'): void
-}>()
+  close: [];
+}>();
 
-const { t: $t } = useI18n()
-const appStore = useAppStore()
+const { t: $t } = useI18n();
+const appStore = useAppStore();
 
-const currentLanguage = computed(() => appStore.currentLanguage)
+const currentLanguage = computed(() => appStore.currentLanguage);
 
 // 缩略图容器引用
-const thumbnailsContainer = ref<HTMLElement>()
+const thumbnailsContainer = ref<HTMLElement>();
 
 // 添加过渡动画状态
-const transitionActive = ref(false)
+const transitionActive = ref(false);
 
 // 当前图片索引和图片列表
-const imagesList = computed(() => appStore.characterImages)
+const imagesList = computed(() => appStore.characterImages);
 const currentIndex = computed(() => {
-  if (!props.imageId) return 0
-  return imagesList.value.findIndex(img => img.id === props.imageId)
-})
+  if (!props.imageId) return 0;
+  return imagesList.value.findIndex(img => img.id === props.imageId);
+});
 const currentImage = computed(() => {
   if (currentIndex.value < 0 || currentIndex.value >= imagesList.value.length) {
-    return null
+    return null;
   }
-  return imagesList.value[currentIndex.value]
-})
+  return imagesList.value[currentIndex.value];
+});
 
 // 导航控制
-const hasPrevImage = computed(() => currentIndex.value > 0)
-const hasNextImage = computed(() => currentIndex.value < imagesList.value.length - 1)
+const hasPrevImage = computed(() => currentIndex.value > 0);
+const hasNextImage = computed(() => currentIndex.value < imagesList.value.length - 1);
 
-const prevImage = () => {
+const prevImage = (): void => {
   if (hasPrevImage.value) {
-    goToImage(currentIndex.value - 1)
+    goToImage(currentIndex.value - 1);
   }
-}
+};
 
-const nextImage = () => {
+const nextImage = (): void => {
   if (hasNextImage.value) {
-    goToImage(currentIndex.value + 1)
+    goToImage(currentIndex.value + 1);
   }
-}
+};
 
-const goToImage = (index: number) => {
+const goToImage = (index: number): void => {
   if (index >= 0 && index < imagesList.value.length) {
-    const imageId = imagesList.value[index]?.id
+    const imageId = imagesList.value[index]?.id;
     if (!imageId) {
-      console.warn('图片ID为空，无法导航')
-      return
+      console.warn('图片ID为空，无法导航');
+      return;
     }
-    
+
     // 不再关闭查看器，直接更新内部状态
 
     // 使用history API更新URL参数，不触发页面刷新
-    const newUrl = window.location.pathname.replace(/\/[^/]+$/, `/${imageId}`)
-    window.history.pushState({ imageId }, '', newUrl)
+    const newUrl = window.location.pathname.replace(/\/[^/]+$/, `/${imageId}`);
+    window.history.pushState({ imageId }, '', newUrl);
 
     // 触发自定义事件通知父组件
-    const event = new CustomEvent('viewerNavigate', { detail: { imageId } })
-    window.dispatchEvent(event)
+    const event = new CustomEvent('viewerNavigate', { detail: { imageId } });
+    window.dispatchEvent(event);
 
     // 强制重置用户滚动状态，确保自动定位生效
-    isUserScrolling.value = false
-    
+    isUserScrolling.value = false;
+
     // 更新缩略图位置
     nextTick(() => {
-      updateThumbnailsOffset()
-    })
+      updateThumbnailsOffset();
+    });
   }
-}
+};
 
-const onImageLoad = () => {
+const onImageLoad = (): void => {
   // 图片加载完成处理
-}
+};
 
 // 信息面板控制
-const showInfoPanel = ref(true)
-const infoPanelAnimating = ref(false)
+const showInfoPanel = ref(true);
+const infoPanelAnimating = ref(false);
 
-const toggleInfoPanel = () => {
-  if (infoPanelAnimating.value) return // 防止动画过程中重复触发
+const toggleInfoPanel = (): void => {
+  if (infoPanelAnimating.value) return; // 防止动画过程中重复触发
 
-  infoPanelAnimating.value = true
-  showInfoPanel.value = !showInfoPanel.value
+  infoPanelAnimating.value = true;
+  showInfoPanel.value = !showInfoPanel.value;
 
   // 动画结束后重置状态 - 从CSS读取动画时长
-  const duration = AnimationDurations.getInfoPanelTransition()
+  const duration = AnimationDurations.getInfoPanelTransition();
   if (duration === 0) {
     // 如果没有动画或动画时长为0，立即重置状态
-    infoPanelAnimating.value = false
+    infoPanelAnimating.value = false;
   } else {
     setTimeout(() => {
-      infoPanelAnimating.value = false
-    }, duration)
+      infoPanelAnimating.value = false;
+    }, duration);
   }
-}
+};
 
 // 已移除小地图计算功能
 
 // 已移除小地图相关代码
 
 // 缩略图滚动条逻辑
-const thumbnailsOffset = ref(0)
-const thumbnailPadding = ref(0)
+const thumbnailsOffset = ref(0);
+const thumbnailPadding = ref(0);
 
 // 动态获取缩略图的实际尺寸（基于DOM计算而非硬编码）
-const getThumbnailDimensions = () => {
+const getThumbnailDimensions = (): { width: number; gap: number } => {
   if (!thumbnailsContainer.value) {
     // 后备默认值，但通常不会用到
-    return { width: 64, gap: 8 }
+    return { width: 64, gap: 8 };
   }
-  
-  const thumbnailsElement = thumbnailsContainer.value.querySelector('.image-thumbnails') as HTMLElement
-  const thumbnailButtons = thumbnailsContainer.value.querySelectorAll('.thumbnail-button')
-  
+
+  const thumbnailsElement = thumbnailsContainer.value.querySelector('.image-thumbnails') as HTMLElement;
+  const thumbnailButtons = thumbnailsContainer.value.querySelectorAll('.thumbnail-button');
+
   if (thumbnailButtons.length < 1) {
-    return { width: 64, gap: 8 }
+    return { width: 64, gap: 8 };
   }
-  
-  const firstButton = thumbnailButtons[0] as HTMLElement
-  const firstRect = firstButton.getBoundingClientRect()
-  const width = firstRect.width
-  
-  let gap = 8 // 默认值
-  
+
+  const firstButton = thumbnailButtons[0] as HTMLElement;
+  const firstRect = firstButton.getBoundingClientRect();
+  const { width } = firstRect;
+
+  let gap = 8; // 默认值
+
   if (thumbnailButtons.length >= 2 && thumbnailsElement) {
     // 通过前两个缩略图的位置计算实际间隙
-    const second = thumbnailButtons[1] as HTMLElement
-    const secondRect = second.getBoundingClientRect()
-    gap = secondRect.left - firstRect.right
+    const second = thumbnailButtons[1] as HTMLElement;
+    const secondRect = second.getBoundingClientRect();
+    gap = secondRect.left - firstRect.right;
   } else if (thumbnailsElement) {
     // 如果只有一个缩略图，尝试从CSS计算gap值
-    const computedStyle = window.getComputedStyle(thumbnailsElement)
-    const gapValue = computedStyle.gap || computedStyle.columnGap
+    const computedStyle = window.getComputedStyle(thumbnailsElement);
+    const gapValue = computedStyle.gap || computedStyle.columnGap;
     if (gapValue && gapValue !== 'normal') {
-      const gapPx = parseFloat(gapValue)
+      const gapPx = parseFloat(gapValue);
       if (!isNaN(gapPx)) {
-        gap = gapPx
+        gap = gapPx;
       }
     }
   }
-  
-  return { width, gap }
-}
+
+  return { width, gap };
+};
 
 // 计算缩略图列表的总宽度
-const getThumbnailsListWidth = (count: number) => {
-  if (count <= 0) return 0
-  const { width, gap } = getThumbnailDimensions()
+const getThumbnailsListWidth = (count: number): number => {
+  if (count <= 0) return 0;
+  const { width, gap } = getThumbnailDimensions();
   // 总宽度 = (数量-1) × (宽度+间隙) + 最后一个宽度
-  return (count - 1) * (width + gap) + width
-}
+  return (count - 1) * (width + gap) + width;
+};
 
 // 计算特定索引缩略图的中心位置
-const getThumbnailCenterPosition = (index: number) => {
-  const { width, gap } = getThumbnailDimensions()
-  return index * (width + gap) + width / 2
-}
+const getThumbnailCenterPosition = (index: number): number => {
+  const { width, gap } = getThumbnailDimensions();
+  return index * (width + gap) + width / 2;
+};
 
 // 动态获取容器的实际可用宽度
-const getThumbnailContainerWidth = () => {
+const getThumbnailContainerWidth = (): number => {
   if (!thumbnailsContainer.value) {
     // 后备计算方式
-    return window.innerWidth - 136
+    return window.innerWidth - 136;
   }
-  
-  // 基于实际DOM元素计算可用宽度
-  const containerRect = thumbnailsContainer.value.getBoundingClientRect()
-  return containerRect.width
-}
 
-const updateThumbnailsOffset = () => {
+  // 基于实际DOM元素计算可用宽度
+  const containerRect = thumbnailsContainer.value.getBoundingClientRect();
+  return containerRect.width;
+};
+
+const updateThumbnailsOffset = (): void => {
   // 如果用户正在手动滚动，不要自动调整位置
-  if (isUserScrolling.value) return
-  
-  const containerWidth = getThumbnailContainerWidth()
-  const totalWidth = getThumbnailsListWidth(imagesList.value.length)
-  const containerCenter = containerWidth / 2
+  if (isUserScrolling.value) return;
+
+  const containerWidth = getThumbnailContainerWidth();
+  const totalWidth = getThumbnailsListWidth(imagesList.value.length);
+  const containerCenter = containerWidth / 2;
 
   // 不使用占位符，直接基于实际内容计算
-  thumbnailPadding.value = 0
+  thumbnailPadding.value = 0;
 
   if (totalWidth <= containerWidth) {
     // 如果内容少于一屏，整体居中显示
-    thumbnailsOffset.value = (containerWidth - totalWidth) / 2
-    return
+    thumbnailsOffset.value = (containerWidth - totalWidth) / 2;
+    return;
   }
 
   // 计算当前图片的实际中心位置
-  const currentImageCenter = getThumbnailCenterPosition(currentIndex.value)
-  
+  const currentImageCenter = getThumbnailCenterPosition(currentIndex.value);
+
   // 计算让当前图片居中的理想偏移量
-  const idealOffset = containerCenter - currentImageCenter
+  const idealOffset = containerCenter - currentImageCenter;
 
   // 计算边界限制：
   // 左边界：第一张图片居中时的偏移量（第一张图片中心对齐容器中心）
-  const firstImageCenter = getThumbnailCenterPosition(0)
-  const maxOffset = containerCenter - firstImageCenter
-  
+  const firstImageCenter = getThumbnailCenterPosition(0);
+  const maxOffset = containerCenter - firstImageCenter;
+
   // 右边界：最后一张图片居中时的偏移量（最后一张图片中心对齐容器中心）
-  const lastImageCenter = getThumbnailCenterPosition(imagesList.value.length - 1)
-  const minOffset = containerCenter - lastImageCenter
+  const lastImageCenter = getThumbnailCenterPosition(imagesList.value.length - 1);
+  const minOffset = containerCenter - lastImageCenter;
 
   // 应用边界限制
-  thumbnailsOffset.value = Math.max(minOffset, Math.min(maxOffset, idealOffset))
-}
+  thumbnailsOffset.value = Math.max(minOffset, Math.min(maxOffset, idealOffset));
+};
 
 // 手动滚动缩略图的状态
-const isDragging = ref(false)
-const dragStartX = ref(0)
-const dragStartOffset = ref(0)
-const isUserScrolling = ref(false) // 标记用户是否在手动滚动
+const isDragging = ref(false);
+const dragStartX = ref(0);
+const dragStartOffset = ref(0);
+const isUserScrolling = ref(false); // 标记用户是否在手动滚动
 
 // 手动设置缩略图偏移量（用户拖拽时）
-const setManualThumbnailOffset = (offset: number) => {
-  const containerWidth = getThumbnailContainerWidth()
-  const totalWidth = getThumbnailsListWidth(imagesList.value.length)
-  const containerCenter = containerWidth / 2
-  
+const setManualThumbnailOffset = (offset: number): void => {
+  const containerWidth = getThumbnailContainerWidth();
+  const totalWidth = getThumbnailsListWidth(imagesList.value.length);
+  const containerCenter = containerWidth / 2;
+
   if (totalWidth <= containerWidth) {
-    return // 如果内容不足一屏，不允许滚动
+    return; // 如果内容不足一屏，不允许滚动
   }
-  
+
   // 使用与自动定位相同的边界计算
   // 左边界：第一张图片居中时的偏移量
-  const firstImageCenter = getThumbnailCenterPosition(0)
-  const maxOffset = containerCenter - firstImageCenter
-  
+  const firstImageCenter = getThumbnailCenterPosition(0);
+  const maxOffset = containerCenter - firstImageCenter;
+
   // 右边界：最后一张图片居中时的偏移量
-  const lastImageCenter = getThumbnailCenterPosition(imagesList.value.length - 1)
-  const minOffset = containerCenter - lastImageCenter
-  
-  thumbnailsOffset.value = Math.max(minOffset, Math.min(maxOffset, offset))
-}
+  const lastImageCenter = getThumbnailCenterPosition(imagesList.value.length - 1);
+  const minOffset = containerCenter - lastImageCenter;
+
+  thumbnailsOffset.value = Math.max(minOffset, Math.min(maxOffset, offset));
+};
 
 // 滚轮事件处理
-const handleThumbnailWheel = (event: WheelEvent) => {
-  event.preventDefault()
-  isUserScrolling.value = true
-  
-  const scrollSpeed = 40 // 滚动速度
-  const delta = event.deltaY > 0 ? -scrollSpeed : scrollSpeed
-  setManualThumbnailOffset(thumbnailsOffset.value + delta)
-  
+const handleThumbnailWheel = (event: WheelEvent): void => {
+  event.preventDefault();
+  isUserScrolling.value = true;
+
+  const scrollSpeed = 40; // 滚动速度
+  const delta = event.deltaY > 0 ? -scrollSpeed : scrollSpeed;
+  setManualThumbnailOffset(thumbnailsOffset.value + delta);
+
   // 1秒后重置用户滚动状态
   setTimeout(() => {
-    isUserScrolling.value = false
-  }, 1000)
-}
+    isUserScrolling.value = false;
+  }, 1000);
+};
 
 // 鼠标拖拽处理
-const handleThumbnailMouseDown = (event: MouseEvent) => {
-  if (event.button !== 0) return // 只处理左键
-  
-  event.preventDefault()
-  isUserScrolling.value = true
-  dragStartX.value = event.clientX
-  dragStartOffset.value = thumbnailsOffset.value
-  
-  const handleMouseMove = (e: MouseEvent) => {
-    const deltaX = e.clientX - dragStartX.value
-    
+const handleThumbnailMouseDown = (event: MouseEvent): void => {
+  if (event.button !== 0) return; // 只处理左键
+
+  event.preventDefault();
+  isUserScrolling.value = true;
+  dragStartX.value = event.clientX;
+  dragStartOffset.value = thumbnailsOffset.value;
+
+  const handleMouseMove = (e: MouseEvent): void => {
+    const deltaX = e.clientX - dragStartX.value;
+
     // 降低拖拽阈值并立即启用拖拽状态以减少卡顿
     if (Math.abs(deltaX) > 2) { // 降低阈值从 dragThreshold 到 2
       if (!isDragging.value) {
-        isDragging.value = true
+        isDragging.value = true;
       }
     }
-    
+
     if (isDragging.value) {
-      setManualThumbnailOffset(dragStartOffset.value + deltaX)
+      setManualThumbnailOffset(dragStartOffset.value + deltaX);
     }
-  }
-  
-  const handleMouseUp = () => {
+  };
+
+  const handleMouseUp = (): void => {
     // 延迟重置拖拽状态，确保点击事件处理完毕
     setTimeout(() => {
-      isDragging.value = false
-    }, 50)
-    
+      isDragging.value = false;
+    }, 50);
+
     setTimeout(() => {
-      isUserScrolling.value = false
-    }, 500)
-    
-    document.removeEventListener('mousemove', handleMouseMove)
-    document.removeEventListener('mouseup', handleMouseUp)
-  }
-  
-  document.addEventListener('mousemove', handleMouseMove)
-  document.addEventListener('mouseup', handleMouseUp)
-}
+      isUserScrolling.value = false;
+    }, 500);
+
+    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mouseup', handleMouseUp);
+  };
+
+  document.addEventListener('mousemove', handleMouseMove);
+  document.addEventListener('mouseup', handleMouseUp);
+};
 
 // 触摸拖拽处理
-const handleThumbnailTouchStart = (event: TouchEvent) => {
-  if (event.touches.length !== 1) return
-  
-  const touch = event.touches[0]
-  isUserScrolling.value = true
-  dragStartX.value = touch.clientX
-  dragStartOffset.value = thumbnailsOffset.value
-  
-  const handleTouchMove = (e: TouchEvent) => {
-    if (e.touches.length !== 1) return
-    
-    const touch = e.touches[0]
-    const deltaX = touch.clientX - dragStartX.value
-    
+const handleThumbnailTouchStart = (event: TouchEvent): void => {
+  if (event.touches.length !== 1) return;
+
+  const touch = event.touches[0];
+  isUserScrolling.value = true;
+  dragStartX.value = touch.clientX;
+  dragStartOffset.value = thumbnailsOffset.value;
+
+  const handleTouchMove = (e: TouchEvent): void => {
+    if (e.touches.length !== 1) return;
+
+    const touch = e.touches[0];
+    const deltaX = touch.clientX - dragStartX.value;
+
     // 降低拖拽阈值并立即启用拖拽状态以减少卡顿
     if (Math.abs(deltaX) > 2) { // 降低阈值从 dragThreshold 到 2
       if (!isDragging.value) {
-        isDragging.value = true
-        e.preventDefault() // 防止页面滚动
+        isDragging.value = true;
+        e.preventDefault(); // 防止页面滚动
       }
     }
-    
+
     if (isDragging.value) {
-      e.preventDefault() // 防止页面滚动
-      setManualThumbnailOffset(dragStartOffset.value + deltaX)
+      e.preventDefault(); // 防止页面滚动
+      setManualThumbnailOffset(dragStartOffset.value + deltaX);
     }
-  }
-  
-  const handleTouchEnd = () => {
+  };
+
+  const handleTouchEnd = (): void => {
     // 延迟重置拖拽状态，确保点击事件处理完毕
     setTimeout(() => {
-      isDragging.value = false
-    }, 50)
-    
+      isDragging.value = false;
+    }, 50);
+
     setTimeout(() => {
-      isUserScrolling.value = false
-    }, 500)
-    
-    thumbnailsContainer.value?.removeEventListener('touchmove', handleTouchMove as any)
-    thumbnailsContainer.value?.removeEventListener('touchend', handleTouchEnd)
-  }
-  
-  thumbnailsContainer.value?.addEventListener('touchmove', handleTouchMove as any, { passive: false })
-  thumbnailsContainer.value?.addEventListener('touchend', handleTouchEnd)
-}
+      isUserScrolling.value = false;
+    }, 500);
+
+    thumbnailsContainer.value?.removeEventListener('touchmove', handleTouchMove as any);
+    thumbnailsContainer.value?.removeEventListener('touchend', handleTouchEnd);
+  };
+
+  thumbnailsContainer.value?.addEventListener('touchmove', handleTouchMove as any, { passive: false });
+  thumbnailsContainer.value?.addEventListener('touchend', handleTouchEnd);
+};
 
 // 拖拽相关状态
-const clickStartTime = ref(0)
-const clickStartPosition = ref({ x: 0, y: 0 })
-const dragThreshold = 5 // 拖拽阈值，超过这个距离算作拖拽而非点击
+const clickStartTime = ref(0);
+const clickStartPosition = ref({ x: 0, y: 0 });
+const dragThreshold = 5; // 拖拽阈值，超过这个距离算作拖拽而非点击
 
 // 缩略图按钮点击处理（区分点击和拖拽）
-const handleThumbnailClick = (index: number, event: MouseEvent) => {
+const handleThumbnailClick = (index: number, event: MouseEvent): void => {
   // 如果是拖拽操作，则不触发点击
   if (isDragging.value) {
-    event.preventDefault()
-    return
+    event.preventDefault();
+    return;
   }
-  
+
   // 检查是否是真正的点击（而非拖拽结束）
-  const currentTime = Date.now()
-  const timeDiff = currentTime - clickStartTime.value
-  const currentPos = { x: event.clientX, y: event.clientY }
+  const currentTime = Date.now();
+  const timeDiff = currentTime - clickStartTime.value;
+  const currentPos = { x: event.clientX, y: event.clientY };
   const distance = Math.sqrt(
-    Math.pow(currentPos.x - clickStartPosition.value.x, 2) + 
-    Math.pow(currentPos.y - clickStartPosition.value.y, 2)
-  )
-  
+    Math.pow(currentPos.x - clickStartPosition.value.x, 2)
+    + Math.pow(currentPos.y - clickStartPosition.value.y, 2),
+  );
+
   // 如果时间太长或移动距离太大，认为是拖拽而非点击
   if (timeDiff > 500 || distance > dragThreshold) {
-    event.preventDefault()
-    return
+    event.preventDefault();
+    return;
   }
-  
-  goToImage(index)
-}
+
+  goToImage(index);
+};
 
 // 缩略图按钮鼠标按下处理
-const handleThumbnailButtonMouseDown = (event: MouseEvent) => {
-  if (event.button !== 0) return // 只处理左键
-  
-  clickStartTime.value = Date.now()
-  clickStartPosition.value = { x: event.clientX, y: event.clientY }
-  
+const handleThumbnailButtonMouseDown = (event: MouseEvent): void => {
+  if (event.button !== 0) return; // 只处理左键
+
+  clickStartTime.value = Date.now();
+  clickStartPosition.value = { x: event.clientX, y: event.clientY };
+
   // 调用原有的拖拽逻辑
-  handleThumbnailMouseDown(event)
-}
+  handleThumbnailMouseDown(event);
+};
 
 // 缩略图按钮触摸开始处理
-const handleThumbnailButtonTouchStart = (event: TouchEvent) => {
-  if (event.touches.length !== 1) return
-  
-  const touch = event.touches[0]
-  clickStartTime.value = Date.now()
-  clickStartPosition.value = { x: touch.clientX, y: touch.clientY }
-  
+const handleThumbnailButtonTouchStart = (event: TouchEvent): void => {
+  if (event.touches.length !== 1) return;
+
+  const touch = event.touches[0];
+  clickStartTime.value = Date.now();
+  clickStartPosition.value = { x: touch.clientX, y: touch.clientY };
+
   // 调用原有的触摸拖拽逻辑
-  handleThumbnailTouchStart(event)
-}
+  handleThumbnailTouchStart(event);
+};
 
 // 获取标签颜色
 const getTagColor = (tagId: string): string => {
-  const tag = siteConfig.tags.find(t => t.id === tagId)
-  return tag?.color || '#8b5cf6'
-}
+  const tag = siteConfig.tags.find(t => t.id === tagId);
+  return tag?.color || '#8b5cf6';
+};
 
 // 获取标签名称
 const getTagName = (tagId: string): string => {
-  const tag = siteConfig.tags.find(t => t.id === tagId)
-  return tag ? t(tag.name, currentLanguage.value) : tagId
-}
+  const tag = siteConfig.tags.find(t => t.id === tagId);
+  return tag ? t(tag.name, currentLanguage.value) : tagId;
+};
 
 // 关闭查看器
-const isClosing = ref(false)
-const close = () => {
+const isClosing = ref(false);
+const close = (): void => {
   // 设置关闭状态
-  isClosing.value = true
+  isClosing.value = true;
   // 先添加淡出过渡动画，再关闭查看器
-  transitionActive.value = false
-  
+  transitionActive.value = false;
+
   // 从CSS读取过渡动画时长
-  const duration = AnimationDurations.getViewerTransition()
+  const duration = AnimationDurations.getViewerTransition();
   if (duration === 0) {
     // 如果没有动画或动画时长为0，立即关闭
-    emit('close')
+    emit('close');
     // 重置关闭状态，以便下次打开
-    isClosing.value = false
+    isClosing.value = false;
   } else {
     setTimeout(() => {
-      emit('close')
+      emit('close');
       // 重置关闭状态，以便下次打开
-      isClosing.value = false
-    }, duration)
+      isClosing.value = false;
+    }, duration);
   }
-}
+};
 
 // 键盘事件
-const handleKeyDown = (event: KeyboardEvent) => {
-  if (!props.isActive) return
+const handleKeyDown = (event: KeyboardEvent): void => {
+  if (!props.isActive) return;
 
   switch (event.key) {
     case 'Escape':
-      close()
-      break
+      close();
+      break;
     case 'ArrowLeft':
-      prevImage()
-      break
+      prevImage();
+      break;
     case 'ArrowRight':
-      nextImage()
-      break
+      nextImage();
+      break;
   }
-}
+};
 
 // 预加载相邻图片
-const preloadAdjacentImages = () => {
-  const currentIdx = currentIndex.value
-  const imagesToPreload: string[] = []
-  
+const preloadAdjacentImages = (): void => {
+  const currentIdx = currentIndex.value;
+  const imagesToPreload: string[] = [];
+
   // 预加载前一张和后一张图片（普通优先级）
   if (currentIdx > 0) {
-    imagesToPreload.push(imagesList.value[currentIdx - 1].src)
+    imagesToPreload.push(imagesList.value[currentIdx - 1].src);
   }
   if (currentIdx < imagesList.value.length - 1) {
-    imagesToPreload.push(imagesList.value[currentIdx + 1].src)
+    imagesToPreload.push(imagesList.value[currentIdx + 1].src);
   }
-  
+
   // 异步预加载相邻图片
   imagesToPreload.forEach(src => {
     imageCache.preloadImage(src, LoadPriority.OTHER_IMAGE).catch(() => {
       // 预加载失败不影响主要功能
-    })
-  })
-  
+    });
+  });
+
   // 预加载前两张和后两张图片（低优先级）
-  const lowPriorityImages: string[] = []
+  const lowPriorityImages: string[] = [];
   if (currentIdx > 1) {
-    lowPriorityImages.push(imagesList.value[currentIdx - 2].src)
+    lowPriorityImages.push(imagesList.value[currentIdx - 2].src);
   }
   if (currentIdx < imagesList.value.length - 2) {
-    lowPriorityImages.push(imagesList.value[currentIdx + 2].src)
+    lowPriorityImages.push(imagesList.value[currentIdx + 2].src);
   }
-  
+
   // 低优先级预加载 - 延迟执行以确保当前图片优先
   setTimeout(() => {
     lowPriorityImages.forEach(src => {
       imageCache.preloadImage(src, LoadPriority.OTHER_IMAGE).catch(() => {
         // 预加载失败不影响主要功能
-      })
-    })
-  }, 300) // 延迟300ms，给当前图片足够的加载时间
-}
+      });
+    });
+  }, 300); // 延迟300ms，给当前图片足够的加载时间
+};
 
 // 监听图片变化
 watch(currentImage, (newImage) => {
   if (newImage) {
     // 获取当前图片的缩略图URL
-    const thumbnailSrc = getThumbnailUrl(newImage.src, 'tiny')
-    
+    const thumbnailSrc = getThumbnailUrl(newImage.src, 'tiny');
+
     // 设置当前图片，这会触发优先级重新评估
-    imageCache.setCurrentImage(newImage.src, thumbnailSrc || undefined)
-    
+    imageCache.setCurrentImage(newImage.src, thumbnailSrc || undefined);
+
     // 延迟触发预加载，确保当前图片优先
     nextTick(() => {
       setTimeout(() => {
-        updateThumbnailsOffset()
+        updateThumbnailsOffset();
         // 预加载相邻图片
-        preloadAdjacentImages()
-      }, 150) // 给当前图片150ms的优先加载时间
-    })
+        preloadAdjacentImages();
+      }, 150); // 给当前图片150ms的优先加载时间
+    });
   }
-})
+});
 
 // 获取缩略图URL的辅助函数
-const getThumbnailUrl = (originalSrc: string, size: 'tiny' | 'small' | 'medium') => {
-  const thumbnails = (thumbnailMap as any)[originalSrc] as Record<string, string> | undefined
-  return thumbnails?.[size] || null
-}
+const getThumbnailUrl = (originalSrc: string, size: 'tiny' | 'small' | 'medium'): string | null => {
+  const thumbnails = (thumbnailMap as any)[originalSrc] as Record<string, string> | undefined;
+  return thumbnails?.[size] || null;
+};
 
 // 监听激活状态
 watch(() => props.isActive, (newValue) => {
   if (newValue) {
     // 重置关闭状态
-    isClosing.value = false
-    
+    isClosing.value = false;
+
     // 组件激活时，先添加可见样式，然后再添加过渡动画样式
     nextTick(() => {
       setTimeout(() => {
-        transitionActive.value = true
-      }, 50)
-    })
+        transitionActive.value = true;
+      }, 50);
+    });
   } else {
     // 组件隐藏时的处理已移至close函数
     // 这里不需要额外处理，因为close函数会设置transitionActive.value = false
   }
-}, { immediate: true })
+}, { immediate: true });
 
 // 监听窗口大小变化
-const handleResize = () => {
+const handleResize = (): void => {
   // 窗口大小变化时，强制重新计算位置（忽略用户滚动状态）
-  const wasUserScrolling = isUserScrolling.value
-  isUserScrolling.value = false
-  updateThumbnailsOffset()
+  const wasUserScrolling = isUserScrolling.value;
+  isUserScrolling.value = false;
+  updateThumbnailsOffset();
   // 如果用户之前在滚动，延迟恢复状态
   if (wasUserScrolling) {
     setTimeout(() => {
-      isUserScrolling.value = true
-    }, 100)
+      isUserScrolling.value = true;
+    }, 100);
   }
-}
+};
 
 onMounted(() => {
-  window.addEventListener('keydown', handleKeyDown)
-  window.addEventListener('resize', handleResize)
+  window.addEventListener('keydown', handleKeyDown);
+  window.addEventListener('resize', handleResize);
   nextTick(() => {
-    updateThumbnailsOffset()
-  })
-})
+    updateThumbnailsOffset();
+  });
+});
 
 onBeforeUnmount(() => {
-  window.removeEventListener('keydown', handleKeyDown)
-  window.removeEventListener('resize', handleResize)
-})
+  window.removeEventListener('keydown', handleKeyDown);
+  window.removeEventListener('resize', handleResize);
+});
 
 // 本地化辅助函数
-const t = (text: I18nText | string | undefined, lang?: string) => {
-  if (!text) return ''
-  if (typeof text === 'string') return text
-  if (!lang) return text.zh || text.en || ''
-  return text[lang as keyof I18nText] || text.en || ''
-}
+const t = (text: I18nText | string | undefined, lang?: string): string => {
+  if (!text) return '';
+  if (typeof text === 'string') return text;
+  if (!lang) return text.zh || text.en || '';
+  return text[lang as keyof I18nText] || text.en || '';
+};
 </script>
 
 <style scoped>

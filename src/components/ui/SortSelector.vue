@@ -16,66 +16,67 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { useAppStore } from '@/stores/app'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 
-const appStore = useAppStore()
+import { useAppStore } from '@/stores/app';
 
-const isOpen = ref(false)
-const menuRef = ref<HTMLDivElement | null>(null)
-const buttonRef = ref<HTMLButtonElement | null>(null)
+const appStore = useAppStore();
+
+const isOpen = ref(false);
+const menuRef = ref<HTMLDivElement | null>(null);
+const buttonRef = ref<HTMLButtonElement | null>(null);
 
 const sortOptions = [
   { label: '按名称', value: 'name' },
   { label: '按画师', value: 'artist' },
-  { label: '按日期', value: 'date' }
-]
+  { label: '按日期', value: 'date' },
+];
 
-const currentSort = computed(() => appStore.sortBy)
+const currentSort = computed(() => appStore.sortBy);
 
 const displaySort = computed(() => {
-  const option = sortOptions.find(o => o.value === currentSort.value)
-  return option ? option.label : '按名称'
-})
+  const option = sortOptions.find(o => o.value === currentSort.value);
+  return option ? option.label : '按名称';
+});
 
-const toggleSortMenu = () => {
+const toggleSortMenu = (): void => {
   // 添加点击动画效果
-  const button = event?.target as HTMLElement
+  const button = event?.target as HTMLElement;
   if (button) {
-    button.style.transform = 'scale(0.95)'
+    button.style.transform = 'scale(0.95)';
     setTimeout(() => {
-      button.style.transform = ''
-    }, 150)
+      button.style.transform = '';
+    }, 150);
   }
-  
-  isOpen.value = !isOpen.value
-}
 
-const changeSort = (sort: string) => {
-  appStore.sortBy = sort as 'name' | 'artist' | 'date'
-  isOpen.value = false
-}
+  isOpen.value = !isOpen.value;
+};
 
-const handleClickOutside = (event: MouseEvent) => {
-  const target = event.target as HTMLElement
+const changeSort = (sort: string): void => {
+  appStore.sortBy = sort as 'name' | 'artist' | 'date';
+  isOpen.value = false;
+};
+
+const handleClickOutside = (event: MouseEvent): void => {
+  const target = event.target as HTMLElement;
   if (
-    isOpen.value &&
-    menuRef.value &&
-    buttonRef.value &&
-    !menuRef.value.contains(target) &&
-    !buttonRef.value.contains(target)
+    isOpen.value
+    && menuRef.value
+    && buttonRef.value
+    && !menuRef.value.contains(target)
+    && !buttonRef.value.contains(target)
   ) {
-    isOpen.value = false
+    isOpen.value = false;
   }
-}
+};
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-})
+  document.addEventListener('click', handleClickOutside);
+});
 
 onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
+  document.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 <style scoped>
@@ -178,7 +179,7 @@ onBeforeUnmount(() => {
     padding: 0.375rem;
     height: 2rem;
   }
-  
+
   .sort-menu {
     @apply w-28;
   }

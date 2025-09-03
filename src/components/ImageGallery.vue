@@ -4,25 +4,25 @@
       {{ $t('gallery.noImages') }}
     </div>
 
-    <div 
+    <div
       v-else
-      :class="{ 
-        'image-grid': gridView, 
+      :class="{
+        'image-grid': gridView,
         'image-list': !gridView,
         'transitioning': isTransitioning
       }"
       :key="transitionKey"
     >
-        <div 
-          v-for="image in images" 
-          :key="image.id" 
+        <div
+          v-for="image in images"
+          :key="image.id"
           :class="{ 'image-card': gridView, 'image-list-item': !gridView }"
           @click="viewImage(image)"
         >
           <div class="image-container">
-            <ProgressiveImage 
-              :src="image.src" 
-              :alt="t(image.name, currentLanguage)" 
+            <ProgressiveImage
+              :src="image.src"
+              :alt="t(image.name, currentLanguage)"
               class="image"
               image-class="gallery-image"
               object-fit="contain"
@@ -53,80 +53,80 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, nextTick } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { siteConfig } from '@/config/site'
-import { useAppStore } from '@/stores/app'
-import ProgressiveImage from './ProgressiveImage.vue'
-import type { I18nText, CharacterImage } from '@/types'
+import { computed, ref, watch, nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+import ProgressiveImage from './ProgressiveImage.vue';
+
+import type { I18nText, CharacterImage } from '@/types';
+
+import { siteConfig } from '@/config/site';
+import { useAppStore } from '@/stores/app';
 
 const props = defineProps<{
-  images: CharacterImage[]
-  gridView: boolean
-}>()
+  images: CharacterImage[];
+  gridView: boolean;
+}>();
 
-const isTransitioning = ref(false)
-const transitionKey = ref(0)
+const isTransitioning = ref(false);
+const transitionKey = ref(0);
 
 watch(() => props.gridView, async (newView, oldView) => {
   if (newView !== oldView) {
-    isTransitioning.value = true
-    transitionKey.value++
-    
+    isTransitioning.value = true;
+    transitionKey.value++;
 
-    await nextTick()
-    
+    await nextTick();
 
     setTimeout(() => {
-      isTransitioning.value = false
-    }, 200)
+      isTransitioning.value = false;
+    }, 200);
   }
-})
+});
 
 watch(() => props.images, async (newImages, oldImages) => {
   if (oldImages && newImages !== oldImages) {
-    isTransitioning.value = true
-    transitionKey.value++
-    
-    await nextTick()
-    
+    isTransitioning.value = true;
+    transitionKey.value++;
+
+    await nextTick();
+
     setTimeout(() => {
-      isTransitioning.value = false
-    }, 100)
+      isTransitioning.value = false;
+    }, 100);
   }
-}, { deep: true })
+}, { deep: true });
 
-const { t: $t } = useI18n()
-const appStore = useAppStore()
+const { t: $t } = useI18n();
+const appStore = useAppStore();
 
-const currentLanguage = computed(() => appStore.currentLanguage)
+const currentLanguage = computed(() => appStore.currentLanguage);
 
 const getTagColor = (tagId: string): string => {
-  const tag = siteConfig.tags.find(t => t.id === tagId)
-  return tag?.color || '#8b5cf6'
-}
+  const tag = siteConfig.tags.find(t => t.id === tagId);
+  return tag?.color || '#8b5cf6';
+};
 
 const getTagName = (tagId: string): string => {
-  const tag = siteConfig.tags.find(t => t.id === tagId)
-  return tag ? t(tag.name, currentLanguage.value) : tagId
-}
+  const tag = siteConfig.tags.find(t => t.id === tagId);
+  return tag ? t(tag.name, currentLanguage.value) : tagId;
+};
 
-const viewImage = (image: CharacterImage) => {
+const viewImage = (image: CharacterImage): void => {
   if (!image || !image.id) {
-    console.warn('无效的图片数据，无法查看')
-    return
+    console.warn('无效的图片数据，无法查看');
+    return;
   }
-  
 
-  const event = new CustomEvent('viewImage', { detail: { imageId: image.id } })
-  window.dispatchEvent(event)
-}
+  const event = new CustomEvent('viewImage', { detail: { imageId: image.id } });
+  window.dispatchEvent(event);
+};
 
-const t = (text: I18nText | string, lang?: string) => {
-  if (typeof text === 'string') return text
-  if (!lang) return text.zh || text.en || ''
-  return text[lang as keyof I18nText] || text.en || ''
-}
+const t = (text: I18nText | string, lang?: string): string => {
+  if (typeof text === 'string') return text;
+  if (!lang) return text.zh || text.en || '';
+  return text[lang as keyof I18nText] || text.en || '';
+};
 </script>
 
 <style scoped>

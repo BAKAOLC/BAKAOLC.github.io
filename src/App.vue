@@ -35,95 +35,96 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { useAppStore } from '@/stores/app'
-import { siteConfig } from '@/config/site'
-import LoadingScreen from '@/components/LoadingScreen.vue'
-import LanguageSwitcher from '@/components/ui/LanguageSwitcher.vue'
-import ThemeToggle from '@/components/ui/ThemeToggle.vue'
+import { ref, onMounted, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n()
-const appStore = useAppStore()
+import LoadingScreen from '@/components/LoadingScreen.vue';
+import LanguageSwitcher from '@/components/ui/LanguageSwitcher.vue';
+import ThemeToggle from '@/components/ui/ThemeToggle.vue';
+import { siteConfig } from '@/config/site';
+import { useAppStore } from '@/stores/app';
+
+const { t } = useI18n();
+const appStore = useAppStore();
 
 // 加载状态
-const isLoading = computed(() => appStore.isLoading)
-const loadingProgress = ref(0)
-const totalAssets = ref(0)
-const loadedAssets = ref(0)
+const isLoading = computed(() => appStore.isLoading);
+const loadingProgress = ref(0);
+const totalAssets = ref(0);
+const loadedAssets = ref(0);
 
 // 预加载基本图像（不包括画廊图片）
-const preloadImages = async () => {
+const preloadImages = async (): Promise<void> => {
   // 获取基本图片URL
-  const imageUrls = new Set<string>()
+  const imageUrls = new Set<string>();
 
   // 添加基本图像（如头像）
-  imageUrls.add('/assets/avatar.png')
+  imageUrls.add('/assets/avatar.png');
 
   // 添加角色头像
   siteConfig.characters.forEach(character => {
     if (character.avatar) {
-      imageUrls.add(character.avatar)
+      imageUrls.add(character.avatar);
     }
-  })
+  });
 
   // 注意：不再预加载画廊图片，因为已经有预览图处理
   // 画廊图片将在需要时按需加载
 
-  totalAssets.value = imageUrls.size
+  totalAssets.value = imageUrls.size;
 
   // 开始预加载
   const promises = Array.from(imageUrls).map(url => {
     return new Promise<void>((resolve) => {
-      const img = new Image()
+      const img = new Image();
       img.onload = () => {
-        loadedAssets.value++
-        loadingProgress.value = (loadedAssets.value / totalAssets.value) * 100
-        resolve()
-      }
+        loadedAssets.value++;
+        loadingProgress.value = (loadedAssets.value / totalAssets.value) * 100;
+        resolve();
+      };
       img.onerror = () => {
-        loadedAssets.value++
-        loadingProgress.value = (loadedAssets.value / totalAssets.value) * 100
-        resolve() // 即使加载失败也继续
-      }
-      img.src = url
-    })
-  })
+        loadedAssets.value++;
+        loadingProgress.value = (loadedAssets.value / totalAssets.value) * 100;
+        resolve(); // 即使加载失败也继续
+      };
+      img.src = url;
+    });
+  });
 
   // 确保至少有2秒的加载时间，即使资源很快加载完
   await Promise.all([
     Promise.all(promises),
-    new Promise(resolve => setTimeout(resolve, 2000))
-  ])
+    new Promise(resolve => setTimeout(resolve, 2000)),
+  ]);
 
   // 确保进度为100%
-  loadingProgress.value = 100
-}
+  loadingProgress.value = 100;
+};
 
 // 加载完成
-const onLoadingComplete = () => {
-  appStore.isLoading = false
-}
+const onLoadingComplete = (): void => {
+  appStore.isLoading = false;
+};
 
 // 初始化
 onMounted(() => {
   // 设置初始主题
   if (appStore.isDarkMode) {
-    document.documentElement.classList.add('dark')
+    document.documentElement.classList.add('dark');
   } else {
-    document.documentElement.classList.remove('dark')
+    document.documentElement.classList.remove('dark');
   }
 
   // 处理GitHub Pages 404重定向
-  const redirect = sessionStorage.redirect
-  delete sessionStorage.redirect
+  const { redirect } = sessionStorage;
+  delete sessionStorage.redirect;
   if (redirect && redirect !== location.href) {
-    history.replaceState(null, '', redirect)
+    history.replaceState(null, '', redirect);
   }
 
   // 开始预加载图像
-  preloadImages()
-})
+  preloadImages();
+});
 </script>
 
 <style scoped>
@@ -210,7 +211,7 @@ onMounted(() => {
   .header {
     min-height: auto;
   }
-  
+
   .header-content {
     @apply flex-row items-center justify-between;
     @apply py-3;
@@ -229,7 +230,7 @@ onMounted(() => {
   .site-title {
     @apply text-lg;
   }
-  
+
   .header-controls {
     @apply gap-2;
   }

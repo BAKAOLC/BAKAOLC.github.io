@@ -78,239 +78,236 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { useAppStore } from '@/stores/app'
-import CharacterSelector from '@/components/CharacterSelector.vue'
-import TagSelector from '@/components/TagSelector.vue'
-import ImageGallery from '@/components/ImageGallery.vue'
-import FullscreenViewer from '@/components/FullscreenViewer.vue'
-import SortSelector from '@/components/ui/SortSelector.vue'
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-const { t: $t } = useI18n()
-const appStore = useAppStore()
+import CharacterSelector from '@/components/CharacterSelector.vue';
+import FullscreenViewer from '@/components/FullscreenViewer.vue';
+import ImageGallery from '@/components/ImageGallery.vue';
+import TagSelector from '@/components/TagSelector.vue';
+import SortSelector from '@/components/ui/SortSelector.vue';
+import { useAppStore } from '@/stores/app';
+
+const { t: $t } = useI18n();
+const appStore = useAppStore();
 
 // 动态高度计算
-const updateDynamicHeights = () => {
+const updateDynamicHeights = (): void => {
   // 获取header元素的实际高度
-  const headerEl = document.querySelector('.header') as HTMLElement
-  const footerEl = document.querySelector('.footer') as HTMLElement
-  const galleryHeaderEl = document.querySelector('.gallery-header') as HTMLElement
-  
+  const headerEl = document.querySelector('.header') as HTMLElement;
+  const footerEl = document.querySelector('.footer') as HTMLElement;
+  const galleryHeaderEl = document.querySelector('.gallery-header') as HTMLElement;
+
   if (headerEl) {
-    document.documentElement.style.setProperty('--app-header-height', `${headerEl.offsetHeight}px`)
+    document.documentElement.style.setProperty('--app-header-height', `${headerEl.offsetHeight}px`);
   }
-  
+
   if (footerEl) {
-    document.documentElement.style.setProperty('--app-footer-height', `${footerEl.offsetHeight}px`)
+    document.documentElement.style.setProperty('--app-footer-height', `${footerEl.offsetHeight}px`);
   }
-  
+
   if (galleryHeaderEl) {
-    document.documentElement.style.setProperty('--gallery-header-height', `${galleryHeaderEl.offsetHeight}px`)
+    document.documentElement.style.setProperty('--gallery-header-height', `${galleryHeaderEl.offsetHeight}px`);
   }
-}
+};
 
-
-
-const isGridView = ref(true)
-const isSidebarOpen = ref(false)
-const isMobileSidebarOpen = ref(false)
-const searchDebounceTimeout = ref<number | null>(null)
-const galleryMain = ref<HTMLElement | null>(null)
-const showScrollToTop = ref(false)
-const scrollToTopBottom = ref(80) // 默认距离底部80px
-const lastScrollTop = ref(0)
+const isGridView = ref(true);
+const isSidebarOpen = ref(false);
+const isMobileSidebarOpen = ref(false);
+const searchDebounceTimeout = ref<number | null>(null);
+const galleryMain = ref<HTMLElement | null>(null);
+const showScrollToTop = ref(false);
+const scrollToTopBottom = ref(80); // 默认距离底部80px
+const lastScrollTop = ref(0);
 
 // 将搜索查询绑定到 appStore
 const searchQuery = computed({
   get: () => appStore.searchQuery,
-  set: (value) => appStore.setSearchQuery(value)
-})
+  set: (value) => appStore.setSearchQuery(value),
+});
 
 // 搜索结果图片直接使用 appStore 中的过滤结果
-const characterImages = computed(() => appStore.characterImages)
+const characterImages = computed(() => appStore.characterImages);
 
 // 全屏查看器状态
-const viewerActive = ref(false)
-const currentImageId = ref('')
+const viewerActive = ref(false);
+const currentImageId = ref('');
 
 // 切换网格视图
-const toggleGridView = () => {
-  isGridView.value = !isGridView.value
-}
+const toggleGridView = (): void => {
+  isGridView.value = !isGridView.value;
+};
 
 // 移动端筛选弹窗相关
-const toggleMobileSidebar = () => {
-  isMobileSidebarOpen.value = !isMobileSidebarOpen.value
+const toggleMobileSidebar = (): void => {
+  isMobileSidebarOpen.value = !isMobileSidebarOpen.value;
   // 阻止背景滚动
   if (isMobileSidebarOpen.value) {
-    document.body.style.overflow = 'hidden'
+    document.body.style.overflow = 'hidden';
   } else {
-    document.body.style.overflow = ''
+    document.body.style.overflow = '';
   }
-}
+};
 
-const closeMobileSidebar = () => {
-  isMobileSidebarOpen.value = false
+const closeMobileSidebar = (): void => {
+  isMobileSidebarOpen.value = false;
   // 恢复背景滚动
-  document.body.style.overflow = ''
-}
+  document.body.style.overflow = '';
+};
 
 // 处理滚动事件
-const handleScroll = () => {
-  if (!galleryMain.value) return
+const handleScroll = (): void => {
+  if (!galleryMain.value) return;
 
-  const scrollTop = galleryMain.value.scrollTop
+  const { scrollTop } = galleryMain.value;
 
-  lastScrollTop.value = scrollTop
+  lastScrollTop.value = scrollTop;
 
   // 显示/隐藏返回顶部按钮
-  showScrollToTop.value = scrollTop > 200
+  showScrollToTop.value = scrollTop > 200;
 
   // 更新返回顶部按钮位置
-  updateScrollToTopPosition()
-}
+  updateScrollToTopPosition();
+};
 
 // 更新返回顶部按钮位置
-const updateScrollToTopPosition = () => {
-  const footer = document.querySelector('.footer') as HTMLElement
+const updateScrollToTopPosition = (): void => {
+  const footer = document.querySelector('.footer') as HTMLElement;
   if (footer) {
-    const footerRect = footer.getBoundingClientRect()
-    const viewportHeight = window.innerHeight
+    const footerRect = footer.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
 
     if (footerRect.top < viewportHeight) {
       // Footer在视口内，按钮应该在footer上方
-      const distanceFromBottom = viewportHeight - footerRect.top + 20
-      scrollToTopBottom.value = Math.max(distanceFromBottom, 80)
+      const distanceFromBottom = viewportHeight - footerRect.top + 20;
+      scrollToTopBottom.value = Math.max(distanceFromBottom, 80);
     } else {
       // Footer不在视口内，使用默认位置
-      scrollToTopBottom.value = 80
+      scrollToTopBottom.value = 80;
     }
   }
-}
+};
 
 // 滚动到顶部
-const scrollToTop = () => {
+const scrollToTop = (): void => {
   if (galleryMain.value) {
     galleryMain.value.scrollTo({
       top: 0,
-      behavior: 'smooth'
-    })
+      behavior: 'smooth',
+    });
   }
-}
+};
 
 // 监听窗口大小变化
-const handleResize = () => {
-  const isMobile = window.innerWidth < 768
+const handleResize = (): void => {
+  const isMobile = window.innerWidth < 768;
   if (!isMobile) {
     // 切换到桌面端时关闭移动端功能
-    isMobileSidebarOpen.value = false
-    isSidebarOpen.value = false
+    isMobileSidebarOpen.value = false;
+    isSidebarOpen.value = false;
     // 恢复背景滚动
-    document.body.style.overflow = ''
+    document.body.style.overflow = '';
   }
 
   // 更新返回顶部按钮位置
-  updateScrollToTopPosition()
-  
+  updateScrollToTopPosition();
+
   // 使用nextTick更新动态高度
   nextTick(() => {
-    updateDynamicHeights()
-  })
-
-}
+    updateDynamicHeights();
+  });
+};
 
 // 更新搜索查询并触发搜索
-const updateSearchQuery = (value: string) => {
+const updateSearchQuery = (value: string): void => {
   // 防抖处理
   if (searchDebounceTimeout.value) {
-    clearTimeout(searchDebounceTimeout.value)
+    clearTimeout(searchDebounceTimeout.value);
   }
 
   searchDebounceTimeout.value = setTimeout(() => {
     // 使用 store 的方法更新搜索查询
-    appStore.setSearchQuery(value)
+    appStore.setSearchQuery(value);
 
     // 搜索处理完成
-    searchDebounceTimeout.value = null
-  }, 300) as unknown as number
-}
+    searchDebounceTimeout.value = null;
+  }, 300) as unknown as number;
+};
 
 // 清除搜索
-const clearSearch = () => {
+const clearSearch = (): void => {
   // 使用Store的清空搜索方法
-  appStore.clearSearch()
-}
+  appStore.clearSearch();
+};
 
 // 排序相关
 const sortOrder = computed({
   get: () => appStore.sortOrder,
-  set: (value) => appStore.sortOrder = value
-})
+  set: (value) => appStore.sortOrder = value,
+});
 
 // 切换排序顺序
-const toggleSortOrder = () => {
-  sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
-}
+const toggleSortOrder = (): void => {
+  sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
+};
 
 // 打开查看器
-const openViewer = (event: CustomEvent) => {
+const openViewer = (event: CustomEvent): void => {
   if (event.detail && event.detail.imageId && typeof event.detail.imageId === 'string') {
-    currentImageId.value = event.detail.imageId
-    viewerActive.value = true
+    currentImageId.value = event.detail.imageId;
+    viewerActive.value = true;
 
     // 更新 URL 但不导航到新页面
-    const newUrl = `/viewer/${event.detail.imageId}`
-    window.history.pushState({ imageId: event.detail.imageId }, '', newUrl)
+    const newUrl = `/viewer/${event.detail.imageId}`;
+    window.history.pushState({ imageId: event.detail.imageId }, '', newUrl);
   } else {
-    console.warn('无效的图片ID，无法打开查看器')
+    console.warn('无效的图片ID，无法打开查看器');
   }
-}
+};
 
 // 关闭查看器
-const closeViewer = () => {
-  viewerActive.value = false
+const closeViewer = (): void => {
+  viewerActive.value = false;
 
   // 恢复原来的 URL
-  window.history.pushState({}, '', '/gallery')
-}
+  window.history.pushState({}, '', '/gallery');
+};
 
 // 监听查看器导航事件
-const handleViewerNavigate = (event: CustomEvent) => {
+const handleViewerNavigate = (event: CustomEvent): void => {
   if (event.detail && event.detail.imageId && typeof event.detail.imageId === 'string') {
-    currentImageId.value = event.detail.imageId
+    currentImageId.value = event.detail.imageId;
 
     // 更新 URL 但不导航到新页面
-    const newUrl = `/viewer/${event.detail.imageId}`
-    window.history.pushState({ imageId: event.detail.imageId }, '', newUrl)
+    const newUrl = `/viewer/${event.detail.imageId}`;
+    window.history.pushState({ imageId: event.detail.imageId }, '', newUrl);
   } else {
-    console.warn('无效的图片ID，无法更新查看器')
+    console.warn('无效的图片ID，无法更新查看器');
   }
-}
+};
 
 onMounted(() => {
-  window.addEventListener('viewImage', openViewer as EventListener)
-  window.addEventListener('viewerNavigate', handleViewerNavigate as EventListener)
-  window.addEventListener('resize', handleResize)
+  window.addEventListener('viewImage', openViewer as EventListener);
+  window.addEventListener('viewerNavigate', handleViewerNavigate as EventListener);
+  window.addEventListener('resize', handleResize);
 
   // 初始化返回顶部按钮位置
-  updateScrollToTopPosition()
-  
+  updateScrollToTopPosition();
+
   // 使用nextTick确保DOM完全渲染后更新动态高度
   nextTick(() => {
-    updateDynamicHeights()
-  })
-
-})
+    updateDynamicHeights();
+  });
+});
 
 onBeforeUnmount(() => {
-  window.removeEventListener('viewImage', openViewer as EventListener)
-  window.removeEventListener('viewerNavigate', handleViewerNavigate as EventListener)
-  window.removeEventListener('resize', handleResize)
+  window.removeEventListener('viewImage', openViewer as EventListener);
+  window.removeEventListener('viewerNavigate', handleViewerNavigate as EventListener);
+  window.removeEventListener('resize', handleResize);
 
   // 清理body样式
-  document.body.style.overflow = ''
-})
+  document.body.style.overflow = '';
+});
 </script>
 
 <style scoped>
@@ -543,7 +540,10 @@ onBeforeUnmount(() => {
   display: flex;
   gap: 1.5rem;
   flex-direction: row;
-  height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - var(--gallery-header-height, 0px) - 3rem);
+  height: calc(
+    100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) -
+    var(--gallery-header-height, 0px) - 3rem
+  );
   transition: height 0.3s ease, flex-direction 0.3s ease, gap 0.3s ease;
   /* 添加高度、布局方向和间距的过渡动画 */
 }
@@ -551,7 +551,10 @@ onBeforeUnmount(() => {
 @media (max-width: 767px) {
   .gallery-content {
     flex-direction: column;
-    height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - var(--gallery-header-height, 0px) - 3rem);
+    height: calc(
+      100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) -
+      var(--gallery-header-height, 0px) - 3rem
+    );
   }
 }
 
