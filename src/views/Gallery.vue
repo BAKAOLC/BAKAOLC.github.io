@@ -83,6 +83,7 @@ import { useI18n } from 'vue-i18n';
 
 import { useTimers } from '@/composables/useTimers';
 import { useEventManager } from '@/composables/useEventManager';
+import { useMobileDetection } from '@/composables/useScreenManager';
 
 import CharacterSelector from '@/components/CharacterSelector.vue';
 import FullscreenViewer from '@/components/FullscreenViewer.vue';
@@ -95,6 +96,7 @@ const { t: $t } = useI18n();
 const appStore = useAppStore();
 const timers = useTimers();
 const eventManager = useEventManager();
+const { isMobile, onScreenChange } = useMobileDetection();
 
 // 动态高度计算
 const updateDynamicHeights = (): void => {
@@ -203,10 +205,9 @@ const scrollToTop = (): void => {
   }
 };
 
-// 监听窗口大小变化
-const handleResize = (): void => {
-  const isMobile = window.innerWidth < 768;
-  if (!isMobile) {
+// 处理屏幕变化
+const handleScreenChange = (currentIsMobile: boolean): void => {
+  if (!currentIsMobile) {
     // 切换到桌面端时关闭移动端功能
     isMobileSidebarOpen.value = false;
     isSidebarOpen.value = false;
@@ -291,10 +292,15 @@ const handleViewerNavigate = (event: CustomEvent): void => {
   }
 };
 
+// 屏幕变化监听器取消函数
+let unsubscribeScreenChange: (() => void) | null = null;
+
 onMounted(() => {
   eventManager.addEventListener('viewImage', openViewer as EventListener);
   eventManager.addEventListener('viewerNavigate', handleViewerNavigate as EventListener);
-  window.addEventListener('resize', handleResize);
+  
+  // 注册屏幕变化监听器
+  unsubscribeScreenChange = onScreenChange(handleScreenChange);
 
   // 初始化返回顶部按钮位置
   updateScrollToTopPosition();
@@ -307,7 +313,12 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   // 自定义事件会通过eventManager自动清理
-  window.removeEventListener('resize', handleResize);
+  
+  // 取消屏幕变化监听器
+  if (unsubscribeScreenChange) {
+    unsubscribeScreenChange();
+    unsubscribeScreenChange = null;
+  }
 
   // 清理body样式
   document.body.style.overflow = '';

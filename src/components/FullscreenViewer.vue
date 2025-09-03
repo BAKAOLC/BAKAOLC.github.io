@@ -212,6 +212,7 @@ import { useI18n } from 'vue-i18n';
 
 import { useTimers } from '@/composables/useTimers';
 import { useEventManager } from '@/composables/useEventManager';
+import { useMobileDetection } from '@/composables/useScreenManager';
 
 import ProgressiveImage from './ProgressiveImage.vue';
 
@@ -236,6 +237,7 @@ const { t: $t } = useI18n();
 const appStore = useAppStore();
 const timers = useTimers();
 const eventManager = useEventManager();
+const { isMobile, onScreenChange } = useMobileDetection();
 
 const currentLanguage = computed(() => appStore.currentLanguage);
 
@@ -581,13 +583,7 @@ const updateMinimapViewport = (): void => {
   };
 };
 
-// 移动端检测
-const isMobile = ref(false);
-
-// 检测是否为移动端
-const checkIsMobile = (): void => {
-  isMobile.value = window.innerWidth < 768;
-};
+// 移动端检测现在通过 useMobileDetection 管理
 
 // 信息面板控制
 const showInfoPanel = ref(true);
@@ -1673,14 +1669,10 @@ const handleImageContainerResize = (): void => {
   }, 16); // 约60fps的更新频率，确保动画流畅
 };
 
-// 监听窗口大小变化
-const handleResize = (): void => {
-  // 立即处理移动端检测，这个不需要防抖
-  const wasMobile = isMobile.value;
-  checkIsMobile();
-  
+// 处理屏幕变化（移动端状态切换等）
+const handleScreenChange = (wasMobile: boolean, currentIsMobile: boolean): void => {
   // 如果从移动端切换到桌面端
-  if (wasMobile && !isMobile.value) {
+  if (wasMobile && !currentIsMobile) {
     // 关闭移动端覆盖层
     showMobileInfoOverlay.value = false;
     mobileInfoOverlayAnimating.value = false;
@@ -1688,7 +1680,7 @@ const handleResize = (): void => {
     showInfoPanel.value = true;
   }
   // 如果从桌面端切换到移动端
-  else if (!wasMobile && isMobile.value) {
+  else if (!wasMobile && currentIsMobile) {
     // 移动端默认不显示信息面板
     showInfoPanel.value = false;
     showMobileInfoOverlay.value = false;
@@ -1732,10 +1724,10 @@ const handleResizeDebounced = (): void => {
   }
 };
 
+// 屏幕变化监听器取消函数
+let unsubscribeScreenChange: (() => void) | null = null;
+
 onMounted(() => {
-  // 初始化移动端检测
-  checkIsMobile();
-  
   // 根据设备类型设置初始状态
   if (isMobile.value) {
     showInfoPanel.value = false; // 移动端默认不显示信息面板
@@ -1743,8 +1735,14 @@ onMounted(() => {
     showInfoPanel.value = true;  // 桌面端默认显示信息面板
   }
 
+  // 注册屏幕变化监听器
+  let previousMobile = isMobile.value;
+  unsubscribeScreenChange = onScreenChange((currentIsMobile) => {
+    handleScreenChange(previousMobile, currentIsMobile);
+    previousMobile = currentIsMobile;
+  });
+
   window.addEventListener('keydown', handleKeyDown);
-  window.addEventListener('resize', handleResize);
   
   // 设置图像容器的 ResizeObserver
   nextTick(() => {
@@ -1768,7 +1766,12 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleKeyDown);
-  window.removeEventListener('resize', handleResize);
+  
+  // 取消屏幕变化监听器
+  if (unsubscribeScreenChange) {
+    unsubscribeScreenChange();
+    unsubscribeScreenChange = null;
+  }
   
   // 清理resize防抖定时器
   if (resizeDebounceTimer !== null) {
