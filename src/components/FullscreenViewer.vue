@@ -593,16 +593,22 @@ const infoPanelAnimating = ref(false);
 const showMobileInfoOverlay = ref(false);
 const mobileInfoOverlayAnimating = ref(false);
 
+// 用户对固定信息栏的显示偏好（只针对桌面端的固定信息栏）
+const userInfoPanelPreference = ref(true); // 默认显示固定信息栏
+
 const toggleInfoPanel = (): void => {
   if (isMobile.value) {
-    // 移动端：切换覆盖层显示
+    // 移动端：切换覆盖层显示（临时弹窗，不影响固定信息栏偏好）
     toggleMobileInfoOverlay();
   } else {
-    // 桌面端：保持原有逻辑
+    // 桌面端：切换固定信息栏并记录用户偏好
     if (infoPanelAnimating.value) return; // 防止动画过程中重复触发
 
     infoPanelAnimating.value = true;
     showInfoPanel.value = !showInfoPanel.value;
+    
+    // 记录用户对固定信息栏的偏好
+    userInfoPanelPreference.value = showInfoPanel.value;
 
     // 动画结束后重置状态 - 从CSS读取动画时长
     const duration = AnimationDurations.getInfoPanelTransition();
@@ -1676,13 +1682,14 @@ const handleScreenChange = (wasMobile: boolean, currentIsMobile: boolean): void 
     // 关闭移动端覆盖层
     showMobileInfoOverlay.value = false;
     mobileInfoOverlayAnimating.value = false;
-    // 桌面端默认显示信息面板
-    showInfoPanel.value = true;
+    // 根据用户对固定信息栏的偏好设置桌面端信息面板状态
+    showInfoPanel.value = userInfoPanelPreference.value;
   }
   // 如果从桌面端切换到移动端
   else if (!wasMobile && currentIsMobile) {
-    // 移动端默认不显示信息面板
+    // 移动端不显示桌面端的固定信息面板
     showInfoPanel.value = false;
+    // 移动端信息浮窗保持关闭状态（临时弹窗不持久化）
     showMobileInfoOverlay.value = false;
   }
 
@@ -1728,11 +1735,12 @@ const handleResizeDebounced = (): void => {
 let unsubscribeScreenChange: (() => void) | null = null;
 
 onMounted(() => {
-  // 根据设备类型设置初始状态
+  // 根据设备类型和用户偏好设置初始状态
   if (isMobile.value) {
-    showInfoPanel.value = false; // 移动端默认不显示信息面板
+    showInfoPanel.value = false; // 移动端不显示桌面端的固定信息面板
+    showMobileInfoOverlay.value = false; // 移动端信息浮窗默认关闭
   } else {
-    showInfoPanel.value = true;  // 桌面端默认显示信息面板
+    showInfoPanel.value = userInfoPanelPreference.value; // 桌面端使用用户对固定信息栏的偏好
   }
 
   // 注册屏幕变化监听器
