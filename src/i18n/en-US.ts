@@ -89,6 +89,8 @@ export default {
     error: 'Failed to load image',
     noImage: 'No image selected',
     imageInfo: 'Image Information',
+    showInfo: 'Show Info',
+    hideInfo: 'Hide Info',
     minimap: 'Minimap',
     navigation: 'Navigation',
   },
