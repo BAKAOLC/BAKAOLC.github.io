@@ -81,22 +81,21 @@
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { useTimers } from '@/composables/useTimers';
-import { useEventManager } from '@/composables/useEventManager';
-import { useMobileDetection } from '@/composables/useScreenManager';
-
 import CharacterSelector from '@/components/CharacterSelector.vue';
 import FullscreenViewer from '@/components/FullscreenViewer.vue';
 import ImageGallery from '@/components/ImageGallery.vue';
 import TagSelector from '@/components/TagSelector.vue';
 import SortSelector from '@/components/ui/SortSelector.vue';
+import { useEventManager } from '@/composables/useEventManager';
+import { useMobileDetection } from '@/composables/useScreenManager';
+import { useTimers } from '@/composables/useTimers';
 import { useAppStore } from '@/stores/app';
 
 const { t: $t } = useI18n();
 const appStore = useAppStore();
 const timers = useTimers();
 const eventManager = useEventManager();
-const { isMobile, onScreenChange } = useMobileDetection();
+const { onScreenChange } = useMobileDetection();
 
 // 动态高度计算
 const updateDynamicHeights = (): void => {
@@ -298,7 +297,7 @@ let unsubscribeScreenChange: (() => void) | null = null;
 onMounted(() => {
   eventManager.addEventListener('viewImage', openViewer as EventListener);
   eventManager.addEventListener('viewerNavigate', handleViewerNavigate as EventListener);
-  
+
   // 注册屏幕变化监听器
   unsubscribeScreenChange = onScreenChange(handleScreenChange);
 
@@ -313,7 +312,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   // 自定义事件会通过eventManager自动清理
-  
+
   // 取消屏幕变化监听器
   if (unsubscribeScreenChange) {
     unsubscribeScreenChange();
