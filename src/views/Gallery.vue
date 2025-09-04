@@ -799,7 +799,7 @@ onBeforeUnmount(() => {
   font-size: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
-  z-index: 999;
+  z-index: 40;
   cursor: pointer;
 }
 
