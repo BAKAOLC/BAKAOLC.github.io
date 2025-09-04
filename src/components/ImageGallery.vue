@@ -42,7 +42,7 @@
               <div class="image-tags">
                 <span v-for="tagId in getSortedTags(image.tags)" :key="tagId" class="image-tag"
                   :style="{ backgroundColor: getTagColor(tagId) }">
-                  {{ getTagName(tagId) }}
+                  {{ getTagName(tagId, currentLanguage) }}
                 </span>
               </div>
             </div>
@@ -61,7 +61,7 @@ import ProgressiveImage from './ProgressiveImage.vue';
 import type { I18nText, CharacterImage } from '@/types';
 
 import { useEventManager } from '@/composables/useEventManager';
-import { siteConfig } from '@/config/site';
+import { useTags } from '@/composables/useTags';
 import { useAppStore } from '@/stores/app';
 
 const props = defineProps<{
@@ -101,33 +101,9 @@ watch(() => props.images, async (newImages, oldImages) => {
 const { t: $t } = useI18n();
 const appStore = useAppStore();
 const eventManager = useEventManager();
+const { getSortedTags, getTagColor, getTagName } = useTags();
 
 const currentLanguage = computed(() => appStore.currentLanguage);
-
-const getTagColor = (tagId: string): string => {
-  const tag = siteConfig.tags.find(t => t.id === tagId);
-  return tag?.color || '#8b5cf6';
-};
-
-const getTagName = (tagId: string): string => {
-  const tag = siteConfig.tags.find(t => t.id === tagId);
-  return tag ? t(tag.name, currentLanguage.value) : tagId;
-};
-
-const getSortedTags = (tagIds: string[]): string[] => {
-  return [...tagIds].sort((a, b) => {
-    const indexA = siteConfig.tags.findIndex(tag => tag.id === a);
-    const indexB = siteConfig.tags.findIndex(tag => tag.id === b);
-
-    // If tag not found in config, put it at the end
-    if (indexA === -1 && indexB === -1) return 0;
-    if (indexA === -1) return 1;
-    if (indexB === -1) return -1;
-
-    // Sort by definition order
-    return indexA - indexB;
-  });
-};
 
 const viewImage = (image: CharacterImage): void => {
   if (!image || !image.id) {
