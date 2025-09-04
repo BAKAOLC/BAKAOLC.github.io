@@ -40,7 +40,7 @@
 
             <div class="image-meta">
               <div class="image-tags">
-                <span v-for="tagId in image.tags" :key="tagId" class="image-tag"
+                <span v-for="tagId in getSortedTags(image.tags)" :key="tagId" class="image-tag"
                   :style="{ backgroundColor: getTagColor(tagId) }">
                   {{ getTagName(tagId) }}
                 </span>
@@ -112,6 +112,21 @@ const getTagColor = (tagId: string): string => {
 const getTagName = (tagId: string): string => {
   const tag = siteConfig.tags.find(t => t.id === tagId);
   return tag ? t(tag.name, currentLanguage.value) : tagId;
+};
+
+const getSortedTags = (tagIds: string[]): string[] => {
+  return [...tagIds].sort((a, b) => {
+    const indexA = siteConfig.tags.findIndex(tag => tag.id === a);
+    const indexB = siteConfig.tags.findIndex(tag => tag.id === b);
+
+    // If tag not found in config, put it at the end
+    if (indexA === -1 && indexB === -1) return 0;
+    if (indexA === -1) return 1;
+    if (indexB === -1) return -1;
+
+    // Sort by definition order
+    return indexA - indexB;
+  });
 };
 
 const viewImage = (image: CharacterImage): void => {
