@@ -1,5 +1,5 @@
 // 图片缓存服务
-/* eslint-disable no-unused-vars */
+
 import type { CacheStats } from '@/types';
 
 // LoadPriority 枚举

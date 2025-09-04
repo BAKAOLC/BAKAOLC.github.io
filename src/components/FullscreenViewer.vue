@@ -10,13 +10,16 @@
       </div>
 
       <div class="viewer-controls">
-        <button class="control-button zoom-button" @click="zoomOut" :title="$t('viewer.zoomOut')">
+        <button class="control-button zoom-button" @click="zoomOut" :title="$t('viewer.zoomOut')"
+          :class="{ 'disabled': isZoomDisabled }" :disabled="isZoomDisabled">
           <zoom-out-icon class="icon" />
         </button>
-        <button class="control-button zoom-button" @click="resetZoom" :title="$t('viewer.resetZoom')">
+        <button class="control-button zoom-button" @click="resetZoom" :title="$t('viewer.resetZoom')"
+          :class="{ 'disabled': isZoomDisabled }" :disabled="isZoomDisabled">
           <rotate-ccw-icon class="icon" />
         </button>
-        <button class="control-button zoom-button" @click="zoomIn" :title="$t('viewer.zoomIn')">
+        <button class="control-button zoom-button" @click="zoomIn" :title="$t('viewer.zoomIn')"
+          :class="{ 'disabled': isZoomDisabled }" :disabled="isZoomDisabled">
           <zoom-in-icon class="icon" />
         </button>
         <button class="control-button" @click="toggleInfoPanel"
@@ -224,6 +227,9 @@ const viewportRect = ref({ x: 0, y: 0, width: 0, height: 0 });
 const isDraggingMinimap = ref(false);
 const minimapDragStart = ref({ x: 0, y: 0 });
 
+// 图像加载状态
+const isOriginalImageLoaded = ref(false);
+
 // 检测是否是直接访问（通过URL直接打开图像查看器）
 const isDirectAccess = computed(() => {
   // 使用应用状态中的标记来判断是否从画廊进入
@@ -300,6 +306,8 @@ const goToImage = (index: number): void => {
 };
 
 const onImageLoad = (): void => {
+  // 标记原始图像已加载
+  isOriginalImageLoaded.value = true;
   // 图片加载完成处理
   nextTick(() => {
     resetImageTransform();
@@ -315,6 +323,11 @@ const imageTransform = computed(() => {
 // 图像过渡样式
 const imageTransitionStyle = computed(() => {
   return enableImageTransition.value ? 'transform 0.15s ease-out' : 'none';
+});
+
+// 检查是否应该禁用缩放功能
+const isZoomDisabled = computed(() => {
+  return !isOriginalImageLoaded.value;
 });
 
 // 小地图视口样式
@@ -1005,6 +1018,8 @@ const getTagName = (tagId: string): string => {
 
 // 图像缩放和拖拽处理
 const handleImageWheel = (event: WheelEvent): void => {
+  if (isZoomDisabled.value) return;
+
   event.preventDefault();
 
   const delta = event.deltaY > 0 ? -0.1 : 0.1;
@@ -1063,6 +1078,8 @@ const handleImageTouchStart = (event: TouchEvent): void => {
     dragStart.value = { x: touch.clientX, y: touch.clientY };
   } else if (event.touches.length === 2) {
     // 双指缩放
+    if (isZoomDisabled.value) return;
+
     event.preventDefault();
     enableImageTransition.value = false; // 禁用过渡动画
     isZooming.value = true;
@@ -1094,6 +1111,8 @@ const handleImageTouchMove = (event: TouchEvent): void => {
     updateMinimapViewport();
   } else if (event.touches.length === 2 && isZooming.value) {
     // 双指缩放
+    if (isZoomDisabled.value) return;
+
     event.preventDefault();
     const touch1 = event.touches[0];
     const touch2 = event.touches[1];
@@ -1517,36 +1536,45 @@ const handleKeyDown = (event: KeyboardEvent): void => {
       break;
     case '0':
     case 'Home':
-      resetImageTransform();
+      if (!isZoomDisabled.value) {
+        resetImageTransform();
+      }
       break;
     case '+':
     case '=':
-      imageScale.value = Math.min(5, imageScale.value + 0.2);
-      applyDragLimits();
-      updateMinimapVisibility();
+      if (!isZoomDisabled.value) {
+        imageScale.value = Math.min(5, imageScale.value + 0.2);
+        applyDragLimits();
+        updateMinimapVisibility();
+      }
       break;
     case '-':
-      imageScale.value = Math.max(0.5, imageScale.value - 0.2);
-      applyDragLimits();
-      updateMinimapVisibility();
+      if (!isZoomDisabled.value) {
+        imageScale.value = Math.max(0.5, imageScale.value - 0.2);
+        applyDragLimits();
+        updateMinimapVisibility();
+      }
       break;
   }
 };
 
 // 缩放按钮功能
 const zoomIn = (): void => {
+  if (isZoomDisabled.value) return;
   imageScale.value = Math.min(5, imageScale.value + 0.2);
   applyDragLimits();
   updateMinimapVisibility();
 };
 
 const zoomOut = (): void => {
+  if (isZoomDisabled.value) return;
   imageScale.value = Math.max(0.5, imageScale.value - 0.2);
   applyDragLimits();
   updateMinimapVisibility();
 };
 
 const resetZoom = (): void => {
+  if (isZoomDisabled.value) return;
   resetImageTransform();
 };
 
@@ -1594,6 +1622,9 @@ watch(currentImage, (newImage) => {
   if (newImage) {
     // 重置图像变换状态
     resetImageTransform();
+
+    // 重置图像加载状态
+    isOriginalImageLoaded.value = false;
 
     // 获取当前图片的缩略图URL
     const thumbnailSrc = getThumbnailUrl(newImage.src, 'tiny');
