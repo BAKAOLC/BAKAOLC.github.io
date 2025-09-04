@@ -110,9 +110,9 @@
           <div class="info-group">
             <h4 class="info-subtitle">{{ $t('gallery.tags') }}</h4>
             <div class="tags-list">
-              <span v-for="tagId in currentImage?.tags || []" :key="tagId" class="tag"
+              <span v-for="tagId in getSortedTags(currentImage?.tags || [])" :key="tagId" class="tag"
                 :style="{ backgroundColor: getTagColor(tagId) }">
-                {{ getTagName(tagId) }}
+                {{ getTagName(tagId, currentLanguage) }}
               </span>
             </div>
           </div>
@@ -151,9 +151,9 @@
               <div class="info-group">
                 <h4 class="info-subtitle">{{ $t('gallery.tags') }}</h4>
                 <div class="tags-list">
-                  <span v-for="tagId in currentImage?.tags || []" :key="tagId" class="tag"
+                  <span v-for="tagId in getSortedTags(currentImage?.tags || [])" :key="tagId" class="tag"
                     :style="{ backgroundColor: getTagColor(tagId) }">
-                    {{ getTagName(tagId) }}
+                    {{ getTagName(tagId, currentLanguage) }}
                   </span>
                 </div>
               </div>
@@ -178,8 +178,8 @@ import type { I18nText } from '@/types';
 import thumbnailMap from '@/assets/thumbnail-map.json';
 import { useEventManager } from '@/composables/useEventManager';
 import { useMobileDetection } from '@/composables/useScreenManager';
+import { useTags } from '@/composables/useTags';
 import { useTimers } from '@/composables/useTimers';
-import { siteConfig } from '@/config/site';
 import { imageCache, LoadPriority } from '@/services/imageCache';
 import { useAppStore } from '@/stores/app';
 import { AnimationDurations } from '@/utils/animations';
@@ -198,6 +198,7 @@ const appStore = useAppStore();
 const timers = useTimers();
 const eventManager = useEventManager();
 const { isMobile, onScreenChange } = useMobileDetection();
+const { getSortedTags, getTagColor, getTagName } = useTags();
 
 const currentLanguage = computed(() => appStore.currentLanguage);
 
@@ -1002,18 +1003,6 @@ const handleThumbnailButtonTouchStart = (event: TouchEvent): void => {
 
   // 调用原有的触摸拖拽逻辑
   handleThumbnailTouchStart(event);
-};
-
-// 获取标签颜色
-const getTagColor = (tagId: string): string => {
-  const tag = siteConfig.tags.find(t => t.id === tagId);
-  return tag?.color || '#8b5cf6';
-};
-
-// 获取标签名称
-const getTagName = (tagId: string): string => {
-  const tag = siteConfig.tags.find(t => t.id === tagId);
-  return tag ? t(tag.name, currentLanguage.value) : tagId;
 };
 
 // 图像缩放和拖拽处理
