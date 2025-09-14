@@ -102,9 +102,9 @@
             <p>{{ currentImage ? t(currentImage.artist, currentLanguage) : '' }}</p>
           </div>
 
-          <div v-if="currentImage?.date" class="info-group">
+          <div class="info-group">
             <h4 class="info-subtitle">{{ $t('gallery.date') }}</h4>
-            <p>{{ currentImage.date }}</p>
+            <p>{{ currentImage?.date || 'N/A' }}</p>
           </div>
 
           <div class="info-group">
@@ -143,9 +143,9 @@
                 <p>{{ currentImage ? t(currentImage.artist, currentLanguage) : '' }}</p>
               </div>
 
-              <div v-if="currentImage?.date" class="info-group">
+              <div class="info-group">
                 <h4 class="info-subtitle">{{ $t('gallery.date') }}</h4>
-                <p>{{ currentImage.date }}</p>
+                <p>{{ currentImage?.date || 'N/A' }}</p>
               </div>
 
               <div class="info-group">
