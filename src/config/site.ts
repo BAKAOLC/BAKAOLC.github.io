@@ -298,6 +298,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/design/1.png',
       tags: ['commission', 'design'],
       characters: ['ritsukage-utsumabo'],
+      date: '2024-02-28',
     },
     {
       id: 'design-2',
@@ -319,6 +320,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/design/2.png',
       tags: ['commission', 'design'],
       characters: ['ritsukage-utsumabo'],
+      date: '2024-05-10',
     },
 
     // 壁纸
@@ -342,6 +344,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/wallpaper/1.png',
       tags: ['commission', 'wallpaper'],
       characters: ['ritsukage-utsumabo'],
+      date: '2021-10-20',
     },
     {
       id: 'wallpaper-2',
@@ -363,6 +366,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/wallpaper/2.png',
       tags: ['commission', 'wallpaper'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-08-16',
     },
     {
       id: 'wallpaper-3-1',
@@ -384,6 +388,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/wallpaper/3-1.png',
       tags: ['commission', 'wallpaper'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-10-17',
     },
     {
       id: 'wallpaper-3-2',
@@ -405,6 +410,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/wallpaper/3-2.png',
       tags: ['commission', 'wallpaper', 'nsfw'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-10-17',
     },
 
     // 插图
@@ -428,6 +434,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/original.png',
       tags: ['commission', 'design'],
       characters: ['ritsukage-utsumabo'],
+      date: '2018-08-08',
     },
     {
       id: 'illust-psyche-1',
@@ -449,6 +456,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-1.png',
       tags: ['commission', 'illustration', 'nsfw'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-01-22',
     },
     {
       id: 'illust-psyche-2',
@@ -470,6 +478,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-2.png',
       tags: ['commission', 'illustration', 'nsfw', 'r18'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-02-25',
     },
     {
       id: 'illust-psyche-3',
@@ -491,6 +500,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-3.png',
       tags: ['commission', 'illustration', 'nsfw'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-04-30',
     },
     {
       id: 'illust-lemonade',
@@ -512,6 +522,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/柠檬水小律影.png',
       tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-03-28',
     },
     {
       id: 'illust-moon',
@@ -638,6 +649,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/含片绘兜帽律影.jpg',
       tags: ['gift', 'illustration'],
       characters: ['ritsukage-utsumabo'],
+      date: '2019-10-27',
     },
     {
       id: 'illust-bluesky',
@@ -701,6 +713,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/公园律影.png',
       tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-02-03',
     },
     {
       id: 'illust-sunshine',
@@ -722,6 +735,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/阳光律影.png',
       tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-04-01',
     },
     {
       id: 'illust-qqman',
@@ -743,6 +757,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/QQ人小律影.png',
       tags: ['commission', 'chibi'],
       characters: ['ritsukage-utsumabo'],
+      date: '2023-02-24',
     },
     {
       id: 'illust-noripasuta',
@@ -764,6 +779,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/律影.png',
       tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-02-23',
     },
 
     {
@@ -786,6 +802,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/塔罗牌 女皇 律影.jpg',
       tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-01-21',
     },
     {
       id: 'illust-softcat',
@@ -807,6 +824,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/软软猫律影.png',
       tags: ['commission', 'illustration', 'nsfw'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-02-28',
     },
     {
       id: 'illust-speedart',
@@ -828,6 +846,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/速绘小律影头.png',
       tags: ['commission', 'avatar', 'sketch'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-06-20',
     },
     {
       id: 'illust-blue',
@@ -849,6 +868,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/蓝蓝的小律影.png',
       tags: ['commission', 'illustration'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-03-26',
     },
     {
       id: 'illust-newyear',
@@ -870,6 +890,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/新年头像.png',
       tags: ['commission', 'avatar'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-01-01',
     },
     {
       id: 'illust-q1',
@@ -891,6 +912,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/Q版小律影-1.png',
       tags: ['commission', 'chibi'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-10-07',
     },
     {
       id: 'illust-q2',
@@ -912,6 +934,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/Q版小律影-2.png',
       tags: ['commission', 'chibi'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-07-24',
     },
     {
       id: 'illust-q3',
@@ -933,6 +956,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/Q版小律影-3.png',
       tags: ['commission', 'chibi'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-09-28',
     },
     {
       id: 'illust-miya',
@@ -977,6 +1001,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/阿巴阿巴小律影.png',
       tags: ['commission', 'avatar', 'chibi', 'emoji'],
       characters: ['ritsukage-utsumabo'],
+      date: '2023-08-24',
     },
     {
       id: 'emoji-wow',
@@ -998,6 +1023,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/哇小律影.png',
       tags: ['commission', 'emoji'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-07-03',
     },
     {
       id: 'emoji-checkin',
@@ -1019,6 +1045,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/小律影打卡.gif',
       tags: ['commission', 'emoji'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-06-30',
     },
     {
       id: 'emoji-punch',
@@ -1040,6 +1067,7 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/打拳表情包.png',
       tags: ['commission', 'emoji'],
       characters: ['ritsukage-utsumabo'],
+      date: '2022-01-24',
     },
   ],
 };
