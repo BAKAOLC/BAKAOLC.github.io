@@ -57,8 +57,8 @@ export const useAppStore = defineStore('app', () => {
   const selectedRestrictedTags = ref<Record<string, boolean>>({});
 
   // 排序设置
-  const sortBy = ref<'name' | 'artist' | 'date'>('name');
-  const sortOrder = ref<'asc' | 'desc'>('asc');
+  const sortBy = ref<'name' | 'artist' | 'date'>('date');
+  const sortOrder = ref<'asc' | 'desc'>('desc');
 
   // 当前选择的角色
   const selectedCharacter = computed(() => {
