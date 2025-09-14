@@ -434,7 +434,6 @@ export const siteConfig: SiteConfig = {
       src: '/assets/catagory/ritsukage-utsumabo/miscellaneous/original.png',
       tags: ['commission', 'design'],
       characters: ['ritsukage-utsumabo'],
-      date: '2018-08-08',
     },
     {
       id: 'illust-psyche-1',
