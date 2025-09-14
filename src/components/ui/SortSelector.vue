@@ -17,10 +17,12 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import { useTimers } from '@/composables/useTimers';
 import { useAppStore } from '@/stores/app';
 
+const { t } = useI18n();
 const appStore = useAppStore();
 const timers = useTimers();
 
@@ -28,17 +30,17 @@ const isOpen = ref(false);
 const menuRef = ref<HTMLDivElement | null>(null);
 const buttonRef = ref<HTMLButtonElement | null>(null);
 
-const sortOptions = [
-  { label: '按名称', value: 'name' },
-  { label: '按画师', value: 'artist' },
-  { label: '按日期', value: 'date' },
-];
+const sortOptions = computed(() => [
+  { label: t('gallery.sortName'), value: 'name' },
+  { label: t('gallery.sortArtist'), value: 'artist' },
+  { label: t('gallery.sortDate'), value: 'date' },
+]);
 
 const currentSort = computed(() => appStore.sortBy);
 
 const displaySort = computed(() => {
-  const option = sortOptions.find(o => o.value === currentSort.value);
-  return option ? option.label : '按名称';
+  const option = sortOptions.value.find(o => o.value === currentSort.value);
+  return option ? option.label : t('gallery.sortDate');
 });
 
 const toggleSortMenu = (): void => {
