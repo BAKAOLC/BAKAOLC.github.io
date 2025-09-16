@@ -264,8 +264,8 @@ const toggleSortOrder = (): void => {
 // 打开查看器
 const openViewer = (event: CustomEvent): void => {
   if (event.detail && event.detail.imageId && typeof event.detail.imageId === 'string') {
-    // 标记用户是从画廊进入查看器
-    appStore.setFromGallery(true);
+    // 设置查看器返回到画廊
+    appStore.setViewerReturnRoute({ name: 'gallery' });
 
     currentImageId.value = event.detail.imageId;
     viewerActive.value = true;

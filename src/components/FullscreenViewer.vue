@@ -49,7 +49,10 @@
             <div v-else-if="currentImage" class="no-image-display">
               <div class="no-image-content">
                 <svg class="no-image-icon" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17l1.5-2L12 17h7V5H5v12z"/>
+                  <path
+                    d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z
+                       M9 17l1.5-2L12 17h7V5H5v12z"
+                  />
                 </svg>
                 <p class="no-image-text">{{ t(currentImage.name, currentLanguage) }}</p>
               </div>
@@ -76,27 +79,30 @@
             <h4 class="group-title">{{ $t('viewer.imageGroup') }}</h4>
           </div>
           <div class="group-images-list">
-            <button 
-              v-for="image in groupImagesList" 
+            <button
+              v-for="image in groupImagesList"
               :key="image.id"
               @click="goToGroupImage(image.id)"
               class="group-image-button"
               :class="{ 'active': image.id === currentDisplayImageId }"
             >
-              <ProgressiveImage 
+              <ProgressiveImage
                 v-if="image.src"
-                :src="image.src" 
-                :alt="t(image.name, currentLanguage)" 
+                :src="image.src"
+                :alt="t(image.name, currentLanguage)"
                 class="group-image-thumbnail"
-                object-fit="cover" 
-                :show-loader="false" 
-                preload-size="tiny" 
+                object-fit="contain"
+                :show-loader="false"
+                preload-size="tiny"
                 display-type="thumbnail"
-                display-size="small" 
+                display-size="small"
               />
               <div v-else class="group-image-placeholder">
                 <svg class="placeholder-icon" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17l1.5-2L12 17h7V5H5v12z"/>
+                  <path
+                    d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z
+                       M9 17l1.5-2L12 17h7V5H5v12z"
+                  />
                 </svg>
               </div>
               <div class="group-image-info">
@@ -122,20 +128,23 @@
             @mousedown="handleThumbnailButtonMouseDown" @touchstart="handleThumbnailButtonTouchStart"
             class="thumbnail-button" :class="{ 'active': currentIndex === index }">
             <div class="thumbnail-container">
-              <ProgressiveImage 
+              <ProgressiveImage
                 v-if="image.src"
-                :src="image.src" 
-                :alt="t(image.name, currentLanguage)" 
+                :src="image.src"
+                :alt="t(image.name, currentLanguage)"
                 class="thumbnail-image"
-                object-fit="cover" 
-                :show-loader="false" 
-                preload-size="tiny" 
+                object-fit="contain"
+                :show-loader="false"
+                preload-size="tiny"
                 display-type="thumbnail"
-                display-size="small" 
+                display-size="small"
               />
               <div v-else class="thumbnail-placeholder">
                 <svg class="placeholder-icon" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17l1.5-2L12 17h7V5H5v12z"/>
+                  <path
+                    d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z
+                       M9 17l1.5-2L12 17h7V5H5v12z"
+                  />
                 </svg>
               </div>
               <!-- 图像组标识 -->
@@ -334,8 +343,15 @@ const imagesList = computed(() => {
         } else {
           // 如果是父图像或普通图像
           if (image.childImages && image.childImages.length > 0) {
-            // 如果是组图的主图像，显示整个图集
+            // 如果是组图的主图像，显示整个图集，并设置默认的子图像
             const groupImages = appStore.getValidImagesInGroup(image);
+            const firstValidChildId = appStore.getFirstValidChildId(image);
+            if (firstValidChildId && !currentChildImageId.value) {
+              // 自动设置第一个有效子图像为当前子图像
+              nextTick(() => {
+                currentChildImageId.value = firstValidChildId;
+              });
+            }
             return groupImages;
           } else {
             // 普通图像，只显示该图像
@@ -350,28 +366,64 @@ const imagesList = computed(() => {
   return appStore.characterImages;
 });
 
+// 当前选中的子图像ID（独立状态）
+const currentChildImageId = ref<string | undefined>(props.childImageId);
+
 // 当前显示的图像ID（可能是父图像或子图像）
 const currentDisplayImageId = computed(() => {
-  return props.childImageId || props.imageId;
+  return currentChildImageId.value || props.imageId;
 });
 
 const currentIndex = computed(() => {
   if (!currentDisplayImageId.value) return 0;
-  return imagesList.value.findIndex(img => img.id === currentDisplayImageId.value);
+
+  // 首先尝试直接匹配ID
+  let index = imagesList.value.findIndex(img => img.id === currentDisplayImageId.value);
+
+  // 如果没找到，可能是因为当前显示的是子图像，而列表中是父图像
+  if (index === -1) {
+    // 检查当前显示的是否是子图像
+    const groupInfo = appStore.getImageGroupByChildId(currentDisplayImageId.value);
+    if (groupInfo) {
+      // 如果是子图像，查找父图像在列表中的位置
+      index = imagesList.value.findIndex(img => {
+        // 检查是否是同一个图像组
+        return img.id === groupInfo.parentImage.id
+               || (img.childImages && img.childImages.some(child => child.id === currentDisplayImageId.value));
+      });
+    }
+  }
+
+  return index >= 0 ? index : 0;
 });
 
 const currentImage = computed(() => {
-  if (currentIndex.value < 0 || currentIndex.value >= imagesList.value.length) {
-    // 如果在当前列表中找不到，尝试直接从配置中获取
-    return appStore.getImageById(currentDisplayImageId.value) || null;
+  // 如果有子图像ID，优先获取子图像的具体信息
+  if (currentChildImageId.value) {
+    const childImage = appStore.getImageById(currentChildImageId.value);
+    if (childImage) {
+      return childImage;
+    }
   }
-  return imagesList.value[currentIndex.value];
+
+  // 否则使用列表中的图像（保持画廊显示逻辑）
+  if (currentIndex.value >= 0 && currentIndex.value < imagesList.value.length) {
+    return imagesList.value[currentIndex.value];
+  }
+
+  // 最后的备用方案
+  const directImage = appStore.getImageById(props.imageId);
+  if (directImage) {
+    return directImage;
+  }
+
+  return null;
 });
 
 // 当前图像组信息（如果是图像组）
 const currentImageGroup = computed(() => {
   if (!currentImage.value) return null;
-  
+
   // 如果当前图像有子图像，说明它是父图像
   if (currentImage.value.childImages && currentImage.value.childImages.length > 0) {
     return {
@@ -380,7 +432,7 @@ const currentImageGroup = computed(() => {
       isParent: true,
     };
   }
-  
+
   // 检查是否是某个组的子图像
   const groupInfo = appStore.getImageGroupByChildId(currentImage.value.id);
   if (groupInfo) {
@@ -390,7 +442,7 @@ const currentImageGroup = computed(() => {
       isParent: false,
     };
   }
-  
+
   return null;
 });
 
@@ -410,7 +462,7 @@ const showGroupSelector = computed(() => {
       return false;
     }
   }
-  
+
   // 其他情况：如果有多个图像则显示选择器
   // 当图集被过滤导致只有一张图时，隐藏图集标识
   return groupImagesList.value.length > 1;
@@ -423,42 +475,42 @@ const hasNextImage = computed(() => currentIndex.value < imagesList.value.length
 // Artist 和 Description 的 fallback 助手函数
 const getArtistWithFallback = computed(() => {
   if (!currentImage.value) return { en: 'N/A', zh: 'N/A', jp: 'N/A' };
-  
+
   // 优先级：子图像 -> 父图像 -> fallback
   const currentGroup = currentImageGroup.value;
   if (currentGroup && !currentGroup.isParent) {
     // 当前是子图像
     const childImage = currentImage.value;
-    const parentImage = currentGroup.parentImage;
-    
+    const { parentImage } = currentGroup;
+
     // 子图像有artist则用子图像的，否则用父图像的，最后fallback
     return childImage.artist || parentImage.artist || { en: 'N/A', zh: 'N/A', jp: 'N/A' };
   }
-  
+
   // 当前是父图像或普通图像
   return currentImage.value.artist || { en: 'N/A', zh: 'N/A', jp: 'N/A' };
 });
 
 const getDescriptionWithFallback = computed(() => {
   if (!currentImage.value) return { en: '', zh: '', jp: '' };
-  
+
   // 优先级：子图像 -> 父图像 -> fallback
   const currentGroup = currentImageGroup.value;
   if (currentGroup && !currentGroup.isParent) {
     // 当前是子图像
     const childImage = currentImage.value;
-    const parentImage = currentGroup.parentImage;
-    
+    const { parentImage } = currentGroup;
+
     // 子图像有description则用子图像的，否则用父图像的，最后fallback
     return childImage.description || parentImage.description || { en: '', zh: '', jp: '' };
   }
-  
+
   // 当前是父图像或普通图像
   return currentImage.value.description || { en: '', zh: '', jp: '' };
 });
 
 // 检查图像是否有有效的子图像（用于显示组图标识）
-const hasValidChildImages = (image: any) => {
+const hasValidChildImages = (image: any): boolean => {
   // 获取原始图像信息
   let originalImage = image;
   if (image && image.id) {
@@ -467,12 +519,12 @@ const hasValidChildImages = (image: any) => {
       originalImage = originalFromStore;
     }
   }
-  
+
   // 检查是否有子图像
   if (!originalImage || !originalImage.childImages || originalImage.childImages.length === 0) {
     return false;
   }
-  
+
   // 当图集被过滤导致只有一张图时，隐藏图集标识
   const validChildren = appStore.getValidImagesInGroup(originalImage);
   return validChildren.length > 1;
@@ -499,16 +551,25 @@ const goToImage = (index: number): void => {
       return;
     }
 
+    // 重置子图像ID状态
+    currentChildImageId.value = undefined;
+
     // 检查目标图像是否是图像组的一部分
     const groupInfo = appStore.getImageGroupByChildId(targetImage.id);
     if (groupInfo) {
-      // 如果是子图像，导航到组内的该图像，确保使用正确的子图像ID
+      // 如果是子图像，设置正确的子图像ID
       const parentImageId = groupInfo.parentImage.id;
+      currentChildImageId.value = targetImage.id;
       navigateToImage(parentImageId, targetImage.id);
     } else if (targetImage.childImages && targetImage.childImages.length > 0) {
       // 如果是父图像，导航到其第一个有效子图像
       const firstValidChildId = appStore.getFirstValidChildId(targetImage);
-      navigateToImage(targetImage.id, firstValidChildId || targetImage.childImages[0].id);
+      if (firstValidChildId) {
+        currentChildImageId.value = firstValidChildId;
+        navigateToImage(targetImage.id, firstValidChildId);
+      } else {
+        navigateToImage(targetImage.id);
+      }
     } else {
       // 普通图像，直接导航
       navigateToImage(targetImage.id);
@@ -519,35 +580,44 @@ const goToImage = (index: number): void => {
 // 在图像组内导航到指定图像
 const goToGroupImage = (imageId: string): void => {
   if (!currentImageGroup.value) return;
-  
+
   const parentImageId = currentImageGroup.value.parentImage.id;
   const targetImage = groupImagesList.value.find(img => img.id === imageId);
-  
+
   if (!targetImage) return;
-  
-  // 如果目标是父图像，使用父图像路由
+
+  // 直接更新子图像ID状态，而不需要路由导航
   if (targetImage.id === parentImageId) {
-    navigateToImage(parentImageId);
+    // 切换到父图像
+    currentChildImageId.value = undefined;
   } else {
-    // 如果目标是子图像，使用子图像路由
-    navigateToImage(parentImageId, targetImage.id);
+    // 切换到子图像
+    currentChildImageId.value = targetImage.id;
   }
+
+  // 同步更新URL（但不触发页面重新加载）
+  const routeName = currentChildImageId.value ? 'image-viewer-child' : 'image-viewer';
+  const params = currentChildImageId.value
+    ? { imageId: parentImageId, childImageId: currentChildImageId.value }
+    : { imageId: parentImageId };
+
+  router.replace({ name: routeName, params });
 };
 
 // 通用导航函数
 const navigateToImage = (imageId: string, childImageId?: string): void => {
   const routeName = childImageId ? 'image-viewer-child' : 'image-viewer';
   const params = childImageId ? { imageId, childImageId } : { imageId };
-  
+
   // 使用 Vue Router 导航
   router.push({ name: routeName, params });
-  
+
   // 触发自定义事件通知父组件
   eventManager.dispatchEvent('viewerNavigate', { imageId, childImageId });
-  
+
   // 强制重置用户滚动状态，确保自动定位生效
   isUserScrolling.value = false;
-  
+
   // 更新缩略图位置
   nextTick(() => {
     updateThumbnailsOffset();
@@ -1227,6 +1297,29 @@ const handleThumbnailClick = (index: number, event: MouseEvent): void => {
     return;
   }
 
+  // 修正：确保使用图像组的位置索引
+  // 如果点击的是图像组的子图像，应该导航到该图像组在列表中的位置
+  const targetImage = imagesList.value[index];
+  if (targetImage) {
+    // 检查目标图像是否是子图像
+    const groupInfo = appStore.getImageGroupByChildId(targetImage.id);
+    if (groupInfo) {
+      // 如果是子图像，找到父图像在当前列表中的索引
+      const parentIndex = imagesList.value.findIndex(img => {
+        // 检查是否是同一个图像组的显示图像
+        return img.id === groupInfo.parentImage.id
+               || (img.childImages && img.childImages.some(child => child.id === targetImage.id));
+      });
+
+      if (parentIndex >= 0) {
+        // 导航到父图像组的位置，但显示选中的子图像
+        goToImage(parentIndex);
+        return;
+      }
+    }
+  }
+
+  // 普通情况，直接导航到指定索引
   goToImage(index);
 };
 
@@ -1854,6 +1947,21 @@ const preloadAdjacentImages = (): void => {
   }, 300); // 延迟300ms，给当前图片足够的加载时间
 };
 
+// 监听props变化，同步子图像ID状态
+watch(() => props.childImageId, (newChildImageId) => {
+  currentChildImageId.value = newChildImageId;
+}, { immediate: true });
+
+// 监听图像列表变化，处理直接访问图集的URL更新
+watch(imagesList, () => {
+  if (isDirectAccess.value && !props.childImageId && currentChildImageId.value) {
+    // 直接访问图集时，如果设置了默认子图像，更新URL
+    const routeName = 'image-viewer-child';
+    const params = { imageId: props.imageId, childImageId: currentChildImageId.value };
+    router.replace({ name: routeName, params });
+  }
+}, { immediate: true });
+
 // 监听图片变化
 watch(currentImage, (newImage) => {
   if (newImage) {
@@ -2332,7 +2440,7 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 
 .thumbnail-image {
   @apply w-full h-full object-contain;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.1);
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -2655,7 +2763,8 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 }
 
 .group-image-thumbnail {
-  @apply w-12 h-12 rounded object-cover flex-shrink-0;
+  @apply w-12 h-12 rounded object-contain flex-shrink-0;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .group-image-info {
@@ -2683,7 +2792,7 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   .main-image-area.with-left-group-selector {
     margin-left: 0; /* 移动端不使用固定左侧布局 */
   }
-  
+
   .group-selector.left-side {
     position: fixed;
     top: 50px;
@@ -2695,11 +2804,11 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
     border-right: 1px solid rgba(75, 85, 99, 0.3);
     border-left: none;
   }
-  
+
   .group-image-thumbnail {
     @apply w-10 h-10;
   }
-  
+
   .group-image-name {
     @apply text-xs;
   }

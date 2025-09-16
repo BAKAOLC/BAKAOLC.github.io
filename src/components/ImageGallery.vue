@@ -40,7 +40,10 @@
               :title="t(image.name, currentLanguage)"
             >
               <svg class="placeholder-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17l1.5-2L12 17h7V5H5v12z"/>
+                <path
+                  d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z
+                     M9 17l1.5-2L12 17h7V5H5v12z"
+                />
               </svg>
             </div>
             <!-- 图像组指示器 -->
@@ -67,9 +70,9 @@
 </template>
 
 <script setup lang="ts">
+import { Layers as LayersIcon } from 'lucide-vue-next';
 import { computed, ref, watch, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Layers as LayersIcon } from 'lucide-vue-next';
 
 import ProgressiveImage from './ProgressiveImage.vue';
 
@@ -120,9 +123,25 @@ const { getSortedTags, getTagColor, getTagName } = useTags();
 
 const currentLanguage = computed(() => appStore.currentLanguage);
 
-// 检查图像是否为图像组
+// 检查图像是否为图像组（当过滤结果只有一张图像时隐藏指示器）
 const isImageGroup = (image: CharacterImage): boolean => {
-  return !!(image.childImages && image.childImages.length > 0);
+  // 获取原始图像信息
+  let originalImage = image;
+  if (image && image.id) {
+    const originalFromStore = appStore.getImageById(image.id);
+    if (originalFromStore) {
+      originalImage = originalFromStore;
+    }
+  }
+
+  // 检查是否有子图像
+  if (!originalImage || !originalImage.childImages || originalImage.childImages.length === 0) {
+    return false;
+  }
+
+  // 当图集被过滤导致只有一张图时，隐藏图集标识
+  const validChildren = appStore.getValidImagesInGroup(originalImage);
+  return validChildren.length > 1;
 };
 
 // 通用的翻译辅助函数
