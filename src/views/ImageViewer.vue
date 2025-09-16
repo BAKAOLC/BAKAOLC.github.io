@@ -1,6 +1,6 @@
 <template>
   <div class="image-viewer-page">
-    <fullscreen-viewer :image-id="imageId" :is-active="true" @close="closeViewer" />
+    <fullscreen-viewer :image-id="imageId" :child-image-id="childImageId" :is-active="true" @close="closeViewer" />
   </div>
 </template>
 
@@ -15,6 +15,7 @@ import { useAppStore } from '@/stores/app';
 // 获取路由参数
 defineProps<{
   imageId: string;
+  childImageId?: string;
 }>();
 
 const router = useRouter();
@@ -35,10 +36,19 @@ const closeViewer = (): void => {
 // 监听查看器导航事件
 const handleViewerNavigate = (event: CustomEvent): void => {
   if (event.detail && event.detail.imageId && typeof event.detail.imageId === 'string') {
-    router.push({
-      name: 'image-viewer',
-      params: { imageId: event.detail.imageId },
-    });
+    const { imageId, childImageId } = event.detail;
+    
+    if (childImageId) {
+      router.push({
+        name: 'image-viewer-child',
+        params: { imageId, childImageId },
+      });
+    } else {
+      router.push({
+        name: 'image-viewer',
+        params: { imageId },
+      });
+    }
   } else {
     console.warn('无效的图片ID，无法导航');
   }
