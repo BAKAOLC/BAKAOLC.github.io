@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 
-import type { Language, CharacterImage, ChildImage } from '@/types';
+import type { Language, CharacterImage, ChildImage, I18nText } from '@/types';
 
 import { siteConfig } from '@/config/site';
 
@@ -110,8 +110,8 @@ export const useAppStore = defineStore('app', () => {
           break;
         }
         case 'artist': {
-          const aArtist = getSearchableText(a.artist);
-          const bArtist = getSearchableText(b.artist);
+          const aArtist = a.artist ? getSearchableText(a.artist) : 'n/a';
+          const bArtist = b.artist ? getSearchableText(b.artist) : 'n/a';
           comparison = aArtist.localeCompare(bArtist);
           break;
         }
@@ -328,11 +328,25 @@ export const useAppStore = defineStore('app', () => {
 
   // 获取子图像的完整信息（继承父图像属性）
   const getChildImageWithDefaults = (parentImage: CharacterImage, childImage: ChildImage): CharacterImage => {
+    // Artist fallback logic: child.artist || parent.artist || "N/A"
+    const getArtistWithFallback = (): I18nText => {
+      if (childImage.artist) return childImage.artist;
+      if (parentImage.artist) return parentImage.artist;
+      return { en: 'N/A', zh: 'N/A', jp: 'N/A' };
+    };
+
+    // Description fallback logic: child.description || parent.description || empty string
+    const getDescriptionWithFallback = (): I18nText => {
+      if (childImage.description) return childImage.description;
+      if (parentImage.description) return parentImage.description;
+      return { en: '', zh: '', jp: '' };
+    };
+
     return {
       id: childImage.id,
       name: childImage.name || parentImage.name,
-      description: childImage.description || parentImage.description,
-      artist: childImage.artist || parentImage.artist,
+      description: getDescriptionWithFallback(),
+      artist: getArtistWithFallback(),
       src: childImage.src,
       tags: childImage.tags || parentImage.tags,
       characters: childImage.characters || parentImage.characters,
