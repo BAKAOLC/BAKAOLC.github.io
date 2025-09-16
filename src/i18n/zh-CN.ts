@@ -71,6 +71,7 @@ export default {
     sortAsc: '正序',
     sortDesc: '倒序',
     restrictedTags: '限制级标签',
+    imageGroup: '图像组',
   },
   personal: {
     contactMe: '联系我',
