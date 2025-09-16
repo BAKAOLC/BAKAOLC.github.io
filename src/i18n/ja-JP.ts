@@ -71,6 +71,7 @@ export default {
     sortAsc: '昇順',
     sortDesc: '降順',
     restrictedTags: '制限タグ',
+    imageGroup: '画像グループ',
   },
   personal: {
     contactMe: 'お問い合わせ',
@@ -92,6 +93,7 @@ export default {
     imageInfo: '画像情報',
     minimap: 'ミニマップ',
     navigation: 'ナビゲーション',
+    imageGroup: '画像グループ',
   },
   loading: {
     title: 'ロード中',

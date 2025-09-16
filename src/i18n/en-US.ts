@@ -71,6 +71,7 @@ export default {
     sortAsc: 'Ascending',
     sortDesc: 'Descending',
     restrictedTags: 'Restricted Tags',
+    imageGroup: 'Image Group',
   },
   personal: {
     contactMe: 'Contact Me',
@@ -94,6 +95,7 @@ export default {
     hideInfo: 'Hide Info',
     minimap: 'Minimap',
     navigation: 'Navigation',
+    imageGroup: 'Image Group',
   },
   loading: {
     title: 'Loading',
