@@ -408,12 +408,12 @@ export const useAppStore = defineStore('app', () => {
 
   // 获取图像组的显示图像（用于画廊显示）
   const getDisplayImageForGroup = (parentImage: CharacterImage): CharacterImage => {
-    // 如果父图像通过过滤，优先显示父图像
-    if (doesImagePassFilter(parentImage)) {
+    // 如果父图像有src且通过过滤，优先显示父图像
+    if (parentImage.src && doesImagePassFilter(parentImage)) {
       return parentImage;
     }
 
-    // 如果父图像被过滤，查找第一个通过过滤的子图像
+    // 如果父图像没有src或被过滤，查找第一个通过过滤的子图像
     if (parentImage.childImages) {
       for (const childImage of parentImage.childImages) {
         const fullChildImage = getChildImageWithDefaults(parentImage, childImage);
@@ -423,7 +423,7 @@ export const useAppStore = defineStore('app', () => {
       }
     }
 
-    // 如果都没通过过滤，返回父图像（不应该出现这种情况）
+    // 如果都没通过过滤，返回父图像（用于标识这是个组图）
     return parentImage;
   };
 
@@ -431,8 +431,8 @@ export const useAppStore = defineStore('app', () => {
   const getValidImagesInGroup = (parentImage: CharacterImage): CharacterImage[] => {
     const validImages: CharacterImage[] = [];
 
-    // 检查父图像
-    if (doesImagePassFilter(parentImage)) {
+    // 检查父图像（只有当它有src时才可能被包含）
+    if (parentImage.src && doesImagePassFilter(parentImage)) {
       validImages.push(parentImage);
     }
 
