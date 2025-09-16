@@ -35,7 +35,7 @@
 
     <div class="viewer-content">
       <!-- 主图像区域 -->
-      <div class="main-image-area" :class="{ 'with-group-selector': showGroupSelector }">
+      <div class="main-image-area" :class="{ 'with-left-group-selector': showGroupSelector }">
         <div class="image-container" ref="imageContainer" @wheel="handleImageWheel" @mousedown="handleImageMouseDown"
           @touchstart="handleImageTouchStart" @touchmove="handleImageTouchMove" @touchend="handleImageTouchEnd">
           <transition name="fade" mode="out-in">
@@ -69,9 +69,9 @@
         </div>
       </div>
 
-      <!-- 图像组选择器 -->
-      <transition name="slide-in-right">
-        <div v-if="showGroupSelector" class="group-selector">
+      <!-- 图像组选择器 - 左侧布局 -->
+      <transition name="slide-in-left">
+        <div v-if="showGroupSelector" class="group-selector left-side">
           <div class="group-selector-header">
             <h4 class="group-title">{{ $t('viewer.imageGroup') }}</h4>
           </div>
@@ -412,6 +412,7 @@ const showGroupSelector = computed(() => {
   }
   
   // 其他情况：如果有多个图像则显示选择器
+  // 当图集被过滤导致只有一张图时，隐藏图集标识
   return groupImagesList.value.length > 1;
 });
 
@@ -458,18 +459,23 @@ const getDescriptionWithFallback = computed(() => {
 
 // 检查图像是否有有效的子图像（用于显示组图标识）
 const hasValidChildImages = (image: any) => {
-  // 如果直接有 childImages，这是一个原始的父图像
-  if (image && image.childImages && image.childImages.length > 0) {
-    return true;
-  }
-  
-  // 如果这是一个从过滤列表中来的混合显示图像，检查原始父图像
+  // 获取原始图像信息
+  let originalImage = image;
   if (image && image.id) {
-    const originalImage = appStore.getImageById(image.id);
-    return originalImage && originalImage.childImages && originalImage.childImages.length > 0;
+    const originalFromStore = appStore.getImageById(image.id);
+    if (originalFromStore) {
+      originalImage = originalFromStore;
+    }
   }
   
-  return false;
+  // 检查是否有子图像
+  if (!originalImage || !originalImage.childImages || originalImage.childImages.length === 0) {
+    return false;
+  }
+  
+  // 检查是否有超过一个通过过滤的子图像（如果只有一个，隐藏组图标识）
+  const validChildren = appStore.getValidImagesInGroup(originalImage);
+  return validChildren.length > 1;
 };
 
 const prevImage = (): void => {
@@ -496,11 +502,9 @@ const goToImage = (index: number): void => {
     // 检查目标图像是否是图像组的一部分
     const groupInfo = appStore.getImageGroupByChildId(targetImage.id);
     if (groupInfo) {
-      // 如果是子图像，导航到组内的该图像
+      // 如果是子图像，导航到组内的该图像，确保使用正确的子图像ID
       const parentImageId = groupInfo.parentImage.id;
-      // 使用过滤后的第一个有效子图像
-      const firstValidChildId = appStore.getFirstValidChildId(groupInfo.parentImage);
-      navigateToImage(parentImageId, firstValidChildId || targetImage.id);
+      navigateToImage(parentImageId, targetImage.id);
     } else if (targetImage.childImages && targetImage.childImages.length > 0) {
       // 如果是父图像，导航到其第一个有效子图像
       const firstValidChildId = appStore.getFirstValidChildId(targetImage);
@@ -2214,11 +2218,11 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   @apply flex-1;
   @apply flex items-center justify-center;
   @apply relative;
-  transition: margin-right 0.3s ease;
+  transition: margin-left 0.3s ease;
 }
 
-.main-image-area.with-group-selector {
-  margin-right: 220px; /* 为右侧选择器留出空间 */
+.main-image-area.with-left-group-selector {
+  margin-left: 220px; /* 为左侧选择器留出空间 */
 }
 
 .image-container {
@@ -2611,10 +2615,10 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 }
 
 /* 图像组选择器 */
-.group-selector {
+.group-selector.left-side {
   position: absolute;
   top: 0;
-  right: 0;
+  left: 0;
   bottom: 0;
   width: 200px;
   @apply bg-gray-900/95 backdrop-blur-sm shadow-2xl;
@@ -2622,7 +2626,7 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   @apply flex flex-col;
   z-index: 10;
   overflow: hidden;
-  border-left: 1px solid rgba(75, 85, 99, 0.3);
+  border-right: 1px solid rgba(75, 85, 99, 0.3);
 }
 
 .group-selector-header {
@@ -2676,18 +2680,20 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 
 /* 移动端适配 */
 @media (max-width: 768px) {
-  .main-image-area.with-group-selector {
-    margin-right: 0; /* 移动端不使用固定右侧布局 */
+  .main-image-area.with-left-group-selector {
+    margin-left: 0; /* 移动端不使用固定左侧布局 */
   }
   
-  .group-selector {
+  .group-selector.left-side {
     position: fixed;
     top: 50px;
-    right: 10px;
+    left: 10px;
     bottom: 80px;
     width: 180px;
     @apply rounded-lg;
     z-index: 50;
+    border-right: 1px solid rgba(75, 85, 99, 0.3);
+    border-left: none;
   }
   
   .group-image-thumbnail {
