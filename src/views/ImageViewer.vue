@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 import FullscreenViewer from '@/components/FullscreenViewer.vue';
 import { useEventManager } from '@/composables/useEventManager';
@@ -19,18 +19,22 @@ defineProps<{
 }>();
 
 const router = useRouter();
-const route = useRoute();
 const eventManager = useEventManager();
 const appStore = useAppStore();
 
 // 关闭查看器
 const closeViewer = (): void => {
-  // 检查是否有来源页面可以返回
-  if (window.history.length > 1) {
-    router.back();
-  } else {
-    // 如果没有历史记录，默认跳转到画廊
+  // 如果是从画廊进入的，直接返回画廊
+  if (appStore.isFromGallery) {
     router.push({ name: 'gallery' });
+  } else {
+    // 直接访问的情况，检查是否有来源页面可以返回
+    if (window.history.length > 1) {
+      router.back();
+    } else {
+      // 如果没有历史记录，默认跳转到画廊
+      router.push({ name: 'gallery' });
+    }
   }
 };
 
