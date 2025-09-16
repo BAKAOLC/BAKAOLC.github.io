@@ -1,102 +1,105 @@
 name: Deploy to GitHub Pages
 
 on:
-  push:
-    branches:
-      - master
-      - main
-  pull_request:
-    branches:
-      - master
-      - main
+    push:
+        branches:
+            - master
+            - main
+    pull_request:
+        branches:
+            - master
+            - main
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: 'npm'
-          
-      - name: Restore thumbnail cache file
-        uses: actions/cache/restore@v4
-        id: cache-thumbnail-cache
-        with:
-          path: .thumbnail-cache.json
-          key: thumbnail-cache-v1
-          restore-keys: |
-            thumbnail-cache-
-            
-      - name: Restore generated thumbnails
-        uses: actions/cache/restore@v4
-        id: cache-thumbnails
-        with:
-          path: public/assets/thumbnails
-          key: thumbnails-v1-${{ hashFiles('scripts/generate-thumbnails.cjs') }}
-          restore-keys: |
-            thumbnails-v1-
-            thumbnails-
-          
-      - name: Install dependencies
-        run: npm ci
-        
-      - name: Check cache status
-        run: |
-          echo "Thumbnail cache hit: ${{ steps.cache-thumbnails.outputs.cache-hit }}"
-          echo "Cache file hit: ${{ steps.cache-thumbnail-cache.outputs.cache-hit }}"
-          if [ -d "public/assets/thumbnails" ]; then
-            echo "Thumbnails directory exists with $(find public/assets/thumbnails -type f | wc -l) files"
-          else
-            echo "Thumbnails directory does not exist"
-          fi
-          if [ -f ".thumbnail-cache.json" ]; then
-            echo "Cache file exists with $(wc -l < .thumbnail-cache.json) lines"
-          else
-            echo "Cache file does not exist"
-          fi
-        
-      - name: Create thumbnails directory if not exists
-        run: mkdir -p public/assets/thumbnails
-        
-      - name: Generate thumbnails (with incremental update)
-        run: npm run generate-thumbnails
-        
-      - name: Build
-        run: npm run build
-        
-      - name: Save thumbnail cache file
-        uses: actions/cache/save@v4
-        if: always() && steps.cache-thumbnail-cache.outputs.cache-hit != 'true'
-        with:
-          path: .thumbnail-cache.json
-          key: thumbnail-cache-v1
-          
-      - name: Save generated thumbnails
-        uses: actions/cache/save@v4
-        if: always() && steps.cache-thumbnails.outputs.cache-hit != 'true'
-        with:
-          path: public/assets/thumbnails
-          key: thumbnails-v1-${{ hashFiles('scripts/generate-thumbnails.cjs') }}
-        
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-        
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
-          
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+    build-and-deploy:
+        runs-on: ubuntu-latest
+
+        permissions:
+            contents: read
+            pages: write
+            id-token: write
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "24"
+                  cache: "npm"
+
+            - name: Restore thumbnail cache file
+              uses: actions/cache/restore@v4
+              id: cache-thumbnail-cache
+              with:
+                  path: .thumbnail-cache.json
+                  key: thumbnail-cache-v1
+                  restore-keys: |
+                      thumbnail-cache-
+
+            - name: Restore generated thumbnails
+              uses: actions/cache/restore@v4
+              id: cache-thumbnails
+              with:
+                  path: public/assets/thumbnails
+                  key: thumbnails-v1-${{ hashFiles('scripts/generate-thumbnails.cjs') }}
+                  restore-keys: |
+                      thumbnails-v1-
+                      thumbnails-
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Check cache status
+              run: |
+                  echo "Thumbnail cache hit: ${{ steps.cache-thumbnails.outputs.cache-hit }}"
+                  echo "Cache file hit: ${{ steps.cache-thumbnail-cache.outputs.cache-hit }}"
+                  if [ -d "public/assets/thumbnails" ]; then
+                    echo "Thumbnails directory exists with $(find public/assets/thumbnails -type f | wc -l) files"
+                  else
+                    echo "Thumbnails directory does not exist"
+                  fi
+                  if [ -f ".thumbnail-cache.json" ]; then
+                    echo "Cache file exists with $(wc -l < .thumbnail-cache.json) lines"
+                  else
+                    echo "Cache file does not exist"
+                  fi
+
+            - name: Create thumbnails directory if not exists
+              run: mkdir -p public/assets/thumbnails
+
+            - name: Generate thumbnails (with incremental update)
+              run: npm run generate-thumbnails
+
+            - name: Build
+              run: npm run build
+
+            - name: Save thumbnail cache file
+              uses: actions/cache/save@v4
+              if: always() && steps.cache-thumbnail-cache.outputs.cache-hit != 'true' && github.event_name == 'push'
+              with:
+                  path: .thumbnail-cache.json
+                  key: thumbnail-cache-v1
+
+            - name: Save generated thumbnails
+              uses: actions/cache/save@v4
+              if: always() && steps.cache-thumbnails.outputs.cache-hit != 'true' && github.event_name == 'push'
+              with:
+                  path: public/assets/thumbnails
+                  key: thumbnails-v1-${{ hashFiles('scripts/generate-thumbnails.cjs') }}
+
+            - name: Setup Pages
+              if: github.event_name == 'push'
+              uses: actions/configure-pages@v4
+
+            - name: Upload artifact
+              if: github.event_name == 'push'
+              uses: actions/upload-pages-artifact@v3
+              with:
+                  path: ./dist
+
+            - name: Deploy to GitHub Pages
+              if: github.event_name == 'push'
+              id: deployment
+              uses: actions/deploy-pages@v4
