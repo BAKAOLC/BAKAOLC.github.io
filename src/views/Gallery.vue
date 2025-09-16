@@ -82,6 +82,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
 import CharacterSelector from '@/components/CharacterSelector.vue';
 import FullscreenViewer from '@/components/FullscreenViewer.vue';
@@ -95,6 +96,7 @@ import { useTimers } from '@/composables/useTimers';
 import { useAppStore } from '@/stores/app';
 
 const { t: $t } = useI18n();
+const router = useRouter();
 const appStore = useAppStore();
 const timers = useTimers();
 const eventManager = useEventManager();
@@ -268,9 +270,8 @@ const openViewer = (event: CustomEvent): void => {
     currentImageId.value = event.detail.imageId;
     viewerActive.value = true;
 
-    // 更新 URL 但不导航到新页面
-    const newUrl = `/viewer/${event.detail.imageId}`;
-    window.history.pushState({ imageId: event.detail.imageId }, '', newUrl);
+    // 使用 Vue Router 导航到查看器页面
+    router.push(`/viewer/${event.detail.imageId}`);
   } else {
     console.warn('无效的图片ID，无法打开查看器');
   }
@@ -280,8 +281,8 @@ const openViewer = (event: CustomEvent): void => {
 const closeViewer = (): void => {
   viewerActive.value = false;
 
-  // 恢复原来的 URL
-  window.history.pushState({}, '', '/gallery');
+  // 使用 Vue Router 导航回画廊页面
+  router.push('/gallery');
 };
 
 // 监听查看器导航事件
@@ -289,9 +290,8 @@ const handleViewerNavigate = (event: CustomEvent): void => {
   if (event.detail && event.detail.imageId && typeof event.detail.imageId === 'string') {
     currentImageId.value = event.detail.imageId;
 
-    // 更新 URL 但不导航到新页面
-    const newUrl = `/viewer/${event.detail.imageId}`;
-    window.history.pushState({ imageId: event.detail.imageId }, '', newUrl);
+    // 使用 Vue Router 导航到新的图片
+    router.push(`/viewer/${event.detail.imageId}`);
   } else {
     console.warn('无效的图片ID，无法更新查看器');
   }

@@ -1,7 +1,7 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes: [
     {
       path: '/',
@@ -27,27 +27,7 @@ const router = createRouter({
   ],
 });
 
-// 路由守卫：处理GitHub Pages重定向后的状态恢复
-router.beforeEach((to, _from, next) => {
-  // 检查是否有GitHub Pages重定向信息
-  const redirectPath = sessionStorage.getItem('github-pages-redirect');
-
-  if (redirectPath && to.path === '/' && redirectPath !== '/') {
-    // 如果有重定向信息且当前要导航到根路径，则重定向到目标路径
-    next(redirectPath);
-    return;
-  }
-
-  // 清理可能存在的重定向信息
-  if (redirectPath) {
-    sessionStorage.removeItem('github-pages-redirect');
-    sessionStorage.removeItem('github-pages-redirect-full');
-  }
-
-  next();
-});
-
-// 路由后置守卫：确保重定向后页面状态正确
+// 路由后置守卫：确保页面状态正确
 router.afterEach((to) => {
   // 确保页面滚动到顶部（除非有hash）
   if (!to.hash) {
