@@ -118,21 +118,27 @@
           <button v-for="(image, index) in imagesList" :key="image.id" @click="handleThumbnailClick(index, $event)"
             @mousedown="handleThumbnailButtonMouseDown" @touchstart="handleThumbnailButtonTouchStart"
             class="thumbnail-button" :class="{ 'active': currentIndex === index }">
-            <ProgressiveImage 
-              v-if="image.src"
-              :src="image.src" 
-              :alt="t(image.name, currentLanguage)" 
-              class="thumbnail-image"
-              object-fit="cover" 
-              :show-loader="false" 
-              preload-size="tiny" 
-              display-type="thumbnail"
-              display-size="small" 
-            />
-            <div v-else class="thumbnail-placeholder">
-              <svg class="placeholder-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17l1.5-2L12 17h7V5H5v12z"/>
-              </svg>
+            <div class="thumbnail-container">
+              <ProgressiveImage 
+                v-if="image.src"
+                :src="image.src" 
+                :alt="t(image.name, currentLanguage)" 
+                class="thumbnail-image"
+                object-fit="cover" 
+                :show-loader="false" 
+                preload-size="tiny" 
+                display-type="thumbnail"
+                display-size="small" 
+              />
+              <div v-else class="thumbnail-placeholder">
+                <svg class="placeholder-icon" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17l1.5-2L12 17h7V5H5v12z"/>
+                </svg>
+              </div>
+              <!-- 图像组标识 -->
+              <div v-if="hasValidChildImages(image)" class="thumbnail-group-indicator">
+                <layers-icon class="layers-icon" />
+              </div>
             </div>
           </button>
         </div>
@@ -226,7 +232,7 @@
 
 <script setup lang="ts">
 
-import { XIcon, ChevronLeftIcon, ChevronRightIcon, InfoIcon, ZoomInIcon, ZoomOutIcon, RotateCcwIcon } from 'lucide-vue-next';
+import { XIcon, ChevronLeftIcon, ChevronRightIcon, InfoIcon, ZoomInIcon, ZoomOutIcon, RotateCcwIcon, LayersIcon } from 'lucide-vue-next';
 import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -413,15 +419,44 @@ const hasNextImage = computed(() => currentIndex.value < imagesList.value.length
 // Artist 和 Description 的 fallback 助手函数
 const getArtistWithFallback = computed(() => {
   if (!currentImage.value) return { en: 'N/A', zh: 'N/A', jp: 'N/A' };
-  if (currentImage.value.artist) return currentImage.value.artist;
-  return { en: 'N/A', zh: 'N/A', jp: 'N/A' };
+  
+  // 优先级：子图像 -> 父图像 -> fallback
+  const currentGroup = currentImageGroup.value;
+  if (currentGroup && !currentGroup.isParent) {
+    // 当前是子图像
+    const childImage = currentImage.value;
+    const parentImage = currentGroup.parentImage;
+    
+    // 子图像有artist则用子图像的，否则用父图像的，最后fallback
+    return childImage.artist || parentImage.artist || { en: 'N/A', zh: 'N/A', jp: 'N/A' };
+  }
+  
+  // 当前是父图像或普通图像
+  return currentImage.value.artist || { en: 'N/A', zh: 'N/A', jp: 'N/A' };
 });
 
 const getDescriptionWithFallback = computed(() => {
   if (!currentImage.value) return { en: '', zh: '', jp: '' };
-  if (currentImage.value.description) return currentImage.value.description;
-  return { en: '', zh: '', jp: '' };
+  
+  // 优先级：子图像 -> 父图像 -> fallback
+  const currentGroup = currentImageGroup.value;
+  if (currentGroup && !currentGroup.isParent) {
+    // 当前是子图像
+    const childImage = currentImage.value;
+    const parentImage = currentGroup.parentImage;
+    
+    // 子图像有description则用子图像的，否则用父图像的，最后fallback
+    return childImage.description || parentImage.description || { en: '', zh: '', jp: '' };
+  }
+  
+  // 当前是父图像或普通图像
+  return currentImage.value.description || { en: '', zh: '', jp: '' };
 });
+
+// 检查图像是否有有效的子图像（用于显示组图标识）
+const hasValidChildImages = (image: any) => {
+  return image && image.childImages && image.childImages.length > 0;
+};
 
 const prevImage = (): void => {
   if (hasPrevImage.value) {
@@ -2239,6 +2274,10 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   -ms-user-select: none;
 }
 
+.thumbnail-container {
+  @apply w-full h-full relative;
+}
+
 .image-thumbnails-container.dragging .thumbnail-button {
   cursor: grabbing;
 }
@@ -2257,6 +2296,19 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   /* 禁止拖拽 */
   -webkit-user-drag: none;
   -webkit-touch-callout: none;
+}
+
+.thumbnail-group-indicator {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  @apply bg-blue-600/90 rounded;
+  @apply p-1;
+  @apply flex items-center justify-center;
+}
+
+.layers-icon {
+  @apply w-3 h-3 text-white;
 }
 
 /* 小地图样式 */
