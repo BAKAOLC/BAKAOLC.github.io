@@ -273,9 +273,14 @@ const openViewer = (event: CustomEvent): void => {
     // 检查是否为图像组，如果是则导航到第一个子图像
     const image = appStore.getImageById(event.detail.imageId);
     if (image && image.childImages && image.childImages.length > 0) {
-      // 图像组：导航到 /viewer/:parentId/:firstChildId
-      const firstChildId = image.childImages[0].id;
-      router.push(`/viewer/${event.detail.imageId}/${firstChildId}`);
+      // 图像组：导航到 /viewer/:parentId/:firstValidChildId
+      const firstValidChildId = appStore.getFirstValidChildId(image);
+      if (firstValidChildId) {
+        router.push(`/viewer/${event.detail.imageId}/${firstValidChildId}`);
+      } else {
+        // 如果没有有效的子图像，这个组图应该不会在过滤列表中出现
+        console.warn('图像组没有有效的子图像，无法打开查看器');
+      }
     } else {
       // 普通图像：导航到 /viewer/:imageId
       router.push(`/viewer/${event.detail.imageId}`);
