@@ -33,6 +33,10 @@
               display-size="medium"
               :delay-main-image="50"
             />
+            <!-- 图像组指示器 -->
+            <div v-if="isImageGroup(image)" class="group-indicator" :title="$t('gallery.imageGroup')">
+              <layers-icon class="group-icon" />
+            </div>
           </div>
 
           <div class="image-info">
@@ -55,6 +59,7 @@
 <script setup lang="ts">
 import { computed, ref, watch, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { Layers as LayersIcon } from 'lucide-vue-next';
 
 import ProgressiveImage from './ProgressiveImage.vue';
 
@@ -105,6 +110,18 @@ const { getSortedTags, getTagColor, getTagName } = useTags();
 
 const currentLanguage = computed(() => appStore.currentLanguage);
 
+// 检查图像是否为图像组
+const isImageGroup = (image: CharacterImage): boolean => {
+  return !!(image.childImages && image.childImages.length > 0);
+};
+
+// 通用的翻译辅助函数
+const t = (text: I18nText | string, lang?: string): string => {
+  if (typeof text === 'string') return text;
+  const currentLang = lang || currentLanguage.value;
+  return text[currentLang as keyof I18nText] || text.zh || text.en || '';
+};
+
 const viewImage = (image: CharacterImage): void => {
   if (!image || !image.id) {
     console.warn('无效的图片数据，无法查看');
@@ -112,12 +129,6 @@ const viewImage = (image: CharacterImage): void => {
   }
 
   eventManager.dispatchEvent('viewImage', { imageId: image.id });
-};
-
-const t = (text: I18nText | string, lang?: string): string => {
-  if (typeof text === 'string') return text;
-  if (!lang) return text.zh || text.en || '';
-  return text[lang as keyof I18nText] || text.en || '';
 };
 </script>
 
@@ -210,6 +221,27 @@ const t = (text: I18nText | string, lang?: string): string => {
 
 .image-container {
   @apply overflow-hidden;
+  position: relative;
+}
+
+/* 图像组指示器 */
+.group-indicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  @apply bg-blue-600 text-white rounded-full p-1.5;
+  @apply shadow-lg backdrop-blur-sm;
+  opacity: 0.9;
+  z-index: 10;
+  transition: opacity 0.2s ease;
+}
+
+.group-indicator:hover {
+  opacity: 1;
+}
+
+.group-icon {
+  @apply w-4 h-4;
 }
 
 .image-card .image-container {

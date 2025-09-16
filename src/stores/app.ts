@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 
-import type { Language, CharacterImage } from '@/types';
+import type { Language, CharacterImage, ChildImage } from '@/types';
 
 import { siteConfig } from '@/config/site';
 
@@ -65,46 +65,36 @@ export const useAppStore = defineStore('app', () => {
     return siteConfig.characters.find(character => character.id === selectedCharacterId.value);
   });
 
-  // 当前角色的图像列表
+  // 当前角色的图像列表（支持图像组）
   const characterImages = computed(() => {
-    let { images } = siteConfig;
+    const resultImages: CharacterImage[] = [];
 
-    // 如果有搜索，则先按搜索过滤
-    if (searchQuery.value.trim()) {
-      images = filterImagesBySearch(images, searchQuery.value.trim());
-    }
-
-    // 如果不是查看全部角色，则按角色过滤
-    if (selectedCharacterId.value !== 'all') {
-      images = images.filter(image => image.characters.includes(selectedCharacterId.value));
-    }
-
-    // 按标签过滤
-    if (selectedTag.value !== 'all') {
-      images = images.filter(image => image.tags.includes(selectedTag.value));
-    }
-
-    // 特殊标签过滤：如果图片有任一特殊tag不满足启用状态，便不会加入结果中
-    images = images.filter(image => {
-      const restrictedTags = siteConfig.tags.filter(tag => tag.isRestricted);
-
-      for (const restrictedTag of restrictedTags) {
-        const imageHasTag = image.tags.includes(restrictedTag.id);
-        const tagIsEnabled = selectedRestrictedTags.value[restrictedTag.id] || false;
-
-        // 如果图片有这个特殊标签，但是这个标签没有被启用，则过滤掉
-        if (imageHasTag && !tagIsEnabled) {
-          return false;
-        }
+    for (const parentImage of siteConfig.images) {
+      // 检查父图像和子图像中是否有任何一个通过过滤
+      const validImages = getValidImagesInGroup(parentImage);
+      
+      if (validImages.length > 0) {
+        // 获取要显示的图像（优先父图像，否则第一个有效子图像）
+        const displayImage = getDisplayImageForGroup(parentImage);
+        
+        // 标记是否为图像组（有子图像且有多个有效图像）
+        const isGroup = parentImage.childImages && validImages.length > 1;
+        
+        // 创建显示用的图像对象，保留组信息
+        const imageForDisplay = {
+          ...displayImage,
+          // 如果是组图的显示图像，保留原始的childImages信息
+          childImages: isGroup ? parentImage.childImages : displayImage.childImages,
+        };
+        
+        resultImages.push(imageForDisplay);
       }
-
-      return true;
-    });
+    }
 
     // 排序
-    images = sortImages(images);
+    const sortedImages = sortImages(resultImages);
 
-    return images;
+    return sortedImages;
   });
 
   // 图像排序函数
@@ -138,35 +128,6 @@ export const useAppStore = defineStore('app', () => {
     });
   };
 
-  // 按搜索条件过滤图片
-  const filterImagesBySearch = (images: CharacterImage[], query: string): CharacterImage[] => {
-    const lowerQuery = query.toLowerCase();
-    return images.filter(image => {
-      // 搜索图片名称
-      const name = getSearchableText(image.name);
-
-      // 搜索描述
-      const description = image.description ? getSearchableText(image.description) : '';
-
-      // 搜索标签
-      const tagsMatch = image.tags?.some(tagId => {
-        const tag = siteConfig.tags.find(t => t.id === tagId);
-        if (!tag) return false;
-
-        const tagName = getSearchableText(tag.name);
-        return tagName.includes(lowerQuery);
-      }) || false;
-
-      // 搜索艺术家名称
-      const artist = getSearchableText(image.artist);
-
-      return name.includes(lowerQuery)
-             || description.includes(lowerQuery)
-             || artist.includes(lowerQuery)
-             || tagsMatch;
-    });
-  };
-
   // 从I18nText或字符串中提取可搜索文本
   const getSearchableText = (text: any): string => {
     if (typeof text === 'string') {
@@ -183,89 +144,67 @@ export const useAppStore = defineStore('app', () => {
       .toLowerCase();
   };
 
-  // 标签计数
+  // 标签计数（支持图像组）
   const tagCounts = computed(() => {
     const counts: Record<string, number> = { all: 0 };
 
-    let imagesToCount = siteConfig.images;
-
-    // 如果有搜索查询，先按搜索过滤
-    if (searchQuery.value.trim()) {
-      imagesToCount = filterImagesBySearch(imagesToCount, searchQuery.value.trim());
-    }
-
-    // 无论是否在搜索，始终按当前选择的角色进行过滤
-    // 如果选择了特定角色并且不是"all"
-    if (selectedCharacterId.value !== 'all') {
-      imagesToCount = imagesToCount.filter(image => image.characters.includes(selectedCharacterId.value));
-    }
-
-    // 应用特殊标签过滤
-    imagesToCount = imagesToCount.filter(image => {
-      const restrictedTags = siteConfig.tags.filter(tag => tag.isRestricted);
-
-      for (const restrictedTag of restrictedTags) {
-        const imageHasTag = image.tags.includes(restrictedTag.id);
-        const tagIsEnabled = selectedRestrictedTags.value[restrictedTag.id] || false;
-
-        // 如果图片有这个特殊标签，但是这个标签没有被启用，则过滤掉
-        if (imageHasTag && !tagIsEnabled) {
-          return false;
-        }
+    // 计算有效的图像组数量
+    const validImageGroups: CharacterImage[] = [];
+    for (const parentImage of siteConfig.images) {
+      const validImages = getValidImagesInGroup(parentImage);
+      if (validImages.length > 0) {
+        const displayImage = getDisplayImageForGroup(parentImage);
+        validImageGroups.push(displayImage);
       }
-
-      return true;
-    });
+    }
 
     // 计算每个标签的数量
     siteConfig.tags.forEach(tag => {
-      const count = imagesToCount.filter(image => image.tags.includes(tag.id)).length;
-
+      const count = validImageGroups.filter(image => image.tags.includes(tag.id)).length;
       counts[tag.id] = count;
     });
 
     // "all"选项的计数是所有匹配的图像总数
-    counts.all = imagesToCount.length;
+    counts.all = validImageGroups.length;
 
     return counts;
   });
 
-  // 获取每个角色的匹配图像数量
+  // 获取每个角色的匹配图像数量（支持图像组）
   const getCharacterMatchCount = (characterId: string): number => {
-    let imagesToCount = siteConfig.images;
-
-    // 如果有搜索查询，先按搜索过滤
-    if (searchQuery.value.trim()) {
-      imagesToCount = filterImagesBySearch(imagesToCount, searchQuery.value.trim());
-    }
-
-    // 应用限制级标签过滤
-    imagesToCount = imagesToCount.filter(image => {
-      const restrictedTags = siteConfig.tags.filter(tag => tag.isRestricted);
-
-      for (const restrictedTag of restrictedTags) {
-        const imageHasTag = image.tags.includes(restrictedTag.id);
-        const tagIsEnabled = selectedRestrictedTags.value[restrictedTag.id] || false;
-
-        // 如果图片有这个特殊标签，但是这个标签没有被启用，则过滤掉
-        if (imageHasTag && !tagIsEnabled) {
-          return false;
+    // 计算有效的图像组数量
+    let validGroupCount = 0;
+    
+    for (const parentImage of siteConfig.images) {
+      const validImages = getValidImagesInGroup(parentImage);
+      if (validImages.length > 0) {
+        const displayImage = getDisplayImageForGroup(parentImage);
+        
+        // 如果是"全部"选项，或者显示图像包含该角色
+        if (characterId === 'all' || displayImage.characters.includes(characterId)) {
+          validGroupCount++;
         }
       }
+    }
 
-      return true;
-    });
-
-    // 如果是"全部"选项，返回所有匹配图像的总数
-    if (characterId === 'all') return imagesToCount.length;
-
-    // 计算该角色的匹配数量
-    return imagesToCount.filter(img => img.characters.includes(characterId)).length;
+    return validGroupCount;
   };
 
-  // 获取单个图像
+  // 获取单个图像（支持子图像ID）
   const getImageById = (id: string): CharacterImage | undefined => {
-    return siteConfig.images.find(img => img.id === id);
+    // 首先查找父图像
+    const parentImage = siteConfig.images.find(img => img.id === id);
+    if (parentImage) {
+      return parentImage;
+    }
+
+    // 如果没找到，查找子图像
+    const groupInfo = getImageGroupByChildId(id);
+    if (groupInfo) {
+      return getChildImageWithDefaults(groupInfo.parentImage, groupInfo.childImage);
+    }
+
+    return undefined;
   };
 
   // 在当前筛选条件下获取图像的索引
@@ -372,6 +311,144 @@ export const useAppStore = defineStore('app', () => {
     return selectedRestrictedTags.value[tagId] || false;
   };
 
+  // 图像组相关辅助函数
+  
+  // 根据child image ID获取父图像和子图像
+  const getImageGroupByChildId = (childId: string): { parentImage: CharacterImage; childImage: ChildImage } | null => {
+    for (const image of siteConfig.images) {
+      if (image.childImages) {
+        const childImage = image.childImages.find(child => child.id === childId);
+        if (childImage) {
+          return { parentImage: image, childImage };
+        }
+      }
+    }
+    return null;
+  };
+
+  // 获取子图像的完整信息（继承父图像属性）
+  const getChildImageWithDefaults = (parentImage: CharacterImage, childImage: ChildImage): CharacterImage => {
+    return {
+      id: childImage.id,
+      name: childImage.name || parentImage.name,
+      description: childImage.description || parentImage.description,
+      artist: childImage.artist || parentImage.artist,
+      src: childImage.src,
+      tags: childImage.tags || parentImage.tags,
+      characters: childImage.characters || parentImage.characters,
+      date: childImage.date || parentImage.date,
+      // 子图像不会有自己的子图像
+      childImages: undefined,
+    };
+  };
+
+  // 检查图像是否通过过滤器
+  const doesImagePassFilter = (image: CharacterImage): boolean => {
+    // 应用限制级标签过滤
+    const restrictedTags = siteConfig.tags.filter(tag => tag.isRestricted);
+
+    for (const restrictedTag of restrictedTags) {
+      const imageHasTag = image.tags.includes(restrictedTag.id);
+      const tagIsEnabled = selectedRestrictedTags.value[restrictedTag.id] || false;
+
+      // 如果图片有这个特殊标签，但是这个标签没有被启用，则过滤掉
+      if (imageHasTag && !tagIsEnabled) {
+        return false;
+      }
+    }
+
+    // 应用搜索过滤
+    if (searchQuery.value.trim()) {
+      const query = searchQuery.value.trim().toLowerCase();
+      
+      // 搜索图片名称
+      const name = getSearchableText(image.name);
+      
+      // 搜索描述
+      const description = getSearchableText(image.description);
+      
+      // 搜索艺术家名称
+      const artist = getSearchableText(image.artist);
+      
+      // 搜索标签
+      const tagsMatch = image.tags?.some(tagId => {
+        const tag = siteConfig.tags.find(t => t.id === tagId);
+        if (!tag) return false;
+        
+        const tagName = getSearchableText(tag.name);
+        return tagName.includes(query);
+      }) || false;
+      
+      const matchesSearch = name.includes(query) 
+                         || description.includes(query) 
+                         || artist.includes(query) 
+                         || tagsMatch;
+      
+      if (!matchesSearch) {
+        return false;
+      }
+    }
+
+    // 应用角色过滤
+    if (selectedCharacterId.value !== 'all') {
+      if (!image.characters.includes(selectedCharacterId.value)) {
+        return false;
+      }
+    }
+
+    // 应用标签过滤
+    if (selectedTag.value !== 'all') {
+      if (!image.tags.includes(selectedTag.value)) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  // 获取图像组的显示图像（用于画廊显示）
+  const getDisplayImageForGroup = (parentImage: CharacterImage): CharacterImage => {
+    // 如果父图像通过过滤，优先显示父图像
+    if (doesImagePassFilter(parentImage)) {
+      return parentImage;
+    }
+
+    // 如果父图像被过滤，查找第一个通过过滤的子图像
+    if (parentImage.childImages) {
+      for (const childImage of parentImage.childImages) {
+        const fullChildImage = getChildImageWithDefaults(parentImage, childImage);
+        if (doesImagePassFilter(fullChildImage)) {
+          return fullChildImage;
+        }
+      }
+    }
+
+    // 如果都没通过过滤，返回父图像（不应该出现这种情况）
+    return parentImage;
+  };
+
+  // 获取图像组的所有有效图像（通过过滤的）
+  const getValidImagesInGroup = (parentImage: CharacterImage): CharacterImage[] => {
+    const validImages: CharacterImage[] = [];
+
+    // 检查父图像
+    if (doesImagePassFilter(parentImage)) {
+      validImages.push(parentImage);
+    }
+
+    // 检查子图像
+    if (parentImage.childImages) {
+      for (const childImage of parentImage.childImages) {
+        const fullChildImage = getChildImageWithDefaults(parentImage, childImage);
+        if (doesImagePassFilter(fullChildImage)) {
+          validImages.push(fullChildImage);
+        }
+      }
+    }
+
+    return validImages;
+  };
+
   return {
     // 加载状态
     isLoading,
@@ -420,5 +497,11 @@ export const useAppStore = defineStore('app', () => {
     currentViewingImage,
     isFromGallery,
     setFromGallery,
+
+    // 图像组相关
+    getImageGroupByChildId,
+    getChildImageWithDefaults,
+    getDisplayImageForGroup,
+    getValidImagesInGroup,
   };
 });
