@@ -46,7 +46,7 @@ export interface CharacterImage {
   name: I18nText;
   description: I18nText;
   artist: I18nText;
-  src: string;
+  src?: string; // Optional for image groups where src is only in childImages
   thumbnail?: string;
   tags: string[]; // tag IDs
   characters: string[]; // character IDs
