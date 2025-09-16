@@ -42,10 +42,24 @@ router.beforeEach((to, from, next) => {
     const imageId = to.params.imageId as string;
     const image = siteConfig.images.find(img => img.id === imageId);
     
-    // 如果是图像组（有childImages），自动重定向到第一个子图像
+    // 如果是图像组（有childImages），自动重定向到第一个可用子图像
     if (image && image.childImages && image.childImages.length > 0) {
-      const firstChildId = image.childImages[0].id;
-      console.log(`重定向图像组 ${imageId} 到第一个子图像 ${firstChildId}`);
+      // 获取第一个可用的子图像ID（考虑过滤）
+      let firstChildId = image.childImages[0].id;
+      
+      // 尝试获取第一个通过过滤的子图像
+      try {
+        const appStore = useAppStore();
+        const firstValidChildId = appStore.getFirstValidChildId(image);
+        if (firstValidChildId) {
+          firstChildId = firstValidChildId;
+        }
+      } catch (error) {
+        // 如果store不可用，使用默认的第一个子图像
+        console.warn('无法获取过滤后的子图像，使用默认第一个:', error);
+      }
+      
+      console.log(`重定向图像组 ${imageId} 到子图像 ${firstChildId}`);
       
       return next({
         name: 'image-viewer-child',
