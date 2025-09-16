@@ -441,6 +441,22 @@ export const useAppStore = defineStore('app', () => {
     return parentImage;
   };
 
+  // 获取图像组中第一个通过过滤的子图像ID
+  const getFirstValidChildId = (parentImage: CharacterImage): string | null => {
+    if (!parentImage.childImages || parentImage.childImages.length === 0) {
+      return null;
+    }
+
+    for (const childImage of parentImage.childImages) {
+      const fullChildImage = getChildImageWithDefaults(parentImage, childImage);
+      if (doesImagePassFilter(fullChildImage)) {
+        return childImage.id;
+      }
+    }
+
+    return null;
+  };
+
   // 获取图像组的显示信息（优先显示父图像信息）
   const getGroupDisplayInfo = (parentImage: CharacterImage, childImage: CharacterImage): CharacterImage => {
     return {
@@ -535,5 +551,6 @@ export const useAppStore = defineStore('app', () => {
     getDisplayImageForGroup,
     getValidImagesInGroup,
     getGroupDisplayInfo,
+    getFirstValidChildId,
   };
 });
