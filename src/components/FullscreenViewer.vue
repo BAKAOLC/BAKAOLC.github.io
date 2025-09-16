@@ -473,7 +473,7 @@ const hasValidChildImages = (image: any) => {
     return false;
   }
   
-  // 检查是否有超过一个通过过滤的子图像（如果只有一个，隐藏组图标识）
+  // 当图集被过滤导致只有一张图时，隐藏图集标识
   const validChildren = appStore.getValidImagesInGroup(originalImage);
   return validChildren.length > 1;
 };
