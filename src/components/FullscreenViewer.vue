@@ -72,9 +72,9 @@
         </div>
       </div>
 
-      <!-- 图像组选择器 - 左侧布局 -->
+      <!-- 桌面端图像组选择器 - 左侧布局 -->
       <transition name="slide-in-left">
-        <div v-if="showGroupSelector" class="group-selector left-side">
+        <div v-if="showGroupSelector && !isMobile" class="group-selector left-side">
           <div class="group-selector-header">
             <h4 class="group-title">{{ $t('viewer.imageGroup') }}</h4>
           </div>
@@ -110,6 +110,71 @@
               </div>
             </button>
           </div>
+        </div>
+      </transition>
+
+      <!-- 移动端图像组悬浮按钮 -->
+      <button v-if="showGroupSelector && isMobile && groupImagesList.length > 1"
+        @click="toggleMobileGroupSelector"
+        class="mobile-group-selector-toggle" :class="{ 'active': isMobileGroupSelectorOpen }">
+        <i class="fa fa-th-large"></i>
+        <span class="toggle-text">{{ $t('viewer.imageGroup') }}</span>
+      </button>
+
+      <!-- 移动端图像组悬浮窗 -->
+      <transition name="mobile-group-selector-fade">
+        <div v-if="isMobileGroupSelectorOpen" class="mobile-group-selector-overlay" @click="closeMobileGroupSelector">
+          <transition name="mobile-group-selector-slide">
+            <div v-if="isMobileGroupSelectorOpen" class="mobile-group-selector-content" @click.stop>
+              <div class="mobile-group-selector-header">
+                <h3>{{ $t('viewer.imageGroup') }}</h3>
+                <button @click="closeMobileGroupSelector" class="close-button">
+                  <i class="fa fa-times"></i>
+                </button>
+              </div>
+              <div class="mobile-group-selector-body">
+                <div class="mobile-group-images-grid">
+                  <div
+                    v-for="image in groupImagesList"
+                    :key="image.id"
+                    class="mobile-group-image-item"
+                    :class="{ 'active': image.id === currentDisplayImageId }"
+                    @click="handleMobileGroupImageClick(image.id)"
+                  >
+                    <div class="mobile-group-image-container">
+                      <ProgressiveImage
+                        v-if="image.src"
+                        :src="image.src"
+                        :alt="t(image.name, currentLanguage)"
+                        class="mobile-group-image"
+                        object-fit="contain"
+                        :show-loader="false"
+                        :show-progress="false"
+                        preload-size="tiny"
+                        display-type="thumbnail"
+                        display-size="small"
+                      />
+                      <div
+                        v-else
+                        class="mobile-group-image-placeholder"
+                        :title="t(image.name, currentLanguage)"
+                      >
+                        <svg class="placeholder-icon" viewBox="0 0 24 24" fill="currentColor">
+                          <path
+                            d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z
+                               M9 17l1.5-2L12 17h7V5H5v12z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="mobile-group-image-info">
+                      <span class="mobile-group-image-name">{{ t(image.name, currentLanguage) }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </transition>
         </div>
       </transition>
     </div>
@@ -306,6 +371,9 @@ const enableImageTransition = ref(true);
 const showMinimap = ref(false);
 const viewportRect = ref({ x: 0, y: 0, width: 0, height: 0 });
 const isDraggingMinimap = ref(false);
+
+// 移动端图像组选择器状态
+const isMobileGroupSelectorOpen = ref(false);
 const minimapDragStart = ref({ x: 0, y: 0 });
 
 // 图像加载状态
@@ -1029,6 +1097,28 @@ const closeMobileInfoOverlay = (): void => {
     mobileInfoOverlayAnimating.value = false;
     // 移动端覆盖层不会改变图像容器大小，无需额外处理
   }, 300);
+};
+
+// 移动端图像组选择器相关方法
+const toggleMobileGroupSelector = (): void => {
+  isMobileGroupSelectorOpen.value = !isMobileGroupSelectorOpen.value;
+  // 阻止背景滚动
+  if (isMobileGroupSelectorOpen.value) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
+};
+
+const closeMobileGroupSelector = (): void => {
+  isMobileGroupSelectorOpen.value = false;
+  // 恢复背景滚动
+  document.body.style.overflow = '';
+};
+
+const handleMobileGroupImageClick = (imageId: string): void => {
+  closeMobileGroupSelector();
+  goToGroupImage(imageId);
 };
 
 // 缩略图滚动条逻辑
@@ -2857,6 +2947,217 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 .group-image-placeholder .placeholder-icon,
 .thumbnail-placeholder .placeholder-icon {
   @apply w-6 h-6;
+}
+
+/* 移动端图像组选择器悬浮按钮 */
+.mobile-group-selector-toggle {
+  position: fixed;
+  left: 1rem;
+  bottom: calc(80px + 1rem);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  z-index: 45;
+  cursor: pointer;
+}
+
+.mobile-group-selector-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.mobile-group-selector-toggle.active {
+  background: rgb(59, 130, 246);
+  border-color: rgb(59, 130, 246);
+  color: white;
+}
+
+.mobile-group-selector-toggle .toggle-text {
+  white-space: nowrap;
+}
+
+/* 移动端图像组选择器悬浮窗 */
+.mobile-group-selector-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  touch-action: none;
+}
+
+.mobile-group-selector-content {
+  width: 100%;
+  max-height: 75vh;
+  background: rgba(0, 0, 0, 0.95);
+  border-radius: 1rem 1rem 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-group-selector-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.mobile-group-selector-header h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+}
+
+.mobile-group-selector-header .close-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  transition: background-color 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.mobile-group-selector-header .close-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.mobile-group-selector-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.mobile-group-images-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.mobile-group-image-item {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.mobile-group-image-item:hover {
+  transform: scale(1.02);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mobile-group-image-item.active {
+  border-color: rgb(59, 130, 246);
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.mobile-group-image-container {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.mobile-group-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mobile-group-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.mobile-group-image-placeholder .placeholder-icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+.mobile-group-image-info {
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.mobile-group-image-name {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.8);
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 移动端图像组选择器动画 */
+.mobile-group-selector-fade-enter-active,
+.mobile-group-selector-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.mobile-group-selector-fade-enter-from,
+.mobile-group-selector-fade-leave-to {
+  opacity: 0;
+}
+
+.mobile-group-selector-slide-enter-active,
+.mobile-group-selector-slide-leave-active {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-group-selector-slide-enter-from,
+.mobile-group-selector-slide-leave-to {
+  transform: translateY(100%);
+}
+
+/* 确保按钮在小屏幕上不被遮挡 */
+@media (max-width: 480px) {
+  .mobile-group-selector-toggle {
+    left: 0.75rem;
+    bottom: calc(80px + 0.75rem);
+    padding: 0.625rem 0.875rem;
+    font-size: 0.8125rem;
+  }
+
+  .mobile-group-images-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
 }
 
 </style>
