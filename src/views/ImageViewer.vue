@@ -24,25 +24,16 @@ const appStore = useAppStore();
 
 // 关闭查看器
 const closeViewer = (): void => {
-  // 如果是从画廊进入的，直接返回画廊
-  if (appStore.isFromGallery) {
-    router.push({ name: 'gallery' });
-  } else {
-    // 直接访问的情况，检查是否有来源页面可以返回
-    if (window.history.length > 1) {
-      router.back();
-    } else {
-      // 如果没有历史记录，默认跳转到画廊
-      router.push({ name: 'gallery' });
-    }
-  }
+  // 使用 store 中配置的返回路由，如果没有配置则默认返回画廊
+  const returnRoute = appStore.getViewerReturnRoute();
+  router.push(returnRoute);
 };
 
 // 监听查看器导航事件
 const handleViewerNavigate = (event: CustomEvent): void => {
   if (event.detail && event.detail.imageId && typeof event.detail.imageId === 'string') {
     const { imageId, childImageId } = event.detail;
-    
+
     if (childImageId) {
       router.push({
         name: 'image-viewer-child',
@@ -62,10 +53,10 @@ const handleViewerNavigate = (event: CustomEvent): void => {
 onMounted(() => {
   // 检查是否是直接导航到查看器
   // 如果前一个路由不存在或不是gallery，说明是直接访问
-  const isDirectNavigation = !history.state || 
-                            !history.state.back || 
-                            !history.state.back.includes('gallery');
-  
+  const isDirectNavigation = !history.state
+                            || !history.state.back
+                            || !history.state.back.includes('gallery');
+
   if (isDirectNavigation) {
     // 直接访问，重置从画廊进入的标记
     appStore.setFromGallery(false);
@@ -76,8 +67,8 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  // 当离开图像查看器时，重置状态为下次直接访问做准备
-  appStore.setFromGallery(false);
+  // 当离开图像查看器时，清除查看器状态
+  appStore.clearViewerState();
   // 事件会通过eventManager自动清理
 });
 </script>
