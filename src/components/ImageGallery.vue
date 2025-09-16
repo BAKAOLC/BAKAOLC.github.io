@@ -21,6 +21,7 @@
         >
           <div class="image-container">
             <ProgressiveImage
+              v-if="image.src"
               :src="image.src"
               :alt="t(image.name, currentLanguage)"
               class="image"
@@ -33,6 +34,15 @@
               display-size="medium"
               :delay-main-image="50"
             />
+            <div
+              v-else
+              class="no-image-placeholder"
+              :title="t(image.name, currentLanguage)"
+            >
+              <svg class="placeholder-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17l1.5-2L12 17h7V5H5v12z"/>
+              </svg>
+            </div>
             <!-- 图像组指示器 -->
             <div v-if="isImageGroup(image)" class="group-indicator" :title="$t('gallery.imageGroup')">
               <layers-icon class="group-icon" />
@@ -343,6 +353,16 @@ const viewImage = (image: CharacterImage): void => {
     @apply px-1 py-0.5 text-xs; /* 移动端更紧凑的标签 */
     font-size: 10px; /* 更小的字体 */
   }
+}
+
+.no-image-placeholder {
+  @apply w-full h-full flex items-center justify-center;
+  @apply bg-gray-100 dark:bg-gray-700;
+  @apply text-gray-400 dark:text-gray-500;
+}
+
+.placeholder-icon {
+  @apply w-8 h-8;
 }
 
 </style>

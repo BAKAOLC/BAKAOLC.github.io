@@ -37,13 +37,21 @@
       <div class="image-container" ref="imageContainer" @wheel="handleImageWheel" @mousedown="handleImageMouseDown"
         @touchstart="handleImageTouchStart" @touchmove="handleImageTouchMove" @touchend="handleImageTouchEnd">
         <transition name="fade" mode="out-in">
-          <ProgressiveImage v-if="currentImage" :key="currentImage.id" :src="currentImage.src"
+          <ProgressiveImage v-if="currentImage && currentImage.src" :key="currentImage.id" :src="currentImage.src"
             :alt="t(currentImage.name, currentLanguage)" class="image" image-class="fullscreen-image"
             object-fit="contain" :show-loader="true" display-type="original" priority="high" @load="onImageLoad"
             ref="imageElement" :style="{
               transform: imageTransform,
               transition: imageTransitionStyle
             }" />
+          <div v-else-if="currentImage" class="no-image-display">
+            <div class="no-image-content">
+              <svg class="no-image-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17l1.5-2L12 17h7V5H5v12z"/>
+              </svg>
+              <p class="no-image-text">{{ t(currentImage.name, currentLanguage) }}</p>
+            </div>
+          </div>
         </transition>
 
         <!-- 小地图控件 -->
@@ -74,6 +82,7 @@
             :class="{ 'active': image.id === currentDisplayImageId }"
           >
             <ProgressiveImage 
+              v-if="image.src"
               :src="image.src" 
               :alt="t(image.name, currentLanguage)" 
               class="group-image-thumbnail"
@@ -83,6 +92,11 @@
               display-type="thumbnail"
               display-size="small" 
             />
+            <div v-else class="group-image-placeholder">
+              <svg class="placeholder-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17l1.5-2L12 17h7V5H5v12z"/>
+              </svg>
+            </div>
             <div class="group-image-info">
               <span class="group-image-name">{{ t(image.name, currentLanguage) }}</span>
             </div>
@@ -104,9 +118,22 @@
           <button v-for="(image, index) in imagesList" :key="image.id" @click="handleThumbnailClick(index, $event)"
             @mousedown="handleThumbnailButtonMouseDown" @touchstart="handleThumbnailButtonTouchStart"
             class="thumbnail-button" :class="{ 'active': currentIndex === index }">
-            <ProgressiveImage :src="image.src" :alt="t(image.name, currentLanguage)" class="thumbnail-image"
-              object-fit="cover" :show-loader="false" preload-size="tiny" display-type="thumbnail"
-              display-size="small" />
+            <ProgressiveImage 
+              v-if="image.src"
+              :src="image.src" 
+              :alt="t(image.name, currentLanguage)" 
+              class="thumbnail-image"
+              object-fit="cover" 
+              :show-loader="false" 
+              preload-size="tiny" 
+              display-type="thumbnail"
+              display-size="small" 
+            />
+            <div v-else class="thumbnail-placeholder">
+              <svg class="placeholder-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17l1.5-2L12 17h7V5H5v12z"/>
+              </svg>
+            </div>
           </button>
         </div>
       </div>
@@ -281,7 +308,7 @@ const imagesList = computed(() => {
       // 显示完整的图集，但会索引到目标childImage
       const parentImage = appStore.getImageById(props.imageId);
       if (parentImage && parentImage.childImages && parentImage.childImages.length > 0) {
-        // 返回完整的图集（包含父图像和所有子图像）
+        // 返回完整的图集（包含所有子图像）
         const groupImages = appStore.getValidImagesInGroup(parentImage);
         return groupImages;
       }
@@ -293,7 +320,7 @@ const imagesList = computed(() => {
         // 检查这个imageId是否是一个childImage
         const groupInfo = appStore.getImageGroupByChildId(props.imageId);
         if (groupInfo) {
-          // 如果imageId是childImage，只显示这一张子图像
+          // 如果imageId是childImage，只显示这一张子图像（不允许切换）
           return [image];
         } else {
           // 如果是父图像或普通图像
@@ -365,6 +392,17 @@ const groupImagesList = computed(() => {
 
 // 是否显示图像组选择器
 const showGroupSelector = computed(() => {
+  // 如果是直接访问单个子图像 (/:childImageId)，不显示组选择器
+  if (isDirectAccess.value && !props.childImageId) {
+    // 检查是否是直接访问子图像
+    const groupInfo = appStore.getImageGroupByChildId(props.imageId);
+    if (groupInfo) {
+      // 直接访问子图像，不显示组选择器
+      return false;
+    }
+  }
+  
+  // 其他情况：如果有多个图像则显示选择器
   return groupImagesList.value.length > 1;
 });
 
@@ -1703,11 +1741,11 @@ const preloadAdjacentImages = (): void => {
   const imagesToPreload: string[] = [];
 
   // 预加载前一张和后一张图片（普通优先级）
-  if (currentIdx > 0) {
-    imagesToPreload.push(imagesList.value[currentIdx - 1].src);
+  if (currentIdx > 0 && imagesList.value[currentIdx - 1].src) {
+    imagesToPreload.push(imagesList.value[currentIdx - 1].src!);
   }
-  if (currentIdx < imagesList.value.length - 1) {
-    imagesToPreload.push(imagesList.value[currentIdx + 1].src);
+  if (currentIdx < imagesList.value.length - 1 && imagesList.value[currentIdx + 1].src) {
+    imagesToPreload.push(imagesList.value[currentIdx + 1].src!);
   }
 
   // 异步预加载相邻图片
@@ -1719,11 +1757,11 @@ const preloadAdjacentImages = (): void => {
 
   // 预加载前两张和后两张图片（低优先级）
   const lowPriorityImages: string[] = [];
-  if (currentIdx > 1) {
-    lowPriorityImages.push(imagesList.value[currentIdx - 2].src);
+  if (currentIdx > 1 && imagesList.value[currentIdx - 2].src) {
+    lowPriorityImages.push(imagesList.value[currentIdx - 2].src!);
   }
-  if (currentIdx < imagesList.value.length - 2) {
-    lowPriorityImages.push(imagesList.value[currentIdx + 2].src);
+  if (currentIdx < imagesList.value.length - 2 && imagesList.value[currentIdx + 2].src) {
+    lowPriorityImages.push(imagesList.value[currentIdx + 2].src!);
   }
 
   // 低优先级预加载 - 延迟执行以确保当前图片优先
@@ -1745,11 +1783,14 @@ watch(currentImage, (newImage) => {
     // 重置图像加载状态
     isOriginalImageLoaded.value = false;
 
-    // 获取当前图片的缩略图URL
-    const thumbnailSrc = getThumbnailUrl(newImage.src, 'tiny');
+    // 只对有src的图像处理缓存
+    if (newImage.src) {
+      // 获取当前图片的缩略图URL
+      const thumbnailSrc = getThumbnailUrl(newImage.src, 'tiny');
 
-    // 设置当前图片，这会触发优先级重新评估
-    imageCache.setCurrentImage(newImage.src, thumbnailSrc || undefined);
+      // 设置当前图片，这会触发优先级重新评估
+      imageCache.setCurrentImage(newImage.src, thumbnailSrc || undefined);
+    }
 
     // 延迟触发预加载，确保当前图片优先
     nextTick(() => {
@@ -2558,4 +2599,35 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
     @apply py-3 px-4;
   }
 }
+
+/* Image placeholders */
+.no-image-display {
+  @apply w-full h-full flex items-center justify-center;
+  @apply bg-gray-900/50;
+  @apply text-gray-400;
+}
+
+.no-image-content {
+  @apply text-center;
+}
+
+.no-image-icon {
+  @apply w-16 h-16 mx-auto mb-4;
+}
+
+.no-image-text {
+  @apply text-lg;
+}
+
+.group-image-placeholder,
+.thumbnail-placeholder {
+  @apply w-full h-full flex items-center justify-center;
+  @apply bg-gray-700/50 text-gray-500;
+}
+
+.group-image-placeholder .placeholder-icon,
+.thumbnail-placeholder .placeholder-icon {
+  @apply w-6 h-6;
+}
+
 </style>
