@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 import FullscreenViewer from '@/components/FullscreenViewer.vue';
 import { useEventManager } from '@/composables/useEventManager';
@@ -19,6 +19,7 @@ defineProps<{
 }>();
 
 const router = useRouter();
+const route = useRoute();
 const eventManager = useEventManager();
 const appStore = useAppStore();
 
@@ -55,13 +56,24 @@ const handleViewerNavigate = (event: CustomEvent): void => {
 };
 
 onMounted(() => {
-  // 直接访问图像查看器时，重置从画廊进入的标记
-  appStore.setFromGallery(false);
+  // 检查是否是直接导航到查看器
+  // 如果前一个路由不存在或不是gallery，说明是直接访问
+  const isDirectNavigation = !history.state || 
+                            !history.state.back || 
+                            !history.state.back.includes('gallery');
+  
+  if (isDirectNavigation) {
+    // 直接访问，重置从画廊进入的标记
+    appStore.setFromGallery(false);
+  }
+  // 如果是从画廊来的（isFromGallery已经是true），保持状态不变
 
   eventManager.addEventListener('viewerNavigate', handleViewerNavigate as EventListener);
 });
 
 onBeforeUnmount(() => {
+  // 当离开图像查看器时，重置状态为下次直接访问做准备
+  appStore.setFromGallery(false);
   // 事件会通过eventManager自动清理
 });
 </script>
