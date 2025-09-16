@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+const crypto = require('crypto');
+const fs = require('fs').promises;
 const path = require('path');
 
 const sharp = require('sharp');
-
-const fs = require('fs').promises;
-const crypto = require('crypto');
 
 // 配置
 const CONFIG = {
@@ -45,30 +45,35 @@ const CONFIG = {
 
 /**
  * 计算文件的哈希值
+ * @param {string} filePath - 文件路径
+ * @returns {Promise<string|null>} 文件哈希值或null
  */
 async function getFileHash(filePath) {
   try {
     const fileBuffer = await fs.readFile(filePath);
     return crypto.createHash('md5').update(fileBuffer).digest('hex');
-  } catch (error) {
+  } catch {
     return null;
   }
 }
 
 /**
  * 加载缓存数据
+ * @returns {Promise<Record<string, string>>} 缓存对象
  */
 async function loadCache() {
   try {
     const cacheData = await fs.readFile(CONFIG.cacheFile, 'utf8');
     return JSON.parse(cacheData);
-  } catch (error) {
+  } catch {
     return {};
   }
 }
 
 /**
  * 保存缓存数据
+ * @param {Record<string, string>} cache - 缓存对象
+ * @returns {Promise<void>}
  */
 async function saveCache(cache) {
   await fs.writeFile(CONFIG.cacheFile, JSON.stringify(cache, null, 2));
@@ -76,6 +81,9 @@ async function saveCache(cache) {
 
 /**
  * 递归获取目录中的所有图像文件
+ * @param {string} dir - 目录路径
+ * @param {string[]} files - 文件列表
+ * @returns {Promise<string[]>} 图像文件路径数组
  */
 async function getImageFiles(dir, files = []) {
   try {
@@ -104,6 +112,9 @@ async function getImageFiles(dir, files = []) {
 
 /**
  * 生成缩略图文件名
+ * @param {string} originalPath - 原始文件路径
+ * @param {string} sizeKey - 尺寸键名
+ * @returns {string} 缩略图文件路径
  */
 function getThumbnailPath(originalPath, sizeKey) {
   const relativePath = path.relative(CONFIG.inputDir, originalPath);
@@ -115,6 +126,11 @@ function getThumbnailPath(originalPath, sizeKey) {
 
 /**
  * 检查是否需要生成缩略图
+ * @param {string} inputPath - 输入文件路径
+ * @param {string} outputPath - 输出文件路径
+ * @param {Record<string, string>} cache - 缓存对象
+ * @param {string} sizeKey - 尺寸键名
+ * @returns {Promise<boolean>} 是否需要生成
  */
 async function needsGeneration(inputPath, outputPath, cache, sizeKey) {
   try {
@@ -136,7 +152,7 @@ async function needsGeneration(inputPath, outputPath, cache, sizeKey) {
     }
 
     return false;
-  } catch (error) {
+  } catch {
     // 输出文件不存在，需要生成
     return true;
   }
@@ -144,6 +160,10 @@ async function needsGeneration(inputPath, outputPath, cache, sizeKey) {
 
 /**
  * 生成单个尺寸的缩略图
+ * @param {string} inputPath - 输入文件路径
+ * @param {string} sizeKey - 尺寸键名
+ * @param {Record<string, string>} cache - 缓存对象
+ * @returns {Promise<{skipped?: boolean, generated?: boolean, error?: boolean, path: string, size: string}>} 处理结果
  */
 async function generateThumbnail(inputPath, sizeKey, cache) {
   const sizeConfig = CONFIG.sizes[sizeKey];
@@ -206,6 +226,9 @@ async function generateThumbnail(inputPath, sizeKey, cache) {
 
 /**
  * 清理已删除图像对应的缓存条目
+ * @param {Record<string, string>} cache - 缓存对象
+ * @param {string[]} existingImages - 现有图像文件列表
+ * @returns {Promise<number>} 删除的缓存条目数量
  */
 async function cleanupCache(cache, existingImages) {
   // 将绝对路径转换为相对路径集合
@@ -234,6 +257,8 @@ async function cleanupCache(cache, existingImages) {
 
 /**
  * 清理已删除图像对应的缩略图文件
+ * @param {string[]} existingImages - 现有图像文件列表
+ * @returns {Promise<{files: number, dirs: number}>} 删除的文件和目录数量
  */
 async function cleanupOrphanedThumbnails(existingImages) {
   try {
@@ -293,6 +318,9 @@ async function cleanupOrphanedThumbnails(existingImages) {
 
 /**
  * 递归获取所有缩略图文件
+ * @param {string} dir - 目录路径
+ * @param {string[]} files - 文件列表
+ * @returns {Promise<string[]>} 缩略图文件路径数组
  */
 async function getAllThumbnailFiles(dir, files = []) {
   try {
@@ -307,7 +335,7 @@ async function getAllThumbnailFiles(dir, files = []) {
         files.push(fullPath);
       }
     }
-  } catch (error) {
+  } catch {
     // 目录不存在，忽略
   }
 
@@ -316,6 +344,8 @@ async function getAllThumbnailFiles(dir, files = []) {
 
 /**
  * 生成缩略图映射文件
+ * @param {string[]} imageFiles - 图像文件路径数组
+ * @returns {Promise<void>}
  */
 async function generateThumbnailMap(imageFiles) {
   const thumbnailMap = {};
@@ -343,6 +373,7 @@ async function generateThumbnailMap(imageFiles) {
 
 /**
  * 主函数
+ * @returns {Promise<void>}
  */
 async function main() {
   console.log('开始生成缩略图...');
@@ -354,7 +385,7 @@ async function main() {
     try {
       await fs.access(CONFIG.inputDir);
       console.log('✅ 输入目录存在');
-    } catch (error) {
+    } catch {
       console.error('❌ 输入目录不存在:', CONFIG.inputDir);
       return;
     }

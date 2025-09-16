@@ -116,7 +116,7 @@ const visibleRestrictedTags = computed(() => {
         const tagName = getSearchableText(tag.name);
         return tagName.includes(lowerQuery);
       }) || false;
-      const artist = getSearchableText(image.artist);
+      const artist = image.artist ? getSearchableText(image.artist) : '';
 
       return name.includes(lowerQuery)
              || description.includes(lowerQuery)
