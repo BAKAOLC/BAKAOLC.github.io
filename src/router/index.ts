@@ -20,6 +20,12 @@ const router = createRouter({
       props: true,
     },
     {
+      path: '/viewer/:imageId/:childImageId',
+      name: 'image-viewer-child',
+      component: () => import('@/views/ImageViewer.vue'),
+      props: true,
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('@/views/NotFound.vue'),
