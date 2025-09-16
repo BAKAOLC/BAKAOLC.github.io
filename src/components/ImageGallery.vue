@@ -21,6 +21,7 @@
         >
           <div class="image-container">
             <ProgressiveImage
+              v-if="image.src"
               :src="image.src"
               :alt="t(image.name, currentLanguage)"
               class="image"
@@ -33,6 +34,22 @@
               display-size="medium"
               :delay-main-image="50"
             />
+            <div
+              v-else
+              class="no-image-placeholder"
+              :title="t(image.name, currentLanguage)"
+            >
+              <svg class="placeholder-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z
+                     M9 17l1.5-2L12 17h7V5H5v12z"
+                />
+              </svg>
+            </div>
+            <!-- 图像组指示器 -->
+            <div v-if="isImageGroup(image)" class="group-indicator" :title="$t('gallery.imageGroup')">
+              <layers-icon class="group-icon" />
+            </div>
           </div>
 
           <div class="image-info">
@@ -53,6 +70,7 @@
 </template>
 
 <script setup lang="ts">
+import { Layers as LayersIcon } from 'lucide-vue-next';
 import { computed, ref, watch, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -105,6 +123,34 @@ const { getSortedTags, getTagColor, getTagName } = useTags();
 
 const currentLanguage = computed(() => appStore.currentLanguage);
 
+// 检查图像是否为图像组（当过滤结果只有一张图像时隐藏指示器）
+const isImageGroup = (image: CharacterImage): boolean => {
+  // 获取原始图像信息
+  let originalImage = image;
+  if (image && image.id) {
+    const originalFromStore = appStore.getImageById(image.id);
+    if (originalFromStore) {
+      originalImage = originalFromStore;
+    }
+  }
+
+  // 检查是否有子图像
+  if (!originalImage || !originalImage.childImages || originalImage.childImages.length === 0) {
+    return false;
+  }
+
+  // 当图集被过滤导致只有一张图时，隐藏图集标识
+  const validChildren = appStore.getValidImagesInGroup(originalImage);
+  return validChildren.length > 1;
+};
+
+// 通用的翻译辅助函数
+const t = (text: I18nText | string, lang?: string): string => {
+  if (typeof text === 'string') return text;
+  const currentLang = lang || currentLanguage.value;
+  return text[currentLang as keyof I18nText] || text.zh || text.en || '';
+};
+
 const viewImage = (image: CharacterImage): void => {
   if (!image || !image.id) {
     console.warn('无效的图片数据，无法查看');
@@ -112,12 +158,6 @@ const viewImage = (image: CharacterImage): void => {
   }
 
   eventManager.dispatchEvent('viewImage', { imageId: image.id });
-};
-
-const t = (text: I18nText | string, lang?: string): string => {
-  if (typeof text === 'string') return text;
-  if (!lang) return text.zh || text.en || '';
-  return text[lang as keyof I18nText] || text.en || '';
 };
 </script>
 
@@ -210,6 +250,27 @@ const t = (text: I18nText | string, lang?: string): string => {
 
 .image-container {
   @apply overflow-hidden;
+  position: relative;
+}
+
+/* 图像组指示器 */
+.group-indicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  @apply bg-blue-600 text-white rounded-full p-1.5;
+  @apply shadow-lg backdrop-blur-sm;
+  opacity: 0.9;
+  z-index: 10;
+  transition: opacity 0.2s ease;
+}
+
+.group-indicator:hover {
+  opacity: 1;
+}
+
+.group-icon {
+  @apply w-4 h-4;
 }
 
 .image-card .image-container {
@@ -311,6 +372,16 @@ const t = (text: I18nText | string, lang?: string): string => {
     @apply px-1 py-0.5 text-xs; /* 移动端更紧凑的标签 */
     font-size: 10px; /* 更小的字体 */
   }
+}
+
+.no-image-placeholder {
+  @apply w-full h-full flex items-center justify-center;
+  @apply bg-gray-100 dark:bg-gray-700;
+  @apply text-gray-400 dark:text-gray-500;
+}
+
+.placeholder-icon {
+  @apply w-8 h-8;
 }
 
 </style>

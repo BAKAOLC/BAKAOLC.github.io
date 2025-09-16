@@ -264,14 +264,27 @@ const toggleSortOrder = (): void => {
 // 打开查看器
 const openViewer = (event: CustomEvent): void => {
   if (event.detail && event.detail.imageId && typeof event.detail.imageId === 'string') {
-    // 标记用户是从画廊进入查看器
-    appStore.setFromGallery(true);
+    // 设置查看器返回到画廊
+    appStore.setViewerReturnRoute({ name: 'gallery' });
 
     currentImageId.value = event.detail.imageId;
     viewerActive.value = true;
 
-    // 使用 Vue Router 导航到查看器页面
-    router.push(`/viewer/${event.detail.imageId}`);
+    // 检查是否为图像组，如果是则导航到第一个子图像
+    const image = appStore.getImageById(event.detail.imageId);
+    if (image && image.childImages && image.childImages.length > 0) {
+      // 图像组：导航到 /viewer/:parentId/:firstValidChildId
+      const firstValidChildId = appStore.getFirstValidChildId(image);
+      if (firstValidChildId) {
+        router.push(`/viewer/${event.detail.imageId}/${firstValidChildId}`);
+      } else {
+        // 如果没有有效的子图像，这个组图应该不会在过滤列表中出现
+        console.warn('图像组没有有效的子图像，无法打开查看器');
+      }
+    } else {
+      // 普通图像：导航到 /viewer/:imageId
+      router.push(`/viewer/${event.detail.imageId}`);
+    }
   } else {
     console.warn('无效的图片ID，无法打开查看器');
   }

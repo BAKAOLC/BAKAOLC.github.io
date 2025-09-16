@@ -71,6 +71,7 @@ export default {
     sortAsc: '正序',
     sortDesc: '倒序',
     restrictedTags: '限制级标签',
+    imageGroup: '图像组',
   },
   personal: {
     contactMe: '联系我',
@@ -94,6 +95,7 @@ export default {
     hideInfo: '隐藏信息',
     minimap: '小地图',
     navigation: '导航',
+    imageGroup: '图像组',
   },
   loading: {
     title: '正在加载',
