@@ -277,18 +277,18 @@ export const siteConfig: SiteConfig = {
   ],
 
   images: [
-    // 设定图（图像组示例）
+    // 设定图
     {
       id: 'design-1',
       name: {
-        en: 'Character Design Set',
-        zh: '角色设定图组',
-        jp: 'キャラクター設定セット',
+        en: 'Normal Form',
+        zh: '普通形态',
+        jp: '通常形態',
       },
       description: {
-        en: 'Complete character design collection with different forms',
-        zh: '完整的角色设定图集，包含不同形态',
-        jp: '異なる形態を含む完全なキャラクター設定コレクション',
+        en: 'Normal form character design',
+        zh: '普通形态角色设定',
+        jp: '通常形態のキャラクター設定',
       },
       artist: {
         en: 'Chengling',
@@ -299,23 +299,28 @@ export const siteConfig: SiteConfig = {
       tags: ['commission', 'design'],
       characters: ['ritsukage-utsumabo'],
       date: '2024-02-28',
-      childImages: [
-        {
-          id: 'design-1-cat',
-          name: {
-            en: 'Cat Girl Form',
-            zh: '猫娘形态',
-            jp: '猫娘形態',
-          },
-          description: {
-            en: 'Cat girl form character design',
-            zh: '猫娘形态角色设定',
-            jp: '猫娘形態のキャラクター設定',
-          },
-          src: '/assets/catagory/ritsukage-utsumabo/design/2.png',
-          date: '2024-02-28',
-        },
-      ],
+    },
+    {
+      id: 'design-2',
+      name: {
+        en: 'Cat Girl Form',
+        zh: '猫娘形态',
+        jp: '猫娘形態',
+      },
+      description: {
+        en: 'Cat girl form character design',
+        zh: '猫娘形态角色设定',
+        jp: '猫娘形態のキャラクター設定',
+      },
+      artist: {
+        en: 'Chengling',
+        zh: '橙灵光',
+        jp: '橙灵光',
+      },
+      src: '/assets/catagory/ritsukage-utsumabo/design/2.png',
+      tags: ['commission', 'design'],
+      characters: ['ritsukage-utsumabo'],
+      date: '2024-05-10',
     },
 
     // 壁纸

@@ -278,20 +278,33 @@ const imagesList = computed(() => {
     // 直接访问时的逻辑
     if (props.childImageId) {
       // 访问子图像：/:imageId/:childImageId
-      // 只显示该子图像
-      const childImage = appStore.getImageById(props.childImageId);
-      return childImage ? [childImage] : [];
-    } else {
-      // 访问主图像：/:imageId
+      // 显示完整的图集，但会索引到目标childImage
       const parentImage = appStore.getImageById(props.imageId);
-      if (parentImage) {
-        if (parentImage.childImages && parentImage.childImages.length > 0) {
-          // 如果是组图的主图像，显示整个图集
-          const groupImages = appStore.getValidImagesInGroup(parentImage);
-          return groupImages;
+      if (parentImage && parentImage.childImages && parentImage.childImages.length > 0) {
+        // 返回完整的图集（包含父图像和所有子图像）
+        const groupImages = appStore.getValidImagesInGroup(parentImage);
+        return groupImages;
+      }
+      return [];
+    } else {
+      // 访问图像：/:imageId
+      const image = appStore.getImageById(props.imageId);
+      if (image) {
+        // 检查这个imageId是否是一个childImage
+        const groupInfo = appStore.getImageGroupByChildId(props.imageId);
+        if (groupInfo) {
+          // 如果imageId是childImage，只显示这一张子图像
+          return [image];
         } else {
-          // 普通图像，只显示该图像
-          return [parentImage];
+          // 如果是父图像或普通图像
+          if (image.childImages && image.childImages.length > 0) {
+            // 如果是组图的主图像，显示整个图集
+            const groupImages = appStore.getValidImagesInGroup(image);
+            return groupImages;
+          } else {
+            // 普通图像，只显示该图像
+            return [image];
+          }
         }
       }
       return [];
