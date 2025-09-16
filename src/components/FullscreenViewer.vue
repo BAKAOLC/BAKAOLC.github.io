@@ -34,76 +34,79 @@
     </div>
 
     <div class="viewer-content">
-      <div class="image-container" ref="imageContainer" @wheel="handleImageWheel" @mousedown="handleImageMouseDown"
-        @touchstart="handleImageTouchStart" @touchmove="handleImageTouchMove" @touchend="handleImageTouchEnd">
-        <transition name="fade" mode="out-in">
-          <ProgressiveImage v-if="currentImage && currentImage.src" :key="currentImage.id" :src="currentImage.src"
-            :alt="t(currentImage.name, currentLanguage)" class="image" image-class="fullscreen-image"
-            object-fit="contain" :show-loader="true" display-type="original" priority="high" @load="onImageLoad"
-            ref="imageElement" :style="{
-              transform: imageTransform,
-              transition: imageTransitionStyle
-            }" />
-          <div v-else-if="currentImage" class="no-image-display">
-            <div class="no-image-content">
-              <svg class="no-image-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17l1.5-2L12 17h7V5H5v12z"/>
-              </svg>
-              <p class="no-image-text">{{ t(currentImage.name, currentLanguage) }}</p>
+      <!-- 主图像区域 -->
+      <div class="main-image-area" :class="{ 'with-group-selector': showGroupSelector }">
+        <div class="image-container" ref="imageContainer" @wheel="handleImageWheel" @mousedown="handleImageMouseDown"
+          @touchstart="handleImageTouchStart" @touchmove="handleImageTouchMove" @touchend="handleImageTouchEnd">
+          <transition name="fade" mode="out-in">
+            <ProgressiveImage v-if="currentImage && currentImage.src" :key="currentImage.id" :src="currentImage.src"
+              :alt="t(currentImage.name, currentLanguage)" class="image" image-class="fullscreen-image"
+              object-fit="contain" :show-loader="true" display-type="original" priority="high" @load="onImageLoad"
+              ref="imageElement" :style="{
+                transform: imageTransform,
+                transition: imageTransitionStyle
+              }" />
+            <div v-else-if="currentImage" class="no-image-display">
+              <div class="no-image-content">
+                <svg class="no-image-icon" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17l1.5-2L12 17h7V5H5v12z"/>
+                </svg>
+                <p class="no-image-text">{{ t(currentImage.name, currentLanguage) }}</p>
+              </div>
             </div>
-          </div>
-        </transition>
+          </transition>
 
-        <!-- 小地图控件 -->
-        <div v-if="showMinimap" class="minimap-container" :class="{ 'dragging': isDraggingMinimap }"
-          @mousedown="handleMinimapMouseDown" @touchstart="handleMinimapTouchStart">
-          <div class="minimap-image-container">
-            <img :src="currentImage?.src" :alt="t(currentImage?.name, currentLanguage)" class="minimap-image"
-              ref="minimapImage" />
-            <div class="minimap-image-border" :style="imageBorderStyle"></div>
-            <div class="minimap-viewport" :style="viewportStyle"></div>
+          <!-- 小地图控件 -->
+          <div v-if="showMinimap" class="minimap-container" :class="{ 'dragging': isDraggingMinimap }"
+            @mousedown="handleMinimapMouseDown" @touchstart="handleMinimapTouchStart">
+            <div class="minimap-image-container">
+              <img :src="currentImage?.src" :alt="t(currentImage?.name, currentLanguage)" class="minimap-image"
+                ref="minimapImage" />
+              <div class="minimap-image-border" :style="imageBorderStyle"></div>
+              <div class="minimap-viewport" :style="viewportStyle"></div>
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- 图像组选择器 -->
+      <transition name="slide-in-right">
+        <div v-if="showGroupSelector" class="group-selector">
+          <div class="group-selector-header">
+            <h4 class="group-title">{{ $t('viewer.imageGroup') }}</h4>
+          </div>
+          <div class="group-images-list">
+            <button 
+              v-for="image in groupImagesList" 
+              :key="image.id"
+              @click="goToGroupImage(image.id)"
+              class="group-image-button"
+              :class="{ 'active': image.id === currentDisplayImageId }"
+            >
+              <ProgressiveImage 
+                v-if="image.src"
+                :src="image.src" 
+                :alt="t(image.name, currentLanguage)" 
+                class="group-image-thumbnail"
+                object-fit="cover" 
+                :show-loader="false" 
+                preload-size="tiny" 
+                display-type="thumbnail"
+                display-size="small" 
+              />
+              <div v-else class="group-image-placeholder">
+                <svg class="placeholder-icon" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17l1.5-2L12 17h7V5H5v12z"/>
+                </svg>
+              </div>
+              <div class="group-image-info">
+                <span class="group-image-name">{{ t(image.name, currentLanguage) }}</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </transition>
     </div>
-
-    <!-- 图像组选择器 -->
-    <transition name="slide-in-right">
-      <div v-if="showGroupSelector" class="group-selector">
-        <div class="group-selector-header">
-          <h4 class="group-title">{{ $t('viewer.imageGroup') }}</h4>
-        </div>
-        <div class="group-images-list">
-          <button 
-            v-for="image in groupImagesList" 
-            :key="image.id"
-            @click="goToGroupImage(image.id)"
-            class="group-image-button"
-            :class="{ 'active': image.id === currentDisplayImageId }"
-          >
-            <ProgressiveImage 
-              v-if="image.src"
-              :src="image.src" 
-              :alt="t(image.name, currentLanguage)" 
-              class="group-image-thumbnail"
-              object-fit="cover" 
-              :show-loader="false" 
-              preload-size="tiny" 
-              display-type="thumbnail"
-              display-size="small" 
-            />
-            <div v-else class="group-image-placeholder">
-              <svg class="placeholder-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17l1.5-2L12 17h7V5H5v12z"/>
-              </svg>
-            </div>
-            <div class="group-image-info">
-              <span class="group-image-name">{{ t(image.name, currentLanguage) }}</span>
-            </div>
-          </button>
-        </div>
-      </div>
-    </transition>
 
     <div class="viewer-navigation">
       <button class="nav-button prev-button" @click="prevImage" :disabled="!hasPrevImage" :title="t('viewer.prev')">
@@ -490,8 +493,22 @@ const goToImage = (index: number): void => {
       return;
     }
 
-    // 导航到目标图像，选择第一个有效图像
-    navigateToImage(targetImage.id);
+    // 检查目标图像是否是图像组的一部分
+    const groupInfo = appStore.getImageGroupByChildId(targetImage.id);
+    if (groupInfo) {
+      // 如果是子图像，导航到组内的该图像
+      const parentImageId = groupInfo.parentImage.id;
+      // 使用过滤后的第一个有效子图像
+      const firstValidChildId = appStore.getFirstValidChildId(groupInfo.parentImage);
+      navigateToImage(parentImageId, firstValidChildId || targetImage.id);
+    } else if (targetImage.childImages && targetImage.childImages.length > 0) {
+      // 如果是父图像，导航到其第一个有效子图像
+      const firstValidChildId = appStore.getFirstValidChildId(targetImage);
+      navigateToImage(targetImage.id, firstValidChildId || targetImage.childImages[0].id);
+    } else {
+      // 普通图像，直接导航
+      navigateToImage(targetImage.id);
+    }
   }
 };
 
@@ -2189,8 +2206,19 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 
 .viewer-content {
   @apply flex-1 overflow-hidden;
+  @apply flex;
+  @apply relative;
+}
+
+.main-image-area {
+  @apply flex-1;
   @apply flex items-center justify-center;
   @apply relative;
+  transition: margin-right 0.3s ease;
+}
+
+.main-image-area.with-group-selector {
+  margin-right: 220px; /* 为右侧选择器留出空间 */
 }
 
 .image-container {
@@ -2287,6 +2315,7 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 
 .thumbnail-container {
   @apply w-full h-full relative;
+  position: relative; /* 确保子元素绝对定位相对于此容器 */
 }
 
 .image-thumbnails-container.dragging .thumbnail-button {
@@ -2316,6 +2345,7 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   @apply bg-blue-600/90 rounded;
   @apply p-1;
   @apply flex items-center justify-center;
+  z-index: 10; /* 确保指示器显示在图像之上 */
 }
 
 .layers-icon {
@@ -2582,16 +2612,17 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 
 /* 图像组选择器 */
 .group-selector {
-  position: fixed;
-  top: 60px;
-  right: 20px;
-  bottom: 100px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
   width: 200px;
-  @apply bg-gray-900/95 backdrop-blur-sm rounded-lg shadow-2xl;
+  @apply bg-gray-900/95 backdrop-blur-sm shadow-2xl;
   @apply text-white;
   @apply flex flex-col;
-  z-index: 50;
+  z-index: 10;
   overflow: hidden;
+  border-left: 1px solid rgba(75, 85, 99, 0.3);
 }
 
 .group-selector-header {
@@ -2645,11 +2676,18 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 
 /* 移动端适配 */
 @media (max-width: 768px) {
+  .main-image-area.with-group-selector {
+    margin-right: 0; /* 移动端不使用固定右侧布局 */
+  }
+  
   .group-selector {
+    position: fixed;
     top: 50px;
     right: 10px;
     bottom: 80px;
-    width: 160px;
+    width: 180px;
+    @apply rounded-lg;
+    z-index: 50;
   }
   
   .group-image-thumbnail {
