@@ -455,7 +455,18 @@ const getDescriptionWithFallback = computed(() => {
 
 // 检查图像是否有有效的子图像（用于显示组图标识）
 const hasValidChildImages = (image: any) => {
-  return image && image.childImages && image.childImages.length > 0;
+  // 如果直接有 childImages，这是一个原始的父图像
+  if (image && image.childImages && image.childImages.length > 0) {
+    return true;
+  }
+  
+  // 如果这是一个从过滤列表中来的混合显示图像，检查原始父图像
+  if (image && image.id) {
+    const originalImage = appStore.getImageById(image.id);
+    return originalImage && originalImage.childImages && originalImage.childImages.length > 0;
+  }
+  
+  return false;
 };
 
 const prevImage = (): void => {
