@@ -369,11 +369,11 @@ export const siteConfig: SiteConfig = {
       date: '2022-08-16',
     },
     {
-      id: 'wallpaper-3-1',
+      id: 'wallpaper-3',
       name: {
-        en: 'Bedroom (Normal)',
-        zh: '卧室 (通常)',
-        jp: '寝室（通常）',
+        en: 'Bedroom',
+        zh: '卧室',
+        jp: '寝室',
       },
       description: {
         en: 'Bedroom scene wallpaper',
@@ -385,32 +385,55 @@ export const siteConfig: SiteConfig = {
         zh: 'Re-ViVi',
         jp: 'Re-ViVi',
       },
-      src: '/assets/catagory/ritsukage-utsumabo/wallpaper/3-1.png',
       tags: ['commission', 'wallpaper'],
       characters: ['ritsukage-utsumabo'],
       date: '2022-10-17',
-    },
-    {
-      id: 'wallpaper-3-2',
-      name: {
-        en: 'Bedroom (Ribbon)',
-        zh: '卧室 (丝带)',
-        jp: '寝室（リボン）',
-      },
-      description: {
-        en: 'Bedroom scene with ribbon',
-        zh: '带丝带的卧室场景',
-        jp: 'リボン付きの寝室シーン',
-      },
-      artist: {
-        en: 'Re-ViVi',
-        zh: 'Re-ViVi',
-        jp: 'Re-ViVi',
-      },
-      src: '/assets/catagory/ritsukage-utsumabo/wallpaper/3-2.png',
-      tags: ['commission', 'wallpaper', 'nsfw'],
-      characters: ['ritsukage-utsumabo'],
-      date: '2022-10-17',
+      childImages: [
+        {
+          id: 'wallpaper-3-1',
+          name: {
+            en: 'Bedroom (Normal)',
+            zh: '卧室 (通常)',
+            jp: '寝室（通常）',
+          },
+          description: {
+            en: 'Bedroom scene wallpaper',
+            zh: '卧室场景壁纸',
+            jp: '寝室シーンの壁紙',
+          },
+          artist: {
+            en: 'Re-ViVi',
+            zh: 'Re-ViVi',
+            jp: 'Re-ViVi',
+          },
+          src: '/assets/catagory/ritsukage-utsumabo/wallpaper/3-1.png',
+          tags: ['commission', 'wallpaper'],
+          characters: ['ritsukage-utsumabo'],
+          date: '2022-10-17',
+        },
+        {
+          id: 'wallpaper-3-2',
+          name: {
+            en: 'Bedroom (Ribbon)',
+            zh: '卧室 (丝带)',
+            jp: '寝室（リボン）',
+          },
+          description: {
+            en: 'Bedroom scene with ribbon',
+            zh: '带丝带的卧室场景',
+            jp: 'リボン付きの寝室シーン',
+          },
+          artist: {
+            en: 'Re-ViVi',
+            zh: 'Re-ViVi',
+            jp: 'Re-ViVi',
+          },
+          src: '/assets/catagory/ritsukage-utsumabo/wallpaper/3-2.png',
+          tags: ['commission', 'wallpaper', 'nsfw'],
+          characters: ['ritsukage-utsumabo'],
+          date: '2022-10-17',
+        },
+      ],
     },
 
     // 插图
