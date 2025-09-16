@@ -93,6 +93,7 @@ export default {
     imageInfo: '画像情報',
     minimap: 'ミニマップ',
     navigation: 'ナビゲーション',
+    imageGroup: '画像グループ',
   },
   loading: {
     title: 'ロード中',

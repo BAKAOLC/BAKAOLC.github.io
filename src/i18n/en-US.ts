@@ -95,6 +95,7 @@ export default {
     hideInfo: 'Hide Info',
     minimap: 'Minimap',
     navigation: 'Navigation',
+    imageGroup: 'Image Group',
   },
   loading: {
     title: 'Loading',
