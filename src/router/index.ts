@@ -1,4 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
+import { useAppStore } from '@/stores/app';
+import { siteConfig } from '@/config/site';
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -31,6 +33,33 @@ const router = createRouter({
       component: () => import('@/views/NotFound.vue'),
     },
   ],
+});
+
+// 路由前置守卫：处理图像组重定向
+router.beforeEach((to, from, next) => {
+  // 检查是否访问单个图像路由且imageId是图像组
+  if (to.name === 'image-viewer' && to.params.imageId) {
+    const imageId = to.params.imageId as string;
+    const image = siteConfig.images.find(img => img.id === imageId);
+    
+    // 如果是图像组（有childImages），自动重定向到第一个子图像
+    if (image && image.childImages && image.childImages.length > 0) {
+      const firstChildId = image.childImages[0].id;
+      console.log(`重定向图像组 ${imageId} 到第一个子图像 ${firstChildId}`);
+      
+      return next({
+        name: 'image-viewer-child',
+        params: {
+          imageId: imageId,
+          childImageId: firstChildId
+        },
+        replace: true // 使用replace避免在历史记录中留下无效的路由
+      });
+    }
+  }
+  
+  // 其他路由正常处理
+  next();
 });
 
 // 路由后置守卫：确保页面状态正确
