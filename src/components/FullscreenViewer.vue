@@ -170,6 +170,7 @@
 import { XIcon, ChevronLeftIcon, ChevronRightIcon, InfoIcon, ZoomInIcon, ZoomOutIcon, RotateCcwIcon } from 'lucide-vue-next';
 import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
 import ProgressiveImage from './ProgressiveImage.vue';
 
@@ -194,6 +195,7 @@ const emit = defineEmits<{
 }>();
 
 const { t: $t } = useI18n();
+const router = useRouter();
 const appStore = useAppStore();
 const timers = useTimers();
 const eventManager = useEventManager();
@@ -289,9 +291,8 @@ const goToImage = (index: number): void => {
       return;
     }
 
-    // 使用history API更新URL参数，不触发页面刷新
-    const newUrl = window.location.pathname.replace(/\/[^/]+$/, `/${imageId}`);
-    window.history.pushState({ imageId }, '', newUrl);
+    // 使用 Vue Router 导航到新的图片
+    router.push(`/viewer/${imageId}`);
 
     // 触发自定义事件通知父组件
     eventManager.dispatchEvent('viewerNavigate', { imageId });

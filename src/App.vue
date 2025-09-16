@@ -122,18 +122,6 @@ onMounted(() => {
     document.documentElement.classList.remove('dark');
   }
 
-  // 处理GitHub Pages 404重定向
-  // 注意：重定向逻辑现在主要由路由守卫处理
-  // 这里只做必要的清理工作
-  const redirectPath = sessionStorage.getItem('github-pages-redirect');
-  if (redirectPath) {
-    // 如果当前不在根路径，说明重定向已经生效，清理重定向信息
-    if (location.pathname !== '/') {
-      sessionStorage.removeItem('github-pages-redirect');
-      sessionStorage.removeItem('github-pages-redirect-full');
-    }
-  }
-
   // 开始预加载图像
   preloadImages();
 });
