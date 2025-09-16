@@ -30,6 +30,17 @@ export interface ImageTag {
   prerequisiteTags?: string[]; // 前置标签ID数组，只有当这些标签被选中时，当前标签才会显示
 }
 
+export interface ChildImage {
+  id: string;
+  name?: I18nText;
+  description?: I18nText;
+  artist?: I18nText;
+  src: string;
+  tags?: string[]; // tag IDs
+  characters?: string[]; // character IDs
+  date?: string; // yyyy-MM-dd format
+}
+
 export interface CharacterImage {
   id: string;
   name: I18nText;
@@ -40,6 +51,7 @@ export interface CharacterImage {
   tags: string[]; // tag IDs
   characters: string[]; // character IDs
   date?: string; // yyyy-MM-dd format
+  childImages?: ChildImage[]; // child images for image groups
 }
 
 export interface Character {
