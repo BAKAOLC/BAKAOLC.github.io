@@ -379,10 +379,10 @@ export const useAppStore = defineStore('app', () => {
       const name = getSearchableText(image.name);
       
       // 搜索描述
-      const description = getSearchableText(image.description);
+      const description = image.description ? getSearchableText(image.description) : '';
       
       // 搜索艺术家名称
-      const artist = getSearchableText(image.artist);
+      const artist = image.artist ? getSearchableText(image.artist) : '';
       
       // 搜索标签
       const tagsMatch = image.tags?.some(tagId => {
@@ -422,36 +422,53 @@ export const useAppStore = defineStore('app', () => {
 
   // 获取图像组的显示图像（用于画廊显示）
   const getDisplayImageForGroup = (parentImage: CharacterImage): CharacterImage => {
-    // 如果父图像有src且通过过滤，优先显示父图像
-    if (parentImage.src && doesImagePassFilter(parentImage)) {
+    // 如果没有子图像，这是一个普通的单个图像，直接返回父图像
+    if (!parentImage.childImages || parentImage.childImages.length === 0) {
       return parentImage;
     }
 
-    // 如果父图像没有src或被过滤，查找第一个通过过滤的子图像
-    if (parentImage.childImages) {
-      for (const childImage of parentImage.childImages) {
-        const fullChildImage = getChildImageWithDefaults(parentImage, childImage);
-        if (doesImagePassFilter(fullChildImage)) {
-          return fullChildImage;
-        }
+    // 对于图像组，永远不显示父图像本身，因为父图像不是合法的可选图像
+    // 查找第一个通过过滤的子图像来显示
+    for (const childImage of parentImage.childImages) {
+      const fullChildImage = getChildImageWithDefaults(parentImage, childImage);
+      if (doesImagePassFilter(fullChildImage)) {
+        // 返回混合信息：优先显示父图像的信息，子图像信息作为补充
+        return getGroupDisplayInfo(parentImage, fullChildImage);
       }
     }
 
-    // 如果都没通过过滤，返回父图像（用于标识这是个组图）
+    // 如果没有有效的子图像，返回父图像（用于标识这是个组图，但不可选）
     return parentImage;
+  };
+
+  // 获取图像组的显示信息（优先显示父图像信息）
+  const getGroupDisplayInfo = (parentImage: CharacterImage, childImage: CharacterImage): CharacterImage => {
+    return {
+      id: parentImage.id, // 使用父图像ID用于组图标识
+      name: parentImage.name, // 优先显示父图像名称
+      description: parentImage.description || childImage.description || { en: '', zh: '', jp: '' },
+      artist: parentImage.artist || childImage.artist || { en: 'N/A', zh: 'N/A', jp: 'N/A' },
+      src: childImage.src, // 显示子图像的实际图片
+      tags: parentImage.tags, // 优先显示父图像标签
+      characters: parentImage.characters, // 优先显示父图像角色
+      date: parentImage.date || childImage.date, // 优先显示父图像日期
+      childImages: parentImage.childImages, // 保留子图像信息用于组图判断
+    };
   };
 
   // 获取图像组的所有有效图像（通过过滤的）
   const getValidImagesInGroup = (parentImage: CharacterImage): CharacterImage[] => {
     const validImages: CharacterImage[] = [];
 
-    // 检查父图像（只有当它有src时才可能被包含）
-    if (parentImage.src && doesImagePassFilter(parentImage)) {
-      validImages.push(parentImage);
-    }
-
-    // 检查子图像
-    if (parentImage.childImages) {
+    // 如果没有子图像，这是一个普通的单个图像
+    if (!parentImage.childImages || parentImage.childImages.length === 0) {
+      // 检查父图像本身是否通过过滤
+      if (doesImagePassFilter(parentImage)) {
+        validImages.push(parentImage);
+      }
+    } else {
+      // 这是一个图像组，父图像不再是合法的可选图像
+      // 只检查子图像
       for (const childImage of parentImage.childImages) {
         const fullChildImage = getChildImageWithDefaults(parentImage, childImage);
         if (doesImagePassFilter(fullChildImage)) {
@@ -517,5 +534,6 @@ export const useAppStore = defineStore('app', () => {
     getChildImageWithDefaults,
     getDisplayImageForGroup,
     getValidImagesInGroup,
+    getGroupDisplayInfo,
   };
 });
