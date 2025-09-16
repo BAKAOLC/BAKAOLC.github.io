@@ -44,8 +44,8 @@ export interface ChildImage {
 export interface CharacterImage {
   id: string;
   name: I18nText;
-  description: I18nText;
-  artist: I18nText;
+  description?: I18nText; // Optional - fallback to empty string
+  artist?: I18nText; // Optional - fallback to "N/A"
   src?: string; // Optional for image groups where src is only in childImages
   thumbnail?: string;
   tags: string[]; // tag IDs

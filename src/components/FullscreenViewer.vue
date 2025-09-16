@@ -153,12 +153,12 @@
         <div class="image-info">
           <div class="info-group">
             <h3 class="info-title">{{ t(currentImage?.name, currentLanguage) }}</h3>
-            <p class="info-description">{{ t(currentImage?.description, currentLanguage) }}</p>
+            <p class="info-description">{{ t(getDescriptionWithFallback, currentLanguage) }}</p>
           </div>
 
           <div class="info-group">
             <h4 class="info-subtitle">{{ $t('gallery.artist') }}</h4>
-            <p>{{ currentImage ? t(currentImage.artist, currentLanguage) : '' }}</p>
+            <p>{{ t(getArtistWithFallback, currentLanguage) }}</p>
           </div>
 
           <div class="info-group">
@@ -194,12 +194,12 @@
             <div class="mobile-info-content">
               <div class="info-group">
                 <h3 class="info-title">{{ t(currentImage?.name, currentLanguage) }}</h3>
-                <p class="info-description">{{ t(currentImage?.description, currentLanguage) }}</p>
+                <p class="info-description">{{ t(getDescriptionWithFallback, currentLanguage) }}</p>
               </div>
 
               <div class="info-group">
                 <h4 class="info-subtitle">{{ $t('gallery.artist') }}</h4>
-                <p>{{ currentImage ? t(currentImage.artist, currentLanguage) : '' }}</p>
+                <p>{{ t(getArtistWithFallback, currentLanguage) }}</p>
               </div>
 
               <div class="info-group">
@@ -409,6 +409,19 @@ const showGroupSelector = computed(() => {
 // 导航控制
 const hasPrevImage = computed(() => currentIndex.value > 0);
 const hasNextImage = computed(() => currentIndex.value < imagesList.value.length - 1);
+
+// Artist 和 Description 的 fallback 助手函数
+const getArtistWithFallback = computed(() => {
+  if (!currentImage.value) return { en: 'N/A', zh: 'N/A', jp: 'N/A' };
+  if (currentImage.value.artist) return currentImage.value.artist;
+  return { en: 'N/A', zh: 'N/A', jp: 'N/A' };
+});
+
+const getDescriptionWithFallback = computed(() => {
+  if (!currentImage.value) return { en: '', zh: '', jp: '' };
+  if (currentImage.value.description) return currentImage.value.description;
+  return { en: '', zh: '', jp: '' };
+});
 
 const prevImage = (): void => {
   if (hasPrevImage.value) {
