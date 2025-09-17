@@ -27,6 +27,11 @@
           :disabled="infoPanelAnimating || mobileInfoOverlayAnimating" :title="getInfoButtonTitle()">
           <info-icon class="icon" />
         </button>
+        <button class="control-button" @click="toggleCommentsModal"
+          :class="{ 'disabled': commentsModalAnimating }"
+          :disabled="commentsModalAnimating" :title="getCommentsButtonTitle()">
+          <message-circle-icon class="icon" />
+        </button>
         <button class="control-button close-button" @click="close" :title="t('viewer.close')">
           <x-icon class="icon" />
         </button>
@@ -304,16 +309,36 @@
         </transition>
       </div>
     </transition>
+
+    <!-- 评论模态框 -->
+    <transition name="comments-modal-fade">
+      <div v-show="showCommentsModal" class="comments-modal-overlay" @click="closeCommentsModal">
+        <transition name="comments-modal-slide">
+          <div v-show="showCommentsModal" class="comments-modal-panel" @click.stop>
+            <div class="comments-modal-header">
+              <h3 class="comments-modal-title">{{ $t('viewer.comments') }}</h3>
+              <button class="comments-modal-close" @click="closeCommentsModal">
+                <x-icon class="icon" />
+              </button>
+            </div>
+            <div class="comments-modal-content">
+              <GiscusComments />
+            </div>
+          </div>
+        </transition>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script setup lang="ts">
 
-import { XIcon, ChevronLeftIcon, ChevronRightIcon, InfoIcon, ZoomInIcon, ZoomOutIcon, RotateCcwIcon, LayersIcon } from 'lucide-vue-next';
+import { XIcon, ChevronLeftIcon, ChevronRightIcon, InfoIcon, ZoomInIcon, ZoomOutIcon, RotateCcwIcon, LayersIcon, MessageCircleIcon } from 'lucide-vue-next';
 import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
+import GiscusComments from './GiscusComments.vue';
 import ProgressiveImage from './ProgressiveImage.vue';
 
 import type { I18nText } from '@/types';
@@ -1029,6 +1054,10 @@ const infoPanelAnimating = ref(false);
 const showMobileInfoOverlay = ref(false);
 const mobileInfoOverlayAnimating = ref(false);
 
+// 评论模态框控制
+const showCommentsModal = ref(false);
+const commentsModalAnimating = ref(false);
+
 // 用户对固定信息栏的显示偏好（只针对桌面端的固定信息栏）
 const userInfoPanelPreference = ref(true); // 默认显示固定信息栏
 
@@ -1096,6 +1125,41 @@ const closeMobileInfoOverlay = (): void => {
   timers.setTimeout(() => {
     mobileInfoOverlayAnimating.value = false;
     // 移动端覆盖层不会改变图像容器大小，无需额外处理
+  }, 300);
+};
+
+// 评论模态框切换
+const toggleCommentsModal = (): void => {
+  if (commentsModalAnimating.value) return;
+
+  commentsModalAnimating.value = true;
+  showCommentsModal.value = !showCommentsModal.value;
+
+  // 防止背景滚动
+  if (showCommentsModal.value) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
+
+  // 动画结束后重置状态
+  timers.setTimeout(() => {
+    commentsModalAnimating.value = false;
+  }, 300); // 模态框动画时长
+};
+
+// 关闭评论模态框
+const closeCommentsModal = (): void => {
+  if (commentsModalAnimating.value) return;
+
+  commentsModalAnimating.value = true;
+  showCommentsModal.value = false;
+
+  // 恢复背景滚动
+  document.body.style.overflow = '';
+
+  timers.setTimeout(() => {
+    commentsModalAnimating.value = false;
   }, 300);
 };
 
@@ -1919,6 +1983,11 @@ const handleMinimapTouchStart = (event: TouchEvent): void => {
 // 关闭查看器
 const isClosing = ref(false);
 const close = (): void => {
+  // 关闭评论模态框（如果开启的话）
+  if (showCommentsModal.value) {
+    closeCommentsModal();
+  }
+
   // 设置关闭状态
   isClosing.value = true;
   // 先添加淡出过渡动画，再关闭查看器
@@ -2310,6 +2379,11 @@ const getInfoButtonTitle = (): string => {
   } else {
     return showInfoPanel.value ? $t('viewer.hideInfo') : $t('viewer.showInfo');
   }
+};
+
+// 获取评论按钮标题
+const getCommentsButtonTitle = (): string => {
+  return showCommentsModal.value ? $t('viewer.hideComments') : $t('viewer.showComments');
 };
 
 // 本地化辅助函数
@@ -3157,6 +3231,107 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   .mobile-group-images-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.5rem;
+  }
+}
+
+/* 评论模态框样式 */
+.comments-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70; /* 比 mobile-info-overlay 的 z-index: 60 更高 */
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+}
+
+.comments-modal-panel {
+  width: 90vw;
+  max-width: 800px;
+  height: 80vh;
+  max-height: 600px;
+  background-color: rgba(0, 0, 0, 0.95);
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.comments-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.comments-modal-title {
+  @apply text-lg font-medium text-white;
+  margin: 0;
+}
+
+.comments-modal-close {
+  @apply p-2 rounded-full;
+  @apply text-gray-200 hover:text-white;
+  @apply bg-gray-800/60 hover:bg-gray-700/60;
+  @apply transition-colors duration-200;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.comments-modal-close .icon {
+  @apply w-5 h-5;
+}
+
+.comments-modal-content {
+  flex: 1;
+  overflow: auto;
+  padding: 1rem 1.5rem;
+}
+
+/* 评论模态框动画 */
+.comments-modal-fade-enter-active,
+.comments-modal-fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.comments-modal-fade-enter-from,
+.comments-modal-fade-leave-to {
+  opacity: 0;
+}
+
+.comments-modal-slide-enter-active,
+.comments-modal-slide-leave-active {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+.comments-modal-slide-enter-from,
+.comments-modal-slide-leave-to {
+  transform: scale(0.95) translateY(20px);
+  opacity: 0;
+}
+
+/* 移动端评论模态框适配 */
+@media (max-width: 768px) {
+  .comments-modal-panel {
+    width: 95vw;
+    height: 85vh;
+    border-radius: 1rem 1rem 0 0;
+  }
+
+  .comments-modal-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .comments-modal-content {
+    padding: 0.75rem 1rem;
   }
 }
 
