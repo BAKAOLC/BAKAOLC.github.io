@@ -41,7 +41,7 @@ const repoId = 'R_kgDOJ3xZcg';
 const category = 'Giscus';
 const categoryId = 'DIC_kwDOJ3xZcs4CvjNZ';
 const mapping = 'specific';
-const term = computed(() => `comment-${props.uniqueId}`);
+const term = computed(() => `image-viewer-${props.uniqueId}`);
 const strict = '1';
 const reactionsEnabled = '1';
 const emitMetadata = '0';
