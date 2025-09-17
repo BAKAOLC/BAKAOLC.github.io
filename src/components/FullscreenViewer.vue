@@ -322,7 +322,7 @@
               </button>
             </div>
             <div class="comments-modal-content">
-              <GiscusComments />
+              <GiscusComments :unique-id="currentDisplayImageId" />
             </div>
           </div>
         </transition>
