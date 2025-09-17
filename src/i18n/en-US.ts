@@ -96,6 +96,9 @@ export default {
     minimap: 'Minimap',
     navigation: 'Navigation',
     imageGroup: 'Image Group',
+    comments: 'Comments',
+    showComments: 'Show Comments',
+    hideComments: 'Hide Comments',
   },
   loading: {
     title: 'Loading',
