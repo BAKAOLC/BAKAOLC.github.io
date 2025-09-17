@@ -6,6 +6,7 @@
       :category="category"
       :category-id="categoryId"
       :mapping="mapping"
+      :term="term"
       :strict="strict"
       :reactions-enabled="reactionsEnabled"
       :emit-metadata="emitMetadata"
@@ -25,12 +26,22 @@ import { useAppStore } from '@/stores/app';
 
 const appStore = useAppStore();
 
+// Props for dynamic configuration
+interface Props {
+  uniqueId?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  uniqueId: 'default',
+});
+
 // Giscus configuration based on the provided settings
 const repo = 'BAKAOLC/BAKAOLC.github.io';
 const repoId = 'R_kgDOJ3xZcg';
 const category = 'Giscus';
 const categoryId = 'DIC_kwDOJ3xZcs4CvjNZ';
-const mapping = 'url';
+const mapping = 'specific';
+const term = computed(() => `image-viewer-${props.uniqueId}`);
 const strict = '1';
 const reactionsEnabled = '1';
 const emitMetadata = '0';
