@@ -96,6 +96,9 @@ export default {
     minimap: '小地图',
     navigation: '导航',
     imageGroup: '图像组',
+    comments: '评论',
+    showComments: '显示评论',
+    hideComments: '隐藏评论',
   },
   loading: {
     title: '正在加载',
