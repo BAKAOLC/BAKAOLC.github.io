@@ -55,6 +55,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import thumbnailMap from '@/assets/thumbnail-map.json';
 import { imageCache, LoadPriority } from '@/services/imageCache';
@@ -76,6 +77,8 @@ interface Props {
   // 延迟加载主图的时间（毫秒）
   delayMainImage?: number;
 }
+
+const { t } = useI18n();
 
 const props = withDefaults(defineProps<Props>(), {
   alt: '',
@@ -167,7 +170,7 @@ const onThumbnailLoad = (): void => {
 };
 
 const onThumbnailError = (): void => {
-  console.warn($t('debug.thumbnailLoadFailed'), preloadThumbnailSrc.value);
+  console.warn(t('debug.thumbnailLoadFailed'), preloadThumbnailSrc.value);
   // 如果缩略图加载失败，立即开始加载主图
   if (!mainImageStartedLoading.value) {
     mainImageStartedLoading.value = true;
@@ -189,7 +192,7 @@ const startMainImageLoading = (): void => {
         progressImageUrl.value = objectUrl;
       })
       .catch((error) => {
-        console.warn($t('debug.progressLoadFailed'), error);
+        console.warn(t('debug.progressLoadFailed'), error);
         useProgressLoading.value = false;
         shouldShowMainImage.value = true;
       });

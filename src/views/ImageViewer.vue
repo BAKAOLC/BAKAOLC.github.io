@@ -6,6 +6,7 @@
 
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 import FullscreenViewer from '@/components/FullscreenViewer.vue';
@@ -18,6 +19,7 @@ defineProps<{
   childImageId?: string;
 }>();
 
+const { t } = useI18n();
 const router = useRouter();
 const eventManager = useEventManager();
 const appStore = useAppStore();
@@ -46,7 +48,7 @@ const handleViewerNavigate = (event: CustomEvent): void => {
       });
     }
   } else {
-    console.warn($t('debug.invalidImageIdNavigate'));
+    console.warn(t('debug.invalidImageIdNavigate'));
   }
 };
 
