@@ -1,8 +1,8 @@
 import { createI18n } from 'vue-i18n';
 
-import enUS from './en-US';
-import jaJP from './ja-JP';
-import zhCN from './zh-CN';
+import enUS from './en.json';
+import jaJP from './jp.json';
+import zhCN from './zh.json';
 
 import type { Language } from '@/types';
 
