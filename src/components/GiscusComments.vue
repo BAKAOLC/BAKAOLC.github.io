@@ -22,6 +22,7 @@
 import Giscus from '@giscus/vue';
 import { computed } from 'vue';
 
+import { siteConfig } from '@/config/site';
 import { useAppStore } from '@/stores/app';
 
 const appStore = useAppStore();
@@ -35,18 +36,23 @@ const props = withDefaults(defineProps<Props>(), {
   uniqueId: 'default',
 });
 
-// Giscus configuration based on the provided settings
-const repo = 'BAKAOLC/BAKAOLC.github.io';
-const repoId = 'R_kgDOJ3xZcg';
-const category = 'Giscus';
-const categoryId = 'DIC_kwDOJ3xZcs4CvjNZ';
-const mapping = 'specific';
+// Giscus configuration from site config
+const {
+  giscus: {
+    repo,
+    repoId,
+    category,
+    categoryId,
+    mapping,
+    strict,
+    reactionsEnabled,
+    emitMetadata,
+    inputPosition,
+    loading,
+  },
+} = siteConfig;
+
 const term = computed(() => `image-viewer-${props.uniqueId}`);
-const strict = '1';
-const reactionsEnabled = '1';
-const emitMetadata = '0';
-const inputPosition = 'top';
-const loading = 'lazy';
 
 // Dynamic theme and language
 const theme = computed(() => appStore.isDarkMode ? 'dark' : 'light');
