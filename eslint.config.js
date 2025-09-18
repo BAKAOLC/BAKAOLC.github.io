@@ -291,6 +291,49 @@ export default [
   {
     files: ['**/*.ts', '**/*.tsx'],
   },
+  // CommonJS 文件配置
+  {
+    files: ['**/*.cjs', '**/*.js'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'commonjs',
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        Buffer: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        global: 'readonly',
+        module: 'readonly',
+        exports: 'readonly',
+        require: 'readonly',
+      },
+    },
+    plugins: {
+      '@stylistic': stylisticPlugin,
+    },
+    rules: {
+      ...js.configs.recommended.rules,
+      // 禁用 TypeScript 相关规则
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      // 启用原生的 no-unused-vars 规则
+      'no-unused-vars': ['error', {
+        args: 'none',
+        varsIgnorePattern: '^_',
+        argsIgnorePattern: '^_',
+        ignoreRestSiblings: true,
+      }],
+      // 保留样式规则
+      '@stylistic/semi': ['error', 'always'],
+      '@stylistic/quotes': ['error', 'single', { avoidEscape: true }],
+      '@stylistic/comma-dangle': ['error', 'always-multiline'],
+      '@stylistic/indent': ['error', 2],
+      '@stylistic/space-before-function-paren': ['error', { anonymous: 'always', named: 'never', asyncArrow: 'always' }],
+      '@stylistic/object-curly-spacing': ['error', 'always'],
+      '@stylistic/eol-last': ['error', 'always'],
+    },
+  },
   {
     ignores: [
       'node_modules/**',
