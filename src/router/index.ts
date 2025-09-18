@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 
 import { siteConfig } from '@/config/site';
+import i18n from '@/i18n';
 import { useAppStore } from '@/stores/app';
 
 const router = createRouter({
@@ -57,10 +58,10 @@ router.beforeEach((to, _from, next) => {
         }
       } catch (error) {
         // 如果store不可用，使用默认的第一个子图像
-        console.warn($t('debug.cannotGetFilteredImages'), error);
+        console.warn(i18n.global.t('debug.cannotGetFilteredImages'), error);
       }
 
-      console.log($t('debug.redirectImageGroup').replace('{imageId}', imageId).replace('{childId}', firstChildId));
+      console.log(i18n.global.t('debug.redirectImageGroup').replace('{imageId}', imageId).replace('{childId}', firstChildId));
 
       return next({
         name: 'image-viewer-child',
