@@ -7,7 +7,12 @@ import { siteConfig } from '@/config/site';
 /**
  * Composable for tag operations with optimized sorting performance
  */
-export function useTags() {
+export function useTags(): {
+  getSortedTags: (tagIds: string[]) => string[];
+  getTagColor: (tagId: string) => string;
+  getTagName: (tagId: string, language?: string) => string;
+  tagIndexMap: Map<string, number>;
+} {
   // Precompute tag index map for O(1) lookup performance
   const tagIndexMap = computed(() => {
     const map = new Map<string, number>();
