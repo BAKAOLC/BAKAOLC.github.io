@@ -3443,9 +3443,9 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 /* 移动端评论模态框适配 */
 @media (max-width: 768px) {
   .comments-modal-panel {
-    width: 95vw;
+    width: 90vw;
     height: 85vh;
-    border-radius: 1rem 1rem 0 0;
+    border-radius: 1rem;
   }
 
   .comments-modal-header {
