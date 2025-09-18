@@ -3,13 +3,13 @@ cd "$(dirname "$0")"
 
 echo "intput path $2"
 
-# 如果提供了第二个参数，则在该目录下查找所有.ts, .vue文件
-# 否则默认检查所有.ts, .vue文件
+# 如果提供了第二个参数，则在该目录下查找所有.ts, .vue, .js, .cjs文件
+# 否则默认检查所有.ts, .vue, .js, .cjs文件
 if [ -z "$2" ]
 then
-    LINT_PATH="**/*.{ts,vue}"
+    LINT_PATH="**/*.{ts,vue,js,cjs}"
 else
-    LINT_PATH="$2/**/*.{ts,vue}"
+    LINT_PATH="$2/**/*.{ts,vue,js,cjs}"
 fi
 
 if [ -z "$1" ]

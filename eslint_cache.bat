@@ -1,12 +1,12 @@
 @echo off
 cd /d "%~dp0"
 
-:: 如果提供了第二个参数，则在该目录下查找所有.ts, .vue文件
-:: 否则默认检查所有.ts, .vue文件
+:: 如果提供了第二个参数，则在该目录下查找所有.ts, .vue, .js, .cjs文件
+:: 否则默认检查所有.ts, .vue, .js, .cjs文件
 if "%~2"=="" (
-    set LINT_PATH="**/*.{ts,vue}"
+    set LINT_PATH="**/*.{ts,vue,js,cjs}"
 ) else (
-    set LINT_PATH="%~2/**/*.{ts,vue}"
+    set LINT_PATH="%~2/**/*.{ts,vue,js,cjs}"
 )
 
 if "%~1"=="" (
