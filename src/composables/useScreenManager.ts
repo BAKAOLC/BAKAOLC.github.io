@@ -109,7 +109,7 @@ const updateScreenInfo = (): void => {
       try {
         callback(screenInfo);
       } catch (error) {
-        console.error('屏幕变化回调执行出错:', error);
+        console.error($t('debug.screenChangeError'), error);
       }
     });
   }
@@ -201,7 +201,7 @@ export function useScreenManager(): ScreenManager {
     try {
       callback(screenInfo.value);
     } catch (error) {
-      console.error('屏幕变化回调初始化执行出错:', error);
+      console.error($t('debug.screenInitError'), error);
     }
 
     // 返回取消注册函数

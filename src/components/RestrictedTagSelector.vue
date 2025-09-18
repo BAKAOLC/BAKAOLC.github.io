@@ -62,7 +62,7 @@ const appStore = useAppStore();
 const checkPrerequisitesRecursively = (tagId: string, visited = new Set<string>()): boolean => {
   // 防止循环依赖
   if (visited.has(tagId)) {
-    console.warn(`检测到循环依赖: ${tagId}`);
+    console.warn(`${$t('debug.circularDependency')}: ${tagId}`);
     return false;
   }
 
