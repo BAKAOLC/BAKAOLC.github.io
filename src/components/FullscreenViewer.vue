@@ -2400,7 +2400,7 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   position: fixed;
   inset: 0;
   z-index: 50;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(255, 255, 255, 0.95);
   display: flex;
   flex-direction: column;
   visibility: hidden;
@@ -2412,6 +2412,10 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+}
+
+.dark .fullscreen-viewer {
+  background-color: rgba(0, 0, 0, 0.9);
 }
 
 /* 全局禁止图片拖拽 */
@@ -2440,15 +2444,23 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 .viewer-header {
   @apply flex items-center justify-between;
   @apply py-3 px-4;
-  @apply bg-black/50;
+  @apply bg-white/90 border-b border-gray-200;
+}
+
+.dark .viewer-header {
+  @apply bg-black/50 border-gray-700;
 }
 
 .viewer-title {
-  @apply text-white text-lg font-medium truncate;
+  @apply text-gray-900 text-lg font-medium truncate;
   user-select: text;
   -webkit-user-select: text;
   -moz-user-select: text;
   -ms-user-select: text;
+}
+
+.dark .viewer-title {
+  @apply text-white;
 }
 
 .viewer-controls {
@@ -2457,9 +2469,14 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 
 .control-button {
   @apply p-2 rounded-full;
+  @apply text-gray-700 hover:text-gray-900;
+  @apply bg-gray-200/80 hover:bg-gray-300/80;
+  @apply transition-colors duration-200;
+}
+
+.dark .control-button {
   @apply text-gray-200 hover:text-white;
   @apply bg-gray-800/60 hover:bg-gray-700/60;
-  @apply transition-colors duration-200;
 }
 
 .control-button.disabled {
@@ -2468,12 +2485,20 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 }
 
 .zoom-button {
+  @apply bg-blue-200/80 hover:bg-blue-300/80;
+}
+
+.dark .zoom-button {
   @apply bg-blue-800/60 hover:bg-blue-700/60;
 }
 
 .close-button {
-  @apply bg-red-800/60 hover:bg-red-700/60;
+  @apply bg-red-200/80 hover:bg-red-300/80;
   @apply ml-2;
+}
+
+.dark .close-button {
+  @apply bg-red-800/60 hover:bg-red-700/60;
 }
 
 .icon {
@@ -2540,15 +2565,24 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 .viewer-navigation {
   @apply flex items-center;
   @apply h-24 py-2 px-4;
-  @apply bg-black/50;
+  @apply bg-white/90 border-t border-gray-200;
+}
+
+.dark .viewer-navigation {
+  @apply bg-black/50 border-gray-700;
 }
 
 .nav-button {
   @apply flex items-center justify-center;
   @apply w-10 h-10 rounded-full;
+  @apply text-gray-700 hover:text-gray-900;
+  @apply bg-gray-200/60 hover:bg-gray-300/60;
+  @apply transition-colors duration-200;
+}
+
+.dark .nav-button {
   @apply text-gray-200 hover:text-white;
   @apply bg-gray-800/60 hover:bg-gray-700/60;
-  @apply transition-colors duration-200;
 }
 
 .nav-button:disabled {
@@ -2604,7 +2638,7 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 
 .thumbnail-image {
   @apply w-full h-full object-contain;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -2612,6 +2646,10 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   /* 禁止拖拽 */
   -webkit-user-drag: none;
   -webkit-touch-callout: none;
+}
+
+.dark .thumbnail-image {
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .thumbnail-group-indicator {
@@ -2729,10 +2767,16 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 
 .viewer-footer {
   padding: 1rem 1.5rem;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(255, 255, 255, 0.95);
   position: relative;
   max-height: 24rem;
   overflow: hidden;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dark .viewer-footer {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* 添加滑动动画 */
@@ -2765,16 +2809,21 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   @apply -translate-x-1/2 -translate-y-1/2;
   @apply flex items-center justify-center;
   @apply w-10 h-10 rounded-full;
-  @apply text-gray-200 hover:text-white;
-  @apply bg-gray-800/80 hover:bg-gray-700/80;
+  @apply text-gray-700 hover:text-gray-900;
+  @apply bg-gray-200/80 hover:bg-gray-300/80;
   @apply shadow-lg;
   @apply transition-colors duration-200;
   @apply cursor-pointer;
   @apply z-10;
 }
 
+.dark .info-toggle-button {
+  @apply text-gray-200 hover:text-white;
+  @apply bg-gray-800/80 hover:bg-gray-700/80;
+}
+
 .image-info {
-  @apply text-white;
+  @apply text-gray-900;
   will-change: opacity, transform;
   transform: translateY(0);
   opacity: 1;
@@ -2782,6 +2831,10 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   -webkit-user-select: text;
   -moz-user-select: text;
   -ms-user-select: text;
+}
+
+.dark .image-info {
+  @apply text-white;
 }
 
 .info-group {
@@ -2793,11 +2846,19 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 }
 
 .info-subtitle {
-  @apply text-sm uppercase tracking-wider text-gray-400 mb-1;
+  @apply text-sm uppercase tracking-wider text-gray-600 mb-1;
+}
+
+.dark .info-subtitle {
+  @apply text-gray-400;
 }
 
 .info-description {
-  @apply text-gray-300 mb-2;
+  @apply text-gray-700 mb-2;
+}
+
+.dark .info-description {
+  @apply text-gray-300;
 }
 
 .tags-list {
@@ -2828,41 +2889,63 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 .mobile-info-panel {
   width: 100%;
   max-height: 70vh;
-  background-color: rgba(0, 0, 0, 0.95);
+  background-color: rgba(255, 255, 255, 0.98);
   border-radius: 1rem 1rem 0 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dark .mobile-info-panel {
+  background-color: rgba(0, 0, 0, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .mobile-info-header {
   @apply flex items-center justify-between;
   @apply py-4 px-6;
-  @apply border-b border-gray-600;
+  @apply border-b border-gray-300;
   flex-shrink: 0;
 }
 
+.dark .mobile-info-header {
+  @apply border-gray-600;
+}
+
 .mobile-info-title {
-  @apply text-white text-lg font-semibold;
+  @apply text-gray-900 text-lg font-semibold;
+}
+
+.dark .mobile-info-title {
+  @apply text-white;
 }
 
 .mobile-info-close {
   @apply p-2 rounded-full;
+  @apply text-gray-700 hover:text-gray-900;
+  @apply bg-gray-200/60 hover:bg-gray-300/60;
+  @apply transition-colors duration-200;
+}
+
+.dark .mobile-info-close {
   @apply text-gray-300 hover:text-white;
   @apply bg-gray-700/60 hover:bg-gray-600/60;
-  @apply transition-colors duration-200;
 }
 
 .mobile-info-content {
   @apply flex-1 overflow-y-auto;
   @apply p-6;
-  @apply text-white;
+  @apply text-gray-900;
   user-select: text;
   -webkit-user-select: text;
   -moz-user-select: text;
   -ms-user-select: text;
+}
+
+.dark .mobile-info-content {
+  @apply text-white;
 }
 
 /* 移动端覆盖层动画 */
@@ -2893,20 +2976,33 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   left: 0;
   bottom: 0;
   width: 200px;
-  @apply bg-gray-900/95 backdrop-blur-sm shadow-2xl;
-  @apply text-white;
+  @apply bg-white/95 backdrop-blur-sm shadow-2xl;
+  @apply text-gray-900;
   @apply flex flex-col;
   z-index: 10;
   overflow: hidden;
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dark .group-selector.left-side {
+  @apply bg-gray-900/95 text-white;
   border-right: 1px solid rgba(75, 85, 99, 0.3);
 }
 
 .group-selector-header {
-  @apply px-4 py-3 border-b border-gray-700/50;
+  @apply px-4 py-3 border-b border-gray-300/50;
+}
+
+.dark .group-selector-header {
+  @apply border-gray-700/50;
 }
 
 .group-title {
-  @apply text-sm font-medium text-gray-200 m-0;
+  @apply text-sm font-medium text-gray-800 m-0;
+}
+
+.dark .group-title {
+  @apply text-gray-200;
 }
 
 .group-images-list {
@@ -2916,10 +3012,14 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 
 .group-image-button {
   @apply w-full flex items-center p-2 rounded-lg;
-  @apply bg-transparent hover:bg-gray-800/60;
+  @apply bg-transparent hover:bg-gray-200/60;
   @apply transition-colors duration-200;
   @apply border border-transparent;
   @apply cursor-pointer;
+}
+
+.dark .group-image-button {
+  @apply hover:bg-gray-800/60;
 }
 
 .group-image-button.active {
@@ -2936,7 +3036,11 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 }
 
 .group-image-name {
-  @apply text-sm text-gray-200 block truncate;
+  @apply text-sm text-gray-800 block truncate;
+}
+
+.dark .group-image-name {
+  @apply text-gray-200;
 }
 
 /* 组选择器进入动画 */
@@ -3247,16 +3351,21 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 }
 
 .comments-modal-panel {
-  width: 90vw;
+  width: 95vw;
   max-width: 800px;
   height: 80vh;
   max-height: 600px;
-  background-color: rgba(0, 0, 0, 0.95);
+  background-color: rgba(255, 255, 255, 0.98);
   border-radius: 1rem;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dark .comments-modal-panel {
+  background-color: rgba(0, 0, 0, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -3264,26 +3373,39 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
 }
 
+.dark .comments-modal-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .comments-modal-title {
-  @apply text-lg font-medium text-white;
+  @apply text-lg font-medium text-gray-900;
   margin: 0;
+}
+
+.dark .comments-modal-title {
+  @apply text-white;
 }
 
 .comments-modal-close {
   @apply p-2 rounded-full;
-  @apply text-gray-200 hover:text-white;
-  @apply bg-gray-800/60 hover:bg-gray-700/60;
+  @apply text-gray-700 hover:text-gray-900;
+  @apply bg-gray-200/60 hover:bg-gray-300/60;
   @apply transition-colors duration-200;
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.dark .comments-modal-close {
+  @apply text-gray-200 hover:text-white;
+  @apply bg-gray-800/60 hover:bg-gray-700/60;
 }
 
 .comments-modal-close .icon {
@@ -3316,23 +3438,6 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 .comments-modal-slide-leave-to {
   transform: scale(0.95) translateY(20px);
   opacity: 0;
-}
-
-/* 移动端评论模态框适配 */
-@media (max-width: 768px) {
-  .comments-modal-panel {
-    width: 95vw;
-    height: 85vh;
-    border-radius: 1rem 1rem 0 0;
-  }
-
-  .comments-modal-header {
-    padding: 0.75rem 1rem;
-  }
-
-  .comments-modal-content {
-    padding: 0.75rem 1rem;
-  }
 }
 
 </style>
