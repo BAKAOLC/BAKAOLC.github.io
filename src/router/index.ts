@@ -57,10 +57,10 @@ router.beforeEach((to, _from, next) => {
         }
       } catch (error) {
         // 如果store不可用，使用默认的第一个子图像
-        console.warn('无法获取过滤后的子图像，使用默认第一个:', error);
+        console.warn($t('debug.cannotGetFilteredImages'), error);
       }
 
-      console.log(`重定向图像组 ${imageId} 到子图像 ${firstChildId}`);
+      console.log($t('debug.redirectImageGroup').replace('{imageId}', imageId).replace('{childId}', firstChildId));
 
       return next({
         name: 'image-viewer-child',

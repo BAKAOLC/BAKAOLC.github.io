@@ -279,14 +279,14 @@ const openViewer = (event: CustomEvent): void => {
         router.push(`/viewer/${event.detail.imageId}/${firstValidChildId}`);
       } else {
         // 如果没有有效的子图像，这个组图应该不会在过滤列表中出现
-        console.warn('图像组没有有效的子图像，无法打开查看器');
+        console.warn($t('debug.imageGroupNoValidChildren'));
       }
     } else {
       // 普通图像：导航到 /viewer/:imageId
       router.push(`/viewer/${event.detail.imageId}`);
     }
   } else {
-    console.warn('无效的图片ID，无法打开查看器');
+    console.warn($t('debug.invalidImageId'));
   }
 };
 
@@ -306,7 +306,7 @@ const handleViewerNavigate = (event: CustomEvent): void => {
     // 使用 Vue Router 导航到新的图片
     router.push(`/viewer/${event.detail.imageId}`);
   } else {
-    console.warn('无效的图片ID，无法更新查看器');
+    console.warn($t('debug.invalidImageIdUpdate'));
   }
 };
 
