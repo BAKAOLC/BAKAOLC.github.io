@@ -1092,4 +1092,17 @@ export const siteConfig: SiteConfig = {
       date: '2022-01-24',
     },
   ],
+
+  giscus: {
+    repo: 'BAKAOLC/BAKAOLC.github.io',
+    repoId: 'R_kgDOJ3xZcg',
+    category: 'Giscus',
+    categoryId: 'DIC_kwDOJ3xZcs4CvjNZ',
+    mapping: 'specific',
+    strict: '1',
+    reactionsEnabled: '1',
+    emitMetadata: '0',
+    inputPosition: 'top',
+    loading: 'lazy',
+  },
 };
