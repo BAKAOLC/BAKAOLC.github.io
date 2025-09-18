@@ -3351,8 +3351,8 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 }
 
 .comments-modal-panel {
-  width: 85vw;
-  max-width: 750px;
+  width: 95vw;
+  max-width: 800px;
   height: 80vh;
   max-height: 600px;
   background-color: rgba(255, 255, 255, 0.98);
@@ -3415,7 +3415,7 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 .comments-modal-content {
   flex: 1;
   overflow: auto;
-  padding: 1rem;
+  padding: 1rem 1.5rem;
 }
 
 /* 评论模态框动画 */
@@ -3439,7 +3439,5 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   transform: scale(0.95) translateY(20px);
   opacity: 0;
 }
-
-
 
 </style>
