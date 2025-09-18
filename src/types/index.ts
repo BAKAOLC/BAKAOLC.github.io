@@ -62,11 +62,25 @@ export interface Character {
   color?: string;
 }
 
+export interface GiscusConfig {
+  repo: `${string}/${string}`;
+  repoId: string;
+  category: string;
+  categoryId: string;
+  mapping: 'url' | 'title' | 'og:title' | 'specific' | 'number' | 'pathname';
+  strict: '0' | '1';
+  reactionsEnabled: '0' | '1';
+  emitMetadata: '0' | '1';
+  inputPosition: 'top' | 'bottom';
+  loading: 'lazy' | 'eager';
+}
+
 export interface SiteConfig {
   personal: PersonalInfo;
   characters: Character[];
   tags: ImageTag[];
   images: CharacterImage[];
+  giscus: GiscusConfig;
 }
 
 export interface LoadingConfig {
