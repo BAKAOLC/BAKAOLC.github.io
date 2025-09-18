@@ -46,7 +46,7 @@ const handleViewerNavigate = (event: CustomEvent): void => {
       });
     }
   } else {
-    console.warn('无效的图片ID，无法导航');
+    console.warn($t('debug.invalidImageIdNavigate'));
   }
 };
 

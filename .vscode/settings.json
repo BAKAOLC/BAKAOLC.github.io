@@ -57,14 +57,21 @@
   "javascript.preferences.importModuleSpecifier": "non-relative",
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "css.lint.unknownAtRules": "ignore",
-  "i18n-ally.localesPaths": ["src/i18n"],
+  "i18n-ally.localesPaths": [
+    "src/i18n"
+  ],
   "i18n-ally.keystyle": "nested",
   "i18n-ally.displayLanguage": "zh",
   "i18n-ally.sourceLanguage": "zh",
-  "i18n-ally.enabledFrameworks": ["vue", "vue-sfc"],
+  "i18n-ally.enabledFrameworks": [
+    "vue",
+    "vue-sfc"
+  ],
   "i18n-ally.pathMatcher": "{locale}.json",
   "i18n-ally.sortKeys": true,
   "i18n-ally.namespace": false,
   "i18n-ally.extract.autoDetect": true,
-  "i18n-ally.extract.keygenStyle": "camelCase"
+  "i18n-ally.extract.keygenStyle": "camelCase",
+  "i18n-ally.review.enabled": true,
+  "i18n-ally.review.gutters": true,
 }

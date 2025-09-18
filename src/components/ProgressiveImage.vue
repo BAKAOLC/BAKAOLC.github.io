@@ -167,7 +167,7 @@ const onThumbnailLoad = (): void => {
 };
 
 const onThumbnailError = (): void => {
-  console.warn('缩略图加载失败:', preloadThumbnailSrc.value);
+  console.warn($t('debug.thumbnailLoadFailed'), preloadThumbnailSrc.value);
   // 如果缩略图加载失败，立即开始加载主图
   if (!mainImageStartedLoading.value) {
     mainImageStartedLoading.value = true;
@@ -189,7 +189,7 @@ const startMainImageLoading = (): void => {
         progressImageUrl.value = objectUrl;
       })
       .catch((error) => {
-        console.warn('进度加载失败，回退到普通加载:', error);
+        console.warn($t('debug.progressLoadFailed'), error);
         useProgressLoading.value = false;
         shouldShowMainImage.value = true;
       });

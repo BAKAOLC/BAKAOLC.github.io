@@ -153,7 +153,7 @@ const t = (text: I18nText | string, lang?: string): string => {
 
 const viewImage = (image: CharacterImage): void => {
   if (!image || !image.id) {
-    console.warn('无效的图片数据，无法查看');
+    console.warn($t('debug.invalidImageData'));
     return;
   }
 

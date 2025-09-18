@@ -640,7 +640,7 @@ const goToImage = (index: number): void => {
   if (index >= 0 && index < imagesList.value.length) {
     const targetImage = imagesList.value[index];
     if (!targetImage?.id) {
-      console.warn('图片ID为空，无法导航');
+      console.warn($t('debug.imageIdEmpty'));
       return;
     }
 
