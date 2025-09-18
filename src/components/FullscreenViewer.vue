@@ -3351,8 +3351,8 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 }
 
 .comments-modal-panel {
-  width: 90vw;
-  max-width: 800px;
+  width: 85vw;
+  max-width: 750px;
   height: 80vh;
   max-height: 600px;
   background-color: rgba(255, 255, 255, 0.98);
@@ -3373,7 +3373,7 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.5rem;
+  padding: 1rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
 }
@@ -3415,7 +3415,7 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 .comments-modal-content {
   flex: 1;
   overflow: auto;
-  padding: 1rem 1.5rem;
+  padding: 1rem;
 }
 
 /* 评论模态框动画 */
@@ -3440,21 +3440,6 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   opacity: 0;
 }
 
-/* 移动端评论模态框适配 */
-@media (max-width: 768px) {
-  .comments-modal-panel {
-    width: 90vw;
-    height: 85vh;
-    border-radius: 1rem;
-  }
 
-  .comments-modal-header {
-    padding: 0.75rem 1rem;
-  }
-
-  .comments-modal-content {
-    padding: 0.75rem 1rem;
-  }
-}
 
 </style>
