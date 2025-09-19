@@ -359,7 +359,7 @@ onBeforeUnmount(() => {
   transition: transform 0.3s ease, opacity 0.3s ease, margin-bottom 0.3s ease;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .gallery-header {
     @apply flex-col items-center text-center gap-2 mb-3;
     padding-bottom: 0.75rem;
@@ -373,7 +373,7 @@ onBeforeUnmount(() => {
   transition: font-size 0.3s ease, margin-bottom 0.3s ease;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .gallery-title {
     @apply text-xl;
     margin-bottom: 0.5rem;
@@ -525,7 +525,7 @@ onBeforeUnmount(() => {
 }
 
 /* 移动端响应式调整 */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .unified-search-bar {
     gap: 0.375rem;
     padding: 0.375rem;
@@ -557,7 +557,7 @@ onBeforeUnmount(() => {
 }
 
 /* 桌面端显示文字标签 */
-@media (min-width: 769px) {
+@media (min-width: 768px) {
 
   .unified-search-bar .sort-order-text,
   .unified-search-bar .grid-view-text {
@@ -822,7 +822,7 @@ onBeforeUnmount(() => {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .scroll-to-top-button {
     right: 1rem;
     width: 2.5rem;
