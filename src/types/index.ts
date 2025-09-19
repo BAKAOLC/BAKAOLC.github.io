@@ -47,7 +47,6 @@ export interface CharacterImage {
   description?: I18nText; // Optional - fallback to empty string
   artist?: I18nText; // Optional - fallback to "N/A"
   src?: string; // Optional for image groups where src is only in childImages
-  thumbnail?: string;
   tags: string[]; // tag IDs
   characters: string[]; // character IDs
   date?: string; // yyyy-MM-dd format
