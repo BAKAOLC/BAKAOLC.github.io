@@ -424,9 +424,16 @@ const imagesList = computed(() => {
       // 显示完整的图集，但会索引到目标childImage
       const parentImage = appStore.getImageById(props.imageId);
       if (parentImage && parentImage.childImages && parentImage.childImages.length > 0) {
-        // 返回完整的图集（包含所有子图像）
-        const groupImages = appStore.getValidImagesInGroup(parentImage);
-        return groupImages;
+        const validImages = appStore.getValidImagesInGroup(parentImage);
+        if (validImages.length > 0) {
+          const displayImage = appStore.getDisplayImageForGroup(parentImage);
+          const isGroup = parentImage.childImages && validImages.length > 1;
+          const imageForDisplay = {
+            ...displayImage,
+            childImages: isGroup ? parentImage.childImages : displayImage.childImages,
+          };
+          return [imageForDisplay];
+        }
       }
       return [];
     } else {
@@ -441,16 +448,25 @@ const imagesList = computed(() => {
         } else {
           // 如果是父图像或普通图像
           if (image.childImages && image.childImages.length > 0) {
-            // 如果是组图的主图像，显示整个图集，并设置默认的子图像
-            const groupImages = appStore.getValidImagesInGroup(image);
-            const firstValidChildId = appStore.getFirstValidChildId(image);
-            if (firstValidChildId && !currentChildImageId.value) {
-              // 自动设置第一个有效子图像为当前子图像
-              nextTick(() => {
-                currentChildImageId.value = firstValidChildId;
-              });
+            // 如果是组图的主图像，使用与画廊相同的逻辑
+            const validImages = appStore.getValidImagesInGroup(image);
+            if (validImages.length > 0) {
+              const displayImage = appStore.getDisplayImageForGroup(image);
+              const firstValidChildId = appStore.getFirstValidChildId(image);
+              if (firstValidChildId && !currentChildImageId.value) {
+                // 自动设置第一个有效子图像为当前子图像
+                nextTick(() => {
+                  currentChildImageId.value = firstValidChildId;
+                });
+              }
+              // 保持图像组结构
+              const isGroup = image.childImages && validImages.length > 1;
+              const imageForDisplay = {
+                ...displayImage,
+                childImages: isGroup ? image.childImages : displayImage.childImages,
+              };
+              return [imageForDisplay];
             }
-            return groupImages;
           } else {
             // 普通图像，只显示该图像
             return [image];
