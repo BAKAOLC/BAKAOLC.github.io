@@ -159,7 +159,7 @@
                         :show-progress="false"
                         preload-size="tiny"
                         display-type="thumbnail"
-                        display-size="small"
+                        display-size="medium"
                       />
                       <div
                         v-else
