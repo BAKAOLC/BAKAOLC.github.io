@@ -1,0 +1,29 @@
+{
+  "id": "emoji-aba",
+  "name": {
+    "en": "Aba Aba Little Ritsukage",
+    "zh": "阿巴阿巴小律影",
+    "jp": "あばあば小律影"
+  },
+  "description": {
+    "en": "Cute expression emoji",
+    "zh": "可爱表情包",
+    "jp": "かわいい表情スタンプ"
+  },
+  "artist": {
+    "en": "Dianpao Chayao Ji",
+    "zh": "点炮叉腰姬",
+    "jp": "点炮叉腰姬"
+  },
+  "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/阿巴阿巴小律影.png",
+  "tags": [
+    "commission",
+    "avatar",
+    "chibi",
+    "emoji"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ],
+  "date": "2023-08-24"
+}

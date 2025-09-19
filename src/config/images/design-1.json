@@ -1,0 +1,27 @@
+{
+  "id": "design-1",
+  "name": {
+    "en": "Normal Form",
+    "zh": "普通形态",
+    "jp": "通常形態"
+  },
+  "description": {
+    "en": "Normal form character design",
+    "zh": "普通形态角色设定",
+    "jp": "通常形態のキャラクター設定"
+  },
+  "artist": {
+    "en": "Chengling",
+    "zh": "橙灵光",
+    "jp": "橙灵光"
+  },
+  "src": "/assets/catagory/ritsukage-utsumabo/design/new/1.png",
+  "tags": [
+    "commission",
+    "design"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ],
+  "date": "2024-02-28"
+}

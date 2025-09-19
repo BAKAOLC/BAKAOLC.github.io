@@ -1,0 +1,63 @@
+{
+  "id": "design-original",
+  "name": {
+    "en": "Original Design",
+    "zh": "初始设定图",
+    "jp": "初期設定図"
+  },
+  "description": {
+    "en": "The very first character design",
+    "zh": "最初的角色设定图",
+    "jp": "最初のキャラクター設定図"
+  },
+  "artist": {
+    "en": "ID",
+    "zh": "ID",
+    "jp": "ID"
+  },
+  "tags": [
+    "commission",
+    "design"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ],
+  "childImages": [
+    {
+      "id": "design-original-1",
+      "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC.png"
+    },
+    {
+      "id": "design-original-2",
+      "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-beishang.png"
+    },
+    {
+      "id": "design-original-3",
+      "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-chaofeng.png"
+    },
+    {
+      "id": "design-original-4",
+      "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-fannao.png"
+    },
+    {
+      "id": "design-original-5",
+      "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-jingya.png"
+    },
+    {
+      "id": "design-original-6",
+      "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-po.png"
+    },
+    {
+      "id": "design-original-7",
+      "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-shengqi.png"
+    },
+    {
+      "id": "design-original-8",
+      "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-weixiao.png"
+    },
+    {
+      "id": "design-original-9",
+      "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-yiwen.png"
+    }
+  ]
+}
