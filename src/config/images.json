@@ -16,7 +16,7 @@
       "zh": "橙灵光",
       "jp": "橙灵光"
     },
-    "src": "/assets/catagory/ritsukage-utsumabo/design/1.png",
+    "src": "/assets/catagory/ritsukage-utsumabo/design/new/1.png",
     "tags": [
       "commission",
       "design"
@@ -43,7 +43,7 @@
       "zh": "橙灵光",
       "jp": "橙灵光"
     },
-    "src": "/assets/catagory/ritsukage-utsumabo/design/2.png",
+    "src": "/assets/catagory/ritsukage-utsumabo/design/new/2.png",
     "tags": [
       "commission",
       "design"
@@ -52,6 +52,69 @@
       "ritsukage-utsumabo"
     ],
     "date": "2024-05-10"
+  },
+  {
+    "id": "design-original",
+    "name": {
+      "en": "Original Design",
+      "zh": "初始设定图",
+      "jp": "初期設定図"
+    },
+    "description": {
+      "en": "The very first character design",
+      "zh": "最初的角色设定图",
+      "jp": "最初のキャラクター設定図"
+    },
+    "artist": {
+      "en": "ID",
+      "zh": "ID",
+      "jp": "ID"
+    },
+    "tags": [
+      "commission",
+      "design"
+    ],
+    "characters": [
+      "ritsukage-utsumabo"
+    ],
+    "childImages": [
+      {
+        "id": "design-original-1",
+        "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC.png"
+      },
+      {
+        "id": "design-original-2",
+        "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-beishang.png"
+      },
+      {
+        "id": "design-original-3",
+        "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-chaofeng.png"
+      },
+      {
+        "id": "design-original-4",
+        "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-fannao.png"
+      },
+      {
+        "id": "design-original-5",
+        "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-jingya.png"
+      },
+      {
+        "id": "design-original-6",
+        "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-po.png"
+      },
+      {
+        "id": "design-original-7",
+        "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-shengqi.png"
+      },
+      {
+        "id": "design-original-8",
+        "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-weixiao.png"
+      },
+      {
+        "id": "design-original-9",
+        "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-yiwen.png"
+      }
+    ]
   },
   {
     "id": "wallpaper-1",
@@ -70,7 +133,6 @@
       "zh": "木月",
       "jp": "木月"
     },
-    "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/1.png",
     "tags": [
       "commission",
       "wallpaper"
@@ -78,7 +140,63 @@
     "characters": [
       "ritsukage-utsumabo"
     ],
-    "date": "2021-10-20"
+    "date": "2021-10-20",
+    "childImages": [
+      {
+        "id": "wallpaper-1-1",
+        "name": {
+          "en": "Wasteland",
+          "zh": "废土",
+          "jp": "廃土"
+        },
+        "description": {
+          "en": "Wasteland themed wallpaper",
+          "zh": "废土主题壁纸",
+          "jp": "廃土テーマの壁紙"
+        },
+        "artist": {
+          "en": "Muyue",
+          "zh": "木月",
+          "jp": "木月"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/1/1-1.png",
+        "tags": [
+          "commission",
+          "wallpaper"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2021-10-20"
+      },
+      {
+        "id": "wallpaper-1-2",
+        "name": {
+          "en": "Wasteland",
+          "zh": "废土",
+          "jp": "廃土"
+        },
+        "description": {
+          "en": "Wasteland themed wallpaper",
+          "zh": "废土主题壁纸",
+          "jp": "廃土テーマの壁紙"
+        },
+        "artist": {
+          "en": "Muyue",
+          "zh": "木月",
+          "jp": "木月"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/1/1-2.png",
+        "tags": [
+          "commission",
+          "wallpaper"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2021-10-20"
+      }
+    ]
   },
   {
     "id": "wallpaper-2",
@@ -97,7 +215,7 @@
       "zh": "破皮皮",
       "jp": "破皮皮"
     },
-    "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/2.png",
+    "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/2/2.png",
     "tags": [
       "commission",
       "wallpaper"
@@ -134,11 +252,11 @@
     "date": "2022-10-17",
     "childImages": [
       {
-        "id": "wallpaper-3-1",
+        "id": "wallpaper-3-sock-costume-1",
         "name": {
-          "en": "Bedroom (Normal)",
-          "zh": "卧室 (通常)",
-          "jp": "寝室（通常）"
+          "en": "Bedroom - With Socks - With Costume - 1",
+          "zh": "卧室 - 带有裤袜 - 有服装 - 1",
+          "jp": "寝室 - ソックス付き - 衣装あり - 1"
         },
         "description": {
           "en": "Bedroom scene wallpaper",
@@ -150,7 +268,7 @@
           "zh": "Re-ViVi",
           "jp": "Re-ViVi"
         },
-        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3-1.png",
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/costume/1.png",
         "tags": [
           "commission",
           "wallpaper"
@@ -161,23 +279,1201 @@
         "date": "2022-10-17"
       },
       {
-        "id": "wallpaper-3-2",
+        "id": "wallpaper-3-sock-costume-2",
         "name": {
-          "en": "Bedroom (Ribbon)",
-          "zh": "卧室 (丝带)",
-          "jp": "寝室（リボン）"
+          "en": "Bedroom - With Socks - With Costume - 2",
+          "zh": "卧室 - 带有裤袜 - 有服装 - 2",
+          "jp": "寝室 - ソックス付き - 衣装あり - 2"
         },
         "description": {
-          "en": "Bedroom scene with ribbon",
-          "zh": "带丝带的卧室场景",
-          "jp": "リボン付きの寝室シーン"
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
         },
         "artist": {
           "en": "Re-ViVi",
           "zh": "Re-ViVi",
           "jp": "Re-ViVi"
         },
-        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3-2.png",
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/costume/2.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-sock-costume-3",
+        "name": {
+          "en": "Bedroom - With Socks - With Costume - 3",
+          "zh": "卧室 - 带有裤袜 - 有服装 - 3",
+          "jp": "寝室 - ソックス付き - 衣装あり - 3"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/costume/3.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-sock-costume-4",
+        "name": {
+          "en": "Bedroom - With Socks - With Costume - 4",
+          "zh": "卧室 - 带有裤袜 - 有服装 - 4",
+          "jp": "寝室 - ソックス付き - 衣装あり - 4"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/costume/4.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-sock-costume-5",
+        "name": {
+          "en": "Bedroom - With Socks - With Costume - 5",
+          "zh": "卧室 - 带有裤袜 - 有服装 - 5",
+          "jp": "寝室 - ソックス付き - 衣装あり - 5"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/costume/5.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-sock-costume-6",
+        "name": {
+          "en": "Bedroom - With Socks - With Costume - 6",
+          "zh": "卧室 - 带有裤袜 - 有服装 - 6",
+          "jp": "寝室 - ソックス付き - 衣装あり - 6"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/costume/6.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-sock-costume-7",
+        "name": {
+          "en": "Bedroom - With Socks - With Costume - 7",
+          "zh": "卧室 - 带有裤袜 - 有服装 - 7",
+          "jp": "寝室 - ソックス付き - 衣装あり - 7"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/costume/7.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-sock-costume-8",
+        "name": {
+          "en": "Bedroom - With Socks - With Costume - 8",
+          "zh": "卧室 - 带有裤袜 - 有服装 - 8",
+          "jp": "寝室 - ソックス付き - 衣装あり - 8"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/costume/8.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-sock-no-costume-1",
+        "name": {
+          "en": "Bedroom - With Socks - No Costume - 1",
+          "zh": "卧室 - 带有裤袜 - 无服装 - 1",
+          "jp": "寝室 - ソックス付き - 衣装なし - 1"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/no-costume/1.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-sock-no-costume-2",
+        "name": {
+          "en": "Bedroom - With Socks - No Costume - 2",
+          "zh": "卧室 - 带有裤袜 - 无服装 - 2",
+          "jp": "寝室 - ソックス付き - 衣装なし - 2"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/no-costume/2.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-sock-no-costume-3",
+        "name": {
+          "en": "Bedroom - With Socks - No Costume - 3",
+          "zh": "卧室 - 带有裤袜 - 无服装 - 3",
+          "jp": "寝室 - ソックス付き - 衣装なし - 3"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/no-costume/3.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-sock-no-costume-4",
+        "name": {
+          "en": "Bedroom - With Socks - No Costume - 4",
+          "zh": "卧室 - 带有裤袜 - 无服装 - 4",
+          "jp": "寝室 - ソックス付き - 衣装なし - 4"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/no-costume/4.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-sock-no-costume-5",
+        "name": {
+          "en": "Bedroom - With Socks - No Costume - 5",
+          "zh": "卧室 - 带有裤袜 - 无服装 - 5",
+          "jp": "寝室 - ソックス付き - 衣装なし - 5"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/no-costume/5.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-sock-no-costume-6",
+        "name": {
+          "en": "Bedroom - With Socks - No Costume - 6",
+          "zh": "卧室 - 带有裤袜 - 无服装 - 6",
+          "jp": "寝室 - ソックス付き - 衣装なし - 6"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/no-costume/6.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-sock-no-costume-7",
+        "name": {
+          "en": "Bedroom - With Socks - No Costume - 7",
+          "zh": "卧室 - 带有裤袜 - 无服装 - 7",
+          "jp": "寝室 - ソックス付き - 衣装なし - 7"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/no-costume/7.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-sock-no-costume-8",
+        "name": {
+          "en": "Bedroom - With Socks - No Costume - 8",
+          "zh": "卧室 - 带有裤袜 - 无服装 - 8",
+          "jp": "寝室 - ソックス付き - 衣装なし - 8"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/no-costume/8.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-no-sock-costume-1",
+        "name": {
+          "en": "Bedroom - Without Socks - With Costume - 1",
+          "zh": "卧室 - 不带裤袜 - 有服装 - 1",
+          "jp": "寝室 - ソックスなし - 衣装あり - 1"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/costume/1.png",
+        "tags": [
+          "commission",
+          "wallpaper"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-no-sock-costume-2",
+        "name": {
+          "en": "Bedroom - Without Socks - With Costume - 2",
+          "zh": "卧室 - 不带裤袜 - 有服装 - 2",
+          "jp": "寝室 - ソックスなし - 衣装あり - 2"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/costume/2.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-no-sock-costume-3",
+        "name": {
+          "en": "Bedroom - Without Socks - With Costume - 3",
+          "zh": "卧室 - 不带裤袜 - 有服装 - 3",
+          "jp": "寝室 - ソックスなし - 衣装あり - 3"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/costume/3.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-no-sock-costume-4",
+        "name": {
+          "en": "Bedroom - Without Socks - With Costume - 4",
+          "zh": "卧室 - 不带裤袜 - 有服装 - 4",
+          "jp": "寝室 - ソックスなし - 衣装あり - 4"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/costume/4.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-no-sock-costume-5",
+        "name": {
+          "en": "Bedroom - Without Socks - With Costume - 5",
+          "zh": "卧室 - 不带裤袜 - 有服装 - 5",
+          "jp": "寝室 - ソックスなし - 衣装あり - 5"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/costume/5.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-no-sock-costume-6",
+        "name": {
+          "en": "Bedroom - Without Socks - With Costume - 6",
+          "zh": "卧室 - 不带裤袜 - 有服装 - 6",
+          "jp": "寝室 - ソックスなし - 衣装あり - 6"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/costume/6.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-no-sock-costume-7",
+        "name": {
+          "en": "Bedroom - Without Socks - With Costume - 7",
+          "zh": "卧室 - 不带裤袜 - 有服装 - 7",
+          "jp": "寝室 - ソックスなし - 衣装あり - 7"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/costume/7.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-no-sock-costume-8",
+        "name": {
+          "en": "Bedroom - Without Socks - With Costume - 8",
+          "zh": "卧室 - 不带裤袜 - 有服装 - 8",
+          "jp": "寝室 - ソックスなし - 衣装あり - 8"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/costume/8.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-no-sock-no-costume-1",
+        "name": {
+          "en": "Bedroom - Without Socks - No Costume - 1",
+          "zh": "卧室 - 不带裤袜 - 无服装 - 1",
+          "jp": "寝室 - ソックスなし - 衣装なし - 1"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/1.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-no-sock-no-costume-2",
+        "name": {
+          "en": "Bedroom - Without Socks - No Costume - 2",
+          "zh": "卧室 - 不带裤袜 - 无服装 - 2",
+          "jp": "寝室 - ソックスなし - 衣装なし - 2"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/2.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-no-sock-no-costume-3",
+        "name": {
+          "en": "Bedroom - Without Socks - No Costume - 3",
+          "zh": "卧室 - 不带裤袜 - 无服装 - 3",
+          "jp": "寝室 - ソックスなし - 衣装なし - 3"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/3.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-no-sock-no-costume-4",
+        "name": {
+          "en": "Bedroom - Without Socks - No Costume - 4",
+          "zh": "卧室 - 不带裤袜 - 无服装 - 4",
+          "jp": "寝室 - ソックスなし - 衣装なし - 4"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/4.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-no-sock-no-costume-5",
+        "name": {
+          "en": "Bedroom - Without Socks - No Costume - 5",
+          "zh": "卧室 - 不带裤袜 - 无服装 - 5",
+          "jp": "寝室 - ソックスなし - 衣装なし - 5"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/5.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-no-sock-no-costume-6",
+        "name": {
+          "en": "Bedroom - Without Socks - No Costume - 6",
+          "zh": "卧室 - 不带裤袜 - 无服装 - 6",
+          "jp": "寝室 - ソックスなし - 衣装なし - 6"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/6.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-no-sock-no-costume-7",
+        "name": {
+          "en": "Bedroom - Without Socks - No Costume - 7",
+          "zh": "卧室 - 不带裤袜 - 无服装 - 7",
+          "jp": "寝室 - ソックスなし - 衣装なし - 7"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/7.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-no-sock-no-costume-8",
+        "name": {
+          "en": "Bedroom - Without Socks - No Costume - 8",
+          "zh": "卧室 - 不带裤袜 - 无服装 - 8",
+          "jp": "寝室 - ソックスなし - 衣装なし - 8"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/8.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18",
+          "tentacle"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-ribbon-sock-1",
+        "name": {
+          "en": "Bedroom - Ribbon Bind - With Socks - 1",
+          "zh": "卧室 - 丝带束缚 - 带有裤袜 - 1",
+          "jp": "寝室 - リボン拘束 - ソックス付き - 1"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/ribbon/sock/1.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-ribbon-sock-2",
+        "name": {
+          "en": "Bedroom - Ribbon Bind - With Socks - 2",
+          "zh": "卧室 - 丝带束缚 - 带有裤袜 - 2",
+          "jp": "寝室 - リボン拘束 - ソックス付き - 2"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/ribbon/sock/2.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-ribbon-sock-3",
+        "name": {
+          "en": "Bedroom - Ribbon Bind - With Socks - 3",
+          "zh": "卧室 - 丝带束缚 - 带有裤袜 - 3",
+          "jp": "寝室 - リボン拘束 - ソックス付き - 3"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/ribbon/sock/3.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-ribbon-sock-4",
+        "name": {
+          "en": "Bedroom - Ribbon Bind - With Socks - 4",
+          "zh": "卧室 - 丝带束缚 - 带有裤袜 - 4",
+          "jp": "寝室 - リボン拘束 - ソックス付き - 4"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/ribbon/sock/4.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-ribbon-sock-5",
+        "name": {
+          "en": "Bedroom - Ribbon Bind - With Socks - 5",
+          "zh": "卧室 - 丝带束缚 - 带有裤袜 - 5",
+          "jp": "寝室 - リボン拘束 - ソックス付き - 5"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/ribbon/sock/5.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-ribbon-no-sock-1",
+        "name": {
+          "en": "Bedroom - Ribbon Bind - Without Socks - 1",
+          "zh": "卧室 - 丝带束缚 - 不带裤袜 - 1",
+          "jp": "寝室 - リボン拘束 - ソックスなし - 1"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/ribbon/no-sock/1.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-ribbon-no-sock-2",
+        "name": {
+          "en": "Bedroom - Ribbon Bind - Without Socks - 2",
+          "zh": "卧室 - 丝带束缚 - 不带裤袜 - 2",
+          "jp": "寝室 - リボン拘束 - ソックスなし - 2"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/ribbon/no-sock/2.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-ribbon-no-sock-3",
+        "name": {
+          "en": "Bedroom - Ribbon Bind - Without Socks - 3",
+          "zh": "卧室 - 丝带束缚 - 不带裤袜 - 3",
+          "jp": "寝室 - リボン拘束 - ソックスなし - 3"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/ribbon/no-sock/3.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-ribbon-no-sock-4",
+        "name": {
+          "en": "Bedroom - Ribbon Bind - Without Socks - 4",
+          "zh": "卧室 - 丝带束缚 - 不带裤袜 - 4",
+          "jp": "寝室 - リボン拘束 - ソックスなし - 4"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/ribbon/no-sock/4.png",
+        "tags": [
+          "commission",
+          "wallpaper",
+          "nsfw",
+          "r18"
+        ],
+        "characters": [
+          "ritsukage-utsumabo"
+        ],
+        "date": "2022-10-17"
+      },
+      {
+        "id": "wallpaper-3-ribbon-no-sock-5",
+        "name": {
+          "en": "Bedroom - Ribbon Bind - Without Socks - 5",
+          "zh": "卧室 - 丝带束缚 - 不带裤袜 - 5",
+          "jp": "寝室 - リボン拘束 - ソックスなし - 5"
+        },
+        "description": {
+          "en": "Bedroom scene wallpaper",
+          "zh": "卧室场景壁纸",
+          "jp": "寝室シーンの壁紙"
+        },
+        "artist": {
+          "en": "Re-ViVi",
+          "zh": "Re-ViVi",
+          "jp": "Re-ViVi"
+        },
+        "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/ribbon/no-sock/5.png",
         "tags": [
           "commission",
           "wallpaper",
@@ -188,32 +1484,6 @@
         ],
         "date": "2022-10-17"
       }
-    ]
-  },
-  {
-    "id": "illust-original",
-    "name": {
-      "en": "Original Design",
-      "zh": "初始设定图",
-      "jp": "初期設定図"
-    },
-    "description": {
-      "en": "The very first character design",
-      "zh": "最初的角色设定图",
-      "jp": "最初のキャラクター設定図"
-    },
-    "artist": {
-      "en": "ID",
-      "zh": "ID",
-      "jp": "ID"
-    },
-    "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/original.png",
-    "tags": [
-      "commission",
-      "design"
-    ],
-    "characters": [
-      "ritsukage-utsumabo"
     ]
   },
   {
@@ -233,7 +1503,6 @@
       "zh": "プシュケーLo",
       "jp": "プシュケーLo"
     },
-    "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-1.png",
     "tags": [
       "commission",
       "illustration",
@@ -242,7 +1511,23 @@
     "characters": [
       "ritsukage-utsumabo"
     ],
-    "date": "2022-01-22"
+    "date": "2022-01-22",
+    "childImages": [
+      {
+        "id": "illust-psyche-1-1",
+        "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-1-1.png"
+      },
+      {
+        "id": "illust-psyche-1-2",
+        "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-1-2.png",
+        "tags": [
+          "commission",
+          "illustration",
+          "nsfw",
+          "r18"
+        ]
+      }
+    ]
   },
   {
     "id": "illust-psyche-2",
@@ -261,7 +1546,6 @@
       "zh": "プシュケーLo",
       "jp": "プシュケーLo"
     },
-    "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-2.png",
     "tags": [
       "commission",
       "illustration",
@@ -271,7 +1555,25 @@
     "characters": [
       "ritsukage-utsumabo"
     ],
-    "date": "2022-02-25"
+    "date": "2022-02-25",
+    "childImages": [
+      {
+        "id": "illust-psyche-2-1",
+        "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-2-1.png"
+      },
+      {
+        "id": "illust-psyche-2-2",
+        "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-2-2.png"
+      },
+      {
+        "id": "illust-psyche-2-3",
+        "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-2-3.png"
+      },
+      {
+        "id": "illust-psyche-2-4",
+        "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-2-4.png"
+      }
+    ]
   },
   {
     "id": "illust-psyche-3",
@@ -290,7 +1592,6 @@
       "zh": "プシュケーLo",
       "jp": "プシュケーLo"
     },
-    "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-3.png",
     "tags": [
       "commission",
       "illustration",
@@ -299,7 +1600,37 @@
     "characters": [
       "ritsukage-utsumabo"
     ],
-    "date": "2022-04-30"
+    "date": "2022-04-30",
+    "childImages": [
+      {
+        "id": "illust-psyche-3-1",
+        "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-3-1.png"
+      },
+      {
+        "id": "illust-psyche-3-2",
+        "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-3-2.png"
+      },
+      {
+        "id": "illust-psyche-3-3",
+        "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-3-3.png",
+        "tags": [
+          "commission",
+          "illustration",
+          "nsfw",
+          "r18"
+        ]
+      },
+      {
+        "id": "illust-psyche-3-4",
+        "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-3-4.png",
+        "tags": [
+          "commission",
+          "illustration",
+          "nsfw",
+          "r18"
+        ]
+      }
+    ]
   },
   {
     "id": "illust-lemonade",
@@ -318,7 +1649,6 @@
       "zh": "江欣",
       "jp": "江欣"
     },
-    "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/柠檬水小律影.png",
     "tags": [
       "commission",
       "illustration"
@@ -326,7 +1656,23 @@
     "characters": [
       "ritsukage-utsumabo"
     ],
-    "date": "2022-03-28"
+    "date": "2022-03-28",
+    "childImages": [
+      {
+        "id": "illust-lemonade-1",
+        "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/柠檬水小律影-1.png"
+      },
+      {
+        "id": "illust-lemonade-2",
+        "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/柠檬水小律影-2.png",
+        "tags": [
+          "commission",
+          "illustration",
+          "nsfw",
+          "r18"
+        ]
+      }
+    ]
   },
   {
     "id": "illust-moon",
@@ -355,19 +1701,19 @@
     ]
   },
   {
-    "id": "illust-halfhang",
+    "id": "illust-Half-gua",
     "name": {
-      "en": "Gift by Half-hang",
+      "en": "Gift by Half-gua",
       "zh": "半挂赠图",
       "jp": "半掛けのギフトアートワーク"
     },
     "description": {
-      "en": "Gift artwork by Half-hang",
+      "en": "Gift artwork by Half-gua",
       "zh": "半挂老师赠送的作品",
       "jp": "半掛けのギフトアートワーク"
     },
     "artist": {
-      "en": "Half-hang",
+      "en": "Half-gua",
       "zh": "半挂",
       "jp": "半挂"
     },
@@ -554,7 +1900,6 @@
       "zh": "hiyakata",
       "jp": "hiyakata"
     },
-    "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/公园律影.png",
     "tags": [
       "commission",
       "illustration"
@@ -562,7 +1907,33 @@
     "characters": [
       "ritsukage-utsumabo"
     ],
-    "date": "2022-02-03"
+    "date": "2022-02-03",
+    "childImages": [
+      {
+        "id": "illust-park-1",
+        "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/公园律影-1.png"
+      },
+      {
+        "id": "illust-park-2",
+        "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/公园律影-2.png",
+        "tags": [
+          "commission",
+          "illustration",
+          "nsfw",
+          "r18"
+        ]
+      },
+      {
+        "id": "illust-park-3",
+        "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/公园律影-3.png",
+        "tags": [
+          "commission",
+          "illustration",
+          "nsfw",
+          "r18"
+        ]
+      }
+    ]
   },
   {
     "id": "illust-sunshine",
