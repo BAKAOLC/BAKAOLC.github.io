@@ -25,38 +25,83 @@
   "childImages": [
     {
       "id": "design-original-1",
+      "listName": {
+        "en": "Basic",
+        "zh": "基本",
+        "jp": "基本"
+      },
       "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC.png"
     },
     {
       "id": "design-original-2",
+      "listName": {
+        "en": "Sad",
+        "zh": "悲伤",
+        "jp": "悲しい"
+      },
       "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-beishang.png"
     },
     {
       "id": "design-original-3",
+      "listName": {
+        "en": "Mocking",
+        "zh": "嘲讽",
+        "jp": "嘲笑"
+      },
       "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-chaofeng.png"
     },
     {
       "id": "design-original-4",
+      "listName": {
+        "en": "烦恼",
+        "zh": "烦恼",
+        "jp": "悩み"
+      },
       "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-fannao.png"
     },
     {
       "id": "design-original-5",
+      "listName": {
+        "en": "Surprised",
+        "zh": "惊讶",
+        "jp": "驚き"
+      },
       "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-jingya.png"
     },
     {
       "id": "design-original-6",
+      "listName": {
+        "en": "Damaged",
+        "zh": "破损",
+        "jp": "破損"
+      },
       "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-po.png"
     },
     {
       "id": "design-original-7",
+      "listName": {
+        "en": "Angry",
+        "zh": "生气",
+        "jp": "怒り"
+      },
       "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-shengqi.png"
     },
     {
       "id": "design-original-8",
+      "listName": {
+        "en": "Smiling",
+        "zh": "微笑",
+        "jp": "微笑"
+      },
       "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-weixiao.png"
     },
     {
       "id": "design-original-9",
+      "listName": {
+        "en": "Confused",
+        "zh": "困惑",
+        "jp": "困惑"
+      },
       "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-yiwen.png"
     }
   ]

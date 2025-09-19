@@ -26,57 +26,21 @@
   "childImages": [
     {
       "id": "wallpaper-1-1",
-      "name": {
-        "en": "Wasteland",
-        "zh": "废土",
-        "jp": "廃土"
+      "listName": {
+        "en": "Horizontal",
+        "zh": "横版",
+        "jp": "横版"
       },
-      "description": {
-        "en": "Wasteland themed wallpaper",
-        "zh": "废土主题壁纸",
-        "jp": "廃土テーマの壁紙"
-      },
-      "artist": {
-        "en": "Muyue",
-        "zh": "木月",
-        "jp": "木月"
-      },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/1/1-1.png",
-      "tags": [
-        "commission",
-        "wallpaper"
-      ],
-      "characters": [
-        "ritsukage-utsumabo"
-      ],
-      "date": "2021-10-20"
+      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/1/1-1.png"
     },
     {
       "id": "wallpaper-1-2",
-      "name": {
-        "en": "Wasteland",
-        "zh": "废土",
-        "jp": "廃土"
+      "listName": {
+        "en": "Vertical",
+        "zh": "竖版",
+        "jp": "竖版"
       },
-      "description": {
-        "en": "Wasteland themed wallpaper",
-        "zh": "废土主题壁纸",
-        "jp": "廃土テーマの壁紙"
-      },
-      "artist": {
-        "en": "Muyue",
-        "zh": "木月",
-        "jp": "木月"
-      },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/1/1-2.png",
-      "tags": [
-        "commission",
-        "wallpaper"
-      ],
-      "characters": [
-        "ritsukage-utsumabo"
-      ],
-      "date": "2021-10-20"
+      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/1/1-2.png"
     }
   ]
 }
