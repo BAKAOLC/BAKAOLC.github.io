@@ -3082,7 +3082,6 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
     left: 0;
     bottom: 0;
     width: 180px;
-    @apply rounded-lg;
     z-index: 10;
     border-right: 1px solid rgba(75, 85, 99, 0.3);
     border-left: none;
