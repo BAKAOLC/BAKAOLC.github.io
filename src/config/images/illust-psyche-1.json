@@ -1,0 +1,43 @@
+{
+  "id": "illust-psyche-1",
+  "name": {
+    "en": "プシュケーLo-1",
+    "zh": "プシュケーLo-1",
+    "jp": "プシュケーLo-1"
+  },
+  "description": {
+    "en": "Artwork by プシュケーLo",
+    "zh": "プシュケーLo作品",
+    "jp": "プシュケーLoの作品"
+  },
+  "artist": {
+    "en": "プシュケーLo",
+    "zh": "プシュケーLo",
+    "jp": "プシュケーLo"
+  },
+  "tags": [
+    "commission",
+    "illustration",
+    "nsfw"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ],
+  "date": "2022-01-22",
+  "childImages": [
+    {
+      "id": "illust-psyche-1-1",
+      "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-1-1.png"
+    },
+    {
+      "id": "illust-psyche-1-2",
+      "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/プシュケーLo-1-2.png",
+      "tags": [
+        "commission",
+        "illustration",
+        "nsfw",
+        "r18"
+      ]
+    }
+  ]
+}

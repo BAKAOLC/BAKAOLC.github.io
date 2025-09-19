@@ -5,11 +5,13 @@ import vue from '@vitejs/plugin-vue';
 import { defineConfig } from 'vite';
 
 const require = createRequire(import.meta.url);
+const imagesConfigPlugin = require('./vite-plugins/images-config-plugin.cjs');
 const { thumbnailPlugin } = require('./vite-plugins/thumbnail-plugin.cjs');
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    imagesConfigPlugin(),
     thumbnailPlugin(),
     vue(),
   ],

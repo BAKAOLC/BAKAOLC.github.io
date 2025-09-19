@@ -1,0 +1,26 @@
+{
+  "id": "illust-moon",
+  "name": {
+    "en": "Gift by Liuyue",
+    "zh": "流月赠图",
+    "jp": "流月のギフトアートワーク"
+  },
+  "description": {
+    "en": "Gift artwork by Liuyue",
+    "zh": "流月老师赠送的作品",
+    "jp": "流月のギフトアートワーク"
+  },
+  "artist": {
+    "en": "Liuyue",
+    "zh": "流月",
+    "jp": "流月"
+  },
+  "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/流月绘.jpg",
+  "tags": [
+    "gift",
+    "illustration"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ]
+}

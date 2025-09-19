@@ -1,0 +1,26 @@
+{
+  "id": "illust-Half-gua",
+  "name": {
+    "en": "Gift by Half-gua",
+    "zh": "半挂赠图",
+    "jp": "半掛けのギフトアートワーク"
+  },
+  "description": {
+    "en": "Gift artwork by Half-gua",
+    "zh": "半挂老师赠送的作品",
+    "jp": "半掛けのギフトアートワーク"
+  },
+  "artist": {
+    "en": "Half-gua",
+    "zh": "半挂",
+    "jp": "半挂"
+  },
+  "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/半挂绘.jpg",
+  "tags": [
+    "gift",
+    "illustration"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ]
+}
