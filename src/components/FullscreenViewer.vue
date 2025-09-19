@@ -40,7 +40,7 @@
 
     <div class="viewer-content">
       <!-- 主图像区域 -->
-      <div class="main-image-area" :class="{ 'with-left-group-selector': showGroupSelector }">
+      <div class="main-image-area" :class="{ 'with-left-group-selector': showGroupSelector && !isMobile }">
         <div class="image-container" ref="imageContainer" @wheel="handleImageWheel" @mousedown="handleImageMouseDown"
           @touchstart="handleImageTouchStart" @touchmove="handleImageTouchMove" @touchend="handleImageTouchEnd">
           <transition name="fade" mode="out-in">
@@ -78,7 +78,7 @@
       </div>
 
       <!-- 桌面端图像组选择器 - 左侧布局 -->
-      <transition name="slide-in-left">
+      <transition name="desktop-group-selector-slide">
         <div v-if="showGroupSelector && !isMobile" class="group-selector left-side">
           <div class="group-selector-header">
             <h4 class="group-title">{{ $t('viewer.imageGroup') }}</h4>
@@ -119,12 +119,14 @@
       </transition>
 
       <!-- 移动端图像组悬浮按钮 -->
-      <button v-if="showGroupSelector && isMobile && groupImagesList.length > 1"
-        @click="toggleMobileGroupSelector"
-        class="mobile-group-selector-toggle" :class="{ 'active': isMobileGroupSelectorOpen }">
-        <i class="fa fa-th-large"></i>
-        <span class="toggle-text">{{ $t('viewer.imageGroup') }}</span>
-      </button>
+      <transition name="mobile-group-button-fade">
+        <button v-if="showGroupSelector && isMobile && groupImagesList.length > 1"
+          @click="toggleMobileGroupSelector"
+          class="mobile-group-selector-toggle" :class="{ 'active': isMobileGroupSelectorOpen }">
+          <i class="fa fa-th-large"></i>
+          <span class="toggle-text">{{ $t('viewer.imageGroup') }}</span>
+        </button>
+      </transition>
 
       <!-- 移动端图像组悬浮窗 -->
       <transition name="mobile-group-selector-fade">
@@ -400,6 +402,9 @@ const isDraggingMinimap = ref(false);
 // 移动端图像组选择器状态
 const isMobileGroupSelectorOpen = ref(false);
 const minimapDragStart = ref({ x: 0, y: 0 });
+
+// 响应式切换动画状态
+const isResponsiveTransitioning = ref(false);
 
 // 图像加载状态
 const isOriginalImageLoaded = ref(false);
@@ -2245,11 +2250,16 @@ const handleImageContainerResize = (): void => {
 
 // 处理屏幕变化（移动端状态切换等）
 const handleScreenChange = (wasMobile: boolean, currentIsMobile: boolean): void => {
+  // 标记正在进行响应式切换
+  isResponsiveTransitioning.value = true;
+
   // 如果从移动端切换到桌面端
   if (wasMobile && !currentIsMobile) {
-    // 关闭移动端覆盖层
+    // 关闭移动端覆盖层和图像组选择器
     showMobileInfoOverlay.value = false;
     mobileInfoOverlayAnimating.value = false;
+    isMobileGroupSelectorOpen.value = false;
+
     // 根据用户对固定信息栏的偏好设置桌面端信息面板状态
     showInfoPanel.value = userInfoPanelPreference.value;
   } else if (!wasMobile && currentIsMobile) {
@@ -2270,6 +2280,11 @@ const handleScreenChange = (wasMobile: boolean, currentIsMobile: boolean): void 
     handleResizeDebounced();
     resizeDebounceTimer = null;
   }, 150); // 150ms防抖延迟
+
+  // 动画完成后重置过渡状态
+  timers.setTimeout(() => {
+    isResponsiveTransitioning.value = false;
+  }, 400); // 与动画时长保持一致
 };
 
 // 防抖后的resize处理函数
@@ -2747,7 +2762,7 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 }
 
 /* 响应式设计 */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .minimap-container {
     width: 150px;
     height: 112px;
@@ -3056,19 +3071,19 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 }
 
 /* 移动端适配 */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .main-image-area.with-left-group-selector {
     margin-left: 0; /* 移动端不使用固定左侧布局 */
   }
 
   .group-selector.left-side {
-    position: fixed;
-    top: 50px;
-    left: 10px;
-    bottom: 80px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
     width: 180px;
     @apply rounded-lg;
-    z-index: 50;
+    z-index: 10;
     border-right: 1px solid rgba(75, 85, 99, 0.3);
     border-left: none;
   }
@@ -3083,7 +3098,7 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 }
 
 /* 确保移动端覆盖层在小屏幕上正确显示 */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .mobile-info-panel {
     max-height: 80vh;
   }
@@ -3131,7 +3146,7 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 .mobile-group-selector-toggle {
   position: fixed;
   left: 1rem;
-  bottom: calc(80px + 1rem);
+  bottom: calc(96px + 1rem);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -3302,6 +3317,57 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   text-overflow: ellipsis;
 }
 
+/* 移动端图像组按钮渐变动画 */
+.mobile-group-button-fade-enter-active,
+.mobile-group-button-fade-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.mobile-group-button-fade-enter-from,
+.mobile-group-button-fade-leave-to {
+  opacity: 0;
+  transform: translateY(20px) scale(0.9);
+}
+
+.mobile-group-button-fade-enter-active .toggle-text {
+  transition: opacity 0.3s ease 0.1s;
+}
+
+.mobile-group-button-fade-enter-from .toggle-text,
+.mobile-group-button-fade-leave-to .toggle-text {
+  opacity: 0;
+}
+
+/* 桌面端图像组选择器滑动动画 */
+.desktop-group-selector-slide-enter-active,
+.desktop-group-selector-slide-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.desktop-group-selector-slide-enter-from {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.desktop-group-selector-slide-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.desktop-group-selector-slide-enter-active .group-selector-header,
+.desktop-group-selector-slide-enter-active .group-images-list {
+  transition: opacity 0.3s ease 0.1s;
+}
+
+.desktop-group-selector-slide-enter-from .group-selector-header,
+.desktop-group-selector-slide-enter-from .group-images-list,
+.desktop-group-selector-slide-leave-to .group-selector-header,
+.desktop-group-selector-slide-leave-to .group-images-list {
+  opacity: 0;
+}
+
 /* 移动端图像组选择器动画 */
 .mobile-group-selector-fade-enter-active,
 .mobile-group-selector-fade-leave-active {
@@ -3327,7 +3393,7 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 @media (max-width: 480px) {
   .mobile-group-selector-toggle {
     left: 0.75rem;
-    bottom: calc(80px + 0.75rem);
+    bottom: calc(96px + 0.75rem);
     padding: 0.625rem 0.875rem;
     font-size: 0.8125rem;
   }
