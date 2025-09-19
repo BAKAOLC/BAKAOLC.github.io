@@ -136,6 +136,20 @@
     "isRestricted": true
   },
   {
+    "id": "tentacle",
+    "name": {
+      "en": "Tentacle",
+      "zh": "触手",
+      "jp": "触手"
+    },
+    "color": "#7c3aed",
+    "icon": "s",
+    "isRestricted": true,
+    "prerequisiteTags": [
+      "nsfw"
+    ]
+  },
+  {
     "id": "guro",
     "name": {
       "en": "Guro",
