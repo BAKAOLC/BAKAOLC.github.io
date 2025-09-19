@@ -1,0 +1,107 @@
+{
+  "avatar": "/assets/avatar.png",
+  "name": {
+    "en": "OLC",
+    "zh": "OLC",
+    "jp": "OLC"
+  },
+  "description": [
+    {
+      "en": "A person who is bored and likes to doodle",
+      "zh": "一个无聊喜欢摸鱼的人",
+      "jp": "暇で落書きが好きな人"
+    },
+    {
+      "en": "",
+      "zh": "",
+      "jp": ""
+    },
+    {
+      "en": "== Common IDs ==",
+      "zh": "== 常用ID ==",
+      "jp": "== よく使うID =="
+    },
+    {
+      "en": "OLC",
+      "zh": "OLC",
+      "jp": "OLC"
+    },
+    {
+      "en": "BAKAOLC",
+      "zh": "BAKAOLC",
+      "jp": "BAKAOLC"
+    },
+    {
+      "en": "律影映幻",
+      "zh": "律影映幻",
+      "jp": "律影映幻"
+    },
+    {
+      "en": "Ritsukage Utsumabo",
+      "zh": "Ritsukage Utsumabo",
+      "jp": "Ritsukage Utsumabo"
+    }
+  ],
+  "links": [
+    {
+      "name": {
+        "en": "Bilibili",
+        "zh": "Bilibili",
+        "jp": "Bilibili"
+      },
+      "url": "https://space.bilibili.com/3818840",
+      "icon": "play-circle",
+      "color": "#00a1d6"
+    },
+    {
+      "name": {
+        "en": "X (Twitter)",
+        "zh": "X",
+        "jp": "X"
+      },
+      "url": "https://x.com/BAKAOLC",
+      "icon": "twitter",
+      "color": "#1da1f2"
+    },
+    {
+      "name": {
+        "en": "Steam",
+        "zh": "Steam",
+        "jp": "Steam"
+      },
+      "url": "https://steamcommunity.com/id/BAKAOLC/",
+      "icon": "steam-square",
+      "color": "#171a21"
+    },
+    {
+      "name": {
+        "en": "GitHub",
+        "zh": "GitHub",
+        "jp": "GitHub"
+      },
+      "url": "https://github.com/BAKAOLC",
+      "icon": "github",
+      "color": "#333"
+    },
+    {
+      "name": {
+        "en": "QQ",
+        "zh": "QQ",
+        "jp": "QQ"
+      },
+      "url": "https://qm.qq.com/q/PSo9Ks06K4&personal_qrcode_source=4",
+      "icon": "qq",
+      "color": "#12b7f5"
+    },
+    {
+      "name": {
+        "en": "Mail",
+        "zh": "邮箱",
+        "jp": "メール"
+      },
+      "url": "mailto:utsumabo@ritsukage.com",
+      "icon": "envelope",
+      "color": "#ea4335"
+    }
+  ]
+}
