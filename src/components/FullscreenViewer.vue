@@ -111,7 +111,7 @@
                 </svg>
               </div>
               <div class="group-image-info">
-                <span class="group-image-name">{{ t(image.name, currentLanguage) }}</span>
+                <span class="group-image-name">{{ getChildImageDisplayName(image) }}</span>
               </div>
             </button>
           </div>
@@ -175,7 +175,7 @@
                       </div>
                     </div>
                     <div class="mobile-group-image-info">
-                      <span class="mobile-group-image-name">{{ t(image.name, currentLanguage) }}</span>
+                      <span class="mobile-group-image-name">{{ getChildImageDisplayName(image) }}</span>
                     </div>
                   </div>
                 </div>
@@ -2415,6 +2415,15 @@ const getInfoButtonTitle = (): string => {
 // 获取评论按钮标题
 const getCommentsButtonTitle = (): string => {
   return showCommentsModal.value ? $t('viewer.hideComments') : $t('viewer.showComments');
+};
+
+// 获取子图像在列表中的显示名称
+const getChildImageDisplayName = (image: any): string => {
+  // 优先使用 listName，如果没有则使用 name
+  if (image.listName) {
+    return t(image.listName, currentLanguage.value);
+  }
+  return t(image.name, currentLanguage.value);
 };
 
 // 本地化辅助函数
