@@ -560,7 +560,7 @@ const currentImageGroup = computed(() => {
   return null;
 });
 
-// 图像组内的图像列表（用于右侧选择器）
+// 图像组内的图像列表（用于选择器）
 const groupImagesList = computed(() => {
   return currentImageGroup.value?.validImages || [];
 });
