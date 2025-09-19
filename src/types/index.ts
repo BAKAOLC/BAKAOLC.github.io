@@ -33,6 +33,7 @@ export interface ImageTag {
 export interface ChildImage {
   id: string;
   name?: I18nText;
+  listName?: I18nText; // Optional - name displayed in child image list viewer
   description?: I18nText;
   artist?: I18nText;
   src: string;
@@ -44,6 +45,7 @@ export interface ChildImage {
 export interface CharacterImage {
   id: string;
   name: I18nText;
+  listName?: I18nText; // Optional - name displayed in child image list viewer
   description?: I18nText; // Optional - fallback to empty string
   artist?: I18nText; // Optional - fallback to "N/A"
   src?: string; // Optional for image groups where src is only in childImages
