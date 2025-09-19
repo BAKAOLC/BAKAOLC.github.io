@@ -1,0 +1,27 @@
+{
+  "id": "emoji-wow",
+  "name": {
+    "en": "Wow Little Ritsukage",
+    "zh": "哇小律影",
+    "jp": "わあ小律影"
+  },
+  "description": {
+    "en": "Surprised expression emoji",
+    "zh": "惊讶表情包",
+    "jp": "驚き表情スタンプ"
+  },
+  "artist": {
+    "en": "Sakurai Sana",
+    "zh": "樱井纱奈",
+    "jp": "樱井纱奈"
+  },
+  "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/哇小律影.png",
+  "tags": [
+    "commission",
+    "emoji"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ],
+  "date": "2022-07-03"
+}

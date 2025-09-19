@@ -1,0 +1,27 @@
+{
+  "id": "illust-hoodie",
+  "name": {
+    "en": "Hoodie Ritsukage",
+    "zh": "兜帽律影",
+    "jp": "フード付き律影"
+  },
+  "description": {
+    "en": "Cat ear hoodie Ritsukage",
+    "zh": "猫耳兜帽小律影",
+    "jp": "猫耳フード付き律影"
+  },
+  "artist": {
+    "en": "HanPian",
+    "zh": "含片",
+    "jp": "含片"
+  },
+  "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/含片绘兜帽律影.jpg",
+  "tags": [
+    "gift",
+    "illustration"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ],
+  "date": "2019-10-27"
+}

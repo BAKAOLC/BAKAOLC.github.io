@@ -1,0 +1,27 @@
+{
+  "id": "wallpaper-2",
+  "name": {
+    "en": "Sky",
+    "zh": "天空",
+    "jp": "空"
+  },
+  "description": {
+    "en": "Sky themed wallpaper",
+    "zh": "天空主题壁纸",
+    "jp": "空テーマの壁紙"
+  },
+  "artist": {
+    "en": "Popipi",
+    "zh": "破皮皮",
+    "jp": "破皮皮"
+  },
+  "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/2/2.png",
+  "tags": [
+    "commission",
+    "wallpaper"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ],
+  "date": "2022-08-16"
+}

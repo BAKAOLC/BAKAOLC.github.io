@@ -17,6 +17,10 @@ public/assets/thumbnails/
 .thumbnail-cache.json
 src/assets/thumbnail-map.json
 
+# Images config files (auto-generated from src/config/images/)
+src/config/images.json
+src/config/images.json.backup
+
 # Local env files
 .env
 .env.local

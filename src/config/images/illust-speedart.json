@@ -1,0 +1,28 @@
+{
+  "id": "illust-speedart",
+  "name": {
+    "en": "Speed Art Head",
+    "zh": "速绘小律影头",
+    "jp": "スピードアート頭"
+  },
+  "description": {
+    "en": "Speed drawing artwork",
+    "zh": "快速绘制作品",
+    "jp": "スピードドローイング作品"
+  },
+  "artist": {
+    "en": "Twuos",
+    "zh": "Twuos",
+    "jp": "Twuos"
+  },
+  "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/速绘小律影头.png",
+  "tags": [
+    "commission",
+    "avatar",
+    "sketch"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ],
+  "date": "2022-06-20"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "illust-mist-1",
+  "name": {
+    "en": "Mist Gift",
+    "zh": "雾酱赠图",
+    "jp": "霧ちゃんプレゼント"
+  },
+  "description": {
+    "en": "Gift artwork by Mist",
+    "zh": "雾酱赠送的作品",
+    "jp": "霧ちゃんからのプレゼント作品"
+  },
+  "artist": {
+    "en": "Mist Bell Tong Yu",
+    "zh": "霧鈴桐喻",
+    "jp": "霧鈴桐喻"
+  },
+  "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/雾酱绘.png",
+  "tags": [
+    "gift",
+    "illustration"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ]
+}

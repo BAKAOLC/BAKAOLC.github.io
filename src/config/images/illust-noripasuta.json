@@ -1,0 +1,27 @@
+{
+  "id": "illust-noripasuta",
+  "name": {
+    "en": "Ritsukage by syakegayu",
+    "zh": "律影 by しゃけ",
+    "jp": "律影 by しゃけ"
+  },
+  "description": {
+    "en": "Artwork of Ritsukage by syakegayu",
+    "zh": "しゃけ绘制的律影插画",
+    "jp": "しゃけによる律影のイラスト"
+  },
+  "artist": {
+    "en": "syakegayu",
+    "zh": "しゃけ",
+    "jp": "しゃけ"
+  },
+  "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/律影.png",
+  "tags": [
+    "commission",
+    "illustration"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ],
+  "date": "2022-02-23"
+}

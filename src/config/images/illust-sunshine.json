@@ -1,0 +1,27 @@
+{
+  "id": "illust-sunshine",
+  "name": {
+    "en": "Sunshine",
+    "zh": "阳光",
+    "jp": "日光"
+  },
+  "description": {
+    "en": "Sunshine themed artwork",
+    "zh": "阳光主题作品",
+    "jp": "日光テーマの作品"
+  },
+  "artist": {
+    "en": "Nekomura Yuyuko",
+    "zh": "猫村ゆゆこ",
+    "jp": "猫村ゆゆこ"
+  },
+  "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/阳光律影.png",
+  "tags": [
+    "commission",
+    "illustration"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ],
+  "date": "2022-04-01"
+}

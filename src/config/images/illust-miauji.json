@@ -1,0 +1,26 @@
+{
+  "id": "illust-miauji",
+  "name": {
+    "en": "Miauji Gift",
+    "zh": "喵叽赠图",
+    "jp": "みゃうじプレゼント"
+  },
+  "description": {
+    "en": "Gift artwork by Miauji",
+    "zh": "喵叽赠送的作品",
+    "jp": "みゃうじからのプレゼント作品"
+  },
+  "artist": {
+    "en": "Miauji",
+    "zh": "喵叽",
+    "jp": "喵叽"
+  },
+  "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/喵叽绘.jpg",
+  "tags": [
+    "gift",
+    "avatar"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ]
+}

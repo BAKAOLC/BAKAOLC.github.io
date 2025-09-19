@@ -1,0 +1,26 @@
+{
+  "id": "illust-miya",
+  "name": {
+    "en": "Miya Art",
+    "zh": "Miya绘",
+    "jp": "Miya絵"
+  },
+  "description": {
+    "en": "Artwork by Miya",
+    "zh": "Miya的作品",
+    "jp": "Miyaの作品"
+  },
+  "artist": {
+    "en": "Miota Miya",
+    "zh": "喵田弥夜Miya",
+    "jp": "喵田弥夜Miya"
+  },
+  "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/Miya绘.jpg",
+  "tags": [
+    "commission",
+    "chibi"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ]
+}

@@ -5,8 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run generate-thumbnails && vue-tsc --noEmit && vite build",
+    "build": "npm run prebuild && vue-tsc --noEmit && vite build",
     "preview": "vite preview",
+    "prebuild": "npm run images-config:build && npm run generate-thumbnails",
+    "images-config:build": "node scripts/manage-images.cjs build",
+    "images-config:split": "node scripts/manage-images.cjs split",
+    "images-config:merge": "node scripts/manage-images.cjs merge",
+    "images-config:cleanup": "node scripts/manage-images.cjs cleanup",
     "generate-thumbnails": "node scripts/generate-thumbnails.cjs",
     "lint": "eslint --cache .",
     "lint:fix": "eslint --cache --fix ."

@@ -1,0 +1,27 @@
+{
+  "id": "emoji-checkin",
+  "name": {
+    "en": "Little Ritsukage Check-in",
+    "zh": "小律影打卡",
+    "jp": "小律影チェックイン"
+  },
+  "description": {
+    "en": "Check-in animation emoji",
+    "zh": "打卡动图表情包",
+    "jp": "チェックインアニメスタンプ"
+  },
+  "artist": {
+    "en": "Zailai Lianglongnaibao",
+    "zh": "再来两笼奶包",
+    "jp": "再来两笼奶包"
+  },
+  "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/小律影打卡.gif",
+  "tags": [
+    "commission",
+    "emoji"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ],
+  "date": "2022-06-30"
+}

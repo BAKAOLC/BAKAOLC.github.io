@@ -1,0 +1,52 @@
+{
+  "id": "illust-park",
+  "name": {
+    "en": "Park Ritsukage",
+    "zh": "公园律影",
+    "jp": "公園律影"
+  },
+  "description": {
+    "en": "Park scene artwork",
+    "zh": "公园场景作品",
+    "jp": "公園シーンの作品"
+  },
+  "artist": {
+    "en": "hiyakata",
+    "zh": "hiyakata",
+    "jp": "hiyakata"
+  },
+  "tags": [
+    "commission",
+    "illustration"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ],
+  "date": "2022-02-03",
+  "childImages": [
+    {
+      "id": "illust-park-1",
+      "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/公园律影-1.png"
+    },
+    {
+      "id": "illust-park-2",
+      "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/公园律影-2.png",
+      "tags": [
+        "commission",
+        "illustration",
+        "nsfw",
+        "r18"
+      ]
+    },
+    {
+      "id": "illust-park-3",
+      "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/公园律影-3.png",
+      "tags": [
+        "commission",
+        "illustration",
+        "nsfw",
+        "r18"
+      ]
+    }
+  ]
+}
