@@ -141,6 +141,9 @@ const getAllImageTags = (image: CharacterImage): string[] => {
     return doesImagePassCurrentFilter(fullChildImage);
   });
 
+  // 首先添加父图像的标签
+  image.tags.forEach(tag => allTags.add(tag));
+
   // 如果有可见的子图像，收集它们的标签
   if (validChildImages.length > 0) {
     validChildImages.forEach(child => {
@@ -148,9 +151,6 @@ const getAllImageTags = (image: CharacterImage): string[] => {
         child.tags.forEach(tag => allTags.add(tag));
       }
     });
-  } else {
-    // 如果没有可见的子图像，但图像组仍然显示，则显示父图像的标签
-    image.tags.forEach(tag => allTags.add(tag));
   }
 
   return Array.from(allTags);
