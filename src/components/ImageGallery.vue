@@ -57,7 +57,7 @@
 
             <div class="image-meta">
               <div class="image-tags">
-                <span v-for="tagId in getSortedTags(image.tags)" :key="tagId" class="image-tag"
+                <span v-for="tagId in getSortedTags(getAllImageTags(image))" :key="tagId" class="image-tag"
                   :style="{ backgroundColor: getTagColor(tagId) }">
                   {{ getTagName(tagId, currentLanguage) }}
                 </span>
@@ -80,6 +80,7 @@ import type { I18nText, CharacterImage } from '@/types';
 
 import { useEventManager } from '@/composables/useEventManager';
 import { useTags } from '@/composables/useTags';
+import { siteConfig } from '@/config/site';
 import { useAppStore } from '@/stores/app';
 
 const props = defineProps<{
@@ -122,6 +123,56 @@ const eventManager = useEventManager();
 const { getSortedTags, getTagColor, getTagName } = useTags();
 
 const currentLanguage = computed(() => appStore.currentLanguage);
+
+// 获取图像在当前过滤条件下的所有可见标签
+const getAllImageTags = (image: CharacterImage): string[] => {
+  const allTags = new Set<string>();
+
+  // 如果没有子图像，这是一个普通图像，直接返回其标签
+  if (!image.childImages || image.childImages.length === 0) {
+    image.tags.forEach(tag => allTags.add(tag));
+    return Array.from(allTags);
+  }
+
+  // 对于图像组，我们需要检查哪些子图像在当前过滤条件下是可见的
+  // 使用与 app store 相同的过滤逻辑
+  const validChildImages = image.childImages.filter(child => {
+    const fullChildImage = appStore.getChildImageWithDefaults(image, child);
+    return doesImagePassCurrentFilter(fullChildImage);
+  });
+
+  // 如果有可见的子图像，收集它们的标签
+  if (validChildImages.length > 0) {
+    validChildImages.forEach(child => {
+      if (child.tags) {
+        child.tags.forEach(tag => allTags.add(tag));
+      }
+    });
+  } else {
+    // 如果没有可见的子图像，但图像组仍然显示，则显示父图像的标签
+    image.tags.forEach(tag => allTags.add(tag));
+  }
+
+  return Array.from(allTags);
+};
+
+// 检查图像是否通过当前过滤条件（复制 app store 的逻辑）
+const doesImagePassCurrentFilter = (image: CharacterImage): boolean => {
+  // 获取所有限制级标签
+  const allRestrictedTags = siteConfig.tags.filter(tag => tag.isRestricted);
+
+  for (const restrictedTag of allRestrictedTags) {
+    const imageHasTag = image.tags.includes(restrictedTag.id);
+    const tagIsEnabled = appStore.getRestrictedTagState(restrictedTag.id);
+
+    // 如果图像有这个限制级标签，但标签没有被启用，则过滤掉
+    if (imageHasTag && !tagIsEnabled) {
+      return false;
+    }
+  }
+
+  return true;
+};
 
 // 检查图像是否为图像组（当过滤结果只有一张图像时隐藏指示器）
 const isImageGroup = (image: CharacterImage): boolean => {

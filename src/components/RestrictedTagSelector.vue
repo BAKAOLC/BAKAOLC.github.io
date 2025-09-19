@@ -20,8 +20,10 @@
           v-for="tag in visibleRestrictedTags"
           :key="tag.id"
           class="restricted-tag-item"
-          :class="{ 'active': getRestrictedTagState(tag.id) }"
-          @click="toggleRestrictedTag(tag.id, !getRestrictedTagState(tag.id))"
+          :class="{
+            'active': getRestrictedTagState(tag.id)
+          }"
+          @click="handleTagClick(tag.id)"
           :style="{
             '--tag-color': tag.color || '#dc2626'
           }"
@@ -39,7 +41,7 @@
             class="tag-count"
             :class="{ 'invisible': !getRestrictedTagState(tag.id) }"
           >
-                       {{ tagCounts[tag.id] || 0 }}
+                       {{ restrictedTagCounts[tag.id] || 0 }}
         </span>
       </button>
         </div>
@@ -58,8 +60,8 @@ import { useAppStore } from '@/stores/app';
 const { t: $t } = useI18n();
 const appStore = useAppStore();
 
-// 递归检查标签的所有前置条件是否满足
-const checkPrerequisitesRecursively = (tagId: string, visited = new Set<string>()): boolean => {
+// 检查标签是否可以显示（需要前置标签被选中）
+const canTagBeVisible = (tagId: string, visited = new Set<string>()): boolean => {
   // 防止循环依赖
   if (visited.has(tagId)) {
     console.warn(`${$t('debug.circularDependency')}: ${tagId}`);
@@ -69,75 +71,230 @@ const checkPrerequisitesRecursively = (tagId: string, visited = new Set<string>(
   visited.add(tagId);
 
   const tag = siteConfig.tags.find(t => t.id === tagId);
-  if (!tag || !tag.prerequisiteTags || tag.prerequisiteTags.length === 0) {
+  if (!tag) {
+    return false;
+  }
+
+  // 如果没有前置标签要求，可以显示
+  if (!tag.prerequisiteTags || tag.prerequisiteTags.length === 0) {
     return true;
   }
 
-  // 检查所有直接前置标签
+  // 检查所有前置标签是否被选中
   return tag.prerequisiteTags.every(prerequisiteTagId => {
+    const prerequisiteTag = siteConfig.tags.find(t => t.id === prerequisiteTagId);
+    if (!prerequisiteTag) {
+      return false; // 前置标签不存在
+    }
+
     // 前置标签必须被选中
     const isSelected = appStore.getRestrictedTagState(prerequisiteTagId);
     if (!isSelected) {
       return false;
     }
 
-    // 递归检查前置标签的前置条件
-    return checkPrerequisitesRecursively(prerequisiteTagId, new Set(visited));
+    // 递归检查前置标签的可见性
+    return canTagBeVisible(prerequisiteTagId, new Set(visited));
   });
 };
 
+// 获取图像组中包含特定标签的有效图像（复制 app store 的逻辑）
+const getValidImagesInGroupForTag = (parentImage: any, tagId: string, ignoreTagId?: string): any[] => {
+  const validImages: any[] = [];
+
+  // 如果没有子图像，这是一个普通的单个图像
+  if (!parentImage.childImages || parentImage.childImages.length === 0) {
+    // 检查父图像本身是否通过过滤且包含该标签
+    const passesFilter = doesImagePassFilter(parentImage, ignoreTagId);
+    const hasTag = parentImage.tags.includes(tagId);
+
+    if (passesFilter && hasTag) {
+      validImages.push(parentImage);
+    }
+  } else {
+    // 这是一个图像组，检查子图像
+
+    for (const childImage of parentImage.childImages) {
+      const fullChildImage = getChildImageWithDefaults(parentImage, childImage);
+      const passesFilter = doesImagePassFilter(fullChildImage, ignoreTagId);
+      const hasTag = fullChildImage.tags.includes(tagId);
+
+      if (passesFilter && hasTag) {
+        validImages.push(fullChildImage);
+      }
+    }
+  }
+
+  return validImages;
+};
+
+// 复制 app store 的 doesImagePassFilter 逻辑
+const doesImagePassFilter = (image: any, ignoreTagId?: string): boolean => {
+  // 应用限制级标签过滤
+  const restrictedTags = siteConfig.tags.filter(tag => tag.isRestricted);
+
+  for (const restrictedTag of restrictedTags) {
+    // 如果这是我们正在计算的标签，跳过它的过滤逻辑
+    if (ignoreTagId && restrictedTag.id === ignoreTagId) {
+      continue;
+    }
+    const imageHasTag = image.tags.includes(restrictedTag.id);
+    const tagIsEnabled = appStore.getRestrictedTagState(restrictedTag.id);
+
+    // 如果图片有这个特殊标签，但是这个标签没有被启用，则过滤掉
+    if (imageHasTag && !tagIsEnabled) {
+      return false;
+    }
+  }
+
+  // 应用搜索过滤
+  if (appStore.searchQuery.trim()) {
+    const query = appStore.searchQuery.trim().toLowerCase();
+
+    // 搜索图片名称
+    const name = getSearchableText(image.name);
+
+    // 搜索描述
+    const description = image.description ? getSearchableText(image.description) : '';
+
+    // 搜索艺术家名称
+    const artist = image.artist ? getSearchableText(image.artist) : '';
+
+    // 搜索标签
+    const tagsMatch = image.tags?.some((tagId: string) => {
+      const tag = siteConfig.tags.find(t => t.id === tagId);
+      if (!tag) return false;
+
+      const tagName = getSearchableText(tag.name);
+      return tagName.includes(query);
+    }) || false;
+
+    const matchesSearch = name.includes(query)
+                       || description.includes(query)
+                       || artist.includes(query)
+                       || tagsMatch;
+
+    if (!matchesSearch) {
+      return false;
+    }
+  }
+
+  // 应用角色过滤
+  if (appStore.selectedCharacterId !== 'all') {
+    if (!image.characters.includes(appStore.selectedCharacterId)) {
+      return false;
+    }
+  }
+
+  // 应用标签过滤
+  if (appStore.selectedTag !== 'all') {
+    if (!image.tags.includes(appStore.selectedTag)) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+// 复制 app store 的 getChildImageWithDefaults 逻辑
+const getChildImageWithDefaults = (parentImage: any, childImage: any): any => {
+  // Artist fallback logic: child.artist || parent.artist || "N/A"
+  const getArtistWithFallback = (): any => {
+    if (childImage.artist) return childImage.artist;
+    if (parentImage.artist) return parentImage.artist;
+    return { en: 'N/A', zh: 'N/A', jp: 'N/A' };
+  };
+
+  // Description fallback logic: child.description || parent.description || empty string
+  const getDescriptionWithFallback = (): any => {
+    if (childImage.description) return childImage.description;
+    if (parentImage.description) return parentImage.description;
+    return { en: '', zh: '', jp: '' };
+  };
+
+  return {
+    id: childImage.id,
+    name: childImage.name || parentImage.name,
+    description: getDescriptionWithFallback(),
+    artist: getArtistWithFallback(),
+    src: childImage.src,
+    tags: childImage.tags || parentImage.tags,
+    characters: childImage.characters || parentImage.characters,
+    date: childImage.date || parentImage.date,
+    // 子图像不会有自己的子图像
+    childImages: undefined,
+  };
+};
+
 // 可见的特殊标签列表
+// 计算限制级标签的正确计数（避免循环依赖）
+const restrictedTagCounts = computed(() => {
+  const counts: Record<string, number> = {};
+
+  const restrictedTags = siteConfig.tags.filter(tag => tag.isRestricted && canTagBeVisible(tag.id));
+  for (const tag of restrictedTags) {
+    // 应用搜索过滤
+    let imagesToCountForTag = siteConfig.images;
+
+    if (appStore.searchQuery.trim()) {
+      imagesToCountForTag = imagesToCountForTag.filter(image => {
+        const lowerQuery = appStore.searchQuery.toLowerCase();
+        const name = getSearchableText(image.name);
+        const description = image.description ? getSearchableText(image.description) : '';
+        const tagsMatch = image.tags?.some(tagId => {
+          const tagObj = siteConfig.tags.find(t => t.id === tagId);
+          if (!tagObj) return false;
+          const tagName = getSearchableText(tagObj.name);
+          return tagName.includes(lowerQuery);
+        }) || false;
+        const artist = image.artist ? getSearchableText(image.artist) : '';
+
+        return name.includes(lowerQuery)
+               || description.includes(lowerQuery)
+               || artist.includes(lowerQuery)
+               || tagsMatch;
+      });
+    }
+
+    // 应用角色过滤
+    if (appStore.selectedCharacterId !== 'all') {
+      imagesToCountForTag = imagesToCountForTag.filter(
+        image => image.characters.includes(appStore.selectedCharacterId),
+      );
+    }
+
+    // 应用普通标签过滤
+    if (appStore.selectedTag !== 'all') {
+      imagesToCountForTag = imagesToCountForTag.filter(
+        image => image.tags.includes(appStore.selectedTag),
+      );
+    }
+
+    // 计算在当前过滤条件下，有多少个图像组会显示该标签
+    // 注意：在计算时要忽略当前标签本身的过滤逻辑，避免循环依赖
+    const count = imagesToCountForTag.filter(parentImage => {
+      // 使用与 app store 相同的逻辑：检查图像组中是否有有效的图像包含该标签
+      const validImages = getValidImagesInGroupForTag(parentImage, tag.id, tag.id);
+      return validImages.length > 0;
+    }).length;
+
+    counts[tag.id] = count;
+  }
+  return counts;
+});
+
 const visibleRestrictedTags = computed(() => {
   let restrictedTags = [...siteConfig.tags].filter(tag => tag.isRestricted);
 
-  // 首先根据前置标签关系过滤（支持链条关系）
+  // 首先根据前置标签关系过滤（只检查标签是否可以显示，不依赖选择状态）
   restrictedTags = restrictedTags.filter(tag => {
-    // 如果标签没有前置标签要求，直接显示
-    if (!tag.prerequisiteTags || tag.prerequisiteTags.length === 0) {
-      return true;
-    }
-
-    // 递归检查所有前置标签条件
-    return checkPrerequisitesRecursively(tag.id);
+    const canBeVisible = canTagBeVisible(tag.id);
+    return canBeVisible;
   });
-
-  // 计算在特殊标签过滤之前的图片数量
-  let imagesToCount = siteConfig.images;
-
-  // 如果有搜索查询，先按搜索过滤
-  if (appStore.searchQuery.trim()) {
-    imagesToCount = imagesToCount.filter(image => {
-      const lowerQuery = appStore.searchQuery.toLowerCase();
-      const name = getSearchableText(image.name);
-      const description = image.description ? getSearchableText(image.description) : '';
-      const tagsMatch = image.tags?.some(tagId => {
-        const tag = siteConfig.tags.find(t => t.id === tagId);
-        if (!tag) return false;
-        const tagName = getSearchableText(tag.name);
-        return tagName.includes(lowerQuery);
-      }) || false;
-      const artist = image.artist ? getSearchableText(image.artist) : '';
-
-      return name.includes(lowerQuery)
-             || description.includes(lowerQuery)
-             || artist.includes(lowerQuery)
-             || tagsMatch;
-    });
-  }
-
-  // 按当前选择的角色过滤
-  if (appStore.selectedCharacterId !== 'all') {
-    imagesToCount = imagesToCount.filter(image => image.characters.includes(appStore.selectedCharacterId));
-  }
-
-  // 按普通标签过滤
-  if (appStore.selectedTag !== 'all') {
-    imagesToCount = imagesToCount.filter(image => image.tags.includes(appStore.selectedTag));
-  }
 
   // 过滤掉在当前筛选条件下没有图像的特殊标签
   restrictedTags = restrictedTags.filter(tag => {
-    const count = imagesToCount.filter(image => image.tags.includes(tag.id)).length;
+    const count = restrictedTagCounts.value[tag.id] || 0;
     return count > 0;
   });
 
@@ -181,7 +338,6 @@ const getSearchableText = (text: any): string => {
 };
 
 const currentLanguage = computed(() => appStore.currentLanguage);
-const tagCounts = computed(() => appStore.tagCounts);
 
 const getRestrictedTagState = (tagId: string): boolean => {
   return appStore.getRestrictedTagState(tagId);
@@ -189,6 +345,13 @@ const getRestrictedTagState = (tagId: string): boolean => {
 
 const toggleRestrictedTag = (tagId: string, enabled: boolean): void => {
   appStore.setRestrictedTagState(tagId, enabled);
+};
+
+// 处理标签点击
+const handleTagClick = (tagId: string): void => {
+  const currentState = getRestrictedTagState(tagId);
+  // 切换标签状态（如果标签可见，就可以被选中或取消选中）
+  toggleRestrictedTag(tagId, !currentState);
 };
 </script>
 
