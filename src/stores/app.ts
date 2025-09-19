@@ -3,6 +3,13 @@ import { ref, computed } from 'vue';
 
 import type { Language, CharacterImage, ChildImage, I18nText } from '@/types';
 
+// 路由信息类型
+type RouteInfo = {
+  name: string;
+  params?: Record<string, any>;
+  query?: Record<string, any>;
+};
+
 import { siteConfig } from '@/config/site';
 
 export const useAppStore = defineStore('app', () => {
@@ -218,18 +225,9 @@ export const useAppStore = defineStore('app', () => {
     return characterImages.value[index];
   };
 
-  // 查看器状态
-  const isFullscreenViewer = ref(false);
-  const currentViewingImage = ref<CharacterImage | null>(null);
-
-  // 跟踪用户是否从画廊进入查看器（用于区分直接访问）
-  // 图像查看器返回目标管理
+  // 查看器状态管理
   const isFromGallery = ref(false);
-  const viewerReturnRoute = ref<{
-    name: string;
-    params?: Record<string, any>;
-    query?: Record<string, any>;
-  } | null>(null);
+  const viewerReturnRoute = ref<RouteInfo | null>(null);
 
   // 设置搜索查询
   const setSearchQuery = (query: string): void => {
@@ -279,22 +277,14 @@ export const useAppStore = defineStore('app', () => {
   };
 
   // 设置图像查看器的返回路由
-  const setViewerReturnRoute = (route: {
-    name: string;
-    params?: Record<string, any>;
-    query?: Record<string, any>;
-  } | null): void => {
+  const setViewerReturnRoute = (route: RouteInfo | null): void => {
     viewerReturnRoute.value = route;
     // 同时更新 isFromGallery 以保持向后兼容
     isFromGallery.value = route?.name === 'gallery';
   };
 
   // 获取图像查看器的返回路由
-  const getViewerReturnRoute = (): {
-    name: string;
-    params?: Record<string, any>;
-    query?: Record<string, any>;
-  } => {
+  const getViewerReturnRoute = (): RouteInfo => {
     // 如果有设置的返回路由，使用它
     if (viewerReturnRoute.value) {
       return viewerReturnRoute.value;
@@ -405,10 +395,17 @@ export const useAppStore = defineStore('app', () => {
     const restrictedTags = siteConfig.tags.filter(tag => tag.isRestricted);
 
     for (const restrictedTag of restrictedTags) {
-      const imageHasTag = image.tags.includes(restrictedTag.id);
+      // 检查父图像是否有该限制级标签
+      let imageHasTag = image.tags.includes(restrictedTag.id);
+
+      // 如果父图像没有，检查子图像是否有该限制级标签
+      if (!imageHasTag && image.childImages) {
+        imageHasTag = image.childImages.some(child => child.tags?.includes(restrictedTag.id));
+      }
+
       const tagIsEnabled = selectedRestrictedTags.value[restrictedTag.id] || false;
 
-      // 如果图片有这个特殊标签，但是这个标签没有被启用，则过滤掉
+      // 如果图片（或其子图像）有这个特殊标签，但是这个标签没有被启用，则过滤掉
       if (imageHasTag && !tagIsEnabled) {
         return false;
       }
@@ -631,8 +628,6 @@ export const useAppStore = defineStore('app', () => {
     getImageByIndex,
 
     // 查看器状态
-    isFullscreenViewer,
-    currentViewingImage,
     isFromGallery,
     setFromGallery,
     viewerReturnRoute,
