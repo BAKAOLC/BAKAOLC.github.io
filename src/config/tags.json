@@ -1,0 +1,152 @@
+[
+  {
+    "id": "commission",
+    "name": {
+      "en": "Commission",
+      "zh": "约稿",
+      "jp": "依頼"
+    },
+    "color": "#10b981",
+    "icon": "handshake"
+  },
+  {
+    "id": "gift",
+    "name": {
+      "en": "Gift",
+      "zh": "赠送",
+      "jp": "プレゼント"
+    },
+    "color": "#f59e0b",
+    "icon": "gift"
+  },
+  {
+    "id": "original",
+    "name": {
+      "en": "Original",
+      "zh": "原创",
+      "jp": "オリジナル"
+    },
+    "color": "#8b5cf6",
+    "icon": "lightbulb"
+  },
+  {
+    "id": "design",
+    "name": {
+      "en": "Character Design",
+      "zh": "角色设定",
+      "jp": "キャラクターデザイン"
+    },
+    "color": "#4f46e5",
+    "icon": "image"
+  },
+  {
+    "id": "wallpaper",
+    "name": {
+      "en": "Wallpaper",
+      "zh": "壁纸",
+      "jp": "壁紙"
+    },
+    "color": "#f472b6",
+    "icon": "image"
+  },
+  {
+    "id": "illustration",
+    "name": {
+      "en": "Illustration",
+      "zh": "插画",
+      "jp": "イラスト"
+    },
+    "color": "#f472b6",
+    "icon": "palette"
+  },
+  {
+    "id": "chibi",
+    "name": {
+      "en": "Chibi",
+      "zh": "Q版",
+      "jp": "ちび"
+    },
+    "color": "#06b6d4",
+    "icon": "baby"
+  },
+  {
+    "id": "avatar",
+    "name": {
+      "en": "Avatar",
+      "zh": "头像",
+      "jp": "アバター"
+    },
+    "color": "#10b981",
+    "icon": "user-circle"
+  },
+  {
+    "id": "sketch",
+    "name": {
+      "en": "Sketch",
+      "zh": "速绘",
+      "jp": "スケッチ"
+    },
+    "color": "#8b5cf6",
+    "icon": "edit"
+  },
+  {
+    "id": "emoji",
+    "name": {
+      "en": "Emoji",
+      "zh": "表情包",
+      "jp": "絵文字"
+    },
+    "color": "#ec4899",
+    "icon": "smile"
+  },
+  {
+    "id": "nsfw",
+    "name": {
+      "en": "NSFW",
+      "zh": "NSFW",
+      "jp": "NSFW"
+    },
+    "color": "#dc2626",
+    "icon": "exclamation-triangle",
+    "isRestricted": true
+  },
+  {
+    "id": "r18",
+    "name": {
+      "en": "R18",
+      "zh": "R18",
+      "jp": "R18"
+    },
+    "color": "#b91c1c",
+    "icon": "ban",
+    "isRestricted": true,
+    "prerequisiteTags": [
+      "nsfw"
+    ]
+  },
+  {
+    "id": "furry",
+    "name": {
+      "en": "Furry",
+      "zh": "Furry",
+      "jp": "Furry"
+    },
+    "color": "#7c2d12",
+    "icon": "paw",
+    "isRestricted": true
+  },
+  {
+    "id": "guro",
+    "name": {
+      "en": "Guro",
+      "zh": "Guro",
+      "jp": "Guro"
+    },
+    "color": "#450a0a",
+    "icon": "skull",
+    "isRestricted": true,
+    "prerequisiteTags": [
+      "nsfw"
+    ]
+  }
+]
