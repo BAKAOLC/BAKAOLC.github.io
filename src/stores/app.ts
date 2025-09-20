@@ -361,18 +361,25 @@ export const useAppStore = defineStore('app', () => {
 
   // 获取子图像的完整信息（继承父图像属性）
   const getChildImageWithDefaults = (parentImage: CharacterImage, childImage: ChildImage): CharacterImage => {
-    const getI18NPropertyWithFallback = (property: keyof ChildImage & keyof CharacterImage, fallbackValue: string = ''): I18nText => {
+    const getI18NPropertyWithFallback = (
+      property: keyof ChildImage & keyof CharacterImage,
+      fallbackProperty?: keyof ChildImage & keyof CharacterImage | undefined,
+      fallbackValue?: string,
+    ): I18nText => {
       if (childImage[property]) return childImage[property] as I18nText;
+      if (fallbackProperty && childImage[fallbackProperty]) return childImage[fallbackProperty] as I18nText;
       if (parentImage[property]) return parentImage[property] as I18nText;
-      return { en: fallbackValue, zh: fallbackValue, jp: fallbackValue };
+      if (fallbackProperty && parentImage[fallbackProperty]) return parentImage[fallbackProperty] as I18nText;
+      if (fallbackValue) return { en: fallbackValue, zh: fallbackValue, jp: fallbackValue };
+      return { en: '', zh: '', jp: '' };
     };
 
     return {
       id: childImage.id,
       name: getI18NPropertyWithFallback('name'),
-      listName: getI18NPropertyWithFallback('listName'),
+      listName: getI18NPropertyWithFallback('listName', 'name'),
       description: getI18NPropertyWithFallback('description'),
-      artist: getI18NPropertyWithFallback('artist', 'N/A'),
+      artist: getI18NPropertyWithFallback('artist', undefined, 'N/A'),
       src: childImage.src,
       tags: childImage.tags || parentImage.tags,
       characters: childImage.characters || parentImage.characters,
