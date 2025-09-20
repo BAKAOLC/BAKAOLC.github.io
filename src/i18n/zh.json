@@ -98,7 +98,8 @@
     "imageGroup": "图像组",
     "comments": "评论",
     "showComments": "显示评论",
-    "hideComments": "隐藏评论"
+    "hideComments": "隐藏评论",
+    "resizeGroupSelector": "拖拽调整图像列表宽度"
   },
   "loading": {
     "title": "正在加载",

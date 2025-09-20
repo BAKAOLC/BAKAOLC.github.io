@@ -98,7 +98,8 @@
     "imageGroup": "画像グループ",
     "comments": "コメント",
     "showComments": "コメントを表示",
-    "hideComments": "コメントを隠す"
+    "hideComments": "コメントを隠す",
+    "resizeGroupSelector": "ドラッグして画像リストの幅を調整"
   },
   "loading": {
     "title": "ロード中",

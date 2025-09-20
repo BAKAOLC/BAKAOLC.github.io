@@ -40,7 +40,9 @@
 
     <div class="viewer-content">
       <!-- 主图像区域 -->
-      <div class="main-image-area" :class="{ 'with-left-group-selector': showGroupSelector && !isMobile }">
+      <div class="main-image-area"
+        :class="{ 'with-left-group-selector': showGroupSelector && !isMobile }"
+        :style="mainImageAreaStyle">
         <div class="image-container" ref="imageContainer" @wheel="handleImageWheel" @mousedown="handleImageMouseDown"
           @touchstart="handleImageTouchStart" @touchmove="handleImageTouchMove" @touchend="handleImageTouchEnd">
           <transition name="fade" mode="out-in">
@@ -79,7 +81,10 @@
 
       <!-- 桌面端图像组选择器 - 左侧布局 -->
       <transition name="desktop-group-selector-slide">
-        <div v-if="showGroupSelector && !isMobile" class="group-selector left-side">
+        <div v-if="showGroupSelector && !isMobile"
+          class="group-selector left-side"
+          :class="{ 'resizing': isDraggingGroupResize }"
+          :style="{ width: groupSelectorWidth ? `${groupSelectorWidth}px` : '200px' }">
           <div class="group-selector-header">
             <h4 class="group-title">{{ $t('viewer.imageGroup') }}</h4>
           </div>
@@ -117,6 +122,19 @@
           </div>
         </div>
       </transition>
+
+      <!-- 独立的拖拽条 - 在容器外面 -->
+      <div v-if="showGroupSelector && !isMobile"
+        class="group-selector-resize-border"
+        :class="{ 'active': isDraggingGroupResize }"
+        :style="{
+          left: (groupSelectorWidth || 200) + 'px',
+          transition: isDraggingGroupResize ? 'none' : 'width 0.15s ease, background 0.15s ease, left 0.1s ease'
+        }"
+        @mousedown="startResizeGroupSelector"
+        @touchstart="startResizeGroupSelector"
+        :title="$t('viewer.resizeGroupSelector')">
+      </div>
 
       <!-- 移动端图像组悬浮按钮 -->
       <transition name="mobile-group-button-fade">
@@ -580,6 +598,16 @@ const showGroupSelector = computed(() => {
   // 其他情况：如果有多个图像则显示选择器
   // 当图集被过滤导致只有一张图时，隐藏图集标识
   return groupImagesList.value.length > 1;
+});
+
+// 主图像区域的动态样式
+const mainImageAreaStyle = computed(() => {
+  if (showGroupSelector.value && !isMobile.value && groupSelectorWidth.value) {
+    return {
+      marginLeft: `${groupSelectorWidth.value}px`,
+    };
+  }
+  return {};
 });
 
 // 导航控制
@@ -1209,6 +1237,110 @@ const handleMobileGroupImageClick = (imageId: string): void => {
 // 缩略图滚动条逻辑
 const thumbnailsOffset = ref(0);
 const thumbnailPadding = ref(0);
+
+// 子图像列表宽度调整功能
+const groupSelectorWidth = ref<number | null>(null);
+const isDraggingGroupResize = ref(false);
+const groupResizeStartX = ref(0);
+const groupResizeStartWidth = ref(0);
+const minGroupSelectorWidth = 150; // 最小宽度
+const maxGroupSelectorWidth = 400; // 最大宽度
+
+// 从本地存储加载保存的子图像列表宽度
+const loadGroupSelectorWidth = (): number | null => {
+  try {
+    const saved = localStorage.getItem('groupSelectorWidth');
+    if (saved) {
+      const width = parseInt(saved, 10);
+      if (width >= minGroupSelectorWidth && width <= maxGroupSelectorWidth) {
+        return width;
+      }
+    }
+  } catch (error) {
+    console.warn('Failed to load group selector width from localStorage:', error);
+  }
+  return null;
+};
+
+// 保存子图像列表宽度到本地存储
+const saveGroupSelectorWidth = (width: number): void => {
+  try {
+    localStorage.setItem('groupSelectorWidth', width.toString());
+  } catch (error) {
+    console.warn('Failed to save group selector width to localStorage:', error);
+  }
+};
+
+// 开始拖拽调整子图像列表宽度
+const startResizeGroupSelector = (event: MouseEvent | TouchEvent): void => {
+  event.preventDefault();
+  event.stopPropagation();
+
+  isDraggingGroupResize.value = true;
+
+  const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
+  groupResizeStartX.value = clientX;
+
+  // 获取当前容器宽度
+  const currentWidth = groupSelectorWidth.value || 200; // 默认宽度
+  groupResizeStartWidth.value = currentWidth;
+
+  // 添加全局事件监听器
+  const handleMouseMove = (e: MouseEvent | TouchEvent): void => handleResizeGroupSelector(e);
+  const handleMouseUp = (e: MouseEvent | TouchEvent): void => stopResizeGroupSelector(e);
+
+  if ('touches' in event) {
+    document.addEventListener('touchmove', handleMouseMove, { passive: false });
+    document.addEventListener('touchend', handleMouseUp);
+  } else {
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  }
+
+  // 添加拖拽样式
+  document.body.style.cursor = 'ew-resize';
+  document.body.style.userSelect = 'none';
+};
+
+// 拖拽调整子图像列表宽度过程
+const handleResizeGroupSelector = (event: MouseEvent | TouchEvent): void => {
+  if (!isDraggingGroupResize.value) return;
+
+  event.preventDefault();
+
+  const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
+  const deltaX = clientX - groupResizeStartX.value;
+  const newWidth = Math.max(
+    minGroupSelectorWidth,
+    Math.min(maxGroupSelectorWidth, groupResizeStartWidth.value + deltaX),
+  );
+
+  groupSelectorWidth.value = newWidth;
+};
+
+// 停止拖拽调整子图像列表宽度
+const stopResizeGroupSelector = (event: MouseEvent | TouchEvent): void => {
+  if (!isDraggingGroupResize.value) return;
+
+  event.preventDefault();
+
+  isDraggingGroupResize.value = false;
+
+  // 保存新宽度到本地存储
+  if (groupSelectorWidth.value) {
+    saveGroupSelectorWidth(groupSelectorWidth.value);
+  }
+
+  // 移除全局事件监听器
+  document.removeEventListener('mousemove', handleResizeGroupSelector);
+  document.removeEventListener('mouseup', stopResizeGroupSelector);
+  document.removeEventListener('touchmove', handleResizeGroupSelector);
+  document.removeEventListener('touchend', stopResizeGroupSelector);
+
+  // 恢复样式
+  document.body.style.cursor = '';
+  document.body.style.userSelect = '';
+};
 
 // 动态获取缩略图的实际尺寸（基于DOM计算而非硬编码）
 const getThumbnailDimensions = (): { width: number; gap: number } => {
@@ -2333,6 +2465,12 @@ const handleResizeDebounced = (): void => {
 let unsubscribeScreenChange: (() => void) | null = null;
 
 onMounted(() => {
+  // 初始化子图像列表宽度
+  const savedGroupWidth = loadGroupSelectorWidth();
+  if (savedGroupWidth !== null) {
+    groupSelectorWidth.value = savedGroupWidth;
+  }
+
   // 根据设备类型和用户偏好设置初始状态
   if (isMobile.value) {
     showInfoPanel.value = false; // 移动端不显示桌面端的固定信息面板
@@ -2400,6 +2538,16 @@ onBeforeUnmount(() => {
   // 清理移动端覆盖层状态
   if (showMobileInfoOverlay.value) {
     document.body.style.overflow = '';
+  }
+
+  // 清理子图像列表拖拽调整宽度的事件监听器
+  if (isDraggingGroupResize.value) {
+    document.removeEventListener('mousemove', handleResizeGroupSelector);
+    document.removeEventListener('mouseup', stopResizeGroupSelector);
+    document.removeEventListener('touchmove', handleResizeGroupSelector);
+    document.removeEventListener('touchend', stopResizeGroupSelector);
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
   }
 });
 
@@ -2560,6 +2708,7 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 
 .main-image-area.with-left-group-selector {
   margin-left: 220px; /* 为左侧选择器留出空间 */
+  transition: margin-left 0.1s ease;
 }
 
 .image-container {
@@ -2704,6 +2853,44 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 
 .layers-icon {
   @apply w-3 h-3 text-white;
+}
+
+/* 独立的拖拽条 - 简洁样式 */
+.group-selector-resize-border {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 8px; /* 扩大感应区域 */
+  cursor: ew-resize;
+  z-index: 30;
+  transition: none;
+}
+
+/* 使用伪元素显示实际的条 */
+.group-selector-resize-border::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(59, 130, 246, 0.3);
+  transition: width 0.15s ease, background 0.15s ease;
+}
+
+.dark .group-selector-resize-border::after {
+  background: rgba(96, 165, 250, 0.3);
+}
+
+.group-selector-resize-border:hover::after,
+.group-selector-resize-border.active::after {
+  width: 3px;
+  background: rgba(59, 130, 246, 0.8);
+}
+
+.dark .group-selector-resize-border:hover::after,
+.dark .group-selector-resize-border.active::after {
+  background: rgba(96, 165, 250, 0.8);
 }
 
 /* 小地图样式 */
@@ -3016,12 +3203,21 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   left: 0;
   bottom: 0;
   width: 200px;
+  min-width: 150px;
+  max-width: 400px;
   @apply bg-white/95 backdrop-blur-sm shadow-2xl;
   @apply text-gray-900;
   @apply flex flex-col;
   z-index: 10;
   overflow: hidden;
   border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.group-selector.left-side.resizing {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .dark .group-selector.left-side {

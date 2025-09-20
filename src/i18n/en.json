@@ -98,7 +98,8 @@
     "imageGroup": "Image Group",
     "comments": "Comments",
     "showComments": "Show Comments",
-    "hideComments": "Hide Comments"
+    "hideComments": "Hide Comments",
+    "resizeGroupSelector": "Drag to resize image list"
   },
   "loading": {
     "title": "Loading",
