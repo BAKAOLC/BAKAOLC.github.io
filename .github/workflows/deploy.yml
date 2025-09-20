@@ -34,8 +34,9 @@ jobs:
               id: cache-thumbnail-cache
               with:
                   path: .thumbnail-cache.json
-                  key: thumbnail-cache-v1
+                  key: thumbnail-cache-v2-${{ hashFiles('public/assets/**/*.png', 'public/assets/**/*.jpg', 'public/assets/**/*.gif', 'public/assets/**/*.webp') }}
                   restore-keys: |
+                      thumbnail-cache-v2-
                       thumbnail-cache-
 
             - name: Restore generated thumbnails
@@ -43,8 +44,9 @@ jobs:
               id: cache-thumbnails
               with:
                   path: public/assets/thumbnails
-                  key: thumbnails-v1-${{ hashFiles('scripts/generate-thumbnails.cjs') }}
+                  key: thumbnails-v2-${{ hashFiles('scripts/generate-thumbnails.cjs', 'public/assets/**/*.png', 'public/assets/**/*.jpg', 'public/assets/**/*.gif', 'public/assets/**/*.webp') }}
                   restore-keys: |
+                      thumbnails-v2-
                       thumbnails-v1-
                       thumbnails-
 
@@ -53,18 +55,28 @@ jobs:
 
             - name: Check cache status
               run: |
-                  echo "Thumbnail cache hit: ${{ steps.cache-thumbnails.outputs.cache-hit }}"
-                  echo "Cache file hit: ${{ steps.cache-thumbnail-cache.outputs.cache-hit }}"
+                  echo "=== 缓存状态检查 ==="
+                  echo "缩略图缓存命中: ${{ steps.cache-thumbnails.outputs.cache-hit }}"
+                  echo "缓存文件命中: ${{ steps.cache-thumbnail-cache.outputs.cache-hit }}"
+                  echo "缩略图缓存键: thumbnails-v2-${{ hashFiles('scripts/generate-thumbnails.cjs', 'public/assets/**/*.png', 'public/assets/**/*.jpg', 'public/assets/**/*.gif', 'public/assets/**/*.webp') }}"
+                  echo "缓存文件键: thumbnail-cache-v2-${{ hashFiles('public/assets/**/*.png', 'public/assets/**/*.jpg', 'public/assets/**/*.gif', 'public/assets/**/*.webp') }}"
+
                   if [ -d "public/assets/thumbnails" ]; then
-                    echo "Thumbnails directory exists with $(find public/assets/thumbnails -type f | wc -l) files"
+                    echo "缩略图目录存在，包含 $(find public/assets/thumbnails -type f | wc -l) 个文件"
+                    echo "缩略图目录大小: $(du -sh public/assets/thumbnails 2>/dev/null || echo '0')"
                   else
-                    echo "Thumbnails directory does not exist"
+                    echo "缩略图目录不存在"
                   fi
+
                   if [ -f ".thumbnail-cache.json" ]; then
-                    echo "Cache file exists with $(wc -l < .thumbnail-cache.json) lines"
+                    echo "缓存文件存在，包含 $(wc -l < .thumbnail-cache.json) 行"
+                    echo "缓存文件大小: $(du -sh .thumbnail-cache.json 2>/dev/null || echo '0')"
                   else
-                    echo "Cache file does not exist"
+                    echo "缓存文件不存在"
                   fi
+
+                  echo "源图片文件哈希: ${{ hashFiles('public/assets/**/*.png', 'public/assets/**/*.jpg', 'public/assets/**/*.gif', 'public/assets/**/*.webp') }}"
+                  echo "脚本文件哈希: ${{ hashFiles('scripts/generate-thumbnails.cjs') }}"
 
             - name: Create thumbnails directory if not exists
               run: mkdir -p public/assets/thumbnails
@@ -77,17 +89,33 @@ jobs:
 
             - name: Save thumbnail cache file
               uses: actions/cache/save@v4
-              if: always() && steps.cache-thumbnail-cache.outputs.cache-hit != 'true' && github.event_name == 'push'
+              if: always() && github.event_name == 'push' && (steps.cache-thumbnail-cache.outputs.cache-hit != 'true' || hashFiles('.thumbnail-cache.json') != '')
               with:
                   path: .thumbnail-cache.json
-                  key: thumbnail-cache-v1
+                  key: thumbnail-cache-v2-${{ hashFiles('public/assets/**/*.png', 'public/assets/**/*.jpg', 'public/assets/**/*.gif', 'public/assets/**/*.webp') }}
 
             - name: Save generated thumbnails
               uses: actions/cache/save@v4
-              if: always() && steps.cache-thumbnails.outputs.cache-hit != 'true' && github.event_name == 'push'
+              if: always() && github.event_name == 'push' && (steps.cache-thumbnails.outputs.cache-hit != 'true' || hashFiles('public/assets/thumbnails/**/*') != '')
               with:
                   path: public/assets/thumbnails
-                  key: thumbnails-v1-${{ hashFiles('scripts/generate-thumbnails.cjs') }}
+                  key: thumbnails-v2-${{ hashFiles('scripts/generate-thumbnails.cjs', 'public/assets/**/*.png', 'public/assets/**/*.jpg', 'public/assets/**/*.gif', 'public/assets/**/*.webp') }}
+
+            - name: Verify cache save
+              if: github.event_name == 'push'
+              run: |
+                  echo "=== 缓存保存确认 ==="
+                  echo "当前构建完成，缓存状态："
+                  if [ -f ".thumbnail-cache.json" ]; then
+                    echo "✅ 缓存文件已生成: $(wc -l < .thumbnail-cache.json) 行"
+                  else
+                    echo "❌ 缓存文件未生成"
+                  fi
+                  if [ -d "public/assets/thumbnails" ] && [ "$(find public/assets/thumbnails -type f | wc -l)" -gt 0 ]; then
+                    echo "✅ 缩略图已生成: $(find public/assets/thumbnails -type f | wc -l) 个文件"
+                  else
+                    echo "❌ 缩略图未生成或为空"
+                  fi
 
             - name: Setup Pages
               if: github.event_name == 'push'
