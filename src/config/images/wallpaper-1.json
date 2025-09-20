@@ -31,7 +31,7 @@
         "zh": "横版",
         "jp": "横版"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/1/1-1.png"
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/1/1-1.png"
     },
     {
       "id": "wallpaper-1-2",
@@ -40,7 +40,7 @@
         "zh": "竖版",
         "jp": "竖版"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/1/1-2.png"
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/1/1-2.png"
     }
   ]
 }

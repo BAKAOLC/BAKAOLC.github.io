@@ -30,7 +30,7 @@
         "zh": "基本",
         "jp": "基本"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC.png"
+      "src": "/assets/category/ritsukage-utsumabo/design/original/OLC.png"
     },
     {
       "id": "design-original-2",
@@ -39,7 +39,7 @@
         "zh": "悲伤",
         "jp": "悲しい"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-beishang.png"
+      "src": "/assets/category/ritsukage-utsumabo/design/original/OLC-beishang.png"
     },
     {
       "id": "design-original-3",
@@ -48,7 +48,7 @@
         "zh": "嘲讽",
         "jp": "嘲笑"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-chaofeng.png"
+      "src": "/assets/category/ritsukage-utsumabo/design/original/OLC-chaofeng.png"
     },
     {
       "id": "design-original-4",
@@ -57,7 +57,7 @@
         "zh": "烦恼",
         "jp": "悩み"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-fannao.png"
+      "src": "/assets/category/ritsukage-utsumabo/design/original/OLC-fannao.png"
     },
     {
       "id": "design-original-5",
@@ -66,7 +66,7 @@
         "zh": "惊讶",
         "jp": "驚き"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-jingya.png"
+      "src": "/assets/category/ritsukage-utsumabo/design/original/OLC-jingya.png"
     },
     {
       "id": "design-original-6",
@@ -75,7 +75,7 @@
         "zh": "破损",
         "jp": "破損"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-po.png"
+      "src": "/assets/category/ritsukage-utsumabo/design/original/OLC-po.png"
     },
     {
       "id": "design-original-7",
@@ -84,7 +84,7 @@
         "zh": "生气",
         "jp": "怒り"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-shengqi.png"
+      "src": "/assets/category/ritsukage-utsumabo/design/original/OLC-shengqi.png"
     },
     {
       "id": "design-original-8",
@@ -93,7 +93,7 @@
         "zh": "微笑",
         "jp": "微笑"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-weixiao.png"
+      "src": "/assets/category/ritsukage-utsumabo/design/original/OLC-weixiao.png"
     },
     {
       "id": "design-original-9",
@@ -102,7 +102,7 @@
         "zh": "困惑",
         "jp": "困惑"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/design/original/OLC-yiwen.png"
+      "src": "/assets/category/ritsukage-utsumabo/design/original/OLC-yiwen.png"
     }
   ]
 }
