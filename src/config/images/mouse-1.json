@@ -30,7 +30,7 @@
         "zh": "正常",
         "jp": "正常"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/mouse/正常.gif"
+      "src": "/assets/category/ritsukage-utsumabo/miscellaneous/mouse/正常.gif"
     },
     {
       "id": "mouse-1-2",
@@ -39,7 +39,7 @@
         "zh": "帮助",
         "jp": "帮助"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/mouse/帮助.gif"
+      "src": "/assets/category/ritsukage-utsumabo/miscellaneous/mouse/帮助.gif"
     },
     {
       "id": "mouse-1-3",
@@ -48,7 +48,7 @@
         "zh": "不可用",
         "jp": "不可用"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/mouse/不可用.gif"
+      "src": "/assets/category/ritsukage-utsumabo/miscellaneous/mouse/不可用.gif"
     },
     {
       "id": "mouse-1-4",
@@ -57,7 +57,7 @@
         "zh": "链接",
         "jp": "链接"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/mouse/链接.gif"
+      "src": "/assets/category/ritsukage-utsumabo/miscellaneous/mouse/链接.gif"
     },
     {
       "id": "mouse-1-5",
@@ -66,7 +66,7 @@
         "zh": "忙碌",
         "jp": "忙碌"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/mouse/忙碌.gif"
+      "src": "/assets/category/ritsukage-utsumabo/miscellaneous/mouse/忙碌.gif"
     },
     {
       "id": "mouse-1-6",
@@ -75,7 +75,7 @@
         "zh": "手写",
         "jp": "手写"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/mouse/手写.gif"
+      "src": "/assets/category/ritsukage-utsumabo/miscellaneous/mouse/手写.gif"
     },
     {
       "id": "mouse-1-7",
@@ -84,7 +84,7 @@
         "zh": "文本",
         "jp": "文本"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/mouse/文本.gif"
+      "src": "/assets/category/ritsukage-utsumabo/miscellaneous/mouse/文本.gif"
     },
     {
       "id": "mouse-1-8",
@@ -93,7 +93,7 @@
         "zh": "后台",
         "jp": "后台"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/miscellaneous/mouse/后台.gif"
+      "src": "/assets/category/ritsukage-utsumabo/miscellaneous/mouse/后台.gif"
     }
   ]
 }

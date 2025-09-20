@@ -31,7 +31,7 @@
         "zh": "带有裤袜 - 有服装 - 1",
         "jp": "ソックス付き - 衣装あり - 1"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/costume/1.png"
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/sock/costume/1.png"
     },
     {
       "id": "wallpaper-3-sock-costume-2",
@@ -40,7 +40,7 @@
         "zh": "带有裤袜 - 有服装 - 2",
         "jp": "ソックス付き - 衣装あり - 2"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/costume/2.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/sock/costume/2.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -55,7 +55,7 @@
         "zh": "带有裤袜 - 有服装 - 3",
         "jp": "ソックス付き - 衣装あり - 3"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/costume/3.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/sock/costume/3.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -71,7 +71,7 @@
         "zh": "带有裤袜 - 有服装 - 4",
         "jp": "ソックス付き - 衣装あり - 4"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/costume/4.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/sock/costume/4.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -87,7 +87,7 @@
         "zh": "带有裤袜 - 有服装 - 5",
         "jp": "ソックス付き - 衣装あり - 5"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/costume/5.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/sock/costume/5.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -103,7 +103,7 @@
         "zh": "带有裤袜 - 有服装 - 6",
         "jp": "ソックス付き - 衣装あり - 6"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/costume/6.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/sock/costume/6.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -119,7 +119,7 @@
         "zh": "带有裤袜 - 有服装 - 7",
         "jp": "ソックス付き - 衣装あり - 7"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/costume/7.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/sock/costume/7.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -135,7 +135,7 @@
         "zh": "带有裤袜 - 有服装 - 8",
         "jp": "ソックス付き - 衣装あり - 8"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/costume/8.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/sock/costume/8.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -151,7 +151,7 @@
         "zh": "带有裤袜 - 无服装 - 1",
         "jp": "ソックス付き - 衣装なし - 1"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/no-costume/1.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/sock/no-costume/1.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -166,7 +166,7 @@
         "zh": "带有裤袜 - 无服装 - 2",
         "jp": "ソックス付き - 衣装なし - 2"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/no-costume/2.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/sock/no-costume/2.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -181,7 +181,7 @@
         "zh": "带有裤袜 - 无服装 - 3",
         "jp": "ソックス付き - 衣装なし - 3"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/no-costume/3.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/sock/no-costume/3.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -197,7 +197,7 @@
         "zh": "带有裤袜 - 无服装 - 4",
         "jp": "ソックス付き - 衣装なし - 4"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/no-costume/4.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/sock/no-costume/4.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -213,7 +213,7 @@
         "zh": "带有裤袜 - 无服装 - 5",
         "jp": "ソックス付き - 衣装なし - 5"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/no-costume/5.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/sock/no-costume/5.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -229,7 +229,7 @@
         "zh": "带有裤袜 - 无服装 - 6",
         "jp": "ソックス付き - 衣装なし - 6"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/no-costume/6.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/sock/no-costume/6.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -245,7 +245,7 @@
         "zh": "带有裤袜 - 无服装 - 7",
         "jp": "ソックス付き - 衣装なし - 7"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/no-costume/7.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/sock/no-costume/7.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -261,7 +261,7 @@
         "zh": "带有裤袜 - 无服装 - 8",
         "jp": "ソックス付き - 衣装なし - 8"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/sock/no-costume/8.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/sock/no-costume/8.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -277,7 +277,7 @@
         "zh": "不带裤袜 - 有服装 - 1",
         "jp": "ソックスなし - 衣装あり - 1"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/costume/1.png"
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/no-sock/costume/1.png"
     },
     {
       "id": "wallpaper-3-no-sock-costume-2",
@@ -286,7 +286,7 @@
         "zh": "不带裤袜 - 有服装 - 2",
         "jp": "ソックスなし - 衣装あり - 2"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/costume/2.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/no-sock/costume/2.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -301,7 +301,7 @@
         "zh": "不带裤袜 - 有服装 - 3",
         "jp": "ソックスなし - 衣装あり - 3"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/costume/3.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/no-sock/costume/3.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -317,7 +317,7 @@
         "zh": "不带裤袜 - 有服装 - 4",
         "jp": "ソックスなし - 衣装あり - 4"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/costume/4.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/no-sock/costume/4.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -333,7 +333,7 @@
         "zh": "不带裤袜 - 有服装 - 5",
         "jp": "ソックスなし - 衣装あり - 5"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/costume/5.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/no-sock/costume/5.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -349,7 +349,7 @@
         "zh": "不带裤袜 - 有服装 - 6",
         "jp": "ソックスなし - 衣装あり - 6"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/costume/6.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/no-sock/costume/6.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -365,7 +365,7 @@
         "zh": "不带裤袜 - 有服装 - 7",
         "jp": "ソックスなし - 衣装あり - 7"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/costume/7.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/no-sock/costume/7.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -381,7 +381,7 @@
         "zh": "不带裤袜 - 有服装 - 8",
         "jp": "ソックスなし - 衣装あり - 8"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/costume/8.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/no-sock/costume/8.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -397,7 +397,7 @@
         "zh": "不带裤袜 - 无服装 - 1",
         "jp": "ソックスなし - 衣装なし - 1"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/1.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/1.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -412,7 +412,7 @@
         "zh": "不带裤袜 - 无服装 - 2",
         "jp": "ソックスなし - 衣装なし - 2"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/2.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/2.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -427,7 +427,7 @@
         "zh": "不带裤袜 - 无服装 - 3",
         "jp": "ソックスなし - 衣装なし - 3"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/3.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/3.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -443,7 +443,7 @@
         "zh": "不带裤袜 - 无服装 - 4",
         "jp": "ソックスなし - 衣装なし - 4"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/4.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/4.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -459,7 +459,7 @@
         "zh": "不带裤袜 - 无服装 - 5",
         "jp": "ソックスなし - 衣装なし - 5"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/5.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/5.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -475,7 +475,7 @@
         "zh": "不带裤袜 - 无服装 - 6",
         "jp": "ソックスなし - 衣装なし - 6"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/6.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/6.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -491,7 +491,7 @@
         "zh": "不带裤袜 - 无服装 - 7",
         "jp": "ソックスなし - 衣装なし - 7"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/7.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/7.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -507,7 +507,7 @@
         "zh": "不带裤袜 - 无服装 - 8",
         "jp": "ソックスなし - 衣装なし - 8"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/8.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/no-sock/no-costume/8.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -523,7 +523,7 @@
         "zh": "丝带束缚 - 带有裤袜 - 1",
         "jp": "リボン拘束 - ソックス付き - 1"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/ribbon/sock/1.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/ribbon/sock/1.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -537,7 +537,7 @@
         "zh": "丝带束缚 - 带有裤袜 - 2",
         "jp": "リボン拘束 - ソックス付き - 2"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/ribbon/sock/2.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/ribbon/sock/2.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -552,7 +552,7 @@
         "zh": "丝带束缚 - 带有裤袜 - 3",
         "jp": "リボン拘束 - ソックス付き - 3"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/ribbon/sock/3.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/ribbon/sock/3.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -566,7 +566,7 @@
         "zh": "丝带束缚 - 带有裤袜 - 4",
         "jp": "リボン拘束 - ソックス付き - 4"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/ribbon/sock/4.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/ribbon/sock/4.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -581,7 +581,7 @@
         "zh": "丝带束缚 - 带有裤袜 - 5",
         "jp": "リボン拘束 - ソックス付き - 5"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/ribbon/sock/5.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/ribbon/sock/5.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -595,7 +595,7 @@
         "zh": "丝带束缚 - 不带裤袜 - 1",
         "jp": "リボン拘束 - ソックスなし - 1"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/ribbon/no-sock/1.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/ribbon/no-sock/1.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -609,7 +609,7 @@
         "zh": "丝带束缚 - 不带裤袜 - 2",
         "jp": "リボン拘束 - ソックスなし - 2"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/ribbon/no-sock/2.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/ribbon/no-sock/2.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -624,7 +624,7 @@
         "zh": "丝带束缚 - 不带裤袜 - 3",
         "jp": "リボン拘束 - ソックスなし - 3"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/ribbon/no-sock/3.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/ribbon/no-sock/3.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -639,7 +639,7 @@
         "zh": "丝带束缚 - 不带裤袜 - 4",
         "jp": "リボン拘束 - ソックスなし - 4"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/ribbon/no-sock/4.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/ribbon/no-sock/4.png",
       "tags": [
         "commission",
         "wallpaper",
@@ -654,7 +654,7 @@
         "zh": "丝带束缚 - 不带裤袜 - 5",
         "jp": "リボン拘束 - ソックスなし - 5"
       },
-      "src": "/assets/catagory/ritsukage-utsumabo/wallpaper/3/ribbon/no-sock/5.png",
+      "src": "/assets/category/ritsukage-utsumabo/wallpaper/3/ribbon/no-sock/5.png",
       "tags": [
         "commission",
         "wallpaper",
