@@ -84,19 +84,44 @@ jobs:
             - name: Generate thumbnails (with incremental update)
               run: npm run generate-thumbnails
 
+            - name: Check if new cache was generated
+              id: check-cache-changes
+              run: |
+                  echo "=== 检查缓存变化 ==="
+
+                  # 检查缩略图缓存是否需要更新
+                  if [ "${{ steps.cache-thumbnail-cache.outputs.cache-hit }}" = "true" ]; then
+                    echo "缩略图缓存文件命中，检查是否有变化..."
+                    echo "thumbnail-cache-needs-save=false" >> $GITHUB_OUTPUT
+                  else
+                    echo "缩略图缓存文件未命中，需要保存"
+                    echo "thumbnail-cache-needs-save=true" >> $GITHUB_OUTPUT
+                  fi
+
+                  # 检查缩略图文件是否需要更新
+                  if [ "${{ steps.cache-thumbnails.outputs.cache-hit }}" = "true" ]; then
+                    echo "缩略图文件缓存命中，检查是否有变化..."
+                    echo "thumbnails-needs-save=false" >> $GITHUB_OUTPUT
+                  else
+                    echo "缩略图文件缓存未命中，需要保存"
+                    echo "thumbnails-needs-save=true" >> $GITHUB_OUTPUT
+                  fi
+
+                  echo "缓存决策已完成，将在后续步骤中应用"
+
             - name: Build
               run: npm run build
 
             - name: Save thumbnail cache file
               uses: actions/cache/save@v4
-              if: always() && github.event_name == 'push' && (steps.cache-thumbnail-cache.outputs.cache-hit != 'true' || hashFiles('.thumbnail-cache.json') != '')
+              if: github.event_name == 'push' && steps.check-cache-changes.outputs.thumbnail-cache-needs-save == 'true'
               with:
                   path: .thumbnail-cache.json
                   key: thumbnail-cache-v2-${{ hashFiles('public/assets/**/*.png', 'public/assets/**/*.jpg', 'public/assets/**/*.gif', 'public/assets/**/*.webp') }}
 
             - name: Save generated thumbnails
               uses: actions/cache/save@v4
-              if: always() && github.event_name == 'push' && (steps.cache-thumbnails.outputs.cache-hit != 'true' || hashFiles('public/assets/thumbnails/**/*') != '')
+              if: github.event_name == 'push' && steps.check-cache-changes.outputs.thumbnails-needs-save == 'true'
               with:
                   path: public/assets/thumbnails
                   key: thumbnails-v2-${{ hashFiles('scripts/generate-thumbnails.cjs', 'public/assets/**/*.png', 'public/assets/**/*.jpg', 'public/assets/**/*.gif', 'public/assets/**/*.webp') }}
@@ -106,16 +131,35 @@ jobs:
               run: |
                   echo "=== 缓存保存确认 ==="
                   echo "当前构建完成，缓存状态："
+
+                  # 检查缓存文件状态
                   if [ -f ".thumbnail-cache.json" ]; then
                     echo "✅ 缓存文件已生成: $(wc -l < .thumbnail-cache.json) 行"
+                    if [ "${{ steps.check-cache-changes.outputs.thumbnail-cache-needs-save }}" = "true" ]; then
+                      echo "📤 缓存文件已上传到 GitHub Actions 缓存"
+                    else
+                      echo "⏭️  缓存文件未变化，跳过上传"
+                    fi
                   else
                     echo "❌ 缓存文件未生成"
                   fi
+
+                  # 检查缩略图状态
                   if [ -d "public/assets/thumbnails" ] && [ "$(find public/assets/thumbnails -type f | wc -l)" -gt 0 ]; then
                     echo "✅ 缩略图已生成: $(find public/assets/thumbnails -type f | wc -l) 个文件"
+                    if [ "${{ steps.check-cache-changes.outputs.thumbnails-needs-save }}" = "true" ]; then
+                      echo "📤 缩略图已上传到 GitHub Actions 缓存"
+                    else
+                      echo "⏭️  缩略图未变化，跳过上传"
+                    fi
                   else
                     echo "❌ 缩略图未生成或为空"
                   fi
+
+                  echo ""
+                  echo "=== 缓存决策摘要 ==="
+                  echo "缩略图缓存文件上传: ${{ steps.check-cache-changes.outputs.thumbnail-cache-needs-save }}"
+                  echo "缩略图文件上传: ${{ steps.check-cache-changes.outputs.thumbnails-needs-save }}"
 
             - name: Setup Pages
               if: github.event_name == 'push'
