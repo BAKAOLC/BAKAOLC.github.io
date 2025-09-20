@@ -38,6 +38,7 @@ dist-ssr
 !.vscode/extensions.json
 !.vscode/settings.json
 !.vscode/tasks.json
+!.vscode/i18n-ally-custom-framework.yml
 .idea
 .DS_Store
 *.suo
