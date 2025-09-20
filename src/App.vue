@@ -27,7 +27,7 @@
 
       <footer class="footer">
         <div class="footer-content">
-          <p>© 2025 {{ t('app.title') }}</p>
+          <p>{{ t('app.copyright') }}</p>
         </div>
       </footer>
     </template>
@@ -35,16 +35,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
+import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import LoadingScreen from '@/components/LoadingScreen.vue';
 import LanguageSwitcher from '@/components/ui/LanguageSwitcher.vue';
 import ThemeToggle from '@/components/ui/ThemeToggle.vue';
 import { siteConfig } from '@/config/site';
+import { titleManager } from '@/services/titleManager';
 import { useAppStore } from '@/stores/app';
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const appStore = useAppStore();
 
 // 存储预加载的图片引用，用于清理
@@ -113,18 +114,30 @@ const onLoadingComplete = (): void => {
   appStore.isLoading = false;
 };
 
+// 更新浏览器标题（用于语言切换时）
+const updateDocumentTitle = (): void => {
+  titleManager.updateCurrentTitle();
+};
+
+// 系统主题监听器清理函数
+let cleanupSystemThemeListener: (() => void) | null = null;
+
 // 初始化
 onMounted(() => {
   // 设置初始主题
-  if (appStore.isDarkMode) {
-    document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-  }
+  appStore.applyTheme();
+
+  // 设置系统主题监听器
+  cleanupSystemThemeListener = appStore.setupSystemThemeListener();
 
   // 开始预加载图像
   preloadImages();
 });
+
+// 监听语言变化，更新浏览器标题
+watch(locale, () => {
+  updateDocumentTitle();
+}, { immediate: false });
 
 // 组件销毁时清理预加载的图片
 onBeforeUnmount(() => {
@@ -137,6 +150,11 @@ onBeforeUnmount(() => {
     img.src = '';
   });
   preloadedImages.value = [];
+
+  // 清理系统主题监听器
+  if (cleanupSystemThemeListener) {
+    cleanupSystemThemeListener();
+  }
 });
 </script>
 
