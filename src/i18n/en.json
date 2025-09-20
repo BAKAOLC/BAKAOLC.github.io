@@ -96,6 +96,7 @@
     "minimap": "Minimap",
     "navigation": "Navigation",
     "imageGroup": "Image Group",
+    "imageGroupWithCount": "Image Group ({count})",
     "comments": "Comments",
     "showComments": "Show Comments",
     "hideComments": "Hide Comments",

@@ -96,6 +96,7 @@
     "minimap": "小地图",
     "navigation": "导航",
     "imageGroup": "图像组",
+    "imageGroupWithCount": "图像组 ({count})",
     "comments": "评论",
     "showComments": "显示评论",
     "hideComments": "隐藏评论",
