@@ -117,6 +117,12 @@
               </div>
               <div class="group-image-info">
                 <span class="group-image-name">{{ getChildImageDisplayName(image) }}</span>
+                <div class="group-image-tags">
+                  <span v-for="tagId in getSortedTags(getChildImageTags(image))" :key="tagId" class="group-image-tag"
+                    :style="{ backgroundColor: getTagColor(tagId) }">
+                    {{ getTagName(tagId, currentLanguage) }}
+                  </span>
+                </div>
               </div>
             </button>
           </div>
@@ -194,6 +200,15 @@
                     </div>
                     <div class="mobile-group-image-info">
                       <span class="mobile-group-image-name">{{ getChildImageDisplayName(image) }}</span>
+                      <div class="mobile-group-image-tags">
+                        <span
+                          v-for="tagId in getSortedTags(getChildImageTags(image))"
+                          :key="tagId"
+                          class="mobile-group-image-tag"
+                          :style="{ backgroundColor: getTagColor(tagId) }">
+                          {{ getTagName(tagId, currentLanguage) }}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -2574,6 +2589,23 @@ const getChildImageDisplayName = (image: any): string => {
   return t(image.name, currentLanguage.value);
 };
 
+// 获取子图像的标签（优先使用子图像自己的标签，没有时才使用父图像的）
+const getChildImageTags = (image: any): string[] => {
+  // 如果子图像定义了自己的标签，直接使用子图像的标签
+  if (image.tags && image.tags.length > 0) {
+    return image.tags;
+  }
+
+  // 如果子图像没有定义标签，则使用父图像的标签
+  const currentGroup = currentImageGroup.value;
+  if (currentGroup && currentGroup.parentImage.tags) {
+    return currentGroup.parentImage.tags;
+  }
+
+  // 都没有则返回空数组
+  return [];
+};
+
 // 本地化辅助函数
 const t = (text: I18nText | string | undefined, lang?: string): string => {
   if (!text) return '';
@@ -3279,6 +3311,16 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   @apply text-gray-200;
 }
 
+.group-image-tags {
+  @apply mt-1 flex flex-wrap gap-1;
+}
+
+.group-image-tag {
+  @apply px-1.5 py-0.5 text-xs text-white rounded-full font-medium;
+  font-size: 0.625rem;
+  line-height: 1;
+}
+
 /* 组选择器进入动画 */
 .slide-in-right-enter-active,
 .slide-in-right-leave-active {
@@ -3535,6 +3577,23 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.mobile-group-image-tags {
+  margin-top: 0.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  justify-content: center;
+}
+
+.mobile-group-image-tag {
+  padding: 0.125rem 0.375rem;
+  font-size: 0.625rem;
+  color: white;
+  border-radius: 9999px;
+  font-weight: 500;
+  line-height: 1;
 }
 
 /* 移动端图像组按钮渐变动画 */
