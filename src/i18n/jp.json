@@ -96,6 +96,7 @@
     "minimap": "ミニマップ",
     "navigation": "ナビゲーション",
     "imageGroup": "画像グループ",
+    "imageGroupWithCount": "画像グループ ({count})",
     "comments": "コメント",
     "showComments": "コメントを表示",
     "hideComments": "コメントを隠す",

@@ -86,7 +86,7 @@
           :class="{ 'resizing': isDraggingGroupResize }"
           :style="{ width: groupSelectorWidth ? `${groupSelectorWidth}px` : '200px' }">
           <div class="group-selector-header">
-            <h4 class="group-title">{{ $t('viewer.imageGroup') }}</h4>
+            <h4 class="group-title">{{ $t('viewer.imageGroupWithCount', { count: groupImagesList.length }) }}</h4>
           </div>
           <div class="group-images-list">
             <button
@@ -142,7 +142,7 @@
           @click="toggleMobileGroupSelector"
           class="mobile-group-selector-toggle" :class="{ 'active': isMobileGroupSelectorOpen }">
           <i class="fa fa-th-large"></i>
-          <span class="toggle-text">{{ $t('viewer.imageGroup') }}</span>
+          <span class="toggle-text">{{ $t('viewer.imageGroupWithCount', { count: groupImagesList.length }) }}</span>
         </button>
       </transition>
 
