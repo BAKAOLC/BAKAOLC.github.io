@@ -50,7 +50,7 @@
         "jp": "Bilibili"
       },
       "url": "https://space.bilibili.com/3818840",
-      "icon": "play-circle",
+      "icon": "fa-brands fa-bilibili",
       "color": "#00a1d6"
     },
     {
@@ -70,7 +70,7 @@
         "jp": "Steam"
       },
       "url": "https://steamcommunity.com/id/BAKAOLC/",
-      "icon": "steam-square",
+      "icon": "steam",
       "color": "#171a21"
     },
     {
