@@ -1,143 +1,56 @@
 {
   "tags": {
-    "tech": {
-      "zh": "¼¼Êõ",
-      "en": "Tech",
-      "jp": "¼¼Ğg"
-    },
     "blog": {
-      "zh": "²©¿Í",
+      "zh": "åšå®¢",
       "en": "Blog",
-      "jp": "¥Ö¥í¥°"
-    },
-    "design": {
-      "zh": "Éè¼Æ",
-      "en": "Design",
-      "jp": "¥Ç¥¶¥¤¥ó"
-    },
-    "creative": {
-      "zh": "´´Òâ",
-      "en": "Creative",
-      "jp": "¥¯¥ê¥¨¥¤¥Æ¥£¥Ö"
-    },
-    "community": {
-      "zh": "ÉçÇø",
-      "en": "Community",
-      "jp": "¥³¥ß¥å¥Ë¥Æ¥£"
+      "jp": "ãƒ–ãƒ­ã‚°"
     },
     "tool": {
-      "zh": "¹¤¾ß",
+      "zh": "å·¥å…·",
       "en": "Tool",
-      "jp": "¥Ä©`¥ë"
-    },
-    "practical": {
-      "zh": "ÊµÓÃ",
-      "en": "Practical",
-      "jp": "ŒgÓÃµÄ"
+      "jp": "ãƒ„ãƒ¼ãƒ«"
     }
   },
   "categories": [
     {
       "id": "friends",
       "name": {
-        "zh": "ºÃÓÑ",
+        "zh": "å¥½å‹",
         "en": "Friends",
-        "jp": "ÓÑß_"
+        "jp": "å‹é”"
       },
       "description": {
-        "zh": "ÎÒµÄºÃÅóÓÑÃÇ",
+        "zh": "æˆ‘çš„å¥½æœ‹å‹ä»¬",
         "en": "My good friends",
-        "jp": "Ë½¤ÎÓHÓÑ¤¿¤Á"
+        "jp": "ç§ã®è¦ªå‹ãŸã¡"
       },
       "links": [
         {
-          "id": "example-friend-1",
-          "name": "Ê¾ÀıÅóÓÑ1",
-          "url": "https://example.com",
-          "avatar": "/assets/avatar.png",
+          "id": "sorakage",
+          "name": "ç©ºå½±",
+          "url": "https://sorakage.com/",
+          "avatar": "https://api.vrchat.cloud/api/1/image/file_24d51298-5b13-4f88-a695-6a2b7cdb1196/1/1024",
           "description": {
-            "zh": "ÕâÊÇÒ»¸öÊ¾ÀıÓÑÁ´ÃèÊö",
-            "en": "This is an example friend link description",
-            "jp": "¤³¤ì¤ÏÓÑß_¥ê¥ó¥¯¤ÎÕhÃ÷Àı¤Ç¤¹"
+            "zh": "ç©ºå½±çš„åšå®¢",
+            "en": "Sorakage's blog",
+            "jp": "ç©ºå½±ã®ãƒ–ãƒ­ã‚°"
           },
           "tags": [
-            "tech",
             "blog"
           ]
         },
         {
-          "id": "example-friend-2",
-          "name": "Ê¾ÀıÅóÓÑ2",
-          "url": "https://example2.com",
-          "avatar": "/assets/avatar.png",
+          "id": "RaitoOrange",
+          "name": "ç¯ç«æ©˜",
+          "url": "https://blog.catouo.cn/",
+          "avatar": "https://blog.catouo.cn/assets/%E7%9F%B3%E7%82%AD%E5%A4%B4%E5%83%8F%E6%A9%98-tJ8_xt8J.png",
           "description": {
-            "zh": "ÁíÒ»¸öÊ¾ÀıÓÑÁ´",
-            "en": "Another example friend link",
-            "jp": "¤â¤¦Ò»¤Ä¤ÎÓÑß_¥ê¥ó¥¯¤ÎÀı"
+            "zh": "ç¯ç«æ©˜çš„åšå®¢",
+            "en": "RaitoOrange's blog",
+            "jp": "ç¯ç«æ©˜ã®ãƒ–ãƒ­ã‚°"
           },
           "tags": [
-            "design",
-            "creative"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "communities",
-      "name": {
-        "zh": "ÉçÇø",
-        "en": "Communities",
-        "jp": "¥³¥ß¥å¥Ë¥Æ¥£"
-      },
-      "description": {
-        "zh": "Ïà¹ØÉçÇøºÍ×éÖ¯",
-        "en": "Related communities and organizations",
-        "jp": "évßB¥³¥ß¥å¥Ë¥Æ¥£¤È½M¿—"
-      },
-      "links": [
-        {
-          "id": "example-community-1",
-          "name": "Ê¾ÀıÉçÇø",
-          "url": "https://community.example.com",
-          "avatar": "/assets/avatar.png",
-          "description": {
-            "zh": "Ò»¸öºÜ°ôµÄ¼¼ÊõÉçÇø",
-            "en": "An awesome tech community",
-            "jp": "ËØÇç¤é¤·¤¤¼¼Ğg¥³¥ß¥å¥Ë¥Æ¥£"
-          },
-          "tags": [
-            "community",
-            "tech"
-          ]
-        }
-      ]
-    },
-    {
-      "id": "resources",
-      "name": {
-        "zh": "×ÊÔ´",
-        "en": "Resources",
-        "jp": "¥ê¥½©`¥¹"
-      },
-      "description": {
-        "zh": "ÓĞÓÃµÄ¹¤¾ßºÍ×ÊÔ´",
-        "en": "Useful tools and resources",
-        "jp": "±ãÀû¤Ê¥Ä©`¥ë¤È¥ê¥½©`¥¹"
-      },
-      "links": [
-        {
-          "id": "example-resource-1",
-          "name": "Ê¾Àı¹¤¾ß",
-          "url": "https://tool.example.com",
-          "avatar": "/assets/avatar.png",
-          "description": {
-            "zh": "Ò»¸öÊµÓÃµÄÔÚÏß¹¤¾ß",
-            "en": "A practical online tool",
-            "jp": "ŒgÓÃµÄ¤Ê¥ª¥ó¥é¥¤¥ó¥Ä©`¥ë"
-          },
-          "tags": [
-            "tool",
-            "practical"
+            "blog"
           ]
         }
       ]
@@ -147,6 +60,6 @@
     "showTags": true,
     "showDescription": true,
     "showAvatar": true,
-    "defaultAvatar": "/assets/avatar.png"
+    "defaultAvatar": "/assets/common/null-avatar.png"
   }
 }
