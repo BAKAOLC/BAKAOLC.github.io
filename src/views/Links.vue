@@ -2,11 +2,12 @@
   <div class="links-page">
     <div class="container mx-auto px-4 py-4 flex-1 h-full overflow-hidden">
       <div class="links-header">
-        <h1 class="links-title">{{ $t('links.title') }}</h1>
-        <p class="links-subtitle">{{ $t('links.subtitle') }}</p>
-
-        <!-- 搜索栏 -->
-        <div class="search-bar">
+        <div class="header-title-section">
+          <h1 class="links-title">{{ $t('links.title') }}</h1>
+          <p class="links-subtitle">{{ $t('links.subtitle') }}</p>
+        </div>
+        <!-- 统一搜索栏 -->
+        <div class="unified-search-bar">
           <div class="search-input-container">
             <input
               type="text"
@@ -17,6 +18,18 @@
             />
             <button v-if="searchQuery" @click="clearSearch" class="search-clear">
               <i :class="getIconClass('times')" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="control-buttons-group">
+            <!-- 生成友链信息按钮 -->
+            <button
+              @click="generateFriendLinkInfo"
+              class="generate-button group"
+              :title="$t('links.generateFriendLinkDesc')"
+            >
+              <i :class="getIconClass('code')" class="icon"></i>
+              <span class="button-text">{{ $t('links.generateFriendLink') }}</span>
             </button>
           </div>
         </div>
@@ -174,7 +187,9 @@ import type { I18nText, LinksConfig } from '@/types';
 import ProgressiveImage from '@/components/ProgressiveImage.vue';
 import { useMobileDetection } from '@/composables/useScreenManager';
 import { useTimers } from '@/composables/useTimers';
+import htmlConfig from '@/config/html.json';
 import linksConfigData from '@/config/links.json';
+import personalConfig from '@/config/personal.json';
 import { useAppStore } from '@/stores/app';
 import { getIconClass } from '@/utils/icons';
 
@@ -350,6 +365,255 @@ const visitLink = (url: string): void => {
   window.open(url, '_blank', 'noopener,noreferrer');
 };
 
+// 生成友链信息
+const generateFriendLinkInfo = (): void => {
+  const currentUrl = window.location.origin;
+  const name = personalConfig.name[currentLanguage.value as keyof typeof personalConfig.name] || personalConfig.name.zh;
+  const blogName = htmlConfig.title;
+  const avatarUrl = `${currentUrl}${personalConfig.avatar}`;
+
+  const friendLinkInfo = {
+    name: name,
+    blogName: blogName,
+    url: currentUrl,
+    logo: avatarUrl,
+  };
+
+  const jsonString = JSON.stringify(friendLinkInfo, null, 2);
+  // 复制到剪贴板
+  navigator.clipboard.writeText(jsonString).then(() => {
+    // 显示成功提示
+    showNotification($t('links.copied'));
+  }).catch(() => {
+    // 如果剪贴板API不可用，则显示弹窗
+    showJsonModal(jsonString);
+  });
+};
+
+// 显示通知
+const showNotification = (message: string): void => {
+  // 创建通知元素
+  const notification = document.createElement('div');
+  notification.textContent = message;
+  notification.className = 'friend-link-notification';
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #10b981;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    font-size: 14px;
+    font-weight: 500;
+    animation: slideIn 0.3s ease-out;
+  `;
+
+  // 添加动画样式
+  if (!document.querySelector('#friend-link-notification-styles')) {
+    const style = document.createElement('style');
+    style.id = 'friend-link-notification-styles';
+    style.textContent = `
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      @keyframes slideOut {
+        from {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  document.body.appendChild(notification);
+
+  // 3秒后移除通知
+  setTimeout(() => {
+    notification.style.animation = 'slideOut 0.3s ease-in';
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.parentNode.removeChild(notification);
+      }
+    }, 300);
+  }, 3000);
+};
+
+// 显示JSON弹窗（备用方案）
+const showJsonModal = (jsonString: string): void => {
+  const modal = document.createElement('div');
+  modal.className = 'friend-link-modal';
+  modal.innerHTML = `
+    <div class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>${$t('links.friendLinkGenerated')}</h3>
+          <button class="modal-close" onclick="this.closest('.friend-link-modal').remove()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <textarea readonly class="json-textarea">${jsonString}</textarea>
+        </div>
+        <div class="modal-footer">
+          <button class="copy-button" onclick="
+            const textarea = this.closest('.modal-content').querySelector('.json-textarea');
+            textarea.select();
+            document.execCommand('copy');
+            this.textContent = '${$t('links.copied')}';
+            setTimeout(() => this.textContent = '${$t('links.copyToClipboard')}', 2000);
+          ">${$t('links.copyToClipboard')}</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2000;
+  `;
+
+  // 添加模态框样式
+  if (!document.querySelector('#friend-link-modal-styles')) {
+    const style = document.createElement('style');
+    style.id = 'friend-link-modal-styles';
+    style.textContent = `
+      .friend-link-modal .modal-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .friend-link-modal .modal-content {
+        background: white;
+        border-radius: 12px;
+        max-width: 500px;
+        width: 100%;
+        max-height: 80vh;
+        overflow: hidden;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      }
+      .dark .friend-link-modal .modal-content {
+        background: #1f2937;
+      }
+      .friend-link-modal .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      .dark .friend-link-modal .modal-header {
+        border-bottom-color: #374151;
+      }
+      .friend-link-modal .modal-header h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: #111827;
+      }
+      .dark .friend-link-modal .modal-header h3 {
+        color: #f9fafb;
+      }
+      .friend-link-modal .modal-close {
+        background: none;
+        border: none;
+        font-size: 16px;
+        color: #6b7280;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+      }
+      .friend-link-modal .modal-close:hover {
+        background: #f3f4f6;
+        color: #374151;
+      }
+      .dark .friend-link-modal .modal-close:hover {
+        background: #374151;
+        color: #d1d5db;
+      }
+      .friend-link-modal .modal-body {
+        padding: 20px;
+      }
+      .friend-link-modal .json-textarea {
+        width: 100%;
+        height: 200px;
+        padding: 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 13px;
+        line-height: 1.5;
+        resize: vertical;
+        background: #f9fafb;
+        color: #111827;
+      }
+      .dark .friend-link-modal .json-textarea {
+        background: #111827;
+        color: #f9fafb;
+        border-color: #4b5563;
+      }
+      .friend-link-modal .modal-footer {
+        padding: 20px;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: flex-end;
+      }
+      .dark .friend-link-modal .modal-footer {
+        border-top-color: #374151;
+      }
+      .friend-link-modal .copy-button {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      .friend-link-modal .copy-button:hover {
+        background: #2563eb;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  document.body.appendChild(modal);
+
+  // 点击遮罩层关闭
+  modal.querySelector('.modal-overlay')?.addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) {
+      modal.remove();
+    }
+  });
+};
+
 // 滚动处理
 const handleScroll = (): void => {
   if (!linksMain.value) return;
@@ -435,46 +699,157 @@ onBeforeUnmount(() => {
 }
 
 .links-header {
-  @apply flex flex-col items-center text-center mb-6;
-  @apply border-b border-gray-200 dark:border-gray-700 pb-4;
+  @apply flex flex-wrap items-center justify-between mb-4;
+  @apply border-b border-gray-200 dark:border-gray-700 pb-3;
   transition: transform 0.3s ease, opacity 0.3s ease, margin-bottom 0.3s ease;
 }
 
+.header-title-section {
+  @apply flex flex-col;
+}
+
 .links-title {
-  @apply text-3xl font-bold mb-2;
+  @apply text-2xl font-bold;
   @apply text-gray-900 dark:text-white;
   transition: font-size 0.3s ease, margin-bottom 0.3s ease;
 }
 
 .links-subtitle {
-  @apply text-gray-600 dark:text-gray-400 mb-4;
-  @apply text-lg;
+  @apply text-gray-600 dark:text-gray-400;
+  @apply text-sm;
 }
 
-.search-bar {
-  @apply w-full max-w-md;
+/* 统一搜索栏样式 */
+.unified-search-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: rgb(249, 250, 251);
+  border: 1px solid rgb(229, 231, 235);
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.search-input-container {
-  @apply relative;
+.dark .unified-search-bar {
+  background-color: rgb(31, 41, 55);
+  border-color: rgb(75, 85, 99);
 }
 
-.search-input {
-  @apply w-full px-4 py-2 pr-10;
-  @apply border border-gray-300 dark:border-gray-600;
-  @apply rounded-lg;
-  @apply bg-white dark:bg-gray-800;
-  @apply text-gray-900 dark:text-white;
-  @apply placeholder-gray-500 dark:placeholder-gray-400;
-  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+.unified-search-bar .search-input-container {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.unified-search-bar .control-buttons-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.unified-search-bar .search-input {
+  width: 100%;
+  padding: 0.5rem;
+  padding-right: 2.5rem;
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.375rem;
+  background-color: rgb(255, 255, 255);
+  color: rgb(17, 24, 39);
+  font-size: 0.875rem;
   transition: all 0.2s ease;
 }
 
-.search-clear {
-  @apply absolute right-3 top-1/2 transform -translate-y-1/2;
-  @apply text-gray-400 hover:text-gray-600 dark:hover:text-gray-300;
-  @apply p-1 rounded-full;
-  @apply transition-colors duration-200;
+.dark .unified-search-bar .search-input {
+  background-color: rgb(55, 65, 81);
+  border-color: rgb(75, 85, 99);
+  color: rgb(243, 244, 246);
+}
+
+.unified-search-bar .search-input:focus {
+  outline: none;
+  border-color: rgb(59, 130, 246);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.dark .unified-search-bar .search-input:focus {
+  border-color: rgb(96, 165, 250);
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
+}
+
+.unified-search-bar .search-clear {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: rgb(156, 163, 175);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+}
+
+.unified-search-bar .search-clear:hover {
+  color: rgb(107, 114, 128);
+  background-color: rgb(243, 244, 246);
+}
+
+.dark .unified-search-bar .search-clear:hover {
+  color: rgb(209, 213, 219);
+  background-color: rgb(55, 65, 81);
+}
+
+.generate-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.375rem;
+  background-color: white;
+  color: rgb(107, 114, 128);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.dark .generate-button {
+  background-color: rgb(55, 65, 81);
+  border-color: rgb(75, 85, 99);
+  color: rgb(156, 163, 175);
+}
+
+.generate-button:hover {
+  background-color: rgb(243, 244, 246);
+  color: rgb(55, 65, 81);
+}
+
+.dark .generate-button:hover {
+  background-color: rgb(75, 85, 99);
+  color: rgb(209, 213, 219);
+}
+
+.generate-button:active {
+  transform: scale(0.98);
+}
+
+.generate-button .icon {
+  @apply w-4 h-4;
+}
+
+.generate-button .button-text {
+  font-size: 0.875rem;
 }
 
 .links-content {
@@ -489,17 +864,61 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 767px) {
+  .links-header {
+    @apply flex-col items-center text-center gap-2 mb-3;
+    padding-bottom: 0.75rem;
+  }
+
+  .header-title-section {
+    @apply text-center mb-2;
+  }
+
+  .links-title {
+    @apply text-xl;
+    margin-bottom: 0.5rem;
+    transition: font-size 0.3s ease, margin-bottom 0.3s ease;
+  }
+
+  .links-subtitle {
+    @apply text-xs;
+  }
+
   .links-content {
     flex-direction: column;
     gap: 1rem;
   }
 
-  .links-title {
-    @apply text-2xl;
+  .unified-search-bar {
+    gap: 0.375rem;
+    padding: 0.375rem;
+    margin-bottom: 0.5rem;
+    transition: gap 0.3s ease, padding 0.3s ease, margin-bottom 0.3s ease;
   }
 
-  .links-subtitle {
-    @apply text-base;
+  .unified-search-bar .control-buttons-group {
+    gap: 0.375rem;
+  }
+
+  .generate-button .button-text {
+    display: none;
+  }
+
+  .generate-button {
+    min-width: 44px;
+    padding: 0.375rem;
+    height: 2rem;
+  }
+
+  .unified-search-bar .search-input {
+    height: 2rem;
+    padding: 0.375rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .generate-button .button-text {
+    display: inline;
   }
 }
 
