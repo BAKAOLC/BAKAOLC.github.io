@@ -1,0 +1,107 @@
+{
+  "twitter.com": {
+    "en": "Twitter",
+    "zh": "ÍÆÌØ",
+    "jp": "¥Ä¥¤¥Ã¥¿©`"
+  },
+  "x.com": {
+    "en": "X",
+    "zh": "X",
+    "jp": "X"
+  },
+  "pixiv.net": {
+    "en": "Pixiv",
+    "zh": "PÕ¾",
+    "jp": "¥Ô¥¯¥·¥Ö"
+  },
+  "github.com": {
+    "en": "GitHub",
+    "zh": "GitHub",
+    "jp": "GitHub"
+  },
+  "instagram.com": {
+    "en": "Instagram",
+    "zh": "Instagram",
+    "jp": "¥¤¥ó¥¹¥¿¥°¥é¥à"
+  },
+  "weibo.com": {
+    "en": "Weibo",
+    "zh": "Î¢²©",
+    "jp": "¥¦¥§¥¤¥Ü©`"
+  },
+  "bilibili.com": {
+    "en": "Bilibili",
+    "zh": "BÕ¾",
+    "jp": "¥Ó¥ê¥Ó¥ê"
+  },
+  "youtube.com": {
+    "en": "YouTube",
+    "zh": "YouTube",
+    "jp": "¥æ©`¥Á¥å©`¥Ö"
+  },
+  "artstation.com": {
+    "en": "ArtStation",
+    "zh": "ArtStation",
+    "jp": "¥¢©`¥È¥¹¥Æ©`¥·¥ç¥ó"
+  },
+  "deviantart.com": {
+    "en": "DeviantArt",
+    "zh": "DeviantArt",
+    "jp": "¥Ç¥ô¥£¥¢¥ó¥È¥¢©`¥È"
+  },
+  "behance.net": {
+    "en": "Behance",
+    "zh": "Behance",
+    "jp": "¥Ó¥Ï¥ó¥¹"
+  },
+  "dribbble.com": {
+    "en": "Dribbble",
+    "zh": "Dribbble",
+    "jp": "¥É¥ê¥Ö¥ë"
+  },
+  "facebook.com": {
+    "en": "Facebook",
+    "zh": "Facebook",
+    "jp": "¥Õ¥§¥¤¥¹¥Ö¥Ã¥¯"
+  },
+  "linkedin.com": {
+    "en": "LinkedIn",
+    "zh": "ÁìÓ¢",
+    "jp": "¥ê¥ó¥¯¥È¥¤¥ó"
+  },
+  "tiktok.com": {
+    "en": "TikTok",
+    "zh": "¶¶Òô",
+    "jp": "¥Æ¥£¥Ã¥¯¥È¥Ã¥¯"
+  },
+  "reddit.com": {
+    "en": "Reddit",
+    "zh": "Reddit",
+    "jp": "¥ì¥Ç¥£¥Ã¥È"
+  },
+  "discord.com": {
+    "en": "Discord",
+    "zh": "Discord",
+    "jp": "¥Ç¥£¥¹¥³©`¥É"
+  },
+  "twitch.tv": {
+    "en": "Twitch",
+    "zh": "Twitch",
+    "jp": "¥Ä¥¤¥Ã¥Á"
+  },
+  "patreon.com": {
+    "en": "Patreon",
+    "zh": "Patreon",
+    "jp": "¥Ñ¥È¥ì¥ª¥ó"
+  },
+  "ko-fi.com": {
+    "en": "Ko-fi",
+    "zh": "Ko-fi",
+    "jp": "Ko-fi"
+  },
+  "mihuashi.com": {
+    "en": "Mihuashi",
+    "zh": "Ã×»­Ê¦",
+    "jp": "¥ß¥å©`¥·¥ã"
+  }
+}

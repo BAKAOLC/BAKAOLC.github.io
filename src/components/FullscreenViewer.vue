@@ -4,8 +4,8 @@
     'transition-active': transitionActive,
     'closing': isClosing
   }" @keydown.esc="close" tabindex="0">
-    <div class="viewer-header">
-      <div class="viewer-title">
+    <div class="viewer-header" :class="{ 'no-title': !effectiveViewerConfig.viewerTitle }">
+      <div v-if="effectiveViewerConfig.viewerTitle" class="viewer-title">
         {{ currentImage ? t(currentImage.name, currentLanguage) : '' }}
       </div>
 
@@ -22,14 +22,22 @@
           :class="{ 'disabled': isZoomDisabled }" :disabled="isZoomDisabled">
           <zoom-in-icon class="icon" />
         </button>
-        <button class="control-button" @click="toggleInfoPanel"
+        <button
+          v-if="hasInfoContent"
+          class="control-button"
+          @click="toggleInfoPanel"
           :class="{ 'disabled': infoPanelAnimating || mobileInfoOverlayAnimating }"
-          :disabled="infoPanelAnimating || mobileInfoOverlayAnimating" :title="getInfoButtonTitle()">
+          :disabled="infoPanelAnimating || mobileInfoOverlayAnimating"
+          :title="getInfoButtonTitle()">
           <info-icon class="icon" />
         </button>
-        <button class="control-button" @click="toggleCommentsModal"
+        <button
+          v-if="effectiveViewerConfig.commentsButton && siteConfig.features.comments"
+          class="control-button"
+          @click="toggleCommentsModal"
           :class="{ 'disabled': commentsModalAnimating }"
-          :disabled="commentsModalAnimating" :title="getCommentsButtonTitle()">
+          :disabled="commentsModalAnimating"
+          :title="getCommentsButtonTitle()">
           <message-circle-icon class="icon" />
         </button>
         <button class="control-button close-button" @click="close" :title="t('viewer.close')">
@@ -41,7 +49,9 @@
     <div class="viewer-content">
       <!-- 主图像区域 -->
       <div class="main-image-area"
-        :class="{ 'with-left-group-selector': showGroupSelector && !isMobile }"
+        :class="{
+          'with-left-group-selector': effectiveViewerConfig.imageGroupList && showGroupSelector && !isMobile
+        }"
         :style="mainImageAreaStyle">
         <div class="image-container" ref="imageContainer" @wheel="handleImageWheel" @mousedown="handleImageMouseDown"
           @touchstart="handleImageTouchStart" @touchmove="handleImageTouchMove" @touchend="handleImageTouchEnd">
@@ -81,7 +91,7 @@
 
       <!-- 桌面端图像组选择器 - 左侧布局 -->
       <transition name="desktop-group-selector-slide">
-        <div v-if="showGroupSelector && !isMobile"
+        <div v-if="effectiveViewerConfig.imageGroupList && showGroupSelector && !isMobile"
           class="group-selector left-side"
           :class="{ 'resizing': isDraggingGroupResize }"
           :style="{ width: groupSelectorWidth ? `${groupSelectorWidth}px` : '200px' }">
@@ -144,9 +154,11 @@
 
       <!-- 移动端图像组悬浮按钮 -->
       <transition name="mobile-group-button-fade">
-        <button v-if="showGroupSelector && isMobile && groupImagesList.length > 1"
+        <button
+          v-if="effectiveViewerConfig.imageGroupList && showGroupSelector && isMobile && groupImagesList.length > 1"
           @click="toggleMobileGroupSelector"
-          class="mobile-group-selector-toggle" :class="{ 'active': isMobileGroupSelectorOpen }">
+          class="mobile-group-selector-toggle"
+          :class="{ 'active': isMobileGroupSelectorOpen }">
           <i :class="getIconClass('th')"></i>
           <span class="toggle-text">{{ $t('viewer.imageGroupWithCount', { count: groupImagesList.length }) }}</span>
         </button>
@@ -154,7 +166,10 @@
 
       <!-- 移动端图像组悬浮窗 -->
       <transition name="mobile-group-selector-fade">
-        <div v-if="isMobileGroupSelectorOpen" class="mobile-group-selector-overlay" @click="closeMobileGroupSelector">
+        <div
+          v-if="effectiveViewerConfig.imageGroupList && isMobileGroupSelectorOpen"
+          class="mobile-group-selector-overlay"
+          @click="closeMobileGroupSelector">
           <transition name="mobile-group-selector-slide">
             <div v-if="isMobileGroupSelectorOpen" class="mobile-group-selector-content" @click.stop>
               <div class="mobile-group-selector-header">
@@ -219,7 +234,7 @@
       </transition>
     </div>
 
-    <div class="viewer-navigation">
+    <div v-if="effectiveViewerConfig.imageList" class="viewer-navigation">
       <button class="nav-button prev-button" @click="prevImage" :disabled="!hasPrevImage" :title="t('viewer.prev')">
         <chevron-left-icon class="icon" />
       </button>
@@ -268,28 +283,44 @@
 
     <!-- 桌面端信息面板 -->
     <transition name="slide-fade">
-      <div v-show="showInfoPanel && !isMobile" class="viewer-footer">
+      <div v-show="hasInfoContent && showInfoPanel && !isMobile" class="viewer-footer">
         <div class="info-toggle-button" @click="toggleInfoPanel" style="display: none;">
           <!-- 信息切换按钮已移至顶部控制栏 -->
         </div>
 
         <div class="image-info">
-          <div class="info-group">
-            <h3 class="info-title">{{ t(currentImage?.name, currentLanguage) }}</h3>
-            <p class="info-description">{{ t(getDescriptionWithFallback, currentLanguage) }}</p>
+          <div
+            v-if="effectiveViewerConfig.infoPanel.title || effectiveViewerConfig.infoPanel.description"
+            class="info-group">
+            <h3
+              v-if="effectiveViewerConfig.infoPanel.title"
+              class="info-title">{{ t(currentImage?.name, currentLanguage) }}</h3>
+            <p
+              v-if="effectiveViewerConfig.infoPanel.description"
+              class="info-description">{{ t(getDescriptionWithFallback, currentLanguage) }}</p>
           </div>
 
-          <div class="info-group">
+          <div v-if="effectiveViewerConfig.infoPanel.artist" class="info-group">
             <h4 class="info-subtitle">{{ $t('gallery.artist') }}</h4>
-            <p>{{ t(getArtistWithFallback, currentLanguage) }}</p>
+            <div class="artist-info">
+              <div class="artist-names">
+                <span v-for="(artist, index) in getArtistListWithFallback" :key="index" class="artist-tag">
+                  {{ t(artist, currentLanguage) }}
+                </span>
+              </div>
+              <author-links
+                :author-links="getAuthorLinksWithFallback.current"
+                :fallback-author-links="getAuthorLinksWithFallback.fallback"
+              />
+            </div>
           </div>
 
-          <div class="info-group">
+          <div v-if="effectiveViewerConfig.infoPanel.date" class="info-group">
             <h4 class="info-subtitle">{{ $t('gallery.date') }}</h4>
             <p>{{ currentImage?.date || 'N/A' }}</p>
           </div>
 
-          <div class="info-group">
+          <div v-if="effectiveViewerConfig.infoPanel.tags" class="info-group">
             <h4 class="info-subtitle">{{ $t('gallery.tags') }}</h4>
             <div class="tags-list">
               <span v-for="tagId in getSortedTags(currentImage?.tags || [])" :key="tagId" class="tag"
@@ -315,22 +346,38 @@
             </div>
 
             <div class="mobile-info-content">
-              <div class="info-group">
-                <h3 class="info-title">{{ t(currentImage?.name, currentLanguage) }}</h3>
-                <p class="info-description">{{ t(getDescriptionWithFallback, currentLanguage) }}</p>
+              <div
+                v-if="effectiveViewerConfig.infoPanel.title || effectiveViewerConfig.infoPanel.description"
+                class="info-group">
+                <h3
+                  v-if="effectiveViewerConfig.infoPanel.title"
+                  class="info-title">{{ t(currentImage?.name, currentLanguage) }}</h3>
+                <p
+                  v-if="effectiveViewerConfig.infoPanel.description"
+                  class="info-description">{{ t(getDescriptionWithFallback, currentLanguage) }}</p>
               </div>
 
-              <div class="info-group">
+              <div v-if="effectiveViewerConfig.infoPanel.artist" class="info-group">
                 <h4 class="info-subtitle">{{ $t('gallery.artist') }}</h4>
-                <p>{{ t(getArtistWithFallback, currentLanguage) }}</p>
+                <div class="artist-info">
+                  <div class="artist-names">
+                    <span v-for="(artist, index) in getArtistListWithFallback" :key="index" class="artist-tag">
+                      {{ t(artist, currentLanguage) }}
+                    </span>
+                  </div>
+                  <author-links
+                    :author-links="getAuthorLinksWithFallback.current"
+                    :fallback-author-links="getAuthorLinksWithFallback.fallback"
+                  />
+                </div>
               </div>
 
-              <div class="info-group">
+              <div v-if="effectiveViewerConfig.infoPanel.date" class="info-group">
                 <h4 class="info-subtitle">{{ $t('gallery.date') }}</h4>
                 <p>{{ currentImage?.date || 'N/A' }}</p>
               </div>
 
-              <div class="info-group">
+              <div v-if="effectiveViewerConfig.infoPanel.tags" class="info-group">
                 <h4 class="info-subtitle">{{ $t('gallery.tags') }}</h4>
                 <div class="tags-list">
                   <span v-for="tagId in getSortedTags(currentImage?.tags || [])" :key="tagId" class="tag"
@@ -347,7 +394,10 @@
 
     <!-- 评论模态框 -->
     <transition name="comments-modal-fade">
-      <div v-show="showCommentsModal" class="comments-modal-overlay" @click="closeCommentsModal">
+      <div
+        v-show="effectiveViewerConfig.commentsButton && siteConfig.features.comments && showCommentsModal"
+        class="comments-modal-overlay"
+        @click="closeCommentsModal">
         <transition name="comments-modal-slide">
           <div v-show="showCommentsModal" class="comments-modal-panel" @click.stop>
             <div class="comments-modal-header">
@@ -373,25 +423,29 @@ import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
+import AuthorLinks from './AuthorLinks.vue';
 import GiscusComments from './GiscusComments.vue';
 import ProgressiveImage from './ProgressiveImage.vue';
 
-import type { I18nText } from '@/types';
+import type { I18nText, ViewerUIConfig, ExternalImageInfo } from '@/types';
 
 import thumbnailMap from '@/assets/thumbnail-map.json';
 import { useEventManager } from '@/composables/useEventManager';
 import { useMobileDetection } from '@/composables/useScreenManager';
 import { useTags } from '@/composables/useTags';
 import { useTimers } from '@/composables/useTimers';
+import { siteConfig } from '@/config/site';
 import { imageCache, LoadPriority } from '@/services/imageCache';
 import { useAppStore } from '@/stores/app';
 import { AnimationDurations } from '@/utils/animations';
 import { getIconClass } from '@/utils/icons';
 
 const props = defineProps<{
-  imageId: string;
+  imageId?: string;
   childImageId?: string;
+  externalImage?: ExternalImageInfo; // 外部图像信息（包含URL和其他信息）
   isActive: boolean;
+  viewerUIConfig?: ViewerUIConfig; // 结构化配置参数
 }>();
 
 const emit = defineEmits<{
@@ -407,6 +461,33 @@ const { isMobile, onScreenChange } = useMobileDetection();
 const { getSortedTags, getTagColor, getTagName } = useTags();
 
 const currentLanguage = computed(() => appStore.currentLanguage);
+
+// 合并默认配置和传入的配置
+const effectiveViewerConfig = computed((): ViewerUIConfig => {
+  const defaultConfig = siteConfig.features.viewerUI;
+  return {
+    imageList: props.viewerUIConfig?.imageList ?? defaultConfig.imageList,
+    imageGroupList: props.viewerUIConfig?.imageGroupList ?? defaultConfig.imageGroupList,
+    viewerTitle: props.viewerUIConfig?.viewerTitle ?? defaultConfig.viewerTitle,
+    infoPanel: {
+      title: props.viewerUIConfig?.infoPanel?.title ?? defaultConfig.infoPanel.title,
+      description: props.viewerUIConfig?.infoPanel?.description ?? defaultConfig.infoPanel.description,
+      artist: props.viewerUIConfig?.infoPanel?.artist ?? defaultConfig.infoPanel.artist,
+      date: props.viewerUIConfig?.infoPanel?.date ?? defaultConfig.infoPanel.date,
+      tags: props.viewerUIConfig?.infoPanel?.tags ?? defaultConfig.infoPanel.tags,
+    },
+    commentsButton: props.viewerUIConfig?.commentsButton ?? defaultConfig.commentsButton,
+  };
+});
+
+// 检查信息栏是否有任何内容需要显示
+const hasInfoContent = computed((): boolean => {
+  return effectiveViewerConfig.value.infoPanel.title
+         || effectiveViewerConfig.value.infoPanel.description
+         || effectiveViewerConfig.value.infoPanel.artist
+         || effectiveViewerConfig.value.infoPanel.date
+         || effectiveViewerConfig.value.infoPanel.tags;
+});
 
 // 缩略图容器引用
 const thumbnailsContainer = ref<HTMLElement>();
@@ -456,7 +537,7 @@ const imagesList = computed(() => {
     if (props.childImageId) {
       // 访问子图像：/:imageId/:childImageId
       // 显示完整的图集，但会索引到目标childImage
-      const parentImage = appStore.getImageById(props.imageId);
+      const parentImage = props.imageId ? appStore.getImageById(props.imageId) : null;
       if (parentImage && parentImage.childImages && parentImage.childImages.length > 0) {
         const validImages = appStore.getValidImagesInGroup(parentImage);
         if (validImages.length > 0) {
@@ -472,10 +553,10 @@ const imagesList = computed(() => {
       return [];
     } else {
       // 访问图像：/:imageId
-      const image = appStore.getImageById(props.imageId);
+      const image = props.imageId ? appStore.getImageById(props.imageId) : null;
       if (image) {
         // 检查这个imageId是否是一个childImage
-        const groupInfo = appStore.getImageGroupByChildId(props.imageId);
+        const groupInfo = props.imageId ? appStore.getImageGroupByChildId(props.imageId) : null;
         if (groupInfo) {
           // 如果imageId是childImage，只显示这一张子图像（不允许切换）
           return [image];
@@ -546,6 +627,22 @@ const currentIndex = computed(() => {
 });
 
 const currentImage = computed(() => {
+  // 如果传入了外部图像信息，创建一个临时的图像对象
+  if (props.externalImage) {
+    const info = props.externalImage;
+    return {
+      id: 'external-image',
+      name: info.name || { en: 'External Image', zh: '外部图像', jp: '外部画像' },
+      description: info.description || { en: '', zh: '', jp: '' },
+      artist: info.artist || { en: 'N/A', zh: 'N/A', jp: 'N/A' },
+      src: info.url,
+      tags: info.tags || [],
+      characters: [],
+      date: info.date,
+      childImages: undefined,
+    };
+  }
+
   // 如果有子图像ID，优先获取子图像的具体信息
   if (currentChildImageId.value) {
     const childImage = appStore.getImageById(currentChildImageId.value);
@@ -560,9 +657,11 @@ const currentImage = computed(() => {
   }
 
   // 最后的备用方案
-  const directImage = appStore.getImageById(props.imageId);
-  if (directImage) {
-    return directImage;
+  if (props.imageId) {
+    const directImage = appStore.getImageById(props.imageId);
+    if (directImage) {
+      return directImage;
+    }
   }
 
   return null;
@@ -604,7 +703,7 @@ const showGroupSelector = computed(() => {
   // 如果是直接访问单个子图像 (/:childImageId)，不显示组选择器
   if (isDirectAccess.value && !props.childImageId) {
     // 检查是否是直接访问子图像
-    const groupInfo = appStore.getImageGroupByChildId(props.imageId);
+    const groupInfo = props.imageId ? appStore.getImageGroupByChildId(props.imageId) : null;
     if (groupInfo) {
       // 直接访问子图像，不显示组选择器
       return false;
@@ -630,9 +729,9 @@ const mainImageAreaStyle = computed(() => {
 const hasPrevImage = computed(() => currentIndex.value > 0);
 const hasNextImage = computed(() => currentIndex.value < imagesList.value.length - 1);
 
-// Artist 和 Description 的 fallback 助手函数
-const getArtistWithFallback = computed(() => {
-  if (!currentImage.value) return { en: 'N/A', zh: 'N/A', jp: 'N/A' };
+// 获取作者列表
+const getArtistListWithFallback = computed(() => {
+  if (!currentImage.value) return [{ en: 'N/A', zh: 'N/A', jp: 'N/A' }];
 
   // 优先级：子图像 -> 父图像 -> fallback
   const currentGroup = currentImageGroup.value;
@@ -642,13 +741,40 @@ const getArtistWithFallback = computed(() => {
     const { parentImage } = currentGroup;
 
     // 子图像有artist则用子图像的，否则用父图像的，最后fallback
-    return childImage.artist || parentImage.artist || { en: 'N/A', zh: 'N/A', jp: 'N/A' };
+    const artist = childImage.artist || parentImage.artist || { en: 'N/A', zh: 'N/A', jp: 'N/A' };
+    return Array.isArray(artist) ? artist : [artist];
   }
 
   // 当前是父图像或普通图像
-  return currentImage.value.artist || { en: 'N/A', zh: 'N/A', jp: 'N/A' };
+  const artist = currentImage.value.artist || { en: 'N/A', zh: 'N/A', jp: 'N/A' };
+  return Array.isArray(artist) ? artist : [artist];
 });
 
+// 获取作者链接（支持继承）
+const getAuthorLinksWithFallback = computed(() => {
+  if (!currentImage.value) return { current: [], fallback: [] };
+
+  // 优先级：子图像 -> 父图像
+  const currentGroup = currentImageGroup.value;
+  if (currentGroup && !currentGroup.isParent) {
+    // 当前是子图像
+    const childImage = currentImage.value;
+    const { parentImage } = currentGroup;
+
+    return {
+      current: childImage.authorLinks || [],
+      fallback: parentImage.authorLinks || [],
+    };
+  }
+
+  // 当前是父图像或普通图像
+  return {
+    current: currentImage.value.authorLinks || [],
+    fallback: [],
+  };
+});
+
+// 获取描述
 const getDescriptionWithFallback = computed(() => {
   if (!currentImage.value) return { en: '', zh: '', jp: '' };
 
@@ -1196,6 +1322,7 @@ const closeMobileInfoOverlay = (): void => {
 // 评论模态框切换
 const toggleCommentsModal = (): void => {
   if (commentsModalAnimating.value) return;
+  if (!effectiveViewerConfig.value.commentsButton || !siteConfig.features.comments) return;
 
   commentsModalAnimating.value = true;
   showCommentsModal.value = !showCommentsModal.value;
@@ -2668,6 +2795,14 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
   @apply bg-white/90 border-b border-gray-200;
 }
 
+.viewer-header.no-title {
+  @apply justify-end;
+}
+
+.viewer-header .viewer-title {
+  @apply flex-1;
+}
+
 .dark .viewer-header {
   @apply bg-black/50 border-gray-700;
 }
@@ -3119,6 +3254,22 @@ const t = (text: I18nText | string | undefined, lang?: string): string => {
 
 .dark .info-description {
   @apply text-gray-300;
+}
+
+.artist-info {
+  @apply flex flex-wrap items-center gap-2;
+}
+
+.artist-names {
+  @apply flex flex-wrap items-center gap-2;
+}
+
+.artist-tag {
+  @apply inline-flex items-center px-2.5 py-1
+         bg-blue-100 dark:bg-blue-900/30
+         text-blue-800 dark:text-blue-200
+         text-sm font-medium rounded-full
+         transition-colors duration-200;
 }
 
 .tags-list {
