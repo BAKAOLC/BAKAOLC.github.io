@@ -6,10 +6,10 @@ declare module '*.vue' {
   export default component;
 }
 
-// À©Õ¹ Vue Router µÄÀàĞÍ¶¨Òå
+// æ‰©å±• Vue Router çš„ç±»å‹å®šä¹‰
 declare module 'vue-router' {
   interface RouteMeta {
-    titleKey?: string | null; // Ò³Ãæ±êÌâµÄ¹ú¼Ê»¯¼ü
+    titleKey?: string | null; // é¡µé¢æ ‡é¢˜çš„å›½é™…åŒ–é”®
   }
 
   export function createRouter(options: any): any;

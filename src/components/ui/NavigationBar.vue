@@ -1,7 +1,7 @@
 <template>
   <nav v-if="shouldShowNavigation" class="navigation-bar" :class="navigationClasses">
     <div class="nav-container">
-      <!-- ×ÀÃæ¶ËºÍ¿íÆÁÒÆ¶¯¶Ë£ºÖ±½ÓÏÔÊ¾ËùÓĞµ¼º½Ïî -->
+      <!-- æ¡Œé¢ç«¯å’Œå®½å±ç§»åŠ¨ç«¯ï¼šç›´æ¥æ˜¾ç¤ºæ‰€æœ‰å¯¼èˆªé¡¹ -->
       <transition name="nav-horizontal" mode="out-in">
         <div v-if="!isNarrowMobile" key="horizontal" class="nav-items">
           <router-link
@@ -18,7 +18,7 @@
           </router-link>
         </div>
 
-        <!-- Õ­ÆÁÒÆ¶¯¶Ë£ºÏÔÊ¾µ±Ç°Ò³Ãæ + ÏÂÀ­¼ıÍ· -->
+        <!-- çª„å±ç§»åŠ¨ç«¯ï¼šæ˜¾ç¤ºå½“å‰é¡µé¢ + ä¸‹æ‹‰ç®­å¤´ -->
         <div v-else key="mobile" class="mobile-nav">
           <button
             class="mobile-nav-current"
@@ -31,7 +31,7 @@
             <i class="fas fa-chevron-down nav-arrow" :class="{ 'nav-arrow-up': isMobileMenuOpen }"></i>
           </button>
 
-          <!-- ÒÆ¶¯¶ËÏÂÀ­²Ëµ¥ -->
+          <!-- ç§»åŠ¨ç«¯ä¸‹æ‹‰èœå• -->
           <transition name="mobile-dropdown">
             <div v-if="isMobileMenuOpen" class="mobile-dropdown">
               <router-link
@@ -65,16 +65,16 @@ const { t } = useI18n();
 const route = useRoute();
 const { isMobile, onScreenChange } = useScreenManager();
 
-// ÒÆ¶¯¶Ë²Ëµ¥×´Ì¬
+// ç§»åŠ¨ç«¯èœå•çŠ¶æ€
 const isMobileMenuOpen = ref(false);
 
-// Õ­ÆÁÒÆ¶¯¶Ë¼ì²â£¨Ê¹ÓÃÆÁÄ»¹ÜÀíÆ÷µÄÒÆ¶¯¶ËÅĞ¶Ï£©
-// ÔÚÒÆ¶¯¶Ë£¨< 768px£©Ê¹ÓÃÏÂÀ­²Ëµ¥£¬Æ½°å¶ËºÍ×ÀÃæ¶ËÏÔÊ¾ÍêÕûµ¼º½
+// çª„å±ç§»åŠ¨ç«¯æ£€æµ‹ï¼ˆä½¿ç”¨å±å¹•ç®¡ç†å™¨çš„ç§»åŠ¨ç«¯åˆ¤æ–­ï¼‰
+// åœ¨ç§»åŠ¨ç«¯ï¼ˆ< 768pxï¼‰ä½¿ç”¨ä¸‹æ‹‰èœå•ï¼Œå¹³æ¿ç«¯å’Œæ¡Œé¢ç«¯æ˜¾ç¤ºå®Œæ•´å¯¼èˆª
 const isNarrowMobile = computed(() => {
   return isMobile.value;
 });
 
-// µ¼º½ÏîÅäÖÃ
+// å¯¼èˆªé¡¹é…ç½®
 interface NavItem {
   name: string;
   path: string;
@@ -106,7 +106,7 @@ const navItems: NavItem[] = [
   },
 ];
 
-// ¼ÆËã¿É¼ûµÄµ¼º½Ïî
+// è®¡ç®—å¯è§çš„å¯¼èˆªé¡¹
 const visibleNavItems = computed(() => {
   return navItems.filter(item => {
     if (!item.requiresFeature) return true;
@@ -115,25 +115,25 @@ const visibleNavItems = computed(() => {
   });
 });
 
-// »ñÈ¡µ±Ç°¼¤»îµÄµ¼º½Ïî
+// è·å–å½“å‰æ¿€æ´»çš„å¯¼èˆªé¡¹
 const currentNavItem = computed(() => {
   return visibleNavItems.value.find(item => isActiveRoute(item.path));
 });
 
-// ÅĞ¶ÏÊÇ·ñÓ¦¸ÃÏÔÊ¾µ¼º½À¸
-// Ö»ÓĞµ±ÓĞ¶à¸ö¿Éµ¼º½µÄÒ³ÃæÊ±²ÅÏÔÊ¾µ¼º½À¸
+// åˆ¤æ–­æ˜¯å¦åº”è¯¥æ˜¾ç¤ºå¯¼èˆªæ 
+// åªæœ‰å½“æœ‰å¤šä¸ªå¯å¯¼èˆªçš„é¡µé¢æ—¶æ‰æ˜¾ç¤ºå¯¼èˆªæ 
 const shouldShowNavigation = computed(() => {
   return visibleNavItems.value.length > 1;
 });
 
-// µ¼º½À¸ÑùÊ½Àà
+// å¯¼èˆªæ æ ·å¼ç±»
 const navigationClasses = computed(() => ({
   'navigation-mobile': isMobile.value,
   'navigation-desktop': !isMobile.value,
   'navigation-narrow': isNarrowMobile.value,
 }));
 
-// ÅĞ¶ÏÂ·ÓÉÊÇ·ñ¼¤»î
+// åˆ¤æ–­è·¯ç”±æ˜¯å¦æ¿€æ´»
 const isActiveRoute = (path: string): boolean => {
   if (path === '/') {
     return route.path === '/';
@@ -141,40 +141,40 @@ const isActiveRoute = (path: string): boolean => {
   return route.path.startsWith(path);
 };
 
-// ´¦Àíµ¼º½µã»÷
+// å¤„ç†å¯¼èˆªç‚¹å‡»
 const handleNavClick = (_item: NavItem): void => {
-  // µ¼º½µã»÷²»ĞèÒªÌØÊâ´¦Àí£¬Â·ÓÉÊØÎÀ»á´¦ÀíÖØ¶¨Ïò
+  // å¯¼èˆªç‚¹å‡»ä¸éœ€è¦ç‰¹æ®Šå¤„ç†ï¼Œè·¯ç”±å®ˆå«ä¼šå¤„ç†é‡å®šå‘
 };
 
-// ´¦ÀíÒÆ¶¯¶Ëµ¼º½µã»÷
+// å¤„ç†ç§»åŠ¨ç«¯å¯¼èˆªç‚¹å‡»
 const handleMobileNavClick = (item: NavItem): void => {
   handleNavClick(item);
   closeMobileMenu();
 };
 
-// ÇĞ»»ÒÆ¶¯¶Ë²Ëµ¥
+// åˆ‡æ¢ç§»åŠ¨ç«¯èœå•
 const toggleMobileMenu = (): void => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value;
 };
 
-// ¹Ø±ÕÒÆ¶¯¶Ë²Ëµ¥
+// å…³é—­ç§»åŠ¨ç«¯èœå•
 const closeMobileMenu = (): void => {
   isMobileMenuOpen.value = false;
 };
 
-// ¼àÌıÂ·ÓÉ±ä»¯£¬¹Ø±ÕÒÆ¶¯¶Ë²Ëµ¥
+// ç›‘å¬è·¯ç”±å˜åŒ–ï¼Œå…³é—­ç§»åŠ¨ç«¯èœå•
 watch(route, () => {
   closeMobileMenu();
 });
 
-// ¼àÌıÆÁÄ»³ß´ç±ä»¯£¬ÔÚÇĞ»»µ½·ÇÕ­ÆÁÊ±¹Ø±ÕÒÆ¶¯¶Ë²Ëµ¥
+// ç›‘å¬å±å¹•å°ºå¯¸å˜åŒ–ï¼Œåœ¨åˆ‡æ¢åˆ°éçª„å±æ—¶å…³é—­ç§»åŠ¨ç«¯èœå•
 watch(isNarrowMobile, (newIsNarrowMobile) => {
   if (!newIsNarrowMobile) {
     closeMobileMenu();
   }
 });
 
-// ¼àÌıµã»÷Íâ²¿ÇøÓò¹Ø±Õ²Ëµ¥
+// ç›‘å¬ç‚¹å‡»å¤–éƒ¨åŒºåŸŸå…³é—­èœå•
 const handleClickOutside = (event: Event): void => {
   const target = event.target as Element;
   if (!target.closest('.mobile-nav') && isMobileMenuOpen.value) {
@@ -182,23 +182,23 @@ const handleClickOutside = (event: Event): void => {
   }
 };
 
-// ¼àÌıESC¼ü¹Ø±Õ²Ëµ¥
+// ç›‘å¬ESCé”®å…³é—­èœå•
 const handleKeyDown = (event: KeyboardEvent): void => {
   if (event.key === 'Escape' && isMobileMenuOpen.value) {
     closeMobileMenu();
   }
 };
 
-// ÆÁÄ»±ä»¯¼àÌıÆ÷ÇåÀíº¯Êı
+// å±å¹•å˜åŒ–ç›‘å¬å™¨æ¸…ç†å‡½æ•°
 let cleanupScreenListener: (() => void) | null = null;
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside);
   document.addEventListener('keydown', handleKeyDown);
 
-  // ×¢²áÆÁÄ»±ä»¯¼àÌıÆ÷£¬È·±£ÏìÓ¦Ê½¸üĞÂ
+  // æ³¨å†Œå±å¹•å˜åŒ–ç›‘å¬å™¨ï¼Œç¡®ä¿å“åº”å¼æ›´æ–°
   cleanupScreenListener = onScreenChange((screenInfo) => {
-    // ÔÚÆÁÄ»ÇĞ»»µ½·ÇÒÆ¶¯¶ËÊ±¹Ø±ÕÒÆ¶¯¶Ë²Ëµ¥
+    // åœ¨å±å¹•åˆ‡æ¢åˆ°éç§»åŠ¨ç«¯æ—¶å…³é—­ç§»åŠ¨ç«¯èœå•
     if (!screenInfo.isMobile && isMobileMenuOpen.value) {
       closeMobileMenu();
     }
@@ -209,7 +209,7 @@ onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside);
   document.removeEventListener('keydown', handleKeyDown);
 
-  // ÇåÀíÆÁÄ»±ä»¯¼àÌıÆ÷
+  // æ¸…ç†å±å¹•å˜åŒ–ç›‘å¬å™¨
   if (cleanupScreenListener) {
     cleanupScreenListener();
   }
@@ -229,7 +229,7 @@ onBeforeUnmount(() => {
   @apply flex items-center justify-center;
 }
 
-/* Í¨ÓÃµ¼º½ÏîÑùÊ½ */
+/* é€šç”¨å¯¼èˆªé¡¹æ ·å¼ */
 .nav-items {
   @apply flex items-center justify-center;
   @apply gap-1;
@@ -260,7 +260,7 @@ onBeforeUnmount(() => {
   @apply text-sm;
 }
 
-/* Õ­ÆÁÒÆ¶¯¶Ëµ¼º½ÑùÊ½ */
+/* çª„å±ç§»åŠ¨ç«¯å¯¼èˆªæ ·å¼ */
 .mobile-nav {
   @apply relative;
   @apply flex items-center justify-center;
@@ -334,7 +334,7 @@ onBeforeUnmount(() => {
   @apply text-sm;
 }
 
-/* µ¼º½Ïîµ­Èë¶¯»­ */
+/* å¯¼èˆªé¡¹æ·¡å…¥åŠ¨ç”» */
 @keyframes navItemFadeIn {
   0% {
     opacity: 0;
@@ -346,7 +346,7 @@ onBeforeUnmount(() => {
   }
 }
 
-/* Ë®Æ½µ¼º½ºÍÒÆ¶¯¶Ëµ¼º½ÇĞ»»¶¯»­ */
+/* æ°´å¹³å¯¼èˆªå’Œç§»åŠ¨ç«¯å¯¼èˆªåˆ‡æ¢åŠ¨ç”» */
 .nav-horizontal-enter-active,
 .nav-horizontal-leave-active {
   @apply transition-all duration-300 ease-in-out;
@@ -360,7 +360,7 @@ onBeforeUnmount(() => {
   @apply transform -translate-y-2 opacity-0;
 }
 
-/* ÏÂÀ­²Ëµ¥¶¯»­ */
+/* ä¸‹æ‹‰èœå•åŠ¨ç”» */
 .mobile-dropdown-enter-active,
 .mobile-dropdown-leave-active {
   @apply transition-all duration-200;
@@ -371,7 +371,7 @@ onBeforeUnmount(() => {
   @apply transform -translate-y-2 opacity-0;
 }
 
-/* Æ½°å¶ËÊÊÅä */
+/* å¹³æ¿ç«¯é€‚é… */
 @media (min-width: 768px) and (max-width: 1023px) {
   .nav-items {
     @apply gap-2;

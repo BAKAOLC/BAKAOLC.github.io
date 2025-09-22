@@ -33,8 +33,8 @@ import siteNames from '@/config/sites.json';
 import { useAppStore } from '@/stores/app';
 
 const props = defineProps<{
-  authorLinks?: AuthorLink[]; // µ±Ç°Í¼ÏñµÄ×÷ÕßÁ´½Ó
-  fallbackAuthorLinks?: AuthorLink[]; // ±¸ÓÃ×÷ÕßÁ´½Ó£¨Èç¸¸Í¼ÏñµÄÁ´½Ó£©
+  authorLinks?: AuthorLink[]; // å½“å‰å›¾åƒçš„ä½œè€…é“¾æ¥
+  fallbackAuthorLinks?: AuthorLink[]; // å¤‡ç”¨ä½œè€…é“¾æ¥ï¼ˆå¦‚çˆ¶å›¾åƒçš„é“¾æ¥ï¼‰
 }>();
 
 const { t: $t } = useI18n();
@@ -42,24 +42,24 @@ const appStore = useAppStore();
 
 const currentLanguage = computed(() => appStore.currentLanguage);
 
-// ÖÇÄÜÆ¥ÅäÓòÃû£¬Ö§³Ö×ÓÓòÃûºÍ¶àÖÖ±äÌå
+// æ™ºèƒ½åŒ¹é…åŸŸåï¼Œæ”¯æŒå­åŸŸåå’Œå¤šç§å˜ä½“
 const isMatchingDomain = (hostname: string, configDomain: string): boolean => {
-  // ¾«È·Æ¥Åä
+  // ç²¾ç¡®åŒ¹é…
   if (hostname === configDomain) {
     return true;
   }
 
-  // Æ¥Åä www ×ÓÓòÃû
+  // åŒ¹é… www å­åŸŸå
   if (hostname === `www.${configDomain}` || configDomain === `www.${hostname}`) {
     return true;
   }
 
-  // Æ¥ÅäÆäËû×ÓÓòÃû£¨Èç mobile.twitter.com, m.youtube.com µÈ£©
+  // åŒ¹é…å…¶ä»–å­åŸŸåï¼ˆå¦‚ mobile.twitter.com, m.youtube.com ç­‰ï¼‰
   if (hostname.endsWith(`.${configDomain}`)) {
     return true;
   }
 
-  // ÌØÊâ´¦ÀíÒ»Ğ©ÒÑÖªµÄÓòÃû±äÌå
+  // ç‰¹æ®Šå¤„ç†ä¸€äº›å·²çŸ¥çš„åŸŸåå˜ä½“
   const domainVariants: Record<string, string[]> = {
     'twitter.com': ['x.com', 't.co'],
     'x.com': ['twitter.com', 't.co'],
@@ -84,12 +84,12 @@ const isMatchingDomain = (hostname: string, configDomain: string): boolean => {
   return false;
 };
 
-// ÌáÈ¡Ö÷ÓòÃû£¨È¥³ı×ÓÓòÃû£©
+// æå–ä¸»åŸŸåï¼ˆå»é™¤å­åŸŸåï¼‰
 const extractMainDomain = (hostname: string): string => {
-  // ÒÆ³ı www Ç°×º
+  // ç§»é™¤ www å‰ç¼€
   const withoutWww = hostname.replace(/^www\./, '');
 
-  // ¶ÔÓÚ³£¼ûµÄ¶ş¼¶ÓòÃû£¬±£ÁôÍêÕûÓòÃû
+  // å¯¹äºå¸¸è§çš„äºŒçº§åŸŸåï¼Œä¿ç•™å®Œæ•´åŸŸå
   const keepFullDomain = [
     'github.io',
     'gitlab.io',
@@ -110,7 +110,7 @@ const extractMainDomain = (hostname: string): string => {
     }
   }
 
-  // ÌáÈ¡Ö÷ÓòÃû²¿·Ö
+  // æå–ä¸»åŸŸåéƒ¨åˆ†
   const parts = withoutWww.split('.');
   if (parts.length >= 2) {
     return parts.slice(-2).join('.');
@@ -119,7 +119,7 @@ const extractMainDomain = (hostname: string): string => {
   return withoutWww;
 };
 
-// ÓĞĞ§µÄ×÷ÕßÁ´½Ó£¨ÓÅÏÈÊ¹ÓÃµ±Ç°Í¼ÏñµÄ£¬Èç¹ûÃ»ÓĞÔòÊ¹ÓÃ±¸ÓÃµÄ£©
+// æœ‰æ•ˆçš„ä½œè€…é“¾æ¥ï¼ˆä¼˜å…ˆä½¿ç”¨å½“å‰å›¾åƒçš„ï¼Œå¦‚æœæ²¡æœ‰åˆ™ä½¿ç”¨å¤‡ç”¨çš„ï¼‰
 const effectiveAuthorLinks = computed(() => {
   if (props.authorLinks && props.authorLinks.length > 0) {
     return props.authorLinks;
@@ -127,29 +127,29 @@ const effectiveAuthorLinks = computed(() => {
   return props.fallbackAuthorLinks || [];
 });
 
-// »ñÈ¡Á´½ÓÃû³Æ
+// è·å–é“¾æ¥åç§°
 const getLinkName = (link: AuthorLink): string => {
   if (link.name) {
     const lang = currentLanguage.value as keyof I18nText;
     return link.name[lang] || link.name.en || '';
   }
 
-  // ³¢ÊÔ´Ó URL ÌáÈ¡ÓòÃû×÷ÎªÃû³Æ
+  // å°è¯•ä» URL æå–åŸŸåä½œä¸ºåç§°
   try {
     const url = new URL(link.url);
     const hostname = url.hostname.toLowerCase();
 
-    // Ê¹ÓÃÅäÖÃÎÄ¼şÖĞµÄÍøÕ¾Ãû³ÆÓ³Éä
+    // ä½¿ç”¨é…ç½®æ–‡ä»¶ä¸­çš„ç½‘ç«™åç§°æ˜ å°„
     const siteConfig = siteNames as Record<string, I18nText>;
 
-    // ÖÇÄÜÆ¥ÅäÓòÃû£¬Ö§³Ö×ÓÓòÃûºÍ¶àÖÖ±äÌå
+    // æ™ºèƒ½åŒ¹é…åŸŸåï¼Œæ”¯æŒå­åŸŸåå’Œå¤šç§å˜ä½“
     for (const [configDomain, siteInfo] of Object.entries(siteConfig)) {
       if (isMatchingDomain(hostname, configDomain)) {
         return siteInfo[currentLanguage.value] || siteInfo.en;
       }
     }
 
-    // Èç¹ûÃ»ÓĞÆ¥Åäµ½ÅäÖÃ£¬ÌáÈ¡Ö÷ÓòÃû²¢Ê××ÖÄ¸´óĞ´
+    // å¦‚æœæ²¡æœ‰åŒ¹é…åˆ°é…ç½®ï¼Œæå–ä¸»åŸŸåå¹¶é¦–å­—æ¯å¤§å†™
     const mainDomain = extractMainDomain(hostname);
     return mainDomain.charAt(0).toUpperCase() + mainDomain.slice(1);
   } catch {
@@ -157,13 +157,13 @@ const getLinkName = (link: AuthorLink): string => {
   }
 };
 
-// »ñÈ¡ favicon URL
+// è·å– favicon URL
 const getFaviconUrl = (link: AuthorLink): string | undefined => {
   if (link.favicon) {
     return link.favicon;
   }
 
-  // ³¢ÊÔ´Ó URL »ñÈ¡ favicon
+  // å°è¯•ä» URL è·å– favicon
   try {
     const url = new URL(link.url);
     return `${url.protocol}//${url.hostname}/favicon.ico`;
@@ -172,13 +172,13 @@ const getFaviconUrl = (link: AuthorLink): string | undefined => {
   }
 };
 
-// »ñÈ¡Á´½Ó±êÌâ£¨ÓÃÓÚ tooltip£©
+// è·å–é“¾æ¥æ ‡é¢˜ï¼ˆç”¨äº tooltipï¼‰
 const getLinkTitle = (link: AuthorLink): string => {
   const name = getLinkName(link);
   return $t('viewer.visitAuthorPage', { name });
 };
 
-// ´¦Àí favicon ¼ÓÔØ´íÎó
+// å¤„ç† favicon åŠ è½½é”™è¯¯
 const handleFaviconError = (event: Event): void => {
   const img = event.target as HTMLImageElement;
   img.style.display = 'none';
@@ -217,7 +217,7 @@ const handleFaviconError = (event: Event): void => {
   @apply text-sm;
 }
 
-/* ÒÆ¶¯¶ËÊÊÅä */
+/* ç§»åŠ¨ç«¯é€‚é… */
 @media (max-width: 640px) {
   .author-links {
     @apply gap-1.5;

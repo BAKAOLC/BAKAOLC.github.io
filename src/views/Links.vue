@@ -6,7 +6,7 @@
           <h1 class="links-title">{{ $t('links.title') }}</h1>
           <p class="links-subtitle">{{ $t('links.subtitle') }}</p>
         </div>
-        <!-- Í³Ò»ËÑË÷À¸ -->
+        <!-- ç»Ÿä¸€æœç´¢æ  -->
         <div class="unified-search-bar">
           <div class="search-input-container">
             <input
@@ -22,7 +22,7 @@
           </div>
 
           <div class="control-buttons-group">
-            <!-- Éú³ÉÓÑÁ´ĞÅÏ¢°´Å¥ -->
+            <!-- ç”Ÿæˆå‹é“¾ä¿¡æ¯æŒ‰é’® -->
             <button
               @click="generateFriendLinkInfo"
               class="generate-button group"
@@ -36,7 +36,7 @@
       </div>
 
       <div class="links-content">
-        <!-- ·ÖÀàÉ¸Ñ¡ -->
+        <!-- åˆ†ç±»ç­›é€‰ -->
         <aside class="links-sidebar">
           <div class="sidebar-toggle md:hidden" @click="toggleMobileSidebar">
             <i :class="getIconClass('filter')" class="icon"></i>
@@ -68,7 +68,7 @@
           </div>
         </aside>
 
-        <!-- ÓÑÁ´ÁĞ±í -->
+        <!-- å‹é“¾åˆ—è¡¨ -->
         <div class="links-main" ref="linksMain" @scroll="handleScroll">
           <div v-if="filteredLinks.length === 0" class="no-links">
             <i :class="getIconClass('link')" class="no-links-icon"></i>
@@ -134,7 +134,7 @@
       </div>
     </div>
 
-    <!-- ÒÆ¶¯¶Ë·ÖÀàÉ¸Ñ¡µ¯´° -->
+    <!-- ç§»åŠ¨ç«¯åˆ†ç±»ç­›é€‰å¼¹çª— -->
     <div v-if="isMobileSidebarOpen" class="mobile-filter-overlay" @click="closeMobileSidebar">
       <div class="mobile-filter-content" @click.stop>
         <div class="mobile-filter-header">
@@ -170,7 +170,7 @@
       </div>
     </div>
 
-    <!-- ·µ»Ø¶¥²¿°´Å¥ -->
+    <!-- è¿”å›é¡¶éƒ¨æŒ‰é’® -->
     <button v-if="showScrollToTop" @click="scrollToTop" class="scroll-to-top-button"
       :style="{ bottom: scrollToTopBottom + 'px' }">
       <i :class="getIconClass('chevron-up')"></i>
@@ -193,17 +193,17 @@ import personalConfig from '@/config/personal.json';
 import { useAppStore } from '@/stores/app';
 import { getIconClass } from '@/utils/icons';
 
-// µ¼ÈëÓÑÁ´ÅäÖÃ
+// å¯¼å…¥å‹é“¾é…ç½®
 
 const { t: $t } = useI18n();
 const appStore = useAppStore();
 const timers = useTimers();
 const { onScreenChange } = useMobileDetection();
 
-// ÓÑÁ´ÅäÖÃ
+// å‹é“¾é…ç½®
 const linksConfig = linksConfigData as LinksConfig;
 
-// ÏìÓ¦Ê½×´Ì¬
+// å“åº”å¼çŠ¶æ€
 const searchQuery = ref('');
 const selectedCategory = ref('');
 const isSidebarOpen = ref(false);
@@ -213,15 +213,15 @@ const linksMain = ref<HTMLElement | null>(null);
 const showScrollToTop = ref(false);
 const scrollToTopBottom = ref(80);
 
-// µ±Ç°ÓïÑÔ
+// å½“å‰è¯­è¨€
 const currentLanguage = computed(() => appStore.currentLanguage);
 
-// ±¾µØ»¯¸¨Öúº¯Êı
+// æœ¬åœ°åŒ–è¾…åŠ©å‡½æ•°
 const t = (text: I18nText, lang: string): string => {
   return text[lang as keyof I18nText] || text.en || '';
 };
 
-// ±êÇ©±¾µØ»¯¸¨Öúº¯Êı
+// æ ‡ç­¾æœ¬åœ°åŒ–è¾…åŠ©å‡½æ•°
 const getTagText = (tagId: string, lang: string): string => {
   const tagConfig = linksConfig.tags?.[tagId];
   if (tagConfig) {
@@ -230,18 +230,18 @@ const getTagText = (tagId: string, lang: string): string => {
   return tagId;
 };
 
-// ¹ıÂËºóµÄÓÑÁ´
+// è¿‡æ»¤åçš„å‹é“¾
 const filteredLinks = computed(() => {
   let links = linksConfig.categories.flatMap(
     category => category.links.map(link => ({ ...link, categoryId: category.id })),
   );
 
-  // ·ÖÀàÉ¸Ñ¡
+  // åˆ†ç±»ç­›é€‰
   if (selectedCategory.value) {
     links = links.filter(link => link.categoryId === selectedCategory.value);
   }
 
-  // ËÑË÷É¸Ñ¡
+  // æœç´¢ç­›é€‰
   if (searchQuery.value.trim()) {
     const query = searchQuery.value.toLowerCase().trim();
     links = links.filter(link => {
@@ -256,11 +256,11 @@ const filteredLinks = computed(() => {
   return links;
 });
 
-// ·ÖÀà¼ÆÊı£¨°üÀ¨ËÑË÷ºóµÄ¼ÆÊı£©
+// åˆ†ç±»è®¡æ•°ï¼ˆåŒ…æ‹¬æœç´¢åçš„è®¡æ•°ï¼‰
 const categoryCounts = computed(() => {
   const counts: Record<string, number> = {};
 
-  // ¼ÆËã×ÜÊı
+  // è®¡ç®—æ€»æ•°
   let totalCount = 0;
 
   linksConfig.categories.forEach(category => {
@@ -279,12 +279,12 @@ const categoryCounts = computed(() => {
     totalCount += filteredLinks.length;
   });
 
-  counts[''] = totalCount; // È«²¿·ÖÀàµÄ¼ÆÊı
+  counts[''] = totalCount; // å…¨éƒ¨åˆ†ç±»çš„è®¡æ•°
 
   return counts;
 });
 
-// ¹ıÂËºóµÄ·ÖÀà£¨ÓÃÓÚÏÔÊ¾£©
+// è¿‡æ»¤åçš„åˆ†ç±»ï¼ˆç”¨äºæ˜¾ç¤ºï¼‰
 const filteredCategories = computed(() => {
   const categories = selectedCategory.value
     ? linksConfig.categories.filter(cat => cat.id === selectedCategory.value)
@@ -305,7 +305,7 @@ const filteredCategories = computed(() => {
   })).filter(category => category.links.length > 0);
 });
 
-// ¶¯Ì¬¸ß¶È¼ÆËã
+// åŠ¨æ€é«˜åº¦è®¡ç®—
 const updateDynamicHeights = (): void => {
   const headerEl = document.querySelector('.header') as HTMLElement;
   const footerEl = document.querySelector('.footer') as HTMLElement;
@@ -324,12 +324,12 @@ const updateDynamicHeights = (): void => {
   }
 };
 
-// Ñ¡Ôñ·ÖÀà
+// é€‰æ‹©åˆ†ç±»
 const selectCategory = (categoryId: string): void => {
   selectedCategory.value = categoryId;
 };
 
-// ÒÆ¶¯¶Ë²à±ßÀ¸¿ØÖÆ
+// ç§»åŠ¨ç«¯ä¾§è¾¹æ æ§åˆ¶
 const toggleMobileSidebar = (): void => {
   isMobileSidebarOpen.value = !isMobileSidebarOpen.value;
   if (isMobileSidebarOpen.value) {
@@ -344,7 +344,7 @@ const closeMobileSidebar = (): void => {
   document.body.style.overflow = '';
 };
 
-// ËÑË÷¹¦ÄÜ
+// æœç´¢åŠŸèƒ½
 const updateSearchQuery = (value: string): void => {
   if (searchDebounceTimeout.value) {
     timers.clearTimeout(searchDebounceTimeout.value);
@@ -360,12 +360,12 @@ const clearSearch = (): void => {
   searchQuery.value = '';
 };
 
-// ·ÃÎÊÁ´½Ó
+// è®¿é—®é“¾æ¥
 const visitLink = (url: string): void => {
   window.open(url, '_blank', 'noopener,noreferrer');
 };
 
-// Éú³ÉÓÑÁ´ĞÅÏ¢
+// ç”Ÿæˆå‹é“¾ä¿¡æ¯
 const generateFriendLinkInfo = (): void => {
   const currentUrl = window.location.origin;
   const name = personalConfig.name[currentLanguage.value as keyof typeof personalConfig.name] || personalConfig.name.zh;
@@ -380,19 +380,19 @@ const generateFriendLinkInfo = (): void => {
   };
 
   const jsonString = JSON.stringify(friendLinkInfo, null, 2);
-  // ¸´ÖÆµ½¼ôÌù°å
+  // å¤åˆ¶åˆ°å‰ªè´´æ¿
   navigator.clipboard.writeText(jsonString).then(() => {
-    // ÏÔÊ¾³É¹¦ÌáÊ¾
+    // æ˜¾ç¤ºæˆåŠŸæç¤º
     showNotification($t('links.copied'));
   }).catch(() => {
-    // Èç¹û¼ôÌù°åAPI²»¿ÉÓÃ£¬ÔòÏÔÊ¾µ¯´°
+    // å¦‚æœå‰ªè´´æ¿APIä¸å¯ç”¨ï¼Œåˆ™æ˜¾ç¤ºå¼¹çª—
     showJsonModal(jsonString);
   });
 };
 
-// ÏÔÊ¾Í¨Öª
+// æ˜¾ç¤ºé€šçŸ¥
 const showNotification = (message: string): void => {
-  // ´´½¨Í¨ÖªÔªËØ
+  // åˆ›å»ºé€šçŸ¥å…ƒç´ 
   const notification = document.createElement('div');
   notification.textContent = message;
   notification.className = 'friend-link-notification';
@@ -411,7 +411,7 @@ const showNotification = (message: string): void => {
     animation: slideIn 0.3s ease-out;
   `;
 
-  // Ìí¼Ó¶¯»­ÑùÊ½
+  // æ·»åŠ åŠ¨ç”»æ ·å¼
   if (!document.querySelector('#friend-link-notification-styles')) {
     const style = document.createElement('style');
     style.id = 'friend-link-notification-styles';
@@ -442,7 +442,7 @@ const showNotification = (message: string): void => {
 
   document.body.appendChild(notification);
 
-  // 3ÃëºóÒÆ³ıÍ¨Öª
+  // 3ç§’åç§»é™¤é€šçŸ¥
   setTimeout(() => {
     notification.style.animation = 'slideOut 0.3s ease-in';
     setTimeout(() => {
@@ -453,7 +453,7 @@ const showNotification = (message: string): void => {
   }, 3000);
 };
 
-// ÏÔÊ¾JSONµ¯´°£¨±¸ÓÃ·½°¸£©
+// æ˜¾ç¤ºJSONå¼¹çª—ï¼ˆå¤‡ç”¨æ–¹æ¡ˆï¼‰
 const showJsonModal = (jsonString: string): void => {
   const modal = document.createElement('div');
   modal.className = 'friend-link-modal';
@@ -491,7 +491,7 @@ const showJsonModal = (jsonString: string): void => {
     z-index: 2000;
   `;
 
-  // Ìí¼ÓÄ£Ì¬¿òÑùÊ½
+  // æ·»åŠ æ¨¡æ€æ¡†æ ·å¼
   if (!document.querySelector('#friend-link-modal-styles')) {
     const style = document.createElement('style');
     style.id = 'friend-link-modal-styles';
@@ -606,7 +606,7 @@ const showJsonModal = (jsonString: string): void => {
 
   document.body.appendChild(modal);
 
-  // µã»÷ÕÚÕÖ²ã¹Ø±Õ
+  // ç‚¹å‡»é®ç½©å±‚å…³é—­
   modal.querySelector('.modal-overlay')?.addEventListener('click', (e) => {
     if (e.target === e.currentTarget) {
       modal.remove();
@@ -614,7 +614,7 @@ const showJsonModal = (jsonString: string): void => {
   });
 };
 
-// ¹ö¶¯´¦Àí
+// æ»šåŠ¨å¤„ç†
 const handleScroll = (): void => {
   if (!linksMain.value) return;
 
@@ -647,7 +647,7 @@ const scrollToTop = (): void => {
   }
 };
 
-// ÆÁÄ»±ä»¯´¦Àí
+// å±å¹•å˜åŒ–å¤„ç†
 const handleScreenChange = (currentIsMobile: boolean): void => {
   if (!currentIsMobile) {
     isMobileSidebarOpen.value = false;
@@ -662,30 +662,30 @@ const handleScreenChange = (currentIsMobile: boolean): void => {
   });
 };
 
-// ÆÁÄ»±ä»¯¼àÌıÆ÷È¡Ïûº¯Êı
+// å±å¹•å˜åŒ–ç›‘å¬å™¨å–æ¶ˆå‡½æ•°
 let unsubscribeScreenChange: (() => void) | null = null;
 
 onMounted(() => {
-  // ×¢²áÆÁÄ»±ä»¯¼àÌıÆ÷
+  // æ³¨å†Œå±å¹•å˜åŒ–ç›‘å¬å™¨
   unsubscribeScreenChange = onScreenChange(handleScreenChange);
 
-  // ³õÊ¼»¯·µ»Ø¶¥²¿°´Å¥Î»ÖÃ
+  // åˆå§‹åŒ–è¿”å›é¡¶éƒ¨æŒ‰é’®ä½ç½®
   updateScrollToTopPosition();
 
-  // Ê¹ÓÃnextTickÈ·±£DOMÍêÈ«äÖÈ¾ºó¸üĞÂ¶¯Ì¬¸ß¶È
+  // ä½¿ç”¨nextTickç¡®ä¿DOMå®Œå…¨æ¸²æŸ“åæ›´æ–°åŠ¨æ€é«˜åº¦
   nextTick(() => {
     updateDynamicHeights();
   });
 });
 
 onBeforeUnmount(() => {
-  // È¡ÏûÆÁÄ»±ä»¯¼àÌıÆ÷
+  // å–æ¶ˆå±å¹•å˜åŒ–ç›‘å¬å™¨
   if (unsubscribeScreenChange) {
     unsubscribeScreenChange();
     unsubscribeScreenChange = null;
   }
 
-  // ÇåÀíbodyÑùÊ½
+  // æ¸…ç†bodyæ ·å¼
   document.body.style.overflow = '';
 });
 </script>
@@ -719,7 +719,7 @@ onBeforeUnmount(() => {
   @apply text-sm;
 }
 
-/* Í³Ò»ËÑË÷À¸ÑùÊ½ */
+/* ç»Ÿä¸€æœç´¢æ æ ·å¼ */
 .unified-search-bar {
   display: flex;
   align-items: center;
@@ -958,7 +958,7 @@ onBeforeUnmount(() => {
   scrollbar-gutter: stable;
 }
 
-/* ÒÆ¶¯¶Ë¹ö¶¯ÌõÑùÊ½ */
+/* ç§»åŠ¨ç«¯æ»šåŠ¨æ¡æ ·å¼ */
 .sidebar-content.active::-webkit-scrollbar {
   width: 6px;
 }
@@ -1000,7 +1000,7 @@ onBeforeUnmount(() => {
     scrollbar-gutter: stable;
   }
 
-  /* Ï¸¹ö¶¯ÌõÑùÊ½ */
+  /* ç»†æ»šåŠ¨æ¡æ ·å¼ */
   .sidebar-content::-webkit-scrollbar {
     width: 6px;
   }
@@ -1123,13 +1123,13 @@ onBeforeUnmount(() => {
   font-weight: 600;
 }
 
-/* ¼¤»î×´Ì¬µÄ¼ÆÊı»ÕÕÂ */
+/* æ¿€æ´»çŠ¶æ€çš„è®¡æ•°å¾½ç«  */
 .category-button.active .category-count {
   background-color: rgba(255, 255, 255, 0.25);
   color: #ffffff;
 }
 
-/* ·Ç¼¤»î×´Ì¬µÄ¼ÆÊı»ÕÕÂ */
+/* éæ¿€æ´»çŠ¶æ€çš„è®¡æ•°å¾½ç«  */
 .category-button:not(.active) .category-count {
   background-color: #f3f4f6;
   color: #6b7280;
@@ -1142,7 +1142,7 @@ onBeforeUnmount(() => {
   border: 1px solid #4b5563;
 }
 
-/* ĞüÍ£×´Ì¬µÄ¼ÆÊı»ÕÕÂ */
+/* æ‚¬åœçŠ¶æ€çš„è®¡æ•°å¾½ç«  */
 .category-button:not(.active):hover .category-count {
   background-color: #e5e7eb;
   color: #374151;
@@ -1168,7 +1168,7 @@ onBeforeUnmount(() => {
   scrollbar-gutter: stable;
 }
 
-/* Ï¸¹ö¶¯ÌõÑùÊ½ */
+/* ç»†æ»šåŠ¨æ¡æ ·å¼ */
 .links-main::-webkit-scrollbar {
   width: 8px;
 }
@@ -1336,7 +1336,7 @@ onBeforeUnmount(() => {
   @apply w-5 h-5;
 }
 
-/* ÒÆ¶¯¶ËÉ¸Ñ¡µ¯´° */
+/* ç§»åŠ¨ç«¯ç­›é€‰å¼¹çª— */
 .mobile-filter-overlay {
   position: fixed;
   top: 0;
@@ -1417,7 +1417,7 @@ onBeforeUnmount(() => {
   padding: 1.5rem;
 }
 
-/* ·µ»Ø¶¥²¿°´Å¥ */
+/* è¿”å›é¡¶éƒ¨æŒ‰é’® */
 .scroll-to-top-button {
   position: fixed;
   right: 1.5rem;
@@ -1455,7 +1455,7 @@ onBeforeUnmount(() => {
   @apply w-4 h-4;
 }
 
-/* ÏìÓ¦Ê½²¼¾Ö¹ı¶É¶¯»­ */
+/* å“åº”å¼å¸ƒå±€è¿‡æ¸¡åŠ¨ç”» */
 @media (prefers-reduced-motion: no-preference) {
   .links-page {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1469,7 +1469,7 @@ onBeforeUnmount(() => {
   }
 }
 
-/* Îª¼õÉÙ¶¯»­Æ«ºÃµÄÓÃ»§½ûÓÃ¹ı¶É */
+/* ä¸ºå‡å°‘åŠ¨ç”»åå¥½çš„ç”¨æˆ·ç¦ç”¨è¿‡æ¸¡ */
 @media (prefers-reduced-motion: reduce) {
   .links-page,
   .links-header,
@@ -1480,7 +1480,7 @@ onBeforeUnmount(() => {
   }
 }
 
-/* ÎÄ±¾½Ø¶ÏÑùÊ½ */
+/* æ–‡æœ¬æˆªæ–­æ ·å¼ */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
