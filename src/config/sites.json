@@ -1,8 +1,8 @@
 {
   "twitter.com": {
     "en": "Twitter",
-    "zh": "Õ∆Ãÿ",
-    "jp": "•ƒ•§•√•ø©`"
+    "zh": "Êé®Áâπ",
+    "jp": "„ÉÑ„Ç§„ÉÉ„Çø„Éº"
   },
   "x.com": {
     "en": "X",
@@ -11,8 +11,8 @@
   },
   "pixiv.net": {
     "en": "Pixiv",
-    "zh": "P’æ",
-    "jp": "•‘•Ø•∑•÷"
+    "zh": "PÁ´ô",
+    "jp": "„Éî„ÇØ„Ç∑„Éñ"
   },
   "github.com": {
     "en": "GitHub",
@@ -22,77 +22,77 @@
   "instagram.com": {
     "en": "Instagram",
     "zh": "Instagram",
-    "jp": "•§•Û•π•ø•∞•È•‡"
+    "jp": "„Ç§„É≥„Çπ„Çø„Ç∞„É©„É†"
   },
   "weibo.com": {
     "en": "Weibo",
-    "zh": "Œ¢≤©",
-    "jp": "•¶•ß•§•‹©`"
+    "zh": "ÂæÆÂçö",
+    "jp": "„Ç¶„Çß„Ç§„Éú„Éº"
   },
   "bilibili.com": {
     "en": "Bilibili",
-    "zh": "B’æ",
-    "jp": "•”•Í•”•Í"
+    "zh": "BÁ´ô",
+    "jp": "„Éì„É™„Éì„É™"
   },
   "youtube.com": {
     "en": "YouTube",
     "zh": "YouTube",
-    "jp": "•Ê©`•¡•Â©`•÷"
+    "jp": "„É¶„Éº„ÉÅ„É•„Éº„Éñ"
   },
   "artstation.com": {
     "en": "ArtStation",
     "zh": "ArtStation",
-    "jp": "•¢©`•»•π•∆©`•∑•Á•Û"
+    "jp": "„Ç¢„Éº„Éà„Çπ„ÉÜ„Éº„Ç∑„Éß„É≥"
   },
   "deviantart.com": {
     "en": "DeviantArt",
     "zh": "DeviantArt",
-    "jp": "•«•Ù•£•¢•Û•»•¢©`•»"
+    "jp": "„Éá„É¥„Ç£„Ç¢„É≥„Éà„Ç¢„Éº„Éà"
   },
   "behance.net": {
     "en": "Behance",
     "zh": "Behance",
-    "jp": "•”•œ•Û•π"
+    "jp": "„Éì„Éè„É≥„Çπ"
   },
   "dribbble.com": {
     "en": "Dribbble",
     "zh": "Dribbble",
-    "jp": "•…•Í•÷•Î"
+    "jp": "„Éâ„É™„Éñ„É´"
   },
   "facebook.com": {
     "en": "Facebook",
     "zh": "Facebook",
-    "jp": "•’•ß•§•π•÷•√•Ø"
+    "jp": "„Éï„Çß„Ç§„Çπ„Éñ„ÉÉ„ÇØ"
   },
   "linkedin.com": {
     "en": "LinkedIn",
-    "zh": "¡Ï”¢",
-    "jp": "•Í•Û•Ø•»•§•Û"
+    "zh": "È¢ÜËã±",
+    "jp": "„É™„É≥„ÇØ„Éà„Ç§„É≥"
   },
   "tiktok.com": {
     "en": "TikTok",
-    "zh": "∂∂“Ù",
-    "jp": "•∆•£•√•Ø•»•√•Ø"
+    "zh": "ÊäñÈü≥",
+    "jp": "„ÉÜ„Ç£„ÉÉ„ÇØ„Éà„ÉÉ„ÇØ"
   },
   "reddit.com": {
     "en": "Reddit",
     "zh": "Reddit",
-    "jp": "•Ï•«•£•√•»"
+    "jp": "„É¨„Éá„Ç£„ÉÉ„Éà"
   },
   "discord.com": {
     "en": "Discord",
     "zh": "Discord",
-    "jp": "•«•£•π•≥©`•…"
+    "jp": "„Éá„Ç£„Çπ„Ç≥„Éº„Éâ"
   },
   "twitch.tv": {
     "en": "Twitch",
     "zh": "Twitch",
-    "jp": "•ƒ•§•√•¡"
+    "jp": "„ÉÑ„Ç§„ÉÉ„ÉÅ"
   },
   "patreon.com": {
     "en": "Patreon",
     "zh": "Patreon",
-    "jp": "•—•»•Ï•™•Û"
+    "jp": "„Éë„Éà„É¨„Ç™„É≥"
   },
   "ko-fi.com": {
     "en": "Ko-fi",
@@ -101,7 +101,7 @@
   },
   "mihuashi.com": {
     "en": "Mihuashi",
-    "zh": "√◊ª≠ ¶",
-    "jp": "•ﬂ•Â©`•∑•„"
+    "zh": "Á±≥ÁîªÂ∏à",
+    "jp": "„Éü„É•„Éº„Ç∑„É£"
   }
 }
