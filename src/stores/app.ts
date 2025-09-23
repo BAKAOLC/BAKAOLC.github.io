@@ -11,6 +11,7 @@ type RouteInfo = {
 };
 
 import { siteConfig } from '@/config/site';
+import { getDefaultLanguage, isValidLanguage } from '@/utils/language';
 
 export const useAppStore = defineStore('app', () => {
   // 加载状态
@@ -93,12 +94,18 @@ export const useAppStore = defineStore('app', () => {
   };
 
   // 语言相关
-  const currentLanguage = ref<Language>(localStorage.getItem('locale') as Language || 'zh');
+  const storedLanguage = localStorage.getItem('locale');
+  const defaultLanguage = getDefaultLanguage();
+  const currentLanguage = ref<Language>(
+    (storedLanguage && isValidLanguage(storedLanguage)) ? storedLanguage : defaultLanguage,
+  );
 
   // 设置语言
   const setLanguage = (lang: Language): void => {
-    currentLanguage.value = lang;
-    localStorage.setItem('locale', lang);
+    if (isValidLanguage(lang)) {
+      currentLanguage.value = lang;
+      localStorage.setItem('locale', lang);
+    }
   };
 
   // 当前选择的角色
@@ -417,8 +424,8 @@ export const useAppStore = defineStore('app', () => {
       if (fallbackProperty && childImage[fallbackProperty]) return childImage[fallbackProperty] as I18nText;
       if (parentImage[property]) return parentImage[property] as I18nText;
       if (fallbackProperty && parentImage[fallbackProperty]) return parentImage[fallbackProperty] as I18nText;
-      if (fallbackValue) return { en: fallbackValue, zh: fallbackValue, jp: fallbackValue };
-      return { en: '', zh: '', jp: '' };
+      if (fallbackValue) return fallbackValue;
+      return '';
     };
 
     return {
@@ -583,8 +590,8 @@ export const useAppStore = defineStore('app', () => {
       return {
         id: parentImage.id, // 使用父图像ID用于组图标识
         name: parentImage.name, // 优先显示父图像名称
-        description: parentImage.description || childImage.description || { en: '', zh: '', jp: '' },
-        artist: parentImage.artist || childImage.artist || { en: 'N/A', zh: 'N/A', jp: 'N/A' },
+        description: parentImage.description || childImage.description || '',
+        artist: parentImage.artist || childImage.artist || 'N/A',
         src: childImage.src, // 显示子图像的实际图片
         tags: parentImage.tags, // 优先显示父图像标签
         characters: parentImage.characters, // 优先显示父图像角色
@@ -596,8 +603,8 @@ export const useAppStore = defineStore('app', () => {
       return {
         id: childImage.id, // 使用子图像ID
         name: childImage.name, // 优先显示子图像名称
-        description: childImage.description || parentImage.description || { en: '', zh: '', jp: '' },
-        artist: childImage.artist || parentImage.artist || { en: 'N/A', zh: 'N/A', jp: 'N/A' },
+        description: childImage.description || parentImage.description || '',
+        artist: childImage.artist || parentImage.artist || 'N/A',
         src: childImage.src, // 显示子图像的实际图片
         tags: childImage.tags, // 优先显示子图像标签
         characters: childImage.characters, // 优先显示子图像角色

@@ -25,6 +25,7 @@ import type { Language } from '@/types';
 
 import { useTimers } from '@/composables/useTimers';
 import { useAppStore } from '@/stores/app';
+import { getEnabledLanguages, getLanguageNativeName } from '@/utils/language';
 
 const { locale } = useI18n();
 const appStore = useAppStore();
@@ -34,17 +35,20 @@ const isOpen = ref(false);
 const menuRef = ref<HTMLDivElement | null>(null);
 const buttonRef = ref<HTMLButtonElement | null>(null);
 
-const languages = [
-  { label: '简体中文', value: 'zh' as Language },
-  { label: 'English', value: 'en' as Language },
-  { label: '日本語', value: 'jp' as Language },
-];
+// 从配置文件获取语言列表
+const enabledLanguages = getEnabledLanguages();
+
+const languages = computed(() => {
+  return enabledLanguages.map(langCode => ({
+    value: langCode as Language,
+    label: getLanguageNativeName(langCode),
+  }));
+});
 
 const currentLanguage = computed(() => appStore.currentLanguage);
 
 const displayLanguage = computed(() => {
-  const lang = languages.find(l => l.value === currentLanguage.value);
-  return lang ? lang.label : '简体中文';
+  return getLanguageNativeName(currentLanguage.value);
 });
 
 const toggleLanguageMenu = (): void => {
@@ -121,6 +125,7 @@ onBeforeUnmount(() => {
   @apply w-40 z-10;
   @apply opacity-0 scale-95 origin-top-right;
   @apply transition-all duration-300;
+  @apply overflow-hidden;
   transform: translateY(-10px) scale(0.95);
 }
 
@@ -133,12 +138,7 @@ onBeforeUnmount(() => {
   @apply flex items-center w-full px-4 py-2;
   @apply text-left text-sm text-gray-700 dark:text-gray-300;
   @apply hover:bg-gray-100 dark:hover:bg-gray-700;
-  @apply transition-all duration-200;
-  transform-origin: left center;
-}
-
-.language-option:hover {
-  transform: translateX(4px);
+  @apply transition-colors duration-200;
 }
 
 .language-option.active {
