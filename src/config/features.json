@@ -1,6 +1,7 @@
 {
   "gallery": true,
   "links": true,
+  "articles": false,
   "comments": true,
   "viewer": {
     "showImageList": true,
