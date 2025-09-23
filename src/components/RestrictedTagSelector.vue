@@ -34,7 +34,7 @@
             </div>
             <div class="restricted-tag-content">
               <i v-if="tag.icon" :class="getIconClass(tag.icon)" class="tag-icon"></i>
-              <span class="tag-name">{{ tag.name[currentLanguage] || tag.name.en || tag.id }}</span>
+              <span class="tag-name">{{ getI18nText(tag.name, currentLanguage) || tag.id }}</span>
             </div>
           </div>
           <span
@@ -57,6 +57,7 @@ import { useI18n } from 'vue-i18n';
 import { siteConfig } from '@/config/site';
 import { useAppStore } from '@/stores/app';
 import { getIconClass } from '@/utils/icons';
+import { getI18nText } from '@/utils/language';
 
 const { t: $t } = useI18n();
 const appStore = useAppStore();
@@ -203,14 +204,14 @@ const getChildImageWithDefaults = (parentImage: any, childImage: any): any => {
   const getArtistWithFallback = (): any => {
     if (childImage.artist) return childImage.artist;
     if (parentImage.artist) return parentImage.artist;
-    return { en: 'N/A', zh: 'N/A', jp: 'N/A' };
+    return 'N/A';
   };
 
   // Description fallback logic: child.description || parent.description || empty string
   const getDescriptionWithFallback = (): any => {
     if (childImage.description) return childImage.description;
     if (parentImage.description) return parentImage.description;
-    return { en: '', zh: '', jp: '' };
+    return '';
   };
 
   return {
@@ -301,8 +302,8 @@ const visibleRestrictedTags = computed(() => {
 
   // 按当前语言的名称排序
   restrictedTags.sort((a, b) => {
-    const aName = a.name[appStore.currentLanguage] || a.name.en || a.id;
-    const bName = b.name[appStore.currentLanguage] || b.name.en || b.id;
+    const aName = getI18nText(a.name, appStore.currentLanguage) || a.id;
+    const bName = getI18nText(b.name, appStore.currentLanguage) || b.id;
     return aName.localeCompare(bName);
   });
 

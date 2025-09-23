@@ -28,7 +28,7 @@
         }">
         <div class="tag-left">
           <i v-if="tag.icon" :class="getIconClass(tag.icon)" class="tag-icon"></i>
-          <span class="tag-name">{{ tag.name[currentLanguage] || tag.name.en || tag.id }}</span>
+          <span class="tag-name">{{ getI18nText(tag.name, currentLanguage) || tag.id }}</span>
         </div>
         <span class="tag-count">{{ tagCounts[tag.id] || 0 }}</span>
       </button>
@@ -44,6 +44,7 @@ import { useI18n } from 'vue-i18n';
 import { siteConfig } from '@/config/site';
 import { useAppStore } from '@/stores/app';
 import { getIconClass } from '@/utils/icons';
+import { getI18nText } from '@/utils/language';
 
 const { t: $t } = useI18n();
 const appStore = useAppStore();
@@ -60,8 +61,8 @@ const sortedNormalTags = computed(() => {
 
   // 按当前语言的名称排序
   tags.sort((a, b) => {
-    const aName = a.name[appStore.currentLanguage] || a.name.en || a.id;
-    const bName = b.name[appStore.currentLanguage] || b.name.en || b.id;
+    const aName = getI18nText(a.name, appStore.currentLanguage) || a.id;
+    const bName = getI18nText(b.name, appStore.currentLanguage) || b.id;
     return aName.localeCompare(bName);
   });
 
