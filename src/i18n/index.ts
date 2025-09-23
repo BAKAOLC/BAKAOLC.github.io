@@ -4,22 +4,41 @@ import type { Language } from '@/types';
 
 import { getDefaultLanguage, getFallbackLanguage, getEnabledLanguages, isValidLanguage, getLanguagesConfig } from '@/utils/language';
 
+// ä½¿ç”¨ Vite çš„ glob å¯¼å…¥åŠŸèƒ½åŠ¨æ€åŠ è½½æ‰€æœ‰è¯­è¨€æ–‡ä»¶
+const languageModules = import.meta.glob('./*.json', { eager: true });
+
+// åŠ¨æ€æ„å»ºè¯­è¨€æ¶ˆæ¯æ˜ å°„
+const messages: Record<string, any> = {};
+const enabledLanguages = getEnabledLanguages();
+
+// åŠ è½½æ‰€æœ‰å¯ç”¨çš„è¯­è¨€æ–‡ä»¶
+for (const lang of enabledLanguages) {
+  const modulePath = `./${lang}.json`;
+  const module = languageModules[modulePath];
+
+  if (module) {
+    messages[lang] = (module as any).default || module;
+  } else {
+    console.warn(`Language file '${lang}.json' not found.`);
+  }
+}
+
 const getNavigatorLanguage = (): Language => {
   const browserLang = navigator.language.toLowerCase();
   const languagesConfig = getLanguagesConfig();
 
-  // ±éÀúËùÓĞÆôÓÃµÄÓïÑÔ£¬¼ì²éÊÇ·ñÆ¥Åä
+  // éå†æ‰€æœ‰å¯ç”¨çš„è¯­è¨€ï¼Œæ£€æŸ¥æ˜¯å¦åŒ¹é…
   for (const [langCode, config] of Object.entries(languagesConfig.languages)) {
     if (!config.enabled) continue;
 
     const langCodeLower = langCode.toLowerCase();
 
-    // 1. ¾«È·Æ¥ÅäÓïÑÔ´úÂë
+    // 1. ç²¾ç¡®åŒ¹é…è¯­è¨€ä»£ç 
     if (browserLang === langCodeLower) {
       return langCode as Language;
     }
 
-    // 2. ¾«È·Æ¥Åä±ğÃû
+    // 2. ç²¾ç¡®åŒ¹é…åˆ«å
     if (config.aliases) {
       for (const alias of config.aliases) {
         const aliasLower = alias.toLowerCase();
@@ -29,12 +48,12 @@ const getNavigatorLanguage = (): Language => {
       }
     }
 
-    // 3. Ç°×ºÆ¥ÅäÓïÑÔ´úÂë£¨Èç zh-CN Æ¥Åä zh£©
+    // 3. å‰ç¼€åŒ¹é…è¯­è¨€ä»£ç ï¼ˆå¦‚ zh-CN åŒ¹é… zhï¼‰
     if (browserLang.startsWith(`${langCodeLower}-`)) {
       return langCode as Language;
     }
 
-    // 4. Ç°×ºÆ¥Åä±ğÃû£¨Èç zh-CN Æ¥Åä zh-cn ±ğÃû£©
+    // 4. å‰ç¼€åŒ¹é…åˆ«åï¼ˆå¦‚ zh-CN åŒ¹é… zh-cn åˆ«åï¼‰
     if (config.aliases) {
       for (const alias of config.aliases) {
         const aliasLower = alias.toLowerCase();
@@ -48,86 +67,31 @@ const getNavigatorLanguage = (): Language => {
   return getDefaultLanguage() as Language;
 };
 
-// »ñÈ¡´æ´¢µÄÓïÑÔÉèÖÃ
+// è·å–å­˜å‚¨çš„è¯­è¨€è®¾ç½®
 const storedLocale = localStorage.getItem('locale') as Language | null;
 
-// È·¶¨×îÖÕÊ¹ÓÃµÄÓïÑÔ£¬ÓÅÏÈ¼¶£º´æ´¢µÄÓĞĞ§ÓïÑÔ > ä¯ÀÀÆ÷¼ì²âÓïÑÔ > Ä¬ÈÏÓïÑÔ
+// ç¡®å®šæœ€ç»ˆä½¿ç”¨çš„è¯­è¨€ï¼Œä¼˜å…ˆçº§ï¼šå­˜å‚¨çš„æœ‰æ•ˆè¯­è¨€ > æµè§ˆå™¨æ£€æµ‹è¯­è¨€ > é»˜è®¤è¯­è¨€
 let locale: Language;
 if (storedLocale && isValidLanguage(storedLocale)) {
   locale = storedLocale;
 } else {
   const detectedLanguage = getNavigatorLanguage();
-  // Ë«ÖØÑéÖ¤¼ì²âµ½µÄÓïÑÔÊÇ·ñÓĞĞ§
+  // åŒé‡éªŒè¯æ£€æµ‹åˆ°çš„è¯­è¨€æ˜¯å¦æœ‰æ•ˆ
   if (isValidLanguage(detectedLanguage)) {
     locale = detectedLanguage;
   } else {
-    // Èç¹û¼ì²âÊ§°Ü£¬Ê¹ÓÃÄ¬ÈÏÓïÑÔ
+    // å¦‚æœæ£€æµ‹å¤±è´¥ï¼Œä½¿ç”¨é»˜è®¤è¯­è¨€
     locale = getDefaultLanguage() as Language;
     console.warn(`Failed to detect valid language, falling back to default: ${locale}`);
   }
 }
 
-// Ê¹ÓÃ Vite µÄ glob µ¼Èë¹¦ÄÜ¶¯Ì¬¼ÓÔØËùÓĞÓïÑÔÎÄ¼ş
-const languageModules = import.meta.glob('./*.json', { eager: false });
-
-// ¶¯Ì¬¼ÓÔØÓïÑÔÎÄ¼ş
-const loadLanguageMessages = async (): Promise<Record<string, any>> => {
-  const messages: Record<string, any> = {};
-  const enabledLanguages = getEnabledLanguages();
-
-  for (const lang of enabledLanguages) {
-    const modulePath = `./${lang}.json`;
-    const moduleLoader = languageModules[modulePath];
-
-    if (moduleLoader) {
-      try {
-        const module = await moduleLoader();
-        messages[lang] = (module as any).default || module;
-      } catch (error) {
-        console.warn(`Failed to load language file for '${lang}':`, error);
-      }
-    } else {
-      console.warn(`Language file '${lang}.json' not found.`);
-      console.warn('Available language files:', Object.keys(languageModules));
-    }
-  }
-
-  return messages;
-};
-
-// Òì²½³õÊ¼»¯ i18n
-const initializeI18n = async (): Promise<any> => {
-  const messages = await loadLanguageMessages();
-
-  // ×îÖÕ°²È«¼ì²é£ºÈ·±£Ñ¡ÔñµÄÓïÑÔÔÚÏûÏ¢¶ÔÏóÖĞ´æÔÚ
-  if (!messages[locale]) {
-    console.warn(`Selected locale '${locale}' not available in messages, falling back to '${getFallbackLanguage()}'`);
-    locale = getFallbackLanguage() as Language;
-
-    // Èç¹û»ØÍËÓïÑÔÒ²²»´æÔÚ£¬Ê¹ÓÃµÚÒ»¸ö¿ÉÓÃµÄÓïÑÔ
-    if (!messages[locale] && Object.keys(messages).length > 0) {
-      locale = Object.keys(messages)[0] as Language;
-      console.warn(`Fallback locale not available, using first available: '${locale}'`);
-    }
-  }
-
-  return createI18n({
-    legacy: false,
-    locale: locale,
-    fallbackLocale: getFallbackLanguage(),
-    messages,
-  });
-};
-
-// µ¼³öÒì²½³õÊ¼»¯º¯ÊıºÍÍ¬²½µÄÁÙÊ±ÊµÀı
-export const createI18nInstance = initializeI18n;
-
-// ´´½¨Ò»¸öÁÙÊ±µÄ i18n ÊµÀı£¬ÓÃÓÚÓ¦ÓÃÆô¶¯Ê±µÄÕ¼Î»
-const tempI18n = createI18n({
+// åˆ›å»º i18n å®ä¾‹
+const i18n = createI18n({
   legacy: false,
-  locale: getDefaultLanguage() as Language,
+  locale: locale,
   fallbackLocale: getFallbackLanguage(),
-  messages: {}, // ¿ÕÏûÏ¢£¬ÉÔºó»á±»Ìæ»»
+  messages,
 });
 
-export default tempI18n;
+export default i18n;

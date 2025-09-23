@@ -438,8 +438,8 @@ import { siteConfig } from '@/config/site';
 import { imageCache, LoadPriority } from '@/services/imageCache';
 import { useAppStore } from '@/stores/app';
 import { AnimationDurations } from '@/utils/animations';
+import { getI18nText } from '@/utils/i18nText';
 import { getIconClass } from '@/utils/icons';
-import { getI18nText } from '@/utils/language';
 
 const props = defineProps<{
   imageId?: string;
@@ -832,7 +832,7 @@ const goToImage = (index: number): void => {
   if (index >= 0 && index < imagesList.value.length) {
     const targetImage = imagesList.value[index];
     if (!targetImage?.id) {
-      console.warn($t('debug.imageIdEmpty'));
+      console.warn('Image ID is empty, cannot navigate');
       return;
     }
 

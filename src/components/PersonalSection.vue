@@ -69,8 +69,8 @@ import ProgressiveImage from './ProgressiveImage.vue';
 
 import { siteConfig } from '@/config/site';
 import { useAppStore } from '@/stores/app';
+import { getI18nText } from '@/utils/i18nText';
 import { getIconClass } from '@/utils/icons';
-import { getI18nText } from '@/utils/language';
 
 const appStore = useAppStore();
 
@@ -308,6 +308,9 @@ onMounted(() => {
 
 .button-icon {
   @apply w-4 h-4 flex-shrink-0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .glass-effect .action-button {
@@ -360,6 +363,9 @@ onMounted(() => {
 
 .button-icon {
   @apply w-5 h-5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* 高度不足时，无论屏幕宽度如何都从顶部开始布局 */

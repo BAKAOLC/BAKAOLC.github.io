@@ -82,7 +82,7 @@ import { useEventManager } from '@/composables/useEventManager';
 import { useTags } from '@/composables/useTags';
 import { siteConfig } from '@/config/site';
 import { useAppStore } from '@/stores/app';
-import { getI18nText } from '@/utils/language';
+import { getI18nText } from '@/utils/i18nText';
 
 const props = defineProps<{
   images: CharacterImage[];
@@ -205,7 +205,7 @@ const t = (text: I18nText | undefined, lang?: string): string => {
 
 const viewImage = (image: CharacterImage): void => {
   if (!image || !image.id) {
-    console.warn($t('debug.invalidImageData'));
+    console.warn('Invalid image data, cannot view');
     return;
   }
 
