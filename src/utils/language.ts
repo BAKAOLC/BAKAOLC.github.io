@@ -2,7 +2,7 @@
  * 语言处理工具函数
  */
 
-import type { I18nText, LanguagesConfig } from '@/types';
+import type { LanguagesConfig } from '@/types';
 
 import languagesConfig from '@/config/languages.json';
 
@@ -43,49 +43,6 @@ export const getFallbackLanguage = (): string => {
 export const getLanguageNativeName = (langCode: string): string => {
   const config = getLanguagesConfig();
   return config.languages[langCode]?.name || langCode;
-};
-
-/**
- * 获取多语言文本，支持fallback，也支持直接传入字符串
- * @param text - 多语言文本对象或字符串
- * @param currentLang - 当前语言
- * @returns 对应语言的文本
- */
-export const getI18nText = (text: I18nText | undefined, currentLang: string): string => {
-  // 如果是字符串，直接返回
-  if (typeof text === 'string') {
-    return text;
-  }
-
-  // 如果是 undefined 或 null，返回空字符串
-  if (!text || typeof text !== 'object') {
-    return '';
-  }
-
-  // 优先返回当前语言的文本
-  if (text[currentLang]) {
-    return text[currentLang];
-  }
-
-  // 尝试fallback语言
-  const fallbackLang = getFallbackLanguage();
-  if (text[fallbackLang]) {
-    return text[fallbackLang];
-  }
-
-  // 尝试默认语言
-  const defaultLang = getDefaultLanguage();
-  if (text[defaultLang]) {
-    return text[defaultLang];
-  }
-
-  // 返回第一个可用的文本
-  const availableKeys = Object.keys(text);
-  if (availableKeys.length > 0) {
-    return text[availableKeys[0]];
-  }
-
-  return '';
 };
 
 /**

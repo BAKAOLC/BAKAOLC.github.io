@@ -56,8 +56,8 @@ import { useI18n } from 'vue-i18n';
 
 import { siteConfig } from '@/config/site';
 import { useAppStore } from '@/stores/app';
+import { getI18nText } from '@/utils/i18nText';
 import { getIconClass } from '@/utils/icons';
-import { getI18nText } from '@/utils/language';
 
 const { t: $t } = useI18n();
 const appStore = useAppStore();
@@ -66,7 +66,7 @@ const appStore = useAppStore();
 const canTagBeVisible = (tagId: string, visited = new Set<string>()): boolean => {
   // 防止循环依赖
   if (visited.has(tagId)) {
-    console.warn(`${$t('debug.circularDependency')}: ${tagId}`);
+    console.warn(`Circular dependency detected: ${tagId}`);
     return false;
   }
 
