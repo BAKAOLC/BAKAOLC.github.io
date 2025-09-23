@@ -24,6 +24,23 @@ const router = createRouter({
       },
     },
     {
+      path: '/articles',
+      name: 'articles',
+      component: () => import('@/views/Articles.vue'),
+      meta: {
+        titleKey: 'articles.title',
+      },
+    },
+    {
+      path: '/articles/:articleId',
+      name: 'article-detail',
+      component: () => import('@/views/Articles.vue'),
+      props: true,
+      meta: {
+        titleKey: 'articles.title',
+      },
+    },
+    {
       path: '/links',
       name: 'links',
       component: () => import('@/views/Links.vue'),
@@ -88,6 +105,13 @@ router.beforeEach((to: any, _from: any, next: any) => {
   if (to.name === 'gallery') {
     if (!siteConfig.features.gallery) {
       console.log('Gallery feature is disabled, redirecting to home');
+      return next({ name: 'home', replace: true });
+    }
+  }
+
+  if (to.name === 'articles') {
+    if (!siteConfig.features.articles) {
+      console.log('Articles feature is disabled, redirecting to home');
       return next({ name: 'home', replace: true });
     }
   }
