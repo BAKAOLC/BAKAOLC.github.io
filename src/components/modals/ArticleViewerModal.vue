@@ -1,110 +1,100 @@
 <template>
-  <div
-    class="article-viewer"
-    :class="{
-      'active': isActive,
-      'mobile': isMobile,
-      'closing': isClosing
-    }"
-    @keydown.esc="close"
-    tabindex="0"
-  >
-    <!-- ÈÅÆÁΩ©Â±Ç -->
-    <div class="viewer-overlay" @click="close"></div>
+  <div class="article-viewer-modal">
+    <!-- Õ∑≤øøÿ÷∆¿∏ -->
+    <div class="viewer-header">
+      <div class="header-content">
+        <!-- Œƒ’¬±ÍÃ‚∫Õ–≈œ¢ -->
+        <div class="article-header-info">
+          <h1 class="article-title">{{ getI18nText(article.title, currentLanguage) }}</h1>
+          <div class="article-meta">
+            <span class="article-date">
+              <i :class="getIconClass('calendar')" class="meta-icon"></i>
+              {{ formatDate(article.date) }}
+            </span>
 
-    <!-- ‰∏ªÂÜÖÂÆπÂÆπÂô® -->
-    <div class="viewer-container" ref="viewerContainer">
-      <!-- Â§¥ÈÉ®ÊéßÂà∂Ê†è -->
-      <div class="viewer-header">
-        <div class="header-content">
-          <!-- ÊñáÁ´†Ê†áÈ¢òÂíå‰ø°ÊÅØ -->
-          <div class="article-header-info">
-            <h1 class="article-title">{{ getI18nText(article.title, currentLanguage) }}</h1>
-            <div class="article-meta">
-              <span class="article-date">
-                <i :class="getIconClass('calendar')" class="meta-icon"></i>
-                {{ formatDate(article.date) }}
+            <div class="article-categories">
+              <span
+                v-for="categoryId in article.categories"
+                :key="categoryId"
+                class="category-tag"
+                :style="{
+                  backgroundColor: getCategoryColor(categoryId) + '20',
+                  color: getCategoryColor(categoryId)
+                }"
+              >
+                {{ getCategoryName(categoryId) }}
               </span>
-
-              <div class="article-categories">
-                <span
-                  v-for="categoryId in article.categories"
-                  :key="categoryId"
-                  class="category-tag"
-                  :style="{
-                    backgroundColor: getCategoryColor(categoryId) + '20',
-                    color: getCategoryColor(categoryId)
-                  }"
-                >
-                  {{ getCategoryName(categoryId) }}
-                </span>
-              </div>
             </div>
           </div>
+        </div>
 
-          <!-- ÊéßÂà∂ÊåâÈíÆ -->
-          <div class="viewer-controls">
-            <button class="control-button copy-button" @click="copyArticleLink" :title="$t('articles.copyLink')">
-              <i :class="getIconClass('link')" class="icon"></i>
-            </button>
-            <button class="control-button close-button" @click="close" :title="$t('common.close')">
-              <i :class="getIconClass('times')" class="icon"></i>
-            </button>
-          </div>
+        <!-- øÿ÷∆∞¥≈• -->
+        <div class="viewer-controls">
+          <button
+            v-if="showCopyButton"
+            class="control-button copy-button"
+            @click="copyArticleLink"
+            :title="$t('articles.copyLink')"
+          >
+            <i :class="getIconClass('link')" class="icon"></i>
+          </button>
+          <button class="control-button close-button" @click="close" :title="$t('common.close')">
+            <i :class="getIconClass('times')" class="icon"></i>
+          </button>
         </div>
       </div>
+    </div>
 
-      <!-- ÂÜÖÂÆπÂå∫Âüü -->
-      <div class="viewer-content" ref="viewerContent">
-        <!-- ÊñáÁ´†Â∞ÅÈù¢ -->
-        <div v-if="articleCover" class="article-cover-section">
-          <img
-            :src="articleCover"
-            :alt="getI18nText(article.title, currentLanguage)"
-            class="article-cover-image"
-          />
-        </div>
+    <!-- ƒ⁄»›«¯”Ú -->
+    <div class="viewer-content" ref="viewerContent">
+      <!-- Œƒ’¬∑‚√Ê -->
+      <div v-if="articleCover" class="article-cover-section">
+        <img
+          :src="articleCover"
+          :alt="getI18nText(article.title, currentLanguage)"
+          class="article-cover-image"
+        />
+      </div>
 
-        <!-- ÊñáÁ´†ÂÜÖÂÆπ -->
-        <div class="article-content-section">
-          <div class="markdown-content" v-html="renderedContent"></div>
-        </div>
+      <!-- Œƒ’¬ƒ⁄»› -->
+      <div class="article-content-section">
+        <div class="markdown-content" v-html="renderedContent"></div>
+      </div>
 
-        <!-- ‰∏ä‰∏ÄÁØá„ÄÅ‰∏ã‰∏ÄÁØáÊåâÈíÆ -->
-        <div v-if="prevArticle || nextArticle" class="article-navigation">
-          <button
-            v-if="prevArticle"
-            class="nav-button prev-button"
-            @click="navigateTo(prevArticle.id)"
-          >
-            <i :class="getIconClass('chevron-left')" class="nav-icon"></i>
-            <div class="nav-content">
-              <span class="nav-label">{{ $t('articles.prevArticle') }}</span>
-              <span class="nav-title">{{ getI18nText(prevArticle.title, currentLanguage) }}</span>
-            </div>
-          </button>
-
-          <button
-            v-if="nextArticle"
-            class="nav-button next-button"
-            @click="navigateTo(nextArticle.id)"
-          >
-            <div class="nav-content">
-              <span class="nav-label">{{ $t('articles.nextArticle') }}</span>
-              <span class="nav-title">{{ getI18nText(nextArticle.title, currentLanguage) }}</span>
-            </div>
-            <i :class="getIconClass('chevron-right')" class="nav-icon"></i>
-          </button>
-        </div>
-
-        <!-- ËØÑËÆ∫Âå∫ -->
-        <div v-if="shouldShowComments" class="comments-section">
-          <div class="comments-header">
-            <h3 class="comments-title">{{ $t('articles.comments') }}</h3>
+      <!-- …œ“ª∆™°¢œ¬“ª∆™∞¥≈• -->
+      <div v-if="showNavigation && (prevArticle || nextArticle)" class="article-navigation">
+        <button
+          v-if="prevArticle"
+          class="nav-button prev-button"
+          @click="navigateTo(prevArticle.id)"
+        >
+          <i :class="getIconClass('chevron-left')" class="nav-icon"></i>
+          <div class="nav-content">
+            <span class="nav-label">{{ $t('articles.prevArticle') }}</span>
+            <span class="nav-title">{{ getI18nText(prevArticle.title, currentLanguage) }}</span>
           </div>
-          <div class="comments-container">
-            <GiscusComments :key="article.id" :unique-id="article.id" prefix="article" />
+        </button>
+
+        <button
+          v-if="nextArticle"
+          class="nav-button next-button"
+          @click="navigateTo(nextArticle.id)"
+        >
+          <div class="nav-content">
+            <span class="nav-label">{{ $t('articles.nextArticle') }}</span>
+            <span class="nav-title">{{ getI18nText(nextArticle.title, currentLanguage) }}</span>
           </div>
+          <i :class="getIconClass('chevron-right')" class="nav-icon"></i>
+        </button>
+      </div>
+
+      <!-- ∆¿¬€«¯ -->
+      <div v-if="showComments && shouldShowComments" class="comments-section">
+        <div class="comments-header">
+          <h3 class="comments-title">{{ $t('articles.comments') }}</h3>
+        </div>
+        <div class="comments-container">
+          <giscus-comments :key="article.id" :unique-id="article.id" prefix="article" />
         </div>
       </div>
     </div>
@@ -115,13 +105,13 @@
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github-dark.css';
 import { marked } from 'marked';
-import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
+import { ref, computed, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import type { Article } from '@/types';
 
 import GiscusComments from '@/components/GiscusComments.vue';
-import { useScreenManager } from '@/composables/useScreenManager';
-import { useTimers } from '@/composables/useTimers';
+import { useNotificationManager } from '@/composables/useNotificationManager';
 import articleCategoriesConfig from '@/config/articles-categories.json';
 import { siteConfig } from '@/config/site';
 import { useAppStore } from '@/stores/app';
@@ -129,11 +119,17 @@ import { getArticleCover, formatDate, getAdjacentArticles } from '@/utils/articl
 import { getI18nText } from '@/utils/i18nText';
 import { getIconClass } from '@/utils/icons';
 
-// ÂØºÂÖ•ÈÖçÁΩÆ
-
 interface Props {
   article: Article;
-  articles: Article[];
+  articles?: Article[];
+
+  // π¶ƒ‹øÿ÷∆
+  showCopyButton?: boolean;
+  showComments?: boolean;
+  showNavigation?: boolean;
+
+  // ◊‘∂®“Â¡¥Ω”£®”√”⁄Õ‚≤øŒƒ’¬£©
+  customLink?: string;
 }
 
 interface Emits {
@@ -141,33 +137,35 @@ interface Emits {
   (e: 'navigate', articleId: string): void;
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  showCopyButton: true,
+  showComments: true,
+  showNavigation: true,
+});
+
 const emit = defineEmits<Emits>();
 
-const { isMobile } = useScreenManager();
 const appStore = useAppStore();
-const { setTimeout } = useTimers();
+const notificationManager = useNotificationManager();
+const { t: $t } = useI18n();
 
-// ÂìçÂ∫îÂºèÊï∞ÊçÆ
-const isActive = ref(false);
-const isClosing = ref(false);
-const viewerContainer = ref<HTMLElement>();
+// œÏ”¶ Ω ˝æ›
 const viewerContent = ref<HTMLElement>();
 
 const currentLanguage = computed(() => appStore.currentLanguage);
 
-// ËÆ°ÁÆóÂ±ûÊÄß
+// º∆À„ Ù–‘
 const articleCover = computed(() => {
   return getArticleCover(props.article.cover, currentLanguage.value);
 });
 
 const renderedContent = computed(() => {
-  // ÁÆÄÂçïÁöÑ Markdown Ê∏≤ÊüìÔºàÂü∫Á°ÄÁâàÊú¨Ôºâ
   const content = getI18nText(props.article.content, currentLanguage.value);
   return renderMarkdown(content);
 });
 
 const adjacentArticles = computed(() => {
+  if (!props.articles) return { prev: null, next: null };
   return getAdjacentArticles(props.articles, props.article.id);
 });
 
@@ -178,7 +176,7 @@ const shouldShowComments = computed(() => {
   return props.article.allowComments && siteConfig.features.comments;
 });
 
-// ÊñπÊ≥ï
+// ∑Ω∑®
 const getCategoryName = (categoryId: string): string => {
   const category = (articleCategoriesConfig as any)[categoryId];
   return category ? getI18nText(category.name, currentLanguage.value) : categoryId;
@@ -190,16 +188,14 @@ const getCategoryColor = (categoryId: string): string => {
 };
 
 const renderMarkdown = (content: string): string => {
-  // ‰ΩøÁî® marked Â∫ìËøõË°å Markdown Ê∏≤ÊüìÔºåÂπ∂Ê∑ªÂä†‰ª£Á†ÅÈ´ò‰∫Æ
-
   try {
-    // ÈÖçÁΩÆ marked ÈÄâÈ°π
+    // ≈‰÷√ marked —°œÓ
     marked.setOptions({
       breaks: true,
       gfm: true,
     });
 
-    // ËÆæÁΩÆ‰ª£Á†ÅÈ´ò‰∫ÆÊ∏≤ÊüìÂô®
+    // …Ë÷√¥˙¬Î∏ﬂ¡¡‰÷»æ∆˜
     const renderer = new marked.Renderer();
 
     renderer.code = (token: { text: string; lang?: string; escaped?: boolean }) => {
@@ -219,36 +215,12 @@ const renderMarkdown = (content: string): string => {
     return marked.parse(content, { renderer }) as string;
   } catch (error) {
     console.error('Markdown parsing error:', error);
-    // Â¶ÇÊûúËß£ÊûêÂ§±Ë¥•ÔºåËøîÂõûÂéüÂßãÂÜÖÂÆπ
     return content.replace(/\n/g, '<br>');
   }
 };
 
-const show = (): void => {
-  isActive.value = true;
-  isClosing.value = false;
-
-  nextTick(() => {
-    if (viewerContainer.value) {
-      viewerContainer.value.focus();
-    }
-    // ÊªöÂä®Âà∞È°∂ÈÉ®
-    if (viewerContent.value) {
-      viewerContent.value.scrollTop = 0;
-    }
-  });
-};
-
 const close = (): void => {
-  if (isClosing.value) return;
-
-  isClosing.value = true;
-
-  setTimeout(() => {
-    isActive.value = false;
-    isClosing.value = false;
-    emit('close');
-  }, 300);
+  emit('close');
 };
 
 const navigateTo = (articleId: string): void => {
@@ -257,93 +229,41 @@ const navigateTo = (articleId: string): void => {
 
 const copyArticleLink = async (): Promise<void> => {
   try {
-    const url = `${window.location.origin}${window.location.pathname}#/articles/${props.article.id}`;
+    //  π”√◊‘∂®“Â¡¥Ω”ªÚ…˙≥…ƒ¨»œ¡¥Ω”
+    const url = props.customLink || `${window.location.origin}${window.location.pathname}#/articles/${props.article.id}`;
     await navigator.clipboard.writeText(url);
 
-    // ËøôÈáåÂèØ‰ª•Ê∑ªÂä†‰∏Ä‰∏™ÊèêÁ§∫Ê∂àÊÅØÔºå‰ΩÜ‰∏∫‰∫ÜÁÆÄÂçïËµ∑ËßÅÔºåÊàë‰ª¨‰ΩøÁî®console.log
-    console.log('ÊñáÁ´†ÈìæÊé•Â∑≤Â§çÂà∂Âà∞Ââ™Ë¥¥Êùø');
-
-    // ÂèØ‰ª•ËÄÉËôëÊ∑ªÂä†‰∏Ä‰∏™toastÊèêÁ§∫
-    // showToast('ÊñáÁ´†ÈìæÊé•Â∑≤Â§çÂà∂Âà∞Ââ™Ë¥¥Êùø');
+    // œ‘ æ≥…π¶Õ®÷™
+    notificationManager.success($t('articles.linkCopied'));
   } catch (err) {
-    console.error('Â§çÂà∂ÈìæÊé•Â§±Ë¥•:', err);
-    // ÈôçÁ∫ßÊñπÊ°àÔºöÈÄâÊã©ÊñáÊú¨
+    console.error('Failed to copy article link:', err);
+
+    // Ωµº∂∑Ω∞∏£∫—°‘ÒŒƒ±æ
+    const url = props.customLink || `${window.location.origin}${window.location.pathname}#/articles/${props.article.id}`;
     const textArea = document.createElement('textarea');
-    textArea.value = `${window.location.origin}${window.location.pathname}#/articles/${props.article.id}`;
+    textArea.value = url;
     document.body.appendChild(textArea);
     textArea.select();
     document.execCommand('copy');
     document.body.removeChild(textArea);
+
+    // œ‘ æ≥…π¶Õ®÷™
+    notificationManager.success($t('articles.linkCopied'));
   }
 };
 
-// ÁõëÂê¨Âô®
+// º‡Ã˝∆˜
 watch(() => props.article, () => {
   if (viewerContent.value) {
     viewerContent.value.scrollTop = 0;
   }
 });
-
-// ÁîüÂëΩÂë®Êúü
-onMounted(() => {
-  show();
-
-  // ÈòªÊ≠¢ËÉåÊôØÊªöÂä®
-  document.body.style.overflow = 'hidden';
-});
-
-onBeforeUnmount(() => {
-  // ÊÅ¢Â§çËÉåÊôØÊªöÂä®
-  document.body.style.overflow = '';
-});
 </script>
 
 <style scoped>
-.article-viewer {
-  @apply fixed inset-0 z-50;
-  @apply flex items-center justify-center;
-  @apply opacity-0 pointer-events-none;
-  @apply transition-all duration-300 ease-in-out;
-}
-
-.article-viewer.active {
-  @apply opacity-100 pointer-events-auto;
-}
-
-.article-viewer.closing {
-  @apply opacity-0;
-}
-
-.viewer-overlay {
-  @apply absolute inset-0;
-  @apply bg-black bg-opacity-50;
-  @apply backdrop-blur-sm;
-}
-
-.viewer-container {
-  @apply relative;
+.article-viewer-modal {
+  @apply w-full h-full flex flex-col;
   @apply bg-white dark:bg-gray-900;
-  @apply rounded-lg shadow-2xl;
-  @apply max-w-4xl w-full mx-4;
-  @apply max-h-[90vh];
-  @apply flex flex-col;
-  @apply transform scale-95;
-  @apply transition-transform duration-300 ease-in-out;
-}
-
-.article-viewer.active .viewer-container {
-  @apply transform scale-100;
-}
-
-.article-viewer.closing .viewer-container {
-  @apply transform scale-95;
-}
-
-/* ÁßªÂä®Á´ØÂÖ®Â±èÊòæÁ§∫ */
-.article-viewer.mobile .viewer-container {
-  @apply max-w-none w-full h-full mx-0 my-0;
-  @apply max-h-none;
-  @apply rounded-none;
 }
 
 .viewer-header {
@@ -404,6 +324,7 @@ onBeforeUnmount(() => {
   @apply rounded-lg;
   @apply transition-all duration-200;
   @apply border-none;
+  @apply cursor-pointer;
 }
 
 .copy-button {
@@ -447,7 +368,7 @@ onBeforeUnmount(() => {
   @apply leading-relaxed;
 }
 
-/* Markdown Ê†∑Âºè */
+/* Markdown —˘ Ω */
 .markdown-content :deep(h1) {
   @apply text-3xl font-bold text-gray-900 dark:text-white mb-4 mt-8 first:mt-0;
   @apply border-b border-gray-200 dark:border-gray-700 pb-2;
@@ -589,6 +510,7 @@ onBeforeUnmount(() => {
   @apply transition-all duration-200;
   @apply text-left;
   @apply flex-1;
+  @apply border-none cursor-pointer;
 }
 
 .prev-button {
@@ -636,7 +558,7 @@ onBeforeUnmount(() => {
   @apply min-h-[200px];
 }
 
-/* ÁßªÂä®Á´ØÈÄÇÈÖç */
+/* “∆∂Ø∂À  ≈‰ */
 @media (max-width: 767px) {
   .viewer-header {
     @apply p-3;
@@ -676,7 +598,7 @@ onBeforeUnmount(() => {
   }
 }
 
-/* ÊªöÂä®Êù°Ê†∑Âºè */
+/* πˆ∂ØÃı—˘ Ω */
 .viewer-content::-webkit-scrollbar {
   @apply w-2;
 }
