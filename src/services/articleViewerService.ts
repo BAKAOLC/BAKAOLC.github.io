@@ -1,45 +1,44 @@
 import { useRouter } from 'vue-router';
 
-import type { Article } from '@/types';
-
 import ArticleViewerModal from '@/components/modals/ArticleViewerModal.vue';
 import { useModalManager } from '@/composables/useModalManager';
+import type { Article } from '@/types';
 
 export interface ArticleViewerOptions {
-  // ÎÄÕÂÊı¾İ
+  // æ–‡ç« æ•°æ®
   article: Article;
   articles?: Article[];
 
-  // ¹¦ÄÜ¿ØÖÆ
+  // åŠŸèƒ½æ§åˆ¶
   showCopyButton?: boolean;
   showComments?: boolean;
   showNavigation?: boolean;
 
-  // ×Ô¶¨ÒåÁ´½Ó£¨ÓÃÓÚÍâ²¿ÎÄÕÂ£©
+  // è‡ªå®šä¹‰é“¾æ¥ï¼ˆç”¨äºå¤–éƒ¨æ–‡ç« ï¼‰
   customLink?: string;
 
-  // Â·ÓÉ¿ØÖÆ
-  updateRoute?: boolean; // ÊÇ·ñ¸üĞÂÂ·ÓÉ
-  returnRoute?: string; // ¹Ø±ÕÊ±·µ»ØµÄÂ·ÓÉ
+  // è·¯ç”±æ§åˆ¶
+  updateRoute?: boolean; // æ˜¯å¦æ›´æ–°è·¯ç”±
+  returnRoute?: string; // å…³é—­æ—¶è¿”å›çš„è·¯ç”±
 }
 
 class ArticleViewerService {
   private currentModalId?: string;
 
   /**
-   * ´ò¿ªÎÄÕÂ²é¿´Æ÷
+   * æ‰“å¼€æ–‡ç« æŸ¥çœ‹å™¨
    */
   open(options: ArticleViewerOptions): string {
     const modalManager = useModalManager();
 
-    // Èç¹ûÒÑ¾­ÓĞ´ò¿ªµÄÎÄÕÂ²é¿´Æ÷£¬ÏÈ¹Ø±ÕËü
+    // å¦‚æœå·²ç»æœ‰æ‰“å¼€çš„æ–‡ç« æŸ¥çœ‹å™¨ï¼Œå…ˆå…³é—­å®ƒ
     if (this.currentModalId) {
       this.close();
     }
 
     const modalId = `article-viewer-${Date.now()}`;
 
-    // ´´½¨µ¯´°
+    // åˆ›å»ºå¼¹çª—
     this.currentModalId = modalManager.open({
       id: modalId,
       component: ArticleViewerModal,
@@ -63,7 +62,7 @@ class ArticleViewerService {
       },
     });
 
-    // ¸üĞÂÂ·ÓÉ£¨Èç¹ûĞèÒª£©
+    // æ›´æ–°è·¯ç”±ï¼ˆå¦‚æœéœ€è¦ï¼‰
     if (options.updateRoute && options.article.id) {
       this.updateRoute(options.article.id);
     }
@@ -72,7 +71,7 @@ class ArticleViewerService {
   }
 
   /**
-   * ¹Ø±ÕÎÄÕÂ²é¿´Æ÷
+   * å…³é—­æ–‡ç« æŸ¥çœ‹å™¨
    */
   close(): void {
     if (this.currentModalId) {
@@ -83,7 +82,7 @@ class ArticleViewerService {
   }
 
   /**
-   * µ¼º½µ½Ö¸¶¨ÎÄÕÂ
+   * å¯¼èˆªåˆ°æŒ‡å®šæ–‡ç« 
    */
   navigate(article: Article, updateRoute = true): void {
     if (!this.currentModalId) return;
@@ -92,19 +91,19 @@ class ArticleViewerService {
     const modal = modalManager.getModal(this.currentModalId);
     if (!modal) return;
 
-    // ¸üĞÂµ¯´°ÊôĞÔ
+    // æ›´æ–°å¼¹çª—å±æ€§
     if (modal.props) {
       modal.props.article = article;
     }
 
-    // ¸üĞÂÂ·ÓÉ£¨Èç¹ûĞèÒª£©
+    // æ›´æ–°è·¯ç”±ï¼ˆå¦‚æœéœ€è¦ï¼‰
     if (updateRoute) {
       this.updateRoute(article.id);
     }
   }
 
   /**
-   * ¼ì²éÊÇ·ñÓĞ´ò¿ªµÄÎÄÕÂ²é¿´Æ÷
+   * æ£€æŸ¥æ˜¯å¦æœ‰æ‰“å¼€çš„æ–‡ç« æŸ¥çœ‹å™¨
    */
   isOpen(): boolean {
     if (!this.currentModalId) return false;
@@ -113,31 +112,31 @@ class ArticleViewerService {
   }
 
   /**
-   * »ñÈ¡µ±Ç°ÎÄÕÂ²é¿´Æ÷µÄÄ£Ì¬¿òID
+   * è·å–å½“å‰æ–‡ç« æŸ¥çœ‹å™¨çš„æ¨¡æ€æ¡†ID
    */
   getCurrentModalId(): string | undefined {
     return this.currentModalId;
   }
 
   /**
-   * ´ò¿ªÍâ²¿ÎÄÕÂ£¨²»¸üĞÂÂ·ÓÉ£©
+   * æ‰“å¼€å¤–éƒ¨æ–‡ç« ï¼ˆä¸æ›´æ–°è·¯ç”±ï¼‰
    */
   openExternal(options: Omit<ArticleViewerOptions, 'updateRoute'>): string {
     return this.open({
       ...options,
       updateRoute: false,
-      showCopyButton: options.showCopyButton ?? false, // Íâ²¿ÎÄÕÂÄ¬ÈÏ²»ÏÔÊ¾¸´ÖÆ°´Å¥
-      showComments: options.showComments ?? false, // Íâ²¿ÎÄÕÂÄ¬ÈÏ²»ÏÔÊ¾ÆÀÂÛ
-      showNavigation: options.showNavigation ?? false, // Íâ²¿ÎÄÕÂÄ¬ÈÏ²»ÏÔÊ¾µ¼º½
+      showCopyButton: options.showCopyButton ?? false, // å¤–éƒ¨æ–‡ç« é»˜è®¤ä¸æ˜¾ç¤ºå¤åˆ¶æŒ‰é’®
+      showComments: options.showComments ?? false, // å¤–éƒ¨æ–‡ç« é»˜è®¤ä¸æ˜¾ç¤ºè¯„è®º
+      showNavigation: options.showNavigation ?? false, // å¤–éƒ¨æ–‡ç« é»˜è®¤ä¸æ˜¾ç¤ºå¯¼èˆª
     });
   }
 
   private handleClose(options: ArticleViewerOptions): void {
     this.currentModalId = undefined;
 
-    // ·µ»ØÖ¸¶¨Â·ÓÉ»òÄ¬ÈÏÂ·ÓÉ
+    // è¿”å›æŒ‡å®šè·¯ç”±æˆ–é»˜è®¤è·¯ç”±
     if (options.updateRoute) {
-      const returnRoute = options.returnRoute || '/articles';
+      const returnRoute = options.returnRoute ?? '/articles';
       const router = useRouter();
       router.push(returnRoute);
     }
@@ -152,18 +151,16 @@ class ArticleViewerService {
   }
 }
 
-// µ¥ÀıÊµÀı
+// å•ä¾‹å®ä¾‹
 let articleViewerService: ArticleViewerService | null = null;
 
 export function useArticleViewerService(): ArticleViewerService {
-  if (!articleViewerService) {
-    articleViewerService = new ArticleViewerService();
-  }
+  articleViewerService ??= new ArticleViewerService();
 
   return articleViewerService;
 }
 
-// ±ã½İ·½·¨
+// ä¾¿æ·æ–¹æ³•
 export function openArticleViewer(options: ArticleViewerOptions): string {
   const service = useArticleViewerService();
   return service.open(options);

@@ -3,8 +3,7 @@
     <div
       v-for="modal in visibleModals"
       :key="modal.id"
-      :class="[
-        'modal-wrapper',
+      class="modal-wrapper" :class="[
         modal.options?.className,
         {
           'visible': modal.visible,
@@ -14,19 +13,19 @@
       ]"
       :data-modal-id="modal.id"
     >
-      <!-- ÕÚÕÖ²ã -->
+      <!-- é®ç½©å±‚ -->
       <div
         class="modal-mask"
         @click="handleMaskClick(modal)"
       ></div>
 
-      <!-- ÄÚÈİÇøÓò -->
+      <!-- å†…å®¹åŒºåŸŸ -->
       <div
         class="modal-content"
         :class="{ 'custom-size': modal.options?.width || modal.options?.height }"
         :style="getContentStyle(modal)"
       >
-        <!-- äÖÈ¾×é¼ş -->
+        <!-- æ¸²æŸ“ç»„ä»¶ -->
         <component
           :is="modal.component"
           v-bind="modal.props"
@@ -41,25 +40,26 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, computed } from 'vue';
 
+import { useEventManager } from '@/composables/useEventManager';
 import { useModalStore, type ModalInstance } from '@/stores/modal';
 
 const modalStore = useModalStore();
-
+const { addEventListener, removeEventListener } = useEventManager();
 const visibleModals = computed(() => modalStore.visibleModals);
 
-// ´¦ÀíÕÚÕÖµã»÷
+// å¤„ç†é®ç½©ç‚¹å‡»
 const handleMaskClick = (modal: ModalInstance): void => {
   if (modal.options?.maskClosable !== false) {
     modalStore.close(modal.id);
   }
 };
 
-// ¹Ø±Õµ¯´°
+// å…³é—­å¼¹çª—
 const closeModal = (id: string): void => {
   modalStore.close(id);
 };
 
-// »ñÈ¡ÄÚÈİÑùÊ½
+// è·å–å†…å®¹æ ·å¼
 const getContentStyle = (modal: ModalInstance): Record<string, string> => {
   const style: Record<string, string> = {};
 
@@ -78,7 +78,7 @@ const getContentStyle = (modal: ModalInstance): Record<string, string> => {
   return style;
 };
 
-// ¼üÅÌÊÂ¼ş´¦Àí
+// é”®ç›˜äº‹ä»¶å¤„ç†
 const handleKeydown = (e: KeyboardEvent): void => {
   if (e.key === 'Escape') {
     const { topModal } = modalStore;
@@ -89,11 +89,11 @@ const handleKeydown = (e: KeyboardEvent): void => {
 };
 
 onMounted(() => {
-  document.addEventListener('keydown', handleKeydown);
+  addEventListener('keydown', handleKeydown, undefined, document);
 });
 
 onBeforeUnmount(() => {
-  document.removeEventListener('keydown', handleKeydown);
+  removeEventListener('keydown', handleKeydown, undefined, document);
 });
 </script>
 
@@ -149,7 +149,7 @@ onBeforeUnmount(() => {
   height: var(--modal-height, auto);
 }
 
-/* ÒÆ¶¯¶ËÊÊÅä */
+/* ç§»åŠ¨ç«¯é€‚é… */
 @media (max-width: 640px) {
   .modal-wrapper {
     @apply p-2;

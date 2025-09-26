@@ -1,10 +1,10 @@
 import * as monaco from 'monaco-editor';
-import { ref, onBeforeUnmount, type Ref } from 'vue';
+import { getCurrentInstance, onBeforeUnmount, ref, type Ref } from 'vue';
 
 import monacoConfig from '@/config/monaco-editor.json';
 import { useAppStore } from '@/stores/app';
 
-// ÀàĞÍ¶¨Òå
+// ç±»å‹å®šä¹‰
 type AbortControllerType = {
   signal: { aborted: boolean };
   abort(): void;
@@ -76,27 +76,33 @@ export interface MonacoEditorInstance {
 }
 
 export function useMonacoEditor(): MonacoEditorInstance {
+  // å¿…é¡»åœ¨ç»„ä»¶ä¸Šä¸‹æ–‡ä¸­ä½¿ç”¨
+  const instance = getCurrentInstance();
+  if (!instance) {
+    throw new Error('useMonacoEditor must be called within Vue component setup function');
+  }
+
   const container = ref<HTMLElement | null>(null);
   const editor = ref<monaco.editor.IStandaloneCodeEditor | null>(null);
   const abortController = ref<AbortControllerType | null>(null);
   const isReady = ref(false);
   const isDisposed = ref(false);
 
-  // Ê¹ÓÃÏÖÓĞµÄÖ÷ÌâÏµÍ³
+  // ä½¿ç”¨ç°æœ‰çš„ä¸»é¢˜ç³»ç»Ÿ
   const appStore = useAppStore();
 
-  // »ñÈ¡ÓïÑÔÅäÖÃ
+  // è·å–è¯­è¨€é…ç½®
   const getLanguageConfig = (language: keyof typeof monacoConfig.languageConfigs): any => {
     return monacoConfig.languageConfigs[language] || monacoConfig.languageConfigs.json;
   };
 
-  // ¼ÆËãMonacoÖ÷Ìâ
+  // è®¡ç®—Monacoä¸»é¢˜
   const getMonacoTheme = (options: MonacoEditorOptions = {}): string => {
     if (options.theme) {
       return monacoConfig.themes[options.theme] || options.theme;
     }
 
-    // Ê¹ÓÃÓ¦ÓÃµÄÖ÷Ìâ
+    // ä½¿ç”¨åº”ç”¨çš„ä¸»é¢˜
     const appTheme = appStore.themeMode;
     if (appTheme === 'auto') {
       return appStore.isDarkMode ? 'vs-dark' : 'vs-light';
@@ -104,9 +110,9 @@ export function useMonacoEditor(): MonacoEditorInstance {
     return monacoConfig.themeMapping[appTheme] || 'vs-dark';
   };
 
-  // ºÏ²¢ÅäÖÃÑ¡Ïî
+  // åˆå¹¶é…ç½®é€‰é¡¹
   const mergeOptions = (options: MonacoEditorOptions = {}): monaco.editor.IStandaloneEditorConstructionOptions => {
-    const languageConfig = getLanguageConfig(options.language || 'json');
+    const languageConfig = getLanguageConfig(options.language ?? 'json');
     const monacoTheme = getMonacoTheme(options);
 
     return {
@@ -118,21 +124,21 @@ export function useMonacoEditor(): MonacoEditorInstance {
     } as monaco.editor.IStandaloneEditorConstructionOptions;
   };
 
-  // ³õÊ¼»¯±à¼­Æ÷
+  // åˆå§‹åŒ–ç¼–è¾‘å™¨
   const initialize = (containerElement: HTMLElement, options: MonacoEditorOptions = {}): void => {
     if (!containerElement || isDisposed.value) return;
 
     try {
-      // ´´½¨AbortController
+      // åˆ›å»ºAbortController
       abortController.value = new window.AbortController() as AbortControllerType;
 
-      // ºÏ²¢ÅäÖÃ
+      // åˆå¹¶é…ç½®
       const editorOptions = mergeOptions(options);
 
-      // ´´½¨±à¼­Æ÷
+      // åˆ›å»ºç¼–è¾‘å™¨
       editor.value = monaco.editor.create(containerElement, editorOptions);
 
-      // ÉèÖÃÈİÆ÷ÒıÓÃ
+      // è®¾ç½®å®¹å™¨å¼•ç”¨
       container.value = containerElement;
       isReady.value = true;
       isDisposed.value = false;
@@ -143,7 +149,7 @@ export function useMonacoEditor(): MonacoEditorInstance {
     }
   };
 
-  // Ïú»Ù±à¼­Æ÷
+  // é”€æ¯ç¼–è¾‘å™¨
   const dispose = (): void => {
     if (abortController.value) {
       abortController.value.abort();
@@ -169,19 +175,19 @@ export function useMonacoEditor(): MonacoEditorInstance {
     }
   };
 
-  // »ñÈ¡±à¼­Æ÷Öµ
+  // è·å–ç¼–è¾‘å™¨å€¼
   const getValue = (): string => {
-    return editor.value?.getValue() || '';
+    return editor.value?.getValue() ?? '';
   };
 
-  // ÉèÖÃ±à¼­Æ÷Öµ
+  // è®¾ç½®ç¼–è¾‘å™¨å€¼
   const setValue = (value: string): void => {
     if (editor.value && !isDisposed.value) {
       editor.value.setValue(value);
     }
   };
 
-  // ¸ñÊ½»¯´úÂë
+  // æ ¼å¼åŒ–ä»£ç 
   const format = (): void => {
     if (!editor.value || isDisposed.value || abortController.value?.signal.aborted) return;
 
@@ -194,7 +200,7 @@ export function useMonacoEditor(): MonacoEditorInstance {
         const formatted = JSON.stringify(parsed, null, 2);
         editor.value.setValue(formatted);
       } else {
-        // Ê¹ÓÃMonaco EditorµÄ¸ñÊ½»¯¹¦ÄÜ
+        // ä½¿ç”¨Monaco Editorçš„æ ¼å¼åŒ–åŠŸèƒ½
         editor.value.getAction('editor.action.formatDocument')?.run();
       }
     } catch (error) {
@@ -202,7 +208,7 @@ export function useMonacoEditor(): MonacoEditorInstance {
     }
   };
 
-  // ¸´ÖÆµ½¼ôÌù°å
+  // å¤åˆ¶åˆ°å‰ªè´´æ¿
   const copyToClipboard = async (): Promise<void> => {
     if (!editor.value || isDisposed.value || abortController.value?.signal.aborted) return;
 
@@ -216,7 +222,7 @@ export function useMonacoEditor(): MonacoEditorInstance {
           editor.value.focus();
           editor.value.setSelection(
             editor.value.getModel()?.getFullModelRange()
-            || new monaco.Range(1, 1, 1, 1),
+            ?? new monaco.Range(1, 1, 1, 1),
           );
           document.execCommand('copy');
         }
@@ -226,21 +232,21 @@ export function useMonacoEditor(): MonacoEditorInstance {
     }
   };
 
-  // ¾Û½¹±à¼­Æ÷
+  // èšç„¦ç¼–è¾‘å™¨
   const focus = (): void => {
     if (editor.value && !isDisposed.value) {
       editor.value.focus();
     }
   };
 
-  // ÉèÖÃÖ»¶ÁÄ£Ê½
+  // è®¾ç½®åªè¯»æ¨¡å¼
   const setReadOnly = (readOnly: boolean): void => {
     if (editor.value && !isDisposed.value) {
       editor.value.updateOptions({ readOnly });
     }
   };
 
-  // ÉèÖÃÖ÷Ìâ
+  // è®¾ç½®ä¸»é¢˜
   const setTheme = (theme: keyof typeof monacoConfig.themes): void => {
     if (editor.value && !isDisposed.value) {
       const themeValue = monacoConfig.themes[theme] || theme;
@@ -248,7 +254,7 @@ export function useMonacoEditor(): MonacoEditorInstance {
     }
   };
 
-  // ÉèÖÃÓïÑÔ
+  // è®¾ç½®è¯­è¨€
   const setLanguage = (language: keyof typeof monacoConfig.languageConfigs): void => {
     if (editor.value && !isDisposed.value) {
       const languageConfig = getLanguageConfig(language);
@@ -259,45 +265,45 @@ export function useMonacoEditor(): MonacoEditorInstance {
     }
   };
 
-  // ³·Ïú²Ù×÷
+  // æ’¤é”€æ“ä½œ
   const undo = (): void => {
     if (editor.value && !isDisposed.value) {
       editor.value.trigger('keyboard', 'undo', null);
     }
   };
 
-  // ÖØ×ö²Ù×÷
+  // é‡åšæ“ä½œ
   const redo = (): void => {
     if (editor.value && !isDisposed.value) {
       editor.value.trigger('keyboard', 'redo', null);
     }
   };
 
-  // ¼ì²éÊÇ·ñ¿ÉÒÔ³·Ïú
+  // æ£€æŸ¥æ˜¯å¦å¯ä»¥æ’¤é”€
   const canUndo = (): boolean => {
-    return editor.value?.getAction('undo')?.isSupported() || false;
+    return editor.value?.getAction('undo')?.isSupported() ?? false;
   };
 
-  // ¼ì²éÊÇ·ñ¿ÉÒÔÖØ×ö
+  // æ£€æŸ¥æ˜¯å¦å¯ä»¥é‡åš
   const canRedo = (): boolean => {
-    return editor.value?.getAction('redo')?.isSupported() || false;
+    return editor.value?.getAction('redo')?.isSupported() ?? false;
   };
 
-  // ²éÕÒ
+  // æŸ¥æ‰¾
   const find = (): void => {
     if (editor.value && !isDisposed.value) {
       editor.value.getAction('actions.find')?.run();
     }
   };
 
-  // Ìæ»»
+  // æ›¿æ¢
   const replace = (): void => {
     if (editor.value && !isDisposed.value) {
       editor.value.getAction('editor.action.startFindReplaceAction')?.run();
     }
   };
 
-  // ÇĞ»»Ğ¡µØÍ¼
+  // åˆ‡æ¢å°åœ°å›¾
   const toggleMinimap = (): void => {
     if (editor.value && !isDisposed.value) {
       const current = editor.value.getOption(monaco.editor.EditorOption.minimap);
@@ -305,7 +311,7 @@ export function useMonacoEditor(): MonacoEditorInstance {
     }
   };
 
-  // ÇĞ»»×Ô¶¯»»ĞĞ
+  // åˆ‡æ¢è‡ªåŠ¨æ¢è¡Œ
   const toggleWordWrap = (): void => {
     if (editor.value && !isDisposed.value) {
       const current = editor.value.getOption(monaco.editor.EditorOption.wordWrap);
@@ -314,7 +320,7 @@ export function useMonacoEditor(): MonacoEditorInstance {
     }
   };
 
-  // ÇĞ»»ĞĞºÅ
+  // åˆ‡æ¢è¡Œå·
   const toggleLineNumbers = (): void => {
     if (editor.value && !isDisposed.value) {
       const current = editor.value.getOption(monaco.editor.EditorOption.lineNumbers);
@@ -324,7 +330,7 @@ export function useMonacoEditor(): MonacoEditorInstance {
     }
   };
 
-  // Ôö¼Ó×ÖÌå´óĞ¡
+  // å¢åŠ å­—ä½“å¤§å°
   const increaseFontSize = (): void => {
     if (editor.value && !isDisposed.value) {
       const current = editor.value.getOption(monaco.editor.EditorOption.fontSize);
@@ -332,7 +338,7 @@ export function useMonacoEditor(): MonacoEditorInstance {
     }
   };
 
-  // ¼õÉÙ×ÖÌå´óĞ¡
+  // å‡å°‘å­—ä½“å¤§å°
   const decreaseFontSize = (): void => {
     if (editor.value && !isDisposed.value) {
       const current = editor.value.getOption(monaco.editor.EditorOption.fontSize);
@@ -340,42 +346,42 @@ export function useMonacoEditor(): MonacoEditorInstance {
     }
   };
 
-  // ÖØÖÃ×ÖÌå´óĞ¡
+  // é‡ç½®å­—ä½“å¤§å°
   const resetFontSize = (): void => {
     if (editor.value && !isDisposed.value) {
       editor.value.updateOptions({ fontSize: 14 });
     }
   };
 
-  // »ñÈ¡×ÖÌå´óĞ¡
+  // è·å–å­—ä½“å¤§å°
   const getFontSize = (): number => {
-    return editor.value?.getOption(monaco.editor.EditorOption.fontSize) || 14;
+    return editor.value?.getOption(monaco.editor.EditorOption.fontSize) ?? 14;
   };
 
-  // ÉèÖÃ×ÖÌå´óĞ¡
+  // è®¾ç½®å­—ä½“å¤§å°
   const setFontSize = (size: number): void => {
     if (editor.value && !isDisposed.value) {
       editor.value.updateOptions({ fontSize: Math.max(8, Math.min(24, size)) });
     }
   };
 
-  // »ñÈ¡×Ô¶¯»»ĞĞ×´Ì¬
+  // è·å–è‡ªåŠ¨æ¢è¡ŒçŠ¶æ€
   const getWordWrap = (): string => {
-    return editor.value?.getOption(monaco.editor.EditorOption.wordWrap) || 'on';
+    return editor.value?.getOption(monaco.editor.EditorOption.wordWrap) ?? 'on';
   };
 
-  // »ñÈ¡Ğ¡µØÍ¼×´Ì¬
+  // è·å–å°åœ°å›¾çŠ¶æ€
   const getMinimapEnabled = (): boolean => {
-    return editor.value?.getOption(monaco.editor.EditorOption.minimap).enabled || false;
+    return editor.value?.getOption(monaco.editor.EditorOption.minimap).enabled ?? false;
   };
 
-  // »ñÈ¡ĞĞºÅ×´Ì¬
+  // è·å–è¡Œå·çŠ¶æ€
   const getLineNumbersEnabled = (): boolean => {
     const lineNumbers = editor.value?.getOption(monaco.editor.EditorOption.lineNumbers);
     return lineNumbers?.renderType === monaco.editor.RenderLineNumbersType.On || false;
   };
 
-  // ×é¼şÏú»ÙÊ±×Ô¶¯ÇåÀí
+  // ç»„ä»¶é”€æ¯æ—¶è‡ªåŠ¨æ¸…ç†
   onBeforeUnmount(() => {
     dispose();
   });

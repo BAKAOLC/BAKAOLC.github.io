@@ -1,6 +1,6 @@
 <template>
   <div class="monaco-editor-wrapper">
-    <!-- π§æﬂ¿∏ -->
+    <!-- Â∑•ÂÖ∑Ê†è -->
     <MonacoEditorToolbar
       v-if="showToolbar"
       :show-toolbar="showToolbar"
@@ -27,21 +27,22 @@
       :read-only="readOnly"
     />
 
-    <!-- ±‡º≠∆˜»›∆˜ -->
+    <!-- ÁºñËæëÂô®ÂÆπÂô® -->
     <div ref="editorContainer" class="monaco-editor-container"></div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import MonacoEditorToolbar from '@/components/MonacoEditorToolbar.vue';
 import { useMonacoEditor, type MonacoEditorOptions } from '@/composables/useMonacoEditor';
+import type monacoConfig from '@/config/monaco-editor.json';
 
 interface Props {
   modelValue?: string;
-  language?: keyof typeof import('@/config/monaco-editor.json')['languageConfigs'];
-  theme?: keyof typeof import('@/config/monaco-editor.json')['themes'];
+  language?: keyof typeof monacoConfig.languageConfigs;
+  theme?: keyof typeof monacoConfig.themes;
   readOnly?: boolean;
   showMinimap?: boolean;
   showLineNumbers?: boolean;
@@ -118,35 +119,35 @@ const emit = defineEmits<Emits>();
 const editorContainer = ref<HTMLElement | null>(null);
 const monacoEditor = useMonacoEditor();
 
-// º‡Ã˝÷µ±‰ªØ
+// ÁõëÂê¨ÂÄºÂèòÂåñ
 watch(() => props.modelValue, (newValue) => {
   if (monacoEditor.isReady.value && monacoEditor.getValue() !== newValue) {
     monacoEditor.setValue(newValue);
   }
 });
 
-// º‡Ã˝”Ô—‘±‰ªØ
+// ÁõëÂê¨ËØ≠Ë®ÄÂèòÂåñ
 watch(() => props.language, (newLanguage) => {
   if (monacoEditor.isReady.value) {
     monacoEditor.setLanguage(newLanguage);
   }
 });
 
-// º‡Ã˝÷˜Ã‚±‰ªØ
+// ÁõëÂê¨‰∏ªÈ¢òÂèòÂåñ
 watch(() => props.theme, (newTheme) => {
   if (monacoEditor.isReady.value) {
     monacoEditor.setTheme(newTheme);
   }
 });
 
-// º‡Ã˝÷ª∂¡ƒ£ Ω±‰ªØ
+// ÁõëÂê¨Âè™ËØªÊ®°ÂºèÂèòÂåñ
 watch(() => props.readOnly, (newReadOnly) => {
   if (monacoEditor.isReady.value) {
     monacoEditor.setReadOnly(newReadOnly);
   }
 });
 
-// ≥ı ºªØ±‡º≠∆˜
+// ÂàùÂßãÂåñÁºñËæëÂô®
 const initializeEditor = (): void => {
   if (!editorContainer.value) return;
 
@@ -168,9 +169,9 @@ const initializeEditor = (): void => {
 
   monacoEditor.initialize(editorContainer.value, options);
 
-  // µ»¥˝editor¥¥Ω®ÕÍ≥…
+  // Á≠âÂæÖeditorÂàõÂª∫ÂÆåÊàê
   nextTick(() => {
-    // º‡Ã˝±‡º≠∆˜ƒ⁄»›±‰ªØ
+    // ÁõëÂê¨ÁºñËæëÂô®ÂÜÖÂÆπÂèòÂåñ
     if (monacoEditor.editor.value) {
       monacoEditor.editor.value.onDidChangeModelContent(() => {
         const value = monacoEditor.getValue();
@@ -191,7 +192,7 @@ const initializeEditor = (): void => {
   });
 };
 
-// ±©¬∂∑Ω∑®∏¯∏∏◊Èº˛
+// Êö¥Èú≤ÊñπÊ≥ïÁªôÁà∂ÁªÑ‰ª∂
 const format = (): void => {
   monacoEditor.format();
   emit('format');
@@ -220,7 +221,7 @@ const toggleReadOnly = (): void => {
   emit('update:readOnly', newReadOnly);
 };
 
-// ±©¬∂∑Ω∑®
+// Êö¥Èú≤ÊñπÊ≥ï
 defineExpose({
   format,
   copyToClipboard,
@@ -259,7 +260,7 @@ onBeforeUnmount(() => {
   @apply overflow-hidden;
 }
 
-/* œÏ”¶ Ω∏ﬂ∂» */
+/* ÂìçÂ∫îÂºèÈ´òÂ∫¶ */
 .monaco-editor-container {
   height: v-bind(height);
   width: v-bind(width);

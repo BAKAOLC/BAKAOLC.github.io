@@ -4,16 +4,16 @@ import { ref, computed, nextTick, markRaw, type Component } from 'vue';
 import { useTimers } from '@/composables/useTimers';
 
 export interface ModalOptions {
-  closable?: boolean; // ÊÇ·ñ¿É¹Ø±Õ
-  maskClosable?: boolean; // µã»÷ÕÚÕÖÊÇ·ñ¹Ø±Õ
-  escClosable?: boolean; // °´ESCÊÇ·ñ¹Ø±Õ
-  destroyOnClose?: boolean; // ¹Ø±ÕÊ±ÊÇ·ñÏú»Ù
-  zIndex?: number; // ×Ô¶¨Òå²ã¼¶
-  className?: string; // ×Ô¶¨ÒåÑùÊ½Àà
-  width?: string | number; // ¿í¶È
-  height?: string | number; // ¸ß¶È
-  fullscreen?: boolean; // ÊÇ·ñÈ«ÆÁ
-  centered?: boolean; // ÊÇ·ñ¾ÓÖĞ
+  closable?: boolean; // æ˜¯å¦å¯å…³é—­
+  maskClosable?: boolean; // ç‚¹å‡»é®ç½©æ˜¯å¦å…³é—­
+  escClosable?: boolean; // æŒ‰ESCæ˜¯å¦å…³é—­
+  destroyOnClose?: boolean; // å…³é—­æ—¶æ˜¯å¦é”€æ¯
+  zIndex?: number; // è‡ªå®šä¹‰å±‚çº§
+  className?: string; // è‡ªå®šä¹‰æ ·å¼ç±»
+  width?: string | number; // å®½åº¦
+  height?: string | number; // é«˜åº¦
+  fullscreen?: boolean; // æ˜¯å¦å…¨å±
+  centered?: boolean; // æ˜¯å¦å±…ä¸­
 }
 
 export interface ModalConfig {
@@ -28,36 +28,36 @@ export interface ModalConfig {
 export interface ModalInstance extends ModalConfig {
   visible: boolean;
   zIndex: number;
-  parentId?: string; // ¸¸µ¯´°ID£¬ÓÃÓÚ²ã¼¶¹ÜÀí
-  children: Set<string>; // ×Óµ¯´°ID¼¯ºÏ
-  createdAt: number; // ´´½¨Ê±¼ä´Á
+  parentId?: string; // çˆ¶å¼¹çª—IDï¼Œç”¨äºå±‚çº§ç®¡ç†
+  children: Set<string>; // å­å¼¹çª—IDé›†åˆ
+  createdAt: number; // åˆ›å»ºæ—¶é—´æˆ³
 }
 
 export const useModalStore = defineStore('modal', () => {
   const modals = ref<Map<string, ModalInstance>>(new Map());
   const baseZIndex = ref(2000);
   const currentZIndex = ref(2000);
-  const activeModalStack = ref<string[]>([]); // »îÔ¾µ¯´°Õ»
+  const activeModalStack = ref<string[]>([]); // æ´»è·ƒå¼¹çª—æ ˆ
   const { setTimeout } = useTimers();
 
-  // »ñÈ¡¿É¼ûµ¯´°
+  // è·å–å¯è§å¼¹çª—
   const visibleModals = computed(() => {
     return Array.from(modals.value.values())
       .filter(modal => modal.visible)
       .sort((a, b) => a.zIndex - b.zIndex);
   });
 
-  // »ñÈ¡¶¥²ãµ¯´°
+  // è·å–é¡¶å±‚å¼¹çª—
   const topModal = computed(() => {
     const visible = visibleModals.value;
     return visible.length > 0 ? visible[visible.length - 1] : null;
   });
 
-  // ´ò¿ªµ¯´°
+  // æ‰“å¼€å¼¹çª—
   const open = (config: ModalConfig): string => {
     const modal: ModalInstance = {
       ...config,
-      component: markRaw(config.component), // Ê¹ÓÃmarkRaw±ÜÃâ×é¼ş±»ÏìÓ¦Ê½»¯
+      component: markRaw(config.component), // ä½¿ç”¨markRawé¿å…ç»„ä»¶è¢«å“åº”å¼åŒ–
       visible: true,
       zIndex: ++currentZIndex.value,
       children: new Set(),
@@ -72,7 +72,7 @@ export const useModalStore = defineStore('modal', () => {
       },
     };
 
-    // Èç¹ûÓĞ»îÔ¾µÄµ¯´°£¬½¨Á¢¸¸×Ó¹ØÏµ
+    // å¦‚æœæœ‰æ´»è·ƒçš„å¼¹çª—ï¼Œå»ºç«‹çˆ¶å­å…³ç³»
     if (activeModalStack.value.length > 0) {
       const parentId = activeModalStack.value[activeModalStack.value.length - 1];
       const parentModal = modals.value.get(parentId);
@@ -85,33 +85,33 @@ export const useModalStore = defineStore('modal', () => {
     modals.value.set(config.id, modal);
     activeModalStack.value.push(config.id);
 
-    // ×èÖ¹±³¾°¹ö¶¯
+    // é˜»æ­¢èƒŒæ™¯æ»šåŠ¨
     updateBodyOverflow();
 
     return config.id;
   };
 
-  // ¹Ø±Õµ¯´°
+  // å…³é—­å¼¹çª—
   const close = (id: string): void => {
     const modal = modals.value.get(id);
-    if (!modal || !modal.visible) return;
+    if (!modal?.visible) return;
 
-    // ÏÈ¹Ø±ÕËùÓĞ×Óµ¯´°
+    // å…ˆå…³é—­æ‰€æœ‰å­å¼¹çª—
     const childrenToClose = Array.from(modal.children);
     childrenToClose.forEach(childId => {
       close(childId);
     });
 
-    // ÉèÖÃÎª²»¿É¼û
+    // è®¾ç½®ä¸ºä¸å¯è§
     modal.visible = false;
 
-    // ´Ó»îÔ¾Õ»ÖĞÒÆ³ı
+    // ä»æ´»è·ƒæ ˆä¸­ç§»é™¤
     const stackIndex = activeModalStack.value.indexOf(id);
     if (stackIndex !== -1) {
       activeModalStack.value.splice(stackIndex, 1);
     }
 
-    // ´Ó¸¸µ¯´°µÄ×Ó¼¯ºÏÖĞÒÆ³ı
+    // ä»çˆ¶å¼¹çª—çš„å­é›†åˆä¸­ç§»é™¤
     if (modal.parentId) {
       const parentModal = modals.value.get(modal.parentId);
       if (parentModal) {
@@ -119,28 +119,28 @@ export const useModalStore = defineStore('modal', () => {
       }
     }
 
-    // µ÷ÓÃ¹Ø±Õ»Øµ÷
+    // è°ƒç”¨å…³é—­å›è°ƒ
     if (modal.onClose) {
       modal.onClose();
     }
 
-    // ÑÓ³ÙÏú»Ù£¬µÈ´ı¶¯»­Íê³É
+    // å»¶è¿Ÿé”€æ¯ï¼Œç­‰å¾…åŠ¨ç”»å®Œæˆ
     setTimeout(() => {
       if (modal.options?.destroyOnClose !== false) {
         modals.value.delete(id);
 
-        // µ÷ÓÃÏú»Ù»Øµ÷
+        // è°ƒç”¨é”€æ¯å›è°ƒ
         if (modal.onDestroy) {
           modal.onDestroy();
         }
       }
 
-      // ¸üĞÂbody¹ö¶¯×´Ì¬
+      // æ›´æ–°bodyæ»šåŠ¨çŠ¶æ€
       updateBodyOverflow();
     }, 300);
   };
 
-  // ¹Ø±ÕËùÓĞµ¯´°
+  // å…³é—­æ‰€æœ‰å¼¹çª—
   const closeAll = (): void => {
     const modalIds = Array.from(modals.value.keys());
     modalIds.forEach(id => {
@@ -148,18 +148,18 @@ export const useModalStore = defineStore('modal', () => {
     });
   };
 
-  // »ñÈ¡Ö¸¶¨µ¯´°
+  // è·å–æŒ‡å®šå¼¹çª—
   const getModal = (id: string): ModalInstance | undefined => {
     return modals.value.get(id);
   };
 
-  // ¼ì²éµ¯´°ÊÇ·ñ´ò¿ª
+  // æ£€æŸ¥å¼¹çª—æ˜¯å¦æ‰“å¼€
   const isModalOpen = (id: string): boolean => {
     const modal = modals.value.get(id);
     return modal ? modal.visible : false;
   };
 
-  // ¸üĞÂbody¹ö¶¯×´Ì¬
+  // æ›´æ–°bodyæ»šåŠ¨çŠ¶æ€
   const updateBodyOverflow = (): void => {
     nextTick(() => {
       const hasVisibleModals = visibleModals.value.length > 0;
@@ -169,7 +169,7 @@ export const useModalStore = defineStore('modal', () => {
     });
   };
 
-  // ÉèÖÃ»ù´¡z-index
+  // è®¾ç½®åŸºç¡€z-index
   const setBaseZIndex = (zIndex: number): void => {
     baseZIndex.value = zIndex;
     currentZIndex.value = zIndex;

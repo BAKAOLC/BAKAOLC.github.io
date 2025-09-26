@@ -46,7 +46,7 @@ export function useModalManager(): ModalManagerComposable {
     return modalStore.isModalOpen(id);
   };
 
-  // ±„Ω›∑Ω∑®
+  // ‰æøÊç∑ÊñπÊ≥ï
   const openModal = (component: Component, props?: Record<string, any>, options?: ModalOptions): string => {
     const id = `modal-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     return open({

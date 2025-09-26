@@ -1,17 +1,16 @@
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
-
-import type { I18nText } from '@/types';
+import { computed, ref } from 'vue';
 
 import { useTimers } from '@/composables/useTimers';
+import type { I18nText } from '@/types';
 
 export interface NotificationConfig {
   id: string;
   message: string | I18nText;
   type?: 'success' | 'error' | 'warning' | 'info';
-  duration?: number; // œ‘ æ ±≥§£¨0±Ì æ≤ª◊‘∂Øπÿ±’
-  closable?: boolean; //  «∑Òø… ÷∂Øπÿ±’
-  icon?: string; // Õº±Í¿‡√˚
+  duration?: number; // ÊòæÁ§∫Êó∂ÈïøÔºå0Ë°®Á§∫‰∏çËá™Âä®ÂÖ≥Èó≠
+  closable?: boolean; // ÊòØÂê¶ÂèØÊâãÂä®ÂÖ≥Èó≠
+  icon?: string; // ÂõæÊ†áÁ±ªÂêç
 }
 
 export interface NotificationInstance extends NotificationConfig {
@@ -25,12 +24,12 @@ export const useNotificationStore = defineStore('notification', () => {
   const pendingQueue = ref<NotificationConfig[]>([]);
   const { setTimeout, clearTimeout } = useTimers();
 
-  // ªÒ»°ø…º˚Õ®÷™ ˝¡ø
+  // Ëé∑ÂèñÂèØËßÅÈÄöÁü•Êï∞Èáè
   const visibleCount = computed(() => notifications.value.filter(n => n.visible).length);
 
-  // œ‘ æÕ®÷™
+  // ÊòæÁ§∫ÈÄöÁü•
   const show = (config: NotificationConfig): string => {
-    // »Áπ˚≥¨π˝◊Ó¥Û ˝¡ø£¨º”»Îµ»¥˝∂”¡–
+    // Â¶ÇÊûúË∂ÖËøáÊúÄÂ§ßÊï∞ÈáèÔºåÂä†ÂÖ•Á≠âÂæÖÈòüÂàó
     if (visibleCount.value >= maxNotifications.value) {
       pendingQueue.value.push(config);
       return config.id;
@@ -39,19 +38,19 @@ export const useNotificationStore = defineStore('notification', () => {
     return showNotification(config);
   };
 
-  // ¡¢º¥œ‘ æÕ®÷™
+  // Á´ãÂç≥ÊòæÁ§∫ÈÄöÁü•
   const showNotification = (config: NotificationConfig): string => {
     const notification: NotificationInstance = {
       ...config,
       visible: true,
       duration: config.duration ?? 3000,
       closable: config.closable ?? true,
-      type: config.type || 'info',
+      type: config.type ?? 'info',
     };
 
     notifications.value.push(notification);
 
-    // …Ë÷√◊‘∂Øπÿ±’∂® ±∆˜
+    // ËÆæÁΩÆËá™Âä®ÂÖ≥Èó≠ÂÆöÊó∂Âô®
     if (notification.duration && notification.duration > 0) {
       notification.timer = setTimeout(() => {
         remove(notification.id);
@@ -61,36 +60,36 @@ export const useNotificationStore = defineStore('notification', () => {
     return config.id;
   };
 
-  // “∆≥˝Õ®÷™
+  // ÁßªÈô§ÈÄöÁü•
   const remove = (id: string): void => {
     const index = notifications.value.findIndex(n => n.id === id);
     if (index === -1) return;
 
     const notification = notifications.value[index];
 
-    // «Â≥˝∂® ±∆˜
+    // Ê∏ÖÈô§ÂÆöÊó∂Âô®
     if (notification.timer) {
       clearTimeout(notification.timer);
     }
 
-    // …Ë÷√Œ™≤ªø…º˚£¨»√∂Øª≠≤•∑≈
+    // ËÆæÁΩÆ‰∏∫‰∏çÂèØËßÅÔºåËÆ©Âä®ÁîªÊí≠Êîæ
     notification.visible = false;
 
-    // —”≥Ÿ“∆≥˝£¨µ»¥˝∂Øª≠ÕÍ≥…
+    // Âª∂ËøüÁßªÈô§ÔºåÁ≠âÂæÖÂä®ÁîªÂÆåÊàê
     setTimeout(() => {
       const currentIndex = notifications.value.findIndex(n => n.id === id);
       if (currentIndex !== -1) {
         notifications.value.splice(currentIndex, 1);
       }
 
-      // ¥¶¿Ìµ»¥˝∂”¡–
+      // Â§ÑÁêÜÁ≠âÂæÖÈòüÂàó
       processQueue();
     }, 300);
   };
 
-  // ¥¶¿Ìµ»¥˝∂”¡–
+  // Â§ÑÁêÜÁ≠âÂæÖÈòüÂàó
   const processQueue = (): void => {
-    // ¡¢º¥¥¶¿Ì∂”¡–£¨≤ª π”√—”≥Ÿ£¨»∑±£—œ∏Ò∞¥À≥–Úœ‘ æ
+    // Á´ãÂç≥Â§ÑÁêÜÈòüÂàóÔºå‰∏ç‰ΩøÁî®Âª∂ËøüÔºåÁ°Æ‰øù‰∏•Ê†ºÊåâÈ°∫Â∫èÊòæÁ§∫
     while (pendingQueue.value.length > 0 && visibleCount.value < maxNotifications.value) {
       const nextNotification = pendingQueue.value.shift();
       if (nextNotification) {
@@ -99,12 +98,12 @@ export const useNotificationStore = defineStore('notification', () => {
     }
   };
 
-  // «Â≥˝À˘”–Õ®÷™
+  // Ê∏ÖÈô§ÊâÄÊúâÈÄöÁü•
   const clear = (): void => {
-    // «Âø’µ»¥˝∂”¡–
+    // Ê∏ÖÁ©∫Á≠âÂæÖÈòüÂàó
     pendingQueue.value = [];
 
-    // «Â≥˝À˘”–∂® ±∆˜≤¢“∆≥˝Õ®÷™
+    // Ê∏ÖÈô§ÊâÄÊúâÂÆöÊó∂Âô®Âπ∂ÁßªÈô§ÈÄöÁü•
     notifications.value.forEach(notification => {
       if (notification.timer) {
         clearTimeout(notification.timer);
@@ -114,14 +113,14 @@ export const useNotificationStore = defineStore('notification', () => {
     notifications.value = [];
   };
 
-  // …Ë÷√◊Ó¥ÛÕ®÷™ ˝¡ø
+  // ËÆæÁΩÆÊúÄÂ§ßÈÄöÁü•Êï∞Èáè
   const setMaxNotifications = (max: number): void => {
     maxNotifications.value = Math.max(1, max);
   };
 
-  // ±„Ω›∑Ω∑®
+  // ‰æøÊç∑ÊñπÊ≥ï
   const success = (message: string | I18nText, options: Partial<NotificationConfig> = {}): string => {
-    const id = options.id || `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const id = options.id ?? `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     return show({
       id,
       message,
@@ -131,7 +130,7 @@ export const useNotificationStore = defineStore('notification', () => {
   };
 
   const error = (message: string | I18nText, options: Partial<NotificationConfig> = {}): string => {
-    const id = options.id || `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const id = options.id ?? `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     return show({
       id,
       message,
@@ -141,7 +140,7 @@ export const useNotificationStore = defineStore('notification', () => {
   };
 
   const warning = (message: string | I18nText, options: Partial<NotificationConfig> = {}): string => {
-    const id = options.id || `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const id = options.id ?? `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     return show({
       id,
       message,
@@ -151,7 +150,7 @@ export const useNotificationStore = defineStore('notification', () => {
   };
 
   const info = (message: string | I18nText, options: Partial<NotificationConfig> = {}): string => {
-    const id = options.id || `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const id = options.id ?? `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     return show({
       id,
       message,
