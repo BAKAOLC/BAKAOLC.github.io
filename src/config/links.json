@@ -52,6 +52,20 @@
           "tags": [
             "blog"
           ]
+        },
+        {
+          "id": "oyasumiayumu",
+          "name": "安梦梦",
+          "url": "https://oyasumiayumu.github.io",
+          "avatar": "https://oyasumiayumu.github.io/assets/avatar.png",
+          "description": {
+            "zh": "安梦梦的博客",
+            "en": "OyasumiAyumu's blog",
+            "jp": "安梦梦のブログ"
+          },
+          "tags": [
+            "blog"
+          ]
         }
       ]
     }
