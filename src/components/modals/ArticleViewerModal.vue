@@ -1,9 +1,9 @@
 <template>
   <div class="article-viewer-modal">
-    <!-- Í·²¿¿ØÖÆÀ¸ -->
+    <!-- å¤´éƒ¨æ§åˆ¶æ  -->
     <div class="viewer-header">
       <div class="header-content">
-        <!-- ÎÄÕÂ±êÌâºÍĞÅÏ¢ -->
+        <!-- æ–‡ç« æ ‡é¢˜å’Œä¿¡æ¯ -->
         <div class="article-header-info">
           <h1 class="article-title">{{ getI18nText(article.title, currentLanguage) }}</h1>
           <div class="article-meta">
@@ -28,7 +28,7 @@
           </div>
         </div>
 
-        <!-- ¿ØÖÆ°´Å¥ -->
+        <!-- æ§åˆ¶æŒ‰é’® -->
         <div class="viewer-controls">
           <button
             v-if="showCopyButton"
@@ -45,9 +45,9 @@
       </div>
     </div>
 
-    <!-- ÄÚÈİÇøÓò -->
+    <!-- å†…å®¹åŒºåŸŸ -->
     <div class="viewer-content" ref="viewerContent">
-      <!-- ÎÄÕÂ·âÃæ -->
+      <!-- æ–‡ç« å°é¢ -->
       <div v-if="articleCover" class="article-cover-section">
         <img
           :src="articleCover"
@@ -56,12 +56,12 @@
         />
       </div>
 
-      <!-- ÎÄÕÂÄÚÈİ -->
+      <!-- æ–‡ç« å†…å®¹ -->
       <div class="article-content-section">
         <div class="markdown-content" v-html="renderedContent"></div>
       </div>
 
-      <!-- ÉÏÒ»Æª¡¢ÏÂÒ»Æª°´Å¥ -->
+      <!-- ä¸Šä¸€ç¯‡ã€ä¸‹ä¸€ç¯‡æŒ‰é’® -->
       <div v-if="showNavigation && (prevArticle || nextArticle)" class="article-navigation">
         <button
           v-if="prevArticle"
@@ -88,13 +88,13 @@
         </button>
       </div>
 
-      <!-- ÆÀÂÛÇø -->
+      <!-- è¯„è®ºåŒº -->
       <div v-if="showComments && shouldShowComments" class="comments-section">
         <div class="comments-header">
           <h3 class="comments-title">{{ $t('articles.comments') }}</h3>
         </div>
         <div class="comments-container">
-          <giscus-comments :key="article.id" :unique-id="article.id" prefix="article" />
+          <GiscusComments :key="article.id" :unique-id="article.id" prefix="article" />
         </div>
       </div>
     </div>
@@ -102,20 +102,20 @@
 </template>
 
 <script setup lang="ts">
+import DOMPurify from 'dompurify';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github-dark.css';
 import { marked } from 'marked';
-import { ref, computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-
-import type { Article } from '@/types';
 
 import GiscusComments from '@/components/GiscusComments.vue';
 import { useNotificationManager } from '@/composables/useNotificationManager';
 import articleCategoriesConfig from '@/config/articles-categories.json';
 import { siteConfig } from '@/config/site';
 import { useAppStore } from '@/stores/app';
-import { getArticleCover, formatDate, getAdjacentArticles } from '@/utils/articles';
+import type { Article, ArticleCategoriesConfig } from '@/types';
+import { formatDate, getAdjacentArticles, getArticleCover } from '@/utils/articles';
 import { getI18nText } from '@/utils/i18nText';
 import { getIconClass } from '@/utils/icons';
 
@@ -123,12 +123,12 @@ interface Props {
   article: Article;
   articles?: Article[];
 
-  // ¹¦ÄÜ¿ØÖÆ
+  // åŠŸèƒ½æ§åˆ¶
   showCopyButton?: boolean;
   showComments?: boolean;
   showNavigation?: boolean;
 
-  // ×Ô¶¨ÒåÁ´½Ó£¨ÓÃÓÚÍâ²¿ÎÄÕÂ£©
+  // è‡ªå®šä¹‰é“¾æ¥ï¼ˆç”¨äºå¤–éƒ¨æ–‡ç« ï¼‰
   customLink?: string;
 }
 
@@ -138,9 +138,11 @@ interface Emits {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  articles: undefined,
   showCopyButton: true,
   showComments: true,
   showNavigation: true,
+  customLink: undefined,
 });
 
 const emit = defineEmits<Emits>();
@@ -149,19 +151,20 @@ const appStore = useAppStore();
 const notificationManager = useNotificationManager();
 const { t: $t } = useI18n();
 
-// ÏìÓ¦Ê½Êı¾İ
+// å“åº”å¼æ•°æ®
 const viewerContent = ref<HTMLElement>();
 
 const currentLanguage = computed(() => appStore.currentLanguage);
 
-// ¼ÆËãÊôĞÔ
+// è®¡ç®—å±æ€§
 const articleCover = computed(() => {
   return getArticleCover(props.article.cover, currentLanguage.value);
 });
 
 const renderedContent = computed(() => {
   const content = getI18nText(props.article.content, currentLanguage.value);
-  return renderMarkdown(content);
+  const html = renderMarkdown(content);
+  return DOMPurify.sanitize(html);
 });
 
 const adjacentArticles = computed(() => {
@@ -176,26 +179,26 @@ const shouldShowComments = computed(() => {
   return props.article.allowComments && siteConfig.features.comments;
 });
 
-// ·½·¨
+// æ–¹æ³•
 const getCategoryName = (categoryId: string): string => {
-  const category = (articleCategoriesConfig as any)[categoryId];
+  const category = (articleCategoriesConfig as ArticleCategoriesConfig)[categoryId];
   return category ? getI18nText(category.name, currentLanguage.value) : categoryId;
 };
 
 const getCategoryColor = (categoryId: string): string => {
-  const category = (articleCategoriesConfig as any)[categoryId];
+  const category = (articleCategoriesConfig as ArticleCategoriesConfig)[categoryId];
   return category?.color || '#6b7280';
 };
 
 const renderMarkdown = (content: string): string => {
   try {
-    // ÅäÖÃ marked Ñ¡Ïî
+    // é…ç½® marked é€‰é¡¹
     marked.setOptions({
       breaks: true,
       gfm: true,
     });
 
-    // ÉèÖÃ´úÂë¸ßÁÁäÖÈ¾Æ÷
+    // è®¾ç½®ä»£ç é«˜äº®æ¸²æŸ“å™¨
     const renderer = new marked.Renderer();
 
     renderer.code = (token: { text: string; lang?: string; escaped?: boolean }) => {
@@ -229,16 +232,16 @@ const navigateTo = (articleId: string): void => {
 
 const copyArticleLink = async (): Promise<void> => {
   try {
-    // Ê¹ÓÃ×Ô¶¨ÒåÁ´½Ó»òÉú³ÉÄ¬ÈÏÁ´½Ó
+    // ä½¿ç”¨è‡ªå®šä¹‰é“¾æ¥æˆ–ç”Ÿæˆé»˜è®¤é“¾æ¥
     const url = props.customLink || `${window.location.origin}${window.location.pathname}#/articles/${props.article.id}`;
     await navigator.clipboard.writeText(url);
 
-    // ÏÔÊ¾³É¹¦Í¨Öª
+    // æ˜¾ç¤ºæˆåŠŸé€šçŸ¥
     notificationManager.success($t('articles.linkCopied'));
   } catch (err) {
     console.error('Failed to copy article link:', err);
 
-    // ½µ¼¶·½°¸£ºÑ¡ÔñÎÄ±¾
+    // é™çº§æ–¹æ¡ˆï¼šé€‰æ‹©æ–‡æœ¬
     const url = props.customLink || `${window.location.origin}${window.location.pathname}#/articles/${props.article.id}`;
     const textArea = document.createElement('textarea');
     textArea.value = url;
@@ -247,12 +250,12 @@ const copyArticleLink = async (): Promise<void> => {
     document.execCommand('copy');
     document.body.removeChild(textArea);
 
-    // ÏÔÊ¾³É¹¦Í¨Öª
+    // æ˜¾ç¤ºæˆåŠŸé€šçŸ¥
     notificationManager.success($t('articles.linkCopied'));
   }
 };
 
-// ¼àÌıÆ÷
+// ç›‘å¬å™¨
 watch(() => props.article, () => {
   if (viewerContent.value) {
     viewerContent.value.scrollTop = 0;
@@ -368,7 +371,7 @@ watch(() => props.article, () => {
   @apply leading-relaxed;
 }
 
-/* Markdown ÑùÊ½ */
+/* Markdown æ ·å¼ */
 .markdown-content :deep(h1) {
   @apply text-3xl font-bold text-gray-900 dark:text-white mb-4 mt-8 first:mt-0;
   @apply border-b border-gray-200 dark:border-gray-700 pb-2;
@@ -558,7 +561,7 @@ watch(() => props.article, () => {
   @apply min-h-[200px];
 }
 
-/* ÒÆ¶¯¶ËÊÊÅä */
+/* ç§»åŠ¨ç«¯é€‚é… */
 @media (max-width: 767px) {
   .viewer-header {
     @apply p-3;
@@ -598,7 +601,7 @@ watch(() => props.article, () => {
   }
 }
 
-/* ¹ö¶¯ÌõÑùÊ½ */
+/* æ»šåŠ¨æ¡æ ·å¼ */
 .viewer-content::-webkit-scrollbar {
   @apply w-2;
 }

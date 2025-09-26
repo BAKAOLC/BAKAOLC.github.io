@@ -1,6 +1,6 @@
 <template>
   <div class="json-viewer-modal">
-    <!-- Í·²¿ -->
+    <!-- å¤´éƒ¨ -->
     <div class="modal-header">
       <h3 class="modal-title">{{ title }}</h3>
       <div class="header-actions">
@@ -10,25 +10,25 @@
       </div>
     </div>
 
-    <!-- Monaco Editor ×é¼ş -->
+    <!-- Monaco Editor ç»„ä»¶ -->
     <div class="modal-body">
       <MonacoEditor
         ref="monacoEditorRef"
         v-model="editorContent"
         language="json"
         :height="editorHeight"
-        :read-only="true"
+        read-only
         :show-toolbar="false"
         :show-minimap="false"
-        :show-line-numbers="true"
-        :word-wrap="'on'"
+        show-line-numbers
+        word-wrap="on"
         :font-size="14"
-        :format-on-paste="true"
-        :format-on-type="true"
+        format-on-paste
+        format-on-type
         :quick-suggestions="false"
         :suggest-on-trigger-characters="false"
-        :accept-suggestion-on-enter="'off'"
-        :automatic-layout="true"
+        accept-suggestion-on-enter="off"
+        automatic-layout
         @ready="onEditorReady"
         @change="onContentChange"
         @format="onFormat"
@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import * as monaco from 'monaco-editor';
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import MonacoEditor from '@/components/MonacoEditor.vue';
@@ -70,19 +70,19 @@ const notificationManager = useNotificationManager();
 const screenManager = useScreenManager();
 const { setTimeout, clearTimeout } = useTimers();
 
-// ÏìÓ¦Ê½Êı¾İ
+// å“åº”å¼æ•°æ®
 const monacoEditorRef = ref<InstanceType<typeof MonacoEditor> | null>(null);
 const editorContent = ref(props.content);
 
-// ±à¼­Æ÷¸ß¶È
+// ç¼–è¾‘å™¨é«˜åº¦
 const editorHeight = ref('300px');
 
-// ·½·¨
+// æ–¹æ³•
 const close = (): void => {
   emit('close');
 };
 
-// ¶¯Ì¬µ÷Õû±à¼­Æ÷¸ß¶È
+// åŠ¨æ€è°ƒæ•´ç¼–è¾‘å™¨é«˜åº¦
 const adjustEditorHeight = (): void => {
   if (!monacoEditorRef.value || !monacoEditorRef.value.isReady) {
     return;
@@ -99,46 +99,46 @@ const adjustEditorHeight = (): void => {
   }
 
   try {
-    // »ñÈ¡ÄÚÈİĞĞÊı
+    // è·å–å†…å®¹è¡Œæ•°
     const lineCount = model.getLineCount();
 
-    // »ñÈ¡ĞĞ¸ß
+    // è·å–è¡Œé«˜
     const lineHeight = editor.getOption(monaco.editor.EditorOption.lineHeight);
 
-    // ¼ÆËãÄÚÈİ¸ß¶È
+    // è®¡ç®—å†…å®¹é«˜åº¦
     const contentHeight = lineCount * lineHeight;
 
-    // ¸ù¾İÆÁÄ»³ß´çÉèÖÃ±à¼­Æ÷µÄÉÏÏÂÏŞ
+    // æ ¹æ®å±å¹•å°ºå¯¸è®¾ç½®ç¼–è¾‘å™¨çš„ä¸Šä¸‹é™
     const screenInfo = screenManager.screenInfo.value;
 
     let minHeight: number;
     let maxHeight: number;
 
     if (screenInfo.width <= 480) {
-      // Ğ¡ÆÁÊÖ»ú£º×îĞ¡200px£¬×î´óÆÁÄ»¸ß¶ÈµÄ70%
+      // å°å±æ‰‹æœºï¼šæœ€å°200pxï¼Œæœ€å¤§å±å¹•é«˜åº¦çš„70%
       minHeight = 200;
       maxHeight = screenInfo.height * 0.70;
     } else if (screenInfo.width <= 768) {
-      // ÒÆ¶¯¶Ë£º×îĞ¡200px£¬×î´óÆÁÄ»¸ß¶ÈµÄ65%
+      // ç§»åŠ¨ç«¯ï¼šæœ€å°200pxï¼Œæœ€å¤§å±å¹•é«˜åº¦çš„65%
       minHeight = 200;
       maxHeight = screenInfo.height * 0.65;
     } else if (screenInfo.width <= 1024) {
-      // Æ½°å£º×îĞ¡250px£¬×î´óÆÁÄ»¸ß¶ÈµÄ60%
+      // å¹³æ¿ï¼šæœ€å°250pxï¼Œæœ€å¤§å±å¹•é«˜åº¦çš„60%
       minHeight = 250;
       maxHeight = screenInfo.height * 0.60;
     } else if (screenInfo.width <= 1280) {
-      // ÖĞµÈÆÁÄ»£º×îĞ¡300px£¬×î´óÆÁÄ»¸ß¶ÈµÄ55%
+      // ä¸­ç­‰å±å¹•ï¼šæœ€å°300pxï¼Œæœ€å¤§å±å¹•é«˜åº¦çš„55%
       minHeight = 300;
       maxHeight = screenInfo.height * 0.55;
     } else {
-      // ×ÀÃæ£º×îĞ¡300px£¬×î´óÆÁÄ»¸ß¶ÈµÄ50%
+      // æ¡Œé¢ï¼šæœ€å°300pxï¼Œæœ€å¤§å±å¹•é«˜åº¦çš„50%
       minHeight = 300;
       maxHeight = screenInfo.height * 0.50;
     }
 
-    // ±à¼­Æ÷¸ß¶È£ºÄÚÈİ¸ß¶È£¬µ«ÊÜÉÏÏÂÏŞÔ¼Êø
+    // ç¼–è¾‘å™¨é«˜åº¦ï¼šå†…å®¹é«˜åº¦ï¼Œä½†å—ä¸Šä¸‹é™çº¦æŸ
     const finalHeight = Math.max(minHeight, Math.min(contentHeight, maxHeight));
-    // ¸üĞÂ¸ß¶È
+    // æ›´æ–°é«˜åº¦
     const newHeight = `${finalHeight}px`;
     if (editorHeight.value !== newHeight) {
       editorHeight.value = newHeight;
@@ -148,15 +148,15 @@ const adjustEditorHeight = (): void => {
   }
 };
 
-// ±à¼­Æ÷ÊÂ¼ş´¦Àí
+// ç¼–è¾‘å™¨äº‹ä»¶å¤„ç†
 const onEditorReady = (): void => {
-  // ±à¼­Æ÷×¼±¸ºÃºóµ÷Õû¸ß¶È
+  // ç¼–è¾‘å™¨å‡†å¤‡å¥½åè°ƒæ•´é«˜åº¦
   setTimeout(() => {
     adjustEditorHeight();
   }, 100);
 };
 
-// ÄÚÈİ±ä»¯·À¶¶¶¨Ê±Æ÷
+// å†…å®¹å˜åŒ–é˜²æŠ–å®šæ—¶å™¨
 let contentChangeTimeout: number | null = null;
 let isContentChanging = false;
 
@@ -167,47 +167,47 @@ const onContentChange = (value: string): void => {
 
   isContentChanging = true;
 
-  // Çå³ıÖ®Ç°µÄ¶¨Ê±Æ÷
+  // æ¸…é™¤ä¹‹å‰çš„å®šæ—¶å™¨
   if (contentChangeTimeout) {
     clearTimeout(contentChangeTimeout);
   }
 
-  // ÉèÖÃĞÂµÄ·À¶¶¶¨Ê±Æ÷
+  // è®¾ç½®æ–°çš„é˜²æŠ–å®šæ—¶å™¨
   contentChangeTimeout = setTimeout(() => {
     adjustEditorHeight();
     contentChangeTimeout = null;
     isContentChanging = false;
-  }, 150); // 150ms ·À¶¶ÑÓ³Ù
+  }, 150); // 150ms é˜²æŠ–å»¶è¿Ÿ
 };
 
 const onFormat = (): void => {
   notificationManager.success($t('common.success'));
 };
 
-// ÆÁÄ»±ä»¯»Øµ÷
+// å±å¹•å˜åŒ–å›è°ƒ
 const handleScreenChange = (): void => {
   adjustEditorHeight();
 };
 
-// ÆÁÄ»±ä»¯È¡Ïû×¢²áº¯Êı
+// å±å¹•å˜åŒ–å–æ¶ˆæ³¨å†Œå‡½æ•°
 let unregisterScreenChange: (() => void) | null = null;
 
-// ÉúÃüÖÜÆÚ
+// ç”Ÿå‘½å‘¨æœŸ
 onMounted(() => {
   editorContent.value = props.content;
 
-  // ×¢²áÆÁÄ»±ä»¯¼àÌıÆ÷
+  // æ³¨å†Œå±å¹•å˜åŒ–ç›‘å¬å™¨
   unregisterScreenChange = screenManager.onScreenChange(handleScreenChange);
 });
 
 onBeforeUnmount(() => {
-  // È¡Ïû×¢²áÆÁÄ»±ä»¯¼àÌıÆ÷
+  // å–æ¶ˆæ³¨å†Œå±å¹•å˜åŒ–ç›‘å¬å™¨
   if (unregisterScreenChange) {
     unregisterScreenChange();
     unregisterScreenChange = null;
   }
 
-  // ÇåÀíÄÚÈİ±ä»¯¶¨Ê±Æ÷
+  // æ¸…ç†å†…å®¹å˜åŒ–å®šæ—¶å™¨
   if (contentChangeTimeout) {
     clearTimeout(contentChangeTimeout);
     contentChangeTimeout = null;
@@ -295,7 +295,7 @@ onBeforeUnmount(() => {
   @apply flex-shrink-0;
 }
 
-/* ÖĞµÈÆÁÄ»ÊÊÅä */
+/* ä¸­ç­‰å±å¹•é€‚é… */
 @media (max-width: 1280px) {
   .json-viewer-modal {
     @apply w-[calc(100vw-2rem)] max-w-5xl;
@@ -303,7 +303,7 @@ onBeforeUnmount(() => {
   }
 }
 
-/* Æ½°å¶ËÊÊÅä */
+/* å¹³æ¿ç«¯é€‚é… */
 @media (max-width: 1024px) {
   .json-viewer-modal {
     @apply w-[calc(100vw-2rem)] max-w-4xl;
@@ -311,7 +311,7 @@ onBeforeUnmount(() => {
   }
 }
 
-/* ÒÆ¶¯¶ËÊÊÅä */
+/* ç§»åŠ¨ç«¯é€‚é… */
 @media (max-width: 768px) {
   .json-viewer-modal {
     @apply w-[calc(100vw-1rem)] max-w-none;
@@ -336,7 +336,7 @@ onBeforeUnmount(() => {
 
 }
 
-/* Ğ¡ÆÁÊÖ»úÊÊÅä */
+/* å°å±æ‰‹æœºé€‚é… */
 @media (max-width: 480px) {
   .json-viewer-modal {
     @apply w-[calc(100vw-0.5rem)];
@@ -356,7 +356,7 @@ onBeforeUnmount(() => {
   }
 }
 
-/* ¶¯»­Ğ§¹û */
+/* åŠ¨ç”»æ•ˆæœ */
 .json-viewer-modal {
   animation: modal-fade-in 0.15s ease-out;
 }

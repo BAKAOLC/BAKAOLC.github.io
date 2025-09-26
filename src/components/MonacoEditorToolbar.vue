@@ -1,7 +1,7 @@
 <template>
   <div v-if="showToolbar" class="monaco-editor-toolbar">
     <div class="toolbar-group">
-      <!-- ³·ÏúÖØ×ö -->
+      <!-- æ’¤é”€é‡åš -->
       <template v-if="toolbarOptions.showUndoRedo">
         <button
           class="toolbar-button"
@@ -23,7 +23,7 @@
 
       <div class="toolbar-separator"></div>
 
-      <!-- ²éÕÒÌæ»» -->
+      <!-- æŸ¥æ‰¾æ›¿æ¢ -->
       <template v-if="toolbarOptions.showFindReplace">
         <button
           class="toolbar-button"
@@ -43,7 +43,7 @@
 
       <div class="toolbar-separator"></div>
 
-      <!-- ¸ñÊ½»¯ -->
+      <!-- æ ¼å¼åŒ– -->
       <template v-if="toolbarOptions.showFormat">
         <button
           class="toolbar-button"
@@ -54,7 +54,7 @@
         </button>
       </template>
 
-      <!-- ¸´ÖÆ -->
+      <!-- å¤åˆ¶ -->
       <template v-if="toolbarOptions.showCopy">
         <button
           class="toolbar-button"
@@ -68,7 +68,7 @@
 
       <div class="toolbar-separator"></div>
 
-      <!-- Ö»¶ÁÇÐ»» -->
+      <!-- åªè¯»åˆ‡æ¢ -->
       <template v-if="toolbarOptions.showReadOnlyToggle">
         <button
           class="toolbar-button"
@@ -79,7 +79,7 @@
         </button>
       </template>
 
-      <!-- Ð¡µØÍ¼ÇÐ»» -->
+      <!-- å°åœ°å›¾åˆ‡æ¢ -->
       <template v-if="toolbarOptions.showMinimapToggle">
         <button
           class="toolbar-button"
@@ -90,7 +90,7 @@
         </button>
       </template>
 
-      <!-- ×Ô¶¯»»ÐÐÇÐ»» -->
+      <!-- è‡ªåŠ¨æ¢è¡Œåˆ‡æ¢ -->
       <template v-if="toolbarOptions.showWordWrapToggle">
         <button
           class="toolbar-button"
@@ -101,7 +101,7 @@
         </button>
       </template>
 
-      <!-- ÐÐºÅÇÐ»» -->
+      <!-- è¡Œå·åˆ‡æ¢ -->
       <template v-if="toolbarOptions.showLineNumbersToggle">
         <button
           class="toolbar-button"
@@ -114,7 +114,7 @@
 
       <div class="toolbar-separator"></div>
 
-      <!-- ×ÖÌå´óÐ¡¿ØÖÆ -->
+      <!-- å­—ä½“å¤§å°æŽ§åˆ¶ -->
       <template v-if="toolbarOptions.showFontSizeControls">
         <button
           class="toolbar-button"
@@ -142,7 +142,7 @@
 
       <div class="toolbar-separator"></div>
 
-      <!-- Ö÷ÌâÇÐ»» -->
+      <!-- ä¸»é¢˜åˆ‡æ¢ -->
       <template v-if="toolbarOptions.showThemeToggle">
         <button
           class="toolbar-button"
@@ -157,9 +157,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import { useTimers } from '@/composables/useTimers';
 import { useAppStore } from '@/stores/app';
 import { getIconClass } from '@/utils/icons';
 
@@ -177,7 +178,7 @@ interface Props {
     showLineNumbersToggle?: boolean;
     showFontSizeControls?: boolean;
   };
-  // ±à¼­Æ÷ÊµÀý·½·¨
+  // ç¼–è¾‘å™¨å®žä¾‹æ–¹æ³•
   undo?: () => void;
   redo?: () => void;
   canUndo?: boolean;
@@ -214,20 +215,33 @@ const props = withDefaults(defineProps<Props>(), {
     showLineNumbersToggle: true,
     showFontSizeControls: true,
   }),
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   undo: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   redo: () => {},
   canUndo: false,
   canRedo: false,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   find: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   replace: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   format: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   copyToClipboard: async () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   toggleReadOnly: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   toggleMinimap: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   toggleWordWrap: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   toggleLineNumbers: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   increaseFontSize: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   decreaseFontSize: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   resetFontSize: () => {},
   getFontSize: () => 14,
   getWordWrap: () => 'on',
@@ -238,18 +252,19 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { t: $t } = useI18n();
 const appStore = useAppStore();
+const { setTimeout } = useTimers();
 
-// ÏìÓ¦Ê½×´Ì¬
+// å“åº”å¼çŠ¶æ€
 const copying = ref(false);
 const fontSize = ref(props.getFontSize());
 const wordWrap = ref(props.getWordWrap());
 const minimapEnabled = ref(props.getMinimapEnabled());
 const lineNumbersEnabled = ref(props.getLineNumbersEnabled());
 
-// ¼ÆËãÊôÐÔ
+// è®¡ç®—å±žæ€§
 const isDarkMode = computed(() => appStore.isDarkMode);
 
-// ¼àÌý×´Ì¬±ä»¯
+// ç›‘å¬çŠ¶æ€å˜åŒ–
 watch(() => props.getFontSize(), (newSize) => {
   fontSize.value = newSize;
 });
@@ -266,12 +281,99 @@ watch(() => props.getLineNumbersEnabled(), (newEnabled) => {
   lineNumbersEnabled.value = newEnabled;
 });
 
-// ·½·¨
+// æ–¹æ³•
 const toggleTheme = (): void => {
   appStore.toggleThemeMode();
 };
 
-// ÒÆ³ýÎ´Ê¹ÓÃµÄ·½·¨
+// å®žçŽ°å·¥å…·æ æ–¹æ³•
+const undo = (): void => {
+  if (props.undo) {
+    props.undo();
+  }
+};
+
+const redo = (): void => {
+  if (props.redo) {
+    props.redo();
+  }
+};
+
+const find = (): void => {
+  if (props.find) {
+    props.find();
+  }
+};
+
+const replace = (): void => {
+  if (props.replace) {
+    props.replace();
+  }
+};
+
+const format = (): void => {
+  if (props.format) {
+    props.format();
+  }
+};
+
+const copyToClipboard = async (): Promise<void> => {
+  if (props.copyToClipboard) {
+    copying.value = true;
+    await props.copyToClipboard();
+    setTimeout(() => {
+      copying.value = false;
+    }, 2000);
+  }
+};
+
+const toggleReadOnly = (): void => {
+  if (props.toggleReadOnly) {
+    props.toggleReadOnly();
+  }
+};
+
+const toggleMinimap = (): void => {
+  if (props.toggleMinimap) {
+    props.toggleMinimap();
+    minimapEnabled.value = props.getMinimapEnabled();
+  }
+};
+
+const toggleWordWrap = (): void => {
+  if (props.toggleWordWrap) {
+    props.toggleWordWrap();
+    wordWrap.value = props.getWordWrap();
+  }
+};
+
+const toggleLineNumbers = (): void => {
+  if (props.toggleLineNumbers) {
+    props.toggleLineNumbers();
+    lineNumbersEnabled.value = props.getLineNumbersEnabled();
+  }
+};
+
+const increaseFontSize = (): void => {
+  if (props.increaseFontSize) {
+    props.increaseFontSize();
+    fontSize.value = props.getFontSize();
+  }
+};
+
+const decreaseFontSize = (): void => {
+  if (props.decreaseFontSize) {
+    props.decreaseFontSize();
+    fontSize.value = props.getFontSize();
+  }
+};
+
+const resetFontSize = (): void => {
+  if (props.resetFontSize) {
+    props.resetFontSize();
+    fontSize.value = props.getFontSize();
+  }
+};
 </script>
 
 <style scoped>

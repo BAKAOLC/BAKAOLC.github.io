@@ -10,13 +10,12 @@
         <div
           v-for="notification in sortedNotifications"
           :key="notification.id"
-          :class="[
-            'notification-item',
+          class="notification-item" :class="[
             notification.type,
             { 'visible': notification.visible }
           ]"
         >
-          <div :class="['notification-icon', notification.type]">
+          <div class="notification-icon" :class="[notification.type]">
             <i :class="getIconClass(notification.type || 'info')"></i>
           </div>
 
@@ -41,14 +40,16 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
+import { useTimers } from '@/composables/useTimers';
 import { useAppStore } from '@/stores/app';
 import { useNotificationStore } from '@/stores/notification';
 import { getI18nText } from '@/utils/i18nText';
 
 const notificationStore = useNotificationStore();
 const appStore = useAppStore();
+const { requestAnimationFrame } = useTimers();
 
-// ªÒ»°ø…º˚Õ®÷™£¨–¬µƒ‘⁄«∞£®∑¥◊™ ˝◊ÈÀ≥–Ú£©
+// Ëé∑ÂèñÂèØËßÅÈÄöÁü•ÔºåÊñ∞ÁöÑÂú®ÂâçÔºàÂèçËΩ¨Êï∞ÁªÑÈ°∫Â∫èÔºâ
 const sortedNotifications = computed(() => {
   return notificationStore.notifications
     .filter(n => n.visible)
@@ -135,7 +136,7 @@ const onLeave = (el: Element): void => {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* ÷˜Ã‚—˘ Ω */
+/* ‰∏ªÈ¢òÊ†∑Âºè */
 .notification-item.success {
   border-left-color: #10b981;
   background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
@@ -160,7 +161,7 @@ const onLeave = (el: Element): void => {
   border-color: rgba(59, 130, 246, 0.1);
 }
 
-/* ∞µ…´÷˜Ã‚ */
+/* ÊöóËâ≤‰∏ªÈ¢ò */
 .dark .notification-item {
   background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -264,7 +265,7 @@ const onLeave = (el: Element): void => {
   color: #d1d5db;
 }
 
-/* ∂Øª≠ */
+/* Âä®Áîª */
 .notification-enter-active,
 .notification-leave-active {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -284,7 +285,7 @@ const onLeave = (el: Element): void => {
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* “∆∂Ø∂À  ≈‰ */
+/* ÁßªÂä®Á´ØÈÄÇÈÖç */
 @media (max-width: 640px) {
   .notification-container {
     top: 10px;
