@@ -2,13 +2,13 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
 export const useThemeStore = defineStore('theme', () => {
-  // Ö÷ÌâÏà¹Ø
+  // ä¸»é¢˜ç›¸å…³
   type ThemeMode = 'light' | 'dark' | 'auto';
 
   const themeMode = ref<ThemeMode>((localStorage.getItem('theme') as ThemeMode) ?? 'auto');
   const systemDarkMode = ref(window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-  // ¼ÆËãÊµ¼ÊµÄ°µÉ«Ä£Ê½×´Ì¬
+  // è®¡ç®—å®žé™…çš„æš—è‰²æ¨¡å¼çŠ¶æ€
   const isDarkMode = computed(() => {
     if (themeMode.value === 'auto') {
       return systemDarkMode.value;
@@ -16,7 +16,7 @@ export const useThemeStore = defineStore('theme', () => {
     return themeMode.value === 'dark';
   });
 
-  // Ó¦ÓÃÖ÷Ìâµ½ DOM
+  // åº”ç”¨ä¸»é¢˜åˆ° DOM
   const applyTheme = (): void => {
     if (isDarkMode.value) {
       document.documentElement.classList.add('dark');
@@ -25,14 +25,14 @@ export const useThemeStore = defineStore('theme', () => {
     }
   };
 
-  // ÉèÖÃÖ÷ÌâÄ£Ê½
+  // è®¾ç½®ä¸»é¢˜æ¨¡å¼
   const setThemeMode = (mode: ThemeMode): void => {
     themeMode.value = mode;
     localStorage.setItem('theme', mode);
     applyTheme();
   };
 
-  // ÇÐ»»Ö÷ÌâÄ£Ê½£¨Ñ­»·£ºauto -> light -> dark -> auto£©
+  // åˆ‡æ¢ä¸»é¢˜æ¨¡å¼ï¼ˆå¾ªçŽ¯ï¼šauto -> light -> dark -> autoï¼‰
   const toggleThemeMode = (): void => {
     const modes: ThemeMode[] = ['auto', 'light', 'dark'];
     const currentIndex = modes.indexOf(themeMode.value);
@@ -40,40 +40,40 @@ export const useThemeStore = defineStore('theme', () => {
     setThemeMode(modes[nextIndex]);
   };
 
-  // ´¦ÀíÏµÍ³Ö÷Ìâ±ä»¯
+  // å¤„ç†ç³»ç»Ÿä¸»é¢˜å˜åŒ–
   const handleSystemThemeChange = (e: { matches: boolean }): void => {
     systemDarkMode.value = e.matches;
-    // Èç¹ûµ±Ç°ÊÇ×Ô¶¯Ä£Ê½£¬ÐèÒªÖØÐÂÓ¦ÓÃÖ÷Ìâ
+    // å¦‚æžœå½“å‰æ˜¯è‡ªåŠ¨æ¨¡å¼ï¼Œéœ€è¦é‡æ–°åº”ç”¨ä¸»é¢˜
     if (themeMode.value === 'auto') {
       applyTheme();
     }
   };
 
-  // ¼àÌýÏµÍ³Ö÷Ìâ±ä»¯
+  // ç›‘å¬ç³»ç»Ÿä¸»é¢˜å˜åŒ–
   const setupSystemThemeListener = (): (() => void) => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
     mediaQuery.addEventListener('change', handleSystemThemeChange);
 
-    // ·µ»ØÇåÀíº¯Êý
+    // è¿”å›žæ¸…ç†å‡½æ•°
     return () => {
       mediaQuery.removeEventListener('change', handleSystemThemeChange);
     };
   };
 
-  // ¼æÈÝ¾É°æ±¾µÄ toggleDarkMode ·½·¨
+  // å…¼å®¹æ—§ç‰ˆæœ¬çš„ toggleDarkMode æ–¹æ³•
   const toggleDarkMode = (): void => {
     toggleThemeMode();
   };
 
   return {
-    // Ö÷ÌâÏà¹Ø
+    // ä¸»é¢˜ç›¸å…³
     themeMode,
     isDarkMode,
     systemDarkMode,
     setThemeMode,
     toggleThemeMode,
-    toggleDarkMode, // ¼æÈÝ¾É°æ±¾
+    toggleDarkMode, // å…¼å®¹æ—§ç‰ˆæœ¬
     applyTheme,
     setupSystemThemeListener,
   };

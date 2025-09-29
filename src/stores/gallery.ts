@@ -2,71 +2,57 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
 import { siteConfig } from '@/config/site';
-import type { CharacterImage, ImageBase } from '@/types';
+import type { DisplayImage, GroupImage, ImageBase } from '@/types';
 
 export const useGalleryStore = defineStore('gallery', () => {
-  // ËÑË÷×´Ì¬
+  // æœç´¢çŠ¶æ€
   const searchQuery = ref('');
 
-  // ÊÇ·ñ´¦ÓÚËÑË÷×´Ì¬
+  // æ˜¯å¦å¤„äºæœç´¢çŠ¶æ€
   const isSearching = computed(() => !!searchQuery.value.trim());
 
-  // ´æ´¢ËÑË÷Ç°µÄ×´Ì¬£¬ÒÔ±ãÇå³ıËÑË÷Ê±»Ö¸´
+  // å­˜å‚¨æœç´¢å‰çš„çŠ¶æ€ï¼Œä»¥ä¾¿æ¸…é™¤æœç´¢æ—¶æ¢å¤
   const previousCharacterId = ref('');
   const previousTagId = ref('');
 
-  // µ±Ç°Ñ¡ÔñµÄ½ÇÉ«
+  // å½“å‰é€‰æ‹©çš„è§’è‰²
   const selectedCharacterId = ref(siteConfig.characters[0]?.id ?? '');
 
-  // µ±Ç°Ñ¡ÔñµÄ±êÇ©
+  // å½“å‰é€‰æ‹©çš„æ ‡ç­¾
   const selectedTag = ref('all');
 
-  // ÌØÊâ±êÇ©µÄÑ¡Ôñ×´Ì¬£¨Ä¬ÈÏ¶¼²»Ñ¡ÖĞ£©
+  // ç‰¹æ®Šæ ‡ç­¾çš„é€‰æ‹©çŠ¶æ€ï¼ˆé»˜è®¤éƒ½ä¸é€‰ä¸­ï¼‰
   const selectedRestrictedTags = ref<Record<string, boolean>>({});
 
-  // ÅÅĞòÉèÖÃ
+  // æ’åºè®¾ç½®
   const sortBy = ref<'name' | 'artist' | 'date'>('date');
   const sortOrder = ref<'asc' | 'desc'>('desc');
 
-  // µ±Ç°Ñ¡ÔñµÄ½ÇÉ«
+  // å½“å‰é€‰æ‹©çš„è§’è‰²
   const selectedCharacter = computed(() => {
     return siteConfig.characters.find(character => character.id === selectedCharacterId.value);
   });
 
-  // µ±Ç°½ÇÉ«µÄÍ¼ÏñÁĞ±í£¨Ö§³ÖÍ¼Ïñ×é£©
+  // å½“å‰è§’è‰²çš„å›¾åƒåˆ—è¡¨ï¼ˆæ”¯æŒå›¾åƒç»„ï¼‰
   const characterImages = computed(() => {
-    const resultImages: CharacterImage[] = [];
+    const resultImages: DisplayImage[] = [];
 
     for (const parentImage of siteConfig.images) {
-      // ¼ì²é¸¸Í¼ÏñºÍ×ÓÍ¼ÏñÖĞÊÇ·ñÓĞÈÎºÎÒ»¸öÍ¨¹ı¹ıÂË
       const validImages = getValidImagesInGroup(parentImage);
-
       if (validImages.length > 0) {
-        // »ñÈ¡ÒªÏÔÊ¾µÄÍ¼Ïñ£¨ÓÅÏÈ¸¸Í¼Ïñ£¬·ñÔòµÚÒ»¸öÓĞĞ§×ÓÍ¼Ïñ£©
-        const displayImage = getDisplayImageForGroup(parentImage);
-
-        // ±ê¼ÇÊÇ·ñÎªÍ¼Ïñ×é£¨ÓĞ×ÓÍ¼ÏñÇÒÓĞ¶à¸öÓĞĞ§Í¼Ïñ£©
-        const isGroup = parentImage.childImages && validImages.length > 1;
-
-        // ´´½¨ÏÔÊ¾ÓÃµÄÍ¼Ïñ¶ÔÏó£¬±£Áô×éĞÅÏ¢
-        const imageForDisplay = {
-          ...displayImage,
-          // Èç¹ûÊÇ×éÍ¼µÄÏÔÊ¾Í¼Ïñ£¬±£ÁôÔ­Ê¼µÄchildImagesĞÅÏ¢
-          childImages: isGroup ? parentImage.childImages : displayImage.childImages,
-        };
-
-        resultImages.push(imageForDisplay);
+        const displayImage = getDisplayImageForGroup(parentImage, validImages);
+        resultImages.push(displayImage);
       }
     }
 
-    // ÅÅĞò
+    // æ’åº
     const sortedImages = sortImages(resultImages);
 
     return sortedImages;
   });
 
-  // Í¼ÏñÅÅĞòº¯Êı
-  const sortImages = (images: CharacterImage[]): CharacterImage[] => {
+  // å›¾åƒæ’åºå‡½æ•°
+  const sortImages = (images: ImageBase[]): ImageBase[] => {
     return [...images].sort((a, b) => {
       let comparison = 0;
 
@@ -84,7 +70,7 @@ export const useGalleryStore = defineStore('gallery', () => {
           break;
         }
         case 'date': {
-          // ½«ÎŞÈÕÆÚµÄÏîÄ¿ÊÓÎª×îÔçµÄ×÷Æ·
+          // å°†æ— æ—¥æœŸçš„é¡¹ç›®è§†ä¸ºæœ€æ—©çš„ä½œå“
           const aDate = a.date ?? '0000-00-00';
           const bDate = b.date ?? '0000-00-00';
           comparison = aDate.localeCompare(bDate);
@@ -96,112 +82,95 @@ export const useGalleryStore = defineStore('gallery', () => {
     });
   };
 
-  // ´ÓI18nText»ò×Ö·û´®ÖĞÌáÈ¡¿ÉËÑË÷ÎÄ±¾
+  // ä»I18nTextæˆ–å­—ç¬¦ä¸²ä¸­æå–å¯æœç´¢æ–‡æœ¬
   const getSearchableText = (text: any): string => {
     if (typeof text === 'string') {
       return text.toLowerCase();
     }
 
-    // È·±£ÊÇ¶ÔÏó
+    // ç¡®ä¿æ˜¯å¯¹è±¡
     if (!text || typeof text !== 'object') return '';
 
-    // ½«ËùÓĞÓïÑÔ°æ±¾×éºÏ³ÉÒ»¸ö×Ö·û´®
+    // å°†æ‰€æœ‰è¯­è¨€ç‰ˆæœ¬ç»„åˆæˆä¸€ä¸ªå­—ç¬¦ä¸²
     return Object.values(text)
       .filter(value => typeof value === 'string')
       .join(' ')
       .toLowerCase();
   };
 
-  // ±êÇ©¼ÆÊı£¨Ö§³ÖÍ¼Ïñ×é£©
+  // æ ‡ç­¾è®¡æ•°ï¼ˆæ”¯æŒå›¾åƒç»„ï¼‰
   const tagCounts = computed(() => {
     const counts: Record<string, number> = { all: 0 };
 
-    // ¼ÆËãÓĞĞ§µÄÍ¼Ïñ×éÊıÁ¿
-    const validImageGroups: CharacterImage[] = [];
+    // è®¡ç®—æœ‰æ•ˆçš„å›¾åƒç»„æ•°é‡
+    const validImageGroups: GroupImage[] = [];
     for (const parentImage of siteConfig.images) {
       const validImages = getValidImagesInGroup(parentImage);
-      if (validImages.length > 0) {
-        const displayImage = getDisplayImageForGroup(parentImage);
-        validImageGroups.push(displayImage);
+      const firstValidImage = validImages.shift();
+      if (firstValidImage) {
+        validImageGroups.push({
+          ...firstValidImage,
+          childImages: validImages,
+        });
       }
     }
 
-    // ¼ÆËãÃ¿¸ö±êÇ©µÄÊıÁ¿
+    // è®¡ç®—æ¯ä¸ªæ ‡ç­¾çš„æ•°é‡
     siteConfig.tags.forEach(tag => {
       const count = validImageGroups.filter(image => image.tags?.includes(tag.id)).length;
       counts[tag.id] = count;
     });
 
-    // "all"Ñ¡ÏîµÄ¼ÆÊıÊÇËùÓĞÆ¥ÅäµÄÍ¼Ïñ×ÜÊı
+    // "all"é€‰é¡¹çš„è®¡æ•°æ˜¯æ‰€æœ‰åŒ¹é…çš„å›¾åƒæ€»æ•°
     counts.all = validImageGroups.length;
 
     return counts;
   });
 
-  // »ñÈ¡Ã¿¸ö½ÇÉ«µÄÆ¥ÅäÍ¼ÏñÊıÁ¿£¨Ö§³ÖÍ¼Ïñ×é£©
+  // è·å–æ¯ä¸ªè§’è‰²çš„åŒ¹é…å›¾åƒæ•°é‡ï¼ˆæ”¯æŒå›¾åƒç»„ï¼‰
   const getCharacterMatchCount = (characterId: string): number => {
-    // ¼ÆËãÓĞĞ§µÄÍ¼Ïñ×éÊıÁ¿
-    let validGroupCount = 0;
-
-    for (const parentImage of siteConfig.images) {
-      const validImages = getValidImagesInGroup(parentImage);
-      if (validImages.length > 0) {
-        const displayImage = getDisplayImageForGroup(parentImage);
-
-        // Èç¹ûÊÇ"È«²¿"Ñ¡Ïî£¬»òÕßÏÔÊ¾Í¼Ïñ°üº¬¸Ã½ÇÉ«
-        if (characterId === 'all' || displayImage.characters?.includes(characterId)) {
-          validGroupCount++;
-        }
-      }
+    const validImageGroups = siteConfig.images.filter(getValidImagesInGroup);
+    if (characterId === 'all') {
+      return validImageGroups.length;
     }
 
-    return validGroupCount;
+    const validImages = validImageGroups.filter(image => image.characters?.includes(characterId));
+    return validImages.length;
   };
 
-  // »ñÈ¡µ¥¸öÍ¼Ïñ£¨Ö§³Ö×ÓÍ¼ÏñID£©
-  const getImageById = (id: string): CharacterImage | undefined => {
-    // Ê×ÏÈ²éÕÒ¸¸Í¼Ïñ
+  // è·å–å•ä¸ªå›¾åƒï¼ˆæ”¯æŒå­å›¾åƒIDï¼‰
+  const getImageById = (id: string): ImageBase | undefined => {
+    // é¦–å…ˆæŸ¥æ‰¾çˆ¶å›¾åƒ
     const parentImage = siteConfig.images.find(img => img.id === id);
     if (parentImage) {
       return parentImage;
     }
 
-    // Èç¹ûÃ»ÕÒµ½£¬²éÕÒ×ÓÍ¼Ïñ
+    // å¦‚æœæ²¡æ‰¾åˆ°ï¼ŒæŸ¥æ‰¾å­å›¾åƒ
     const groupInfo = getImageGroupByChildId(id);
     if (groupInfo) {
-      return getChildImageWithDefaults(groupInfo.parentImage, groupInfo.childImage) as CharacterImage;
+      return getChildImageWithDefaults(groupInfo.parentImage, groupInfo.childImage);
     }
 
     return undefined;
   };
 
-  // ÔÚµ±Ç°É¸Ñ¡Ìõ¼şÏÂ»ñÈ¡Í¼ÏñµÄË÷Òı
-  const getImageIndexById = (id: string): number => {
-    return characterImages.value.findIndex(img => img.id === id);
-  };
-
-  // ¸ù¾İË÷Òı»ñÈ¡Í¼Ïñ
-  const getImageByIndex = (index: number): CharacterImage | undefined => {
-    if (index < 0 || index >= characterImages.value.length) return undefined;
-    return characterImages.value[index];
-  };
-
-  // µİ¹é»ñÈ¡ËùÓĞÒÀÀµÄ³¸ö±êÇ©µÄ×Ó±êÇ©
+  // é€’å½’è·å–æ‰€æœ‰ä¾èµ–æŸä¸ªæ ‡ç­¾çš„å­æ ‡ç­¾
   const getAllDependentTags = (tagId: string, visited = new Set<string>()): string[] => {
     if (visited.has(tagId)) {
-      return []; // ·ÀÖ¹Ñ­»·ÒÀÀµ
+      return []; // é˜²æ­¢å¾ªç¯ä¾èµ–
     }
 
     visited.add(tagId);
     const dependentTags: string[] = [];
 
-    // ÕÒµ½ËùÓĞÖ±½ÓÒÀÀµµ±Ç°±êÇ©µÄ×Ó±êÇ©
+    // æ‰¾åˆ°æ‰€æœ‰ç›´æ¥ä¾èµ–å½“å‰æ ‡ç­¾çš„å­æ ‡ç­¾
     const directDependents = siteConfig.tags.filter(tag => tag.isRestricted
       && tag.prerequisiteTags?.includes(tagId));
 
     directDependents.forEach(dependentTag => {
       dependentTags.push(dependentTag.id);
-      // µİ¹é»ñÈ¡×Ó±êÇ©µÄÒÀÀµ±êÇ©
+      // é€’å½’è·å–å­æ ‡ç­¾çš„ä¾èµ–æ ‡ç­¾
       const subDependents = getAllDependentTags(dependentTag.id, new Set(visited));
       dependentTags.push(...subDependents);
     });
@@ -209,11 +178,11 @@ export const useGalleryStore = defineStore('gallery', () => {
     return dependentTags;
   };
 
-  // ÉèÖÃÌØÊâ±êÇ©µÄÑ¡Ôñ×´Ì¬
+  // è®¾ç½®ç‰¹æ®Šæ ‡ç­¾çš„é€‰æ‹©çŠ¶æ€
   const setRestrictedTagState = (tagId: string, enabled: boolean): void => {
     selectedRestrictedTags.value[tagId] = enabled;
 
-    // Èç¹ûÈ¡ÏûÑ¡ÔñÒ»¸ö±êÇ©£¬ĞèÒªµİ¹éÈ¡ÏûÑ¡ÔñËùÓĞÒÀÀµËüµÄ×Ó±êÇ©
+    // å¦‚æœå–æ¶ˆé€‰æ‹©ä¸€ä¸ªæ ‡ç­¾ï¼Œéœ€è¦é€’å½’å–æ¶ˆé€‰æ‹©æ‰€æœ‰ä¾èµ–å®ƒçš„å­æ ‡ç­¾
     if (!enabled) {
       const allDependentTags = getAllDependentTags(tagId);
 
@@ -225,15 +194,15 @@ export const useGalleryStore = defineStore('gallery', () => {
     }
   };
 
-  // »ñÈ¡ÌØÊâ±êÇ©µÄÑ¡Ôñ×´Ì¬
+  // è·å–ç‰¹æ®Šæ ‡ç­¾çš„é€‰æ‹©çŠ¶æ€
   const getRestrictedTagState = (tagId: string): boolean => {
     return selectedRestrictedTags.value[tagId] ?? false;
   };
 
-  // Í¼Ïñ×éÏà¹Ø¸¨Öúº¯Êı
+  // å›¾åƒç»„ç›¸å…³è¾…åŠ©å‡½æ•°
 
-  // ¸ù¾İchild image ID»ñÈ¡¸¸Í¼ÏñºÍ×ÓÍ¼Ïñ
-  const getImageGroupByChildId = (childId: string): { parentImage: CharacterImage; childImage: ImageBase } | null => {
+  // æ ¹æ®child image IDè·å–çˆ¶å›¾åƒå’Œå­å›¾åƒ
+  const getImageGroupByChildId = (childId: string): { parentImage: GroupImage; childImage: ImageBase } | null => {
     for (const image of siteConfig.images) {
       if (image.childImages) {
         const childImage = image.childImages.find(child => child.id === childId);
@@ -245,8 +214,8 @@ export const useGalleryStore = defineStore('gallery', () => {
     return null;
   };
 
-  // »ñÈ¡×ÓÍ¼ÏñµÄÍêÕûĞÅÏ¢£¨¼Ì³Ğ¸¸Í¼ÏñÊôĞÔ£©
-  const getChildImageWithDefaults = (parentImage: CharacterImage, childImage: ImageBase): ImageBase => {
+  // è·å–å­å›¾åƒçš„å®Œæ•´ä¿¡æ¯ï¼ˆç»§æ‰¿çˆ¶å›¾åƒå±æ€§ï¼‰
+  const getChildImageWithDefaults = (parentImage: GroupImage, childImage: ImageBase): ImageBase => {
     const resultImage: ImageBase = {
       id: childImage.id,
       name: childImage.name ?? parentImage.name ?? '',
@@ -262,53 +231,53 @@ export const useGalleryStore = defineStore('gallery', () => {
     return resultImage;
   };
 
-  const doesImageValid = (image: CharacterImage | ImageBase): boolean => {
+  const doesImageValid = (image: ImageBase): boolean => {
     if (!image.src) {
       return false;
     }
     return true;
   };
 
-  // ¼ì²éÍ¼ÏñÊÇ·ñÍ¨¹ı¹ıÂËÆ÷
-  const doesImagePassFilter = (image: CharacterImage | ImageBase): boolean => {
+  // æ£€æŸ¥å›¾åƒæ˜¯å¦é€šè¿‡è¿‡æ»¤å™¨
+  const doesImagePassFilter = (image: GroupImage | ImageBase): boolean => {
     if (!doesImageValid(image)) {
       return false;
     }
 
-    // Ó¦ÓÃÏŞÖÆ¼¶±êÇ©¹ıÂË
+    // åº”ç”¨é™åˆ¶çº§æ ‡ç­¾è¿‡æ»¤
     const restrictedTags = siteConfig.tags.filter(tag => tag.isRestricted);
 
     for (const restrictedTag of restrictedTags) {
-      // ¼ì²é¸¸Í¼ÏñÊÇ·ñÓĞ¸ÃÏŞÖÆ¼¶±êÇ©
+      // æ£€æŸ¥çˆ¶å›¾åƒæ˜¯å¦æœ‰è¯¥é™åˆ¶çº§æ ‡ç­¾
       let imageHasTag = image.tags?.includes(restrictedTag.id) ?? false;
 
-      // Èç¹û¸¸Í¼ÏñÃ»ÓĞ£¬¼ì²é×ÓÍ¼ÏñÊÇ·ñÓĞ¸ÃÏŞÖÆ¼¶±êÇ©
+      // å¦‚æœçˆ¶å›¾åƒæ²¡æœ‰ï¼Œæ£€æŸ¥å­å›¾åƒæ˜¯å¦æœ‰è¯¥é™åˆ¶çº§æ ‡ç­¾
       if (!imageHasTag && 'childImages' in image && image.childImages) {
         imageHasTag = image.childImages.some((child: ImageBase) => child.tags?.includes(restrictedTag.id));
       }
 
       const tagIsEnabled = selectedRestrictedTags.value[restrictedTag.id] ?? false;
 
-      // Èç¹ûÍ¼Æ¬£¨»òÆä×ÓÍ¼Ïñ£©ÓĞÕâ¸öÌØÊâ±êÇ©£¬µ«ÊÇÕâ¸ö±êÇ©Ã»ÓĞ±»ÆôÓÃ£¬Ôò¹ıÂËµô
+      // å¦‚æœå›¾ç‰‡ï¼ˆæˆ–å…¶å­å›¾åƒï¼‰æœ‰è¿™ä¸ªç‰¹æ®Šæ ‡ç­¾ï¼Œä½†æ˜¯è¿™ä¸ªæ ‡ç­¾æ²¡æœ‰è¢«å¯ç”¨ï¼Œåˆ™è¿‡æ»¤æ‰
       if (imageHasTag && !tagIsEnabled) {
         return false;
       }
     }
 
-    // Ó¦ÓÃËÑË÷¹ıÂË
+    // åº”ç”¨æœç´¢è¿‡æ»¤
     if (searchQuery.value.trim()) {
       const query = searchQuery.value.trim().toLowerCase();
 
-      // ËÑË÷Í¼Æ¬Ãû³Æ
+      // æœç´¢å›¾ç‰‡åç§°
       const name = getSearchableText(image.name);
 
-      // ËÑË÷ÃèÊö
+      // æœç´¢æè¿°
       const description = image.description ? getSearchableText(image.description) : '';
 
-      // ËÑË÷ÒÕÊõ¼ÒÃû³Æ
+      // æœç´¢è‰ºæœ¯å®¶åç§°
       const artist = image.artist ? getSearchableText(image.artist) : '';
 
-      // ËÑË÷±êÇ©
+      // æœç´¢æ ‡ç­¾
       const tagsMatch = image.tags?.some(tagId => {
         const tag = siteConfig.tags.find(t => t.id === tagId);
         if (!tag) return false;
@@ -327,14 +296,14 @@ export const useGalleryStore = defineStore('gallery', () => {
       }
     }
 
-    // Ó¦ÓÃ½ÇÉ«¹ıÂË
+    // åº”ç”¨è§’è‰²è¿‡æ»¤
     if (selectedCharacterId.value !== 'all') {
       if (!image.characters?.includes(selectedCharacterId.value)) {
         return false;
       }
     }
 
-    // Ó¦ÓÃ±êÇ©¹ıÂË
+    // åº”ç”¨æ ‡ç­¾è¿‡æ»¤
     if (selectedTag.value !== 'all') {
       if (!image.tags?.includes(selectedTag.value)) {
         return false;
@@ -344,38 +313,19 @@ export const useGalleryStore = defineStore('gallery', () => {
     return true;
   };
 
-  // »ñÈ¡Í¼Ïñ×éµÄÏÔÊ¾Í¼Ïñ£¨ÓÃÓÚ»­ÀÈÏÔÊ¾£©
-  const getDisplayImageForGroup = (parentImage: CharacterImage): CharacterImage => {
-    // Èç¹ûÃ»ÓĞ×ÓÍ¼Ïñ£¬ÕâÊÇÒ»¸öÆÕÍ¨µÄµ¥¸öÍ¼Ïñ£¬Ö±½Ó·µ»Ø¸¸Í¼Ïñ
-    if (!parentImage.childImages) {
-      return parentImage;
-    }
-
-    // ¶ÔÓÚÍ¼Ïñ×é£¬ÓÀÔ¶²»ÏÔÊ¾¸¸Í¼Ïñ±¾Éí£¬ÒòÎª¸¸Í¼Ïñ²»ÊÇºÏ·¨µÄ¿ÉÑ¡Í¼Ïñ
-    // ÏÈ¼ÆËãÓĞĞ§Í¼ÏñÊıÁ¿
-    let validCount = 0;
-    let firstValidChild: ImageBase | null = null;
-
-    for (const childImage of parentImage.childImages) {
-      const fullChildImage = getChildImageWithDefaults(parentImage, childImage);
-      if (doesImagePassFilter(fullChildImage)) {
-        firstValidChild ??= childImage;
-        validCount++;
-      }
-    }
-
-    if (firstValidChild) {
-      const fullFirstChild = getChildImageWithDefaults(parentImage, firstValidChild);
-      // ´«µİÓĞĞ§Í¼ÏñÊıÁ¿ĞÅÏ¢£¬±ÜÃâÖØ¸´¼ÆËã
-      return getGroupDisplayInfo(parentImage, fullFirstChild, validCount > 1);
-    }
-
-    // Èç¹ûÃ»ÓĞÓĞĞ§µÄ×ÓÍ¼Ïñ£¬·µ»Ø¸¸Í¼Ïñ£¨ÓÃÓÚ±êÊ¶ÕâÊÇ¸ö×éÍ¼£¬µ«²»¿ÉÑ¡£©
-    return parentImage;
+  const getDisplayImageForGroup = (parentImage: GroupImage, validImages: ImageBase[]): DisplayImage => {
+    const childImages = validImages.filter(image => image.id !== parentImage.id);
+    const displaySrc = parentImage.src ?? validImages[0].src;
+    const displayImage: DisplayImage = {
+      ...parentImage,
+      childImages,
+      displaySrc,
+    };
+    return displayImage;
   };
 
-  // »ñÈ¡Í¼Ïñ×éÖĞµÚÒ»¸öÍ¨¹ı¹ıÂËµÄ×ÓÍ¼ÏñID
-  const getFirstValidChildId = (parentImage: CharacterImage): string | null => {
+  // è·å–å›¾åƒç»„ä¸­ç¬¬ä¸€ä¸ªé€šè¿‡è¿‡æ»¤çš„å­å›¾åƒID
+  const getFirstValidChildId = (parentImage: GroupImage): string | null => {
     if (doesImageValid(parentImage)) {
       return parentImage.id;
     }
@@ -394,62 +344,8 @@ export const useGalleryStore = defineStore('gallery', () => {
     return null;
   };
 
-  // »ñÈ¡Í¼Ïñ×éµÄÏÔÊ¾ĞÅÏ¢£¨¸ù¾İÓĞĞ§Í¼ÏñÊıÁ¿¾ö¶¨ÓÅÏÈ¼¶£©
-  const getGroupDisplayInfo = (
-    parentImage: CharacterImage,
-    childImage: ImageBase,
-    hasMultipleValidImages?: boolean,
-  ): CharacterImage => {
-    // Èç¹ûÃ»ÓĞÌá¹©ÓĞĞ§Í¼ÏñÊıÁ¿ĞÅÏ¢£¬Ôò¼ÆËã
-    let hasMultiple = hasMultipleValidImages;
-    if (hasMultiple === undefined) {
-      // ¼ÆËãÓĞĞ§Í¼ÏñÊıÁ¿£¬µ«±ÜÃâÑ­»·µ÷ÓÃ
-      let validCount = 0;
-      if (parentImage.childImages) {
-        for (const child of parentImage.childImages) {
-          const fullChildImage = getChildImageWithDefaults(parentImage, child);
-          if (doesImagePassFilter(fullChildImage)) {
-            validCount++;
-            if (validCount > 1) break; // Ö»ĞèÒªÖªµÀÊÇ·ñ³¬¹ı1¸ö
-          }
-        }
-      }
-      hasMultiple = validCount > 1;
-    }
-
-    if (hasMultiple) {
-      // ÓĞ¶à¸öÍ¼ÏñÊ±£¬ÓÅÏÈÊ¹ÓÃÍ¼Ïñ×éĞÅÏ¢
-      return {
-        id: parentImage.id, // Ê¹ÓÃ¸¸Í¼ÏñIDÓÃÓÚ×éÍ¼±êÊ¶
-        name: parentImage.name ?? '', // ÓÅÏÈÏÔÊ¾¸¸Í¼ÏñÃû³Æ
-        description: parentImage.description ?? childImage.description ?? '',
-        artist: parentImage.artist ?? childImage.artist ?? 'N/A',
-        authorLinks: parentImage.authorLinks ?? childImage.authorLinks ?? [],
-        src: childImage.src, // ÏÔÊ¾×ÓÍ¼ÏñµÄÊµ¼ÊÍ¼Æ¬
-        tags: parentImage.tags ?? [], // ÓÅÏÈÏÔÊ¾¸¸Í¼Ïñ±êÇ©
-        characters: parentImage.characters, // ÓÅÏÈÏÔÊ¾¸¸Í¼Ïñ½ÇÉ«
-        date: parentImage.date ?? childImage.date, // ÓÅÏÈÏÔÊ¾¸¸Í¼ÏñÈÕÆÚ
-        childImages: parentImage.childImages, // ±£Áô×ÓÍ¼ÏñĞÅÏ¢ÓÃÓÚ×éÍ¼ÅĞ¶Ï
-      };
-    } else {
-      // Ö»ÓĞÒ»¸öÍ¼ÏñÊ±£¬ÓÅÏÈÊ¹ÓÃ¸ÃÍ¼ÏñµÄĞÅÏ¢
-      return {
-        id: childImage.id, // Ê¹ÓÃ×ÓÍ¼ÏñID
-        name: childImage.name ?? parentImage.name ?? '', // ÓÅÏÈÏÔÊ¾×ÓÍ¼ÏñÃû³Æ
-        description: childImage.description ?? parentImage.description ?? '',
-        artist: childImage.artist ?? parentImage.artist ?? 'N/A',
-        authorLinks: childImage.authorLinks ?? parentImage.authorLinks ?? [],
-        src: childImage.src, // ÏÔÊ¾×ÓÍ¼ÏñµÄÊµ¼ÊÍ¼Æ¬
-        tags: childImage.tags ?? [], // ÓÅÏÈÏÔÊ¾×ÓÍ¼Ïñ±êÇ©
-        characters: childImage.characters ?? parentImage.characters, // ÓÅÏÈÏÔÊ¾×ÓÍ¼Ïñ½ÇÉ«
-        date: childImage.date ?? parentImage.date, // ÓÅÏÈÏÔÊ¾×ÓÍ¼ÏñÈÕÆÚ
-        childImages: undefined, // µ¥¸öÍ¼ÏñÊ±²»±£Áô×ÓÍ¼ÏñĞÅÏ¢
-      };
-    }
-  };
-
-  // »ñÈ¡Í¼Ïñ×éµÄËùÓĞÓĞĞ§Í¼Ïñ£¨Í¨¹ı¹ıÂËµÄ£©
-  const getValidImagesInGroup = (parentImage: CharacterImage): ImageBase[] => {
+  // è·å–å›¾åƒç»„çš„æ‰€æœ‰æœ‰æ•ˆå›¾åƒï¼ˆé€šè¿‡è¿‡æ»¤çš„ï¼‰
+  const getValidImagesInGroup = (parentImage: GroupImage): ImageBase[] => {
     const validImages: ImageBase[] = [];
 
     if (doesImagePassFilter(parentImage)) {
@@ -467,7 +363,7 @@ export const useGalleryStore = defineStore('gallery', () => {
     return validImages;
   };
 
-  const getValidImagesInGroupWithoutFilter = (parentImage: CharacterImage): ImageBase[] => {
+  const getValidImagesInGroupWithoutFilter = (parentImage: GroupImage): ImageBase[] => {
     const validImages: ImageBase[] = [];
     if (doesImageValid(parentImage)) {
       validImages.push(parentImage as ImageBase);
@@ -483,24 +379,24 @@ export const useGalleryStore = defineStore('gallery', () => {
     return validImages;
   };
 
-  // ÉèÖÃËÑË÷²éÑ¯
+  // è®¾ç½®æœç´¢æŸ¥è¯¢
   const setSearchQuery = (query: string): void => {
-    // ÏÈÉèÖÃ²éÑ¯
+    // å…ˆè®¾ç½®æŸ¥è¯¢
     searchQuery.value = query;
 
-    // Èç¹û¿ªÊ¼ËÑË÷£¨Ö®Ç°ÎŞËÑË÷£¬ÏÖÔÚÓĞËÑË÷£©£¬±£´æµ±Ç°Ñ¡Ôñ
+    // å¦‚æœå¼€å§‹æœç´¢ï¼ˆä¹‹å‰æ— æœç´¢ï¼Œç°åœ¨æœ‰æœç´¢ï¼‰ï¼Œä¿å­˜å½“å‰é€‰æ‹©
     if (query.trim()) {
-      // Èç¹ûÃ»ÓĞ±£´æÖ®Ç°µÄÑ¡Ôñ£¬Ôò±£´æ
+      // å¦‚æœæ²¡æœ‰ä¿å­˜ä¹‹å‰çš„é€‰æ‹©ï¼Œåˆ™ä¿å­˜
       if (!previousCharacterId.value) {
         previousCharacterId.value = selectedCharacterId.value;
         previousTagId.value = selectedTag.value;
 
-        // ÇĞ»»µ½"È«²¿"½ÇÉ«ºÍ±êÇ©
+        // åˆ‡æ¢åˆ°"å…¨éƒ¨"è§’è‰²å’Œæ ‡ç­¾
         selectedCharacterId.value = 'all';
         selectedTag.value = 'all';
       }
     } else {
-      // Èç¹ûÇå¿ÕÁËËÑË÷£¬»Ö¸´Ö®Ç°µÄÑ¡Ôñ
+      // å¦‚æœæ¸…ç©ºäº†æœç´¢ï¼Œæ¢å¤ä¹‹å‰çš„é€‰æ‹©
       if (previousCharacterId.value) {
         selectedCharacterId.value = previousCharacterId.value;
         previousCharacterId.value = '';
@@ -513,20 +409,20 @@ export const useGalleryStore = defineStore('gallery', () => {
     }
   };
 
-  // Çå³ıËÑË÷
+  // æ¸…é™¤æœç´¢
   const clearSearch = (): void => {
-    // ÉèÖÃ¿Õ×Ö·û´®»á´¥·¢setSearchQueryÖĞµÄ»Ö¸´Âß¼­
+    // è®¾ç½®ç©ºå­—ç¬¦ä¸²ä¼šè§¦å‘setSearchQueryä¸­çš„æ¢å¤é€»è¾‘
     setSearchQuery('');
   };
 
   return {
-    // ËÑË÷Ïà¹Ø
+    // æœç´¢ç›¸å…³
     searchQuery,
     isSearching,
     setSearchQuery,
     clearSearch,
 
-    // »­ÀÈÏà¹Ø
+    // ç”»å»Šç›¸å…³
     selectedCharacterId,
     selectedTag,
     selectedCharacter,
@@ -534,26 +430,23 @@ export const useGalleryStore = defineStore('gallery', () => {
     tagCounts,
     getCharacterMatchCount,
 
-    // ÌØÊâ±êÇ©Ïà¹Ø
+    // ç‰¹æ®Šæ ‡ç­¾ç›¸å…³
     selectedRestrictedTags,
     setRestrictedTagState,
     getRestrictedTagState,
 
-    // ÅÅĞòÏà¹Ø
+    // æ’åºç›¸å…³
     sortBy,
     sortOrder,
 
-    // Í¼Ïñ²éÑ¯
+    // å›¾åƒæŸ¥è¯¢
     getImageById,
-    getImageIndexById,
-    getImageByIndex,
 
-    // Í¼Ïñ×éÏà¹Ø
+    // å›¾åƒç»„ç›¸å…³
     getImageGroupByChildId,
     getChildImageWithDefaults,
     getDisplayImageForGroup,
     getValidImagesInGroup,
-    getGroupDisplayInfo,
     getFirstValidChildId,
     getValidImagesInGroupWithoutFilter,
   };
