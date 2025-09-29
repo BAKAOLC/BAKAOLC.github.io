@@ -5,14 +5,14 @@ import type { Language } from '@/types';
 import { getDefaultLanguage, isValidLanguage } from '@/utils/language';
 
 export const useLanguageStore = defineStore('language', () => {
-  // ÓïÑÔÏà¹Ø
+  // è¯­è¨€ç›¸å…³
   const storedLanguage = localStorage.getItem('locale');
   const defaultLanguage = getDefaultLanguage();
   const currentLanguage = ref<Language>(
     (storedLanguage && isValidLanguage(storedLanguage)) ? storedLanguage : defaultLanguage,
   );
 
-  // ÉèÖÃÓïÑÔ
+  // è®¾ç½®è¯­è¨€
   const setLanguage = (lang: Language): void => {
     if (isValidLanguage(lang)) {
       currentLanguage.value = lang;
@@ -21,7 +21,7 @@ export const useLanguageStore = defineStore('language', () => {
   };
 
   return {
-    // ÓïÑÔÏà¹Ø
+    // è¯­è¨€ç›¸å…³
     currentLanguage,
     setLanguage,
   };
