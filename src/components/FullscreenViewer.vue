@@ -1595,7 +1595,13 @@ const handleThumbnailWheel = (event: WheelEvent): void => {
   isUserScrolling.value = true;
 
   const scrollSpeed = 40; // 滚动速度
-  const delta = event.deltaY > 0 ? -scrollSpeed : scrollSpeed;
+  let delta = 0;
+  if (event.deltaY !== 0) {
+    delta += event.deltaY > 0 ? -scrollSpeed : scrollSpeed;
+  }
+  if (event.deltaX !== 0) {
+    delta += event.deltaX > 0 ? -scrollSpeed : scrollSpeed;
+  }
   setManualThumbnailOffset(thumbnailsOffset.value + delta);
 
   // 1秒后重置用户滚动状态
