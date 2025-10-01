@@ -52,8 +52,12 @@
                 class="info-card"
                 :style="{ '--card-color': card.color ?? '#667eea' }"
               >
-                <h3 class="card-title">{{ getI18nText(card.title, currentLanguage) }}</h3>
-                <p class="card-content">{{ getI18nText(card.content, currentLanguage) }}</p>
+                <h3
+                  v-if="card.title"
+                  class="card-title">{{ getI18nText(card.title, currentLanguage) }}</h3>
+                <p
+                  v-if="card.content"
+                  class="card-content">{{ getI18nText(card.content, currentLanguage) }}</p>
               </div>
             </div>
           </div>
@@ -412,6 +416,7 @@ onMounted(() => {
 .card-content {
   @apply text-sm text-gray-600 dark:text-gray-300;
   line-height: 1.5;
+  white-space: pre-wrap;
 }
 
 /* 中间主图片区域 */
