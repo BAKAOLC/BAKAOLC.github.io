@@ -10,7 +10,7 @@ export interface Character {
 
 // 卡片模板变量类型
 export interface CardTemplateVariables {
-  [key: string]: I18nText;
+  [key: string]: I18nText | undefined;
 }
 
 // 信息卡片模板定义
@@ -54,10 +54,6 @@ export interface CharacterProfile {
   infoCardTemplates?: CharacterInfoCardTemplate[]; // 角色级别的模板定义
   infoCards?: CharacterInfoCard[]; // 角色级别的卡片
   variants: CharacterVariant[];
-}
-
-export interface CharacterProfilesConfig {
-  characters: CharacterProfile[];
 }
 
 // 解析后的卡片（运行时使用）
