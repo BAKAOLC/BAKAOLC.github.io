@@ -10,11 +10,7 @@
     "zh": "卧室场景壁纸",
     "jp": "寝室シーンの壁紙"
   },
-  "artist": {
-    "en": "Re-ViVi",
-    "zh": "Re-ViVi",
-    "jp": "Re-ViVi"
-  },
+  "artist": "Re-ViVi",
   "authorLinks": [
     {
       "url": "https://www.pixiv.net/users/14407259"

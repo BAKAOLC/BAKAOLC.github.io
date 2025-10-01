@@ -10,11 +10,7 @@
     "zh": "可爱表情包",
     "jp": "かわいい表情スタンプ"
   },
-  "artist": {
-    "en": "Dianpao Chayao Ji",
-    "zh": "点炮叉腰姬",
-    "jp": "点炮叉腰姬"
-  },
+  "artist": "点炮叉腰姬",
   "authorLinks": [
     {
       "url": "https://space.bilibili.com/1539884447"

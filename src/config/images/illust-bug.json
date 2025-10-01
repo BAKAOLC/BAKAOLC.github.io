@@ -1,20 +1,16 @@
 {
   "id": "illust-bug",
   "name": {
-    "en": "Bug",
+    "en": "BUG",
     "zh": "BUG",
     "jp": "BUG"
   },
   "description": {
-    "en": "Calling Bug",
+    "en": "Little Ritsukage calling for bug fixes",
     "zh": "正在喊BUG的小律影",
     "jp": "BUGを呼ぶ小律影"
   },
-  "artist": {
-    "en": "Mist Bell Tong Yu",
-    "zh": "霧鈴桐喻",
-    "jp": "霧鈴桐喻"
-  },
+  "artist": "霧鈴桐喻",
   "src": "/assets/category/ritsukage-utsumabo/miscellaneous/BUG 律影.png",
   "tags": [
     "gift",

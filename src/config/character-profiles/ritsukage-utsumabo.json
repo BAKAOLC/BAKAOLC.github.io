@@ -1,0 +1,127 @@
+{
+  "id": "ritsukage-utsumabo",
+  "name": {
+    "en": "Ritsukage Utsumabo",
+    "zh": "律影映幻",
+    "jp": "律影映幻"
+  },
+  "infoCardTemplates": [
+    {
+      "id": "basic-info",
+      "title": {
+        "en": "Basic Information",
+        "zh": "基本信息",
+        "jp": "基本情報"
+      },
+      "content": {
+        "en": "Name:\t{name}\nGender:\t{gender}\nAge:\t{age}\nHeight:\t{height}\nWeight:\t{weight}\nSpecies:\t{species}",
+        "zh": "姓名:\t{name}\n性别:\t{gender}\n年龄:\t{age}\n身高:\t{height}\n体重:\t{weight}\n种族:\t{species}",
+        "jp": "名前:\t{name}\n性別:\t{gender}\n年齢:\t{age}\n身長:\t{height}\n体重:\t{weight}\n種族:\t{species}"
+      }
+    },
+    {
+      "id": "artist-info",
+      "title": {
+        "en": "Artist",
+        "zh": "画师",
+        "jp": "画家"
+      },
+      "content": "{artist}"
+    }
+  ],
+  "infoCards": [
+    {
+      "id": "ritsukage-utsumabo-basic-info",
+      "template": "basic-info",
+      "variables": {
+        "name": {
+          "en": "Ritsukage Utsumabo",
+          "zh": "律影映幻",
+          "jp": "律影映幻"
+        },
+        "gender": {
+          "en": "Female",
+          "zh": "女",
+          "jp": "女"
+        },
+        "age": {
+          "en": "6 (self-proclaimed)",
+          "zh": "6岁（自称）",
+          "jp": "6歳（自称）"
+        },
+        "height": "122cm",
+        "weight": "25kg",
+        "species": {
+          "en": "Unknown / Projection",
+          "zh": "未知 / 投影",
+          "jp": "不明 / 投影"
+        }
+      }
+    },
+    {
+      "id": "ritsukage-utsumabo-artist-info",
+      "template": "artist-info",
+      "variables": {
+        "artist": "橙灵光"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "id": "ritsukage-utsumabo-1",
+      "name": {
+        "en": "Casual Outfit",
+        "zh": "常服",
+        "jp": "カジュアル衣装"
+      },
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-1-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/new/1/1-立绘.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Casual Outfit",
+            "zh": "律影映幻 - 常服",
+            "jp": "律影映幻 - カジュアル衣装"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-1-2",
+          "src": "/assets/category/ritsukage-utsumabo/design/new/1/1-三视图.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Casual Outfit",
+            "zh": "律影映幻 - 常服",
+            "jp": "律影映幻 - カジュアル衣装"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-2",
+      "name": {
+        "en": "Lively Cat",
+        "zh": "活泼猫猫",
+        "jp": "活発な猫娘"
+      },
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-2-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/new/2/2-立绘.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Lively Cat Outfit",
+            "zh": "律影映幻 - 活泼猫猫",
+            "jp": "律影映幻 - 活発な猫娘"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-2-2",
+          "src": "/assets/category/ritsukage-utsumabo/design/new/2/2-三视图.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Lively Cat Outfit",
+            "zh": "律影映幻 - 活泼猫猫",
+            "jp": "律影映幻 - 活発な猫娘"
+          }
+        }
+      ]
+    }
+  ]
+}

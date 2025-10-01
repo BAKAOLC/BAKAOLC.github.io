@@ -10,11 +10,7 @@
     "zh": "惊讶表情包",
     "jp": "驚き表情スタンプ"
   },
-  "artist": {
-    "en": "Sakurai Sana",
-    "zh": "樱井纱奈",
-    "jp": "樱井纱奈"
-  },
+  "artist": "樱井纱奈",
   "authorLinks": [
     {
       "url": "https://www.mihuashi.com/profiles/178750"

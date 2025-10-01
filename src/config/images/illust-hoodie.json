@@ -10,11 +10,7 @@
     "zh": "猫耳兜帽小律影",
     "jp": "猫耳フード付き律影"
   },
-  "artist": {
-    "en": "HanPian",
-    "zh": "含片",
-    "jp": "含片"
-  },
+  "artist": "含片",
   "src": "/assets/category/ritsukage-utsumabo/miscellaneous/含片绘兜帽律影.jpg",
   "tags": [
     "gift",

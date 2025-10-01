@@ -10,11 +10,7 @@
     "zh": "最初的角色设定图",
     "jp": "最初のキャラクター設定図"
   },
-  "artist": {
-    "en": "ID",
-    "zh": "ID",
-    "jp": "ID"
-  },
+  "artist": "ID",
   "tags": [
     "commission",
     "design"

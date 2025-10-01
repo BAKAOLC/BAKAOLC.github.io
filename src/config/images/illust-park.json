@@ -10,11 +10,7 @@
     "zh": "公园场景作品",
     "jp": "公園シーンの作品"
   },
-  "artist": {
-    "en": "hiyakata",
-    "zh": "hiyakata",
-    "jp": "hiyakata"
-  },
+  "artist": "hiyakata",
   "authorLinks": [
     {
       "url": "https://skeb.jp/@1xw33"

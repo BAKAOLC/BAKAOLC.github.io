@@ -1,20 +1,16 @@
 {
   "id": "illust-noripasuta",
   "name": {
-    "en": "Ritsukage by syakegayu",
+    "en": "Ritsukage by しゃけ",
     "zh": "律影 by しゃけ",
     "jp": "律影 by しゃけ"
   },
   "description": {
-    "en": "Artwork of Ritsukage by syakegayu",
+    "en": "Artwork of Ritsukage by しゃけ",
     "zh": "しゃけ绘制的律影插画",
     "jp": "しゃけによる律影のイラスト"
   },
-  "artist": {
-    "en": "syakegayu",
-    "zh": "しゃけ",
-    "jp": "しゃけ"
-  },
+  "artist": "しゃけ",
   "authorLinks": [
     {
       "url": "https://skeb.jp/@noripasuta"

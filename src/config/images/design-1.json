@@ -1,26 +1,22 @@
 {
   "id": "design-1",
   "name": {
-    "en": "Normal Form",
-    "zh": "普通形态",
-    "jp": "通常形態"
+    "en": "Casual Outfit",
+    "zh": "常服",
+    "jp": "カジュアル衣装"
   },
   "description": {
     "en": "Normal form character design",
     "zh": "普通形态角色设定",
     "jp": "通常形態のキャラクター設定"
   },
-  "artist": {
-    "en": "Chengling",
-    "zh": "橙灵光",
-    "jp": "橙灵光"
-  },
+  "artist": "橙灵光",
   "authorLinks": [
     {
       "url": "https://www.mihuashi.com/profiles/3858"
     }
   ],
-  "src": "/assets/category/ritsukage-utsumabo/design/new/1.png",
+  "src": "/assets/category/ritsukage-utsumabo/design/new/1/1-Full.png",
   "tags": [
     "commission",
     "design"

@@ -1,7 +1,7 @@
 {
   "id": "illust-speedart",
   "name": {
-    "en": "Speed Art Head",
+    "en": "Speed Art Little Ritsukage Head",
     "zh": "速绘小律影头",
     "jp": "スピードアート頭"
   },
@@ -10,11 +10,7 @@
     "zh": "快速绘制作品",
     "jp": "スピードドローイング作品"
   },
-  "artist": {
-    "en": "Twuos",
-    "zh": "Twuos",
-    "jp": "Twuos"
-  },
+  "artist": "Twuos",
   "authorLinks": [
     {
       "url": "https://www.mihuashi.com/profiles/826757"
