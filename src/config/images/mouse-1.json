@@ -6,15 +6,11 @@
     "jp": "小律影マウス"
   },
   "description": {
-    "en": "Ritsukage mouse",
+    "en": "Custom Ritsukage mouse cursor collection",
     "zh": "小律影鼠标",
     "jp": "小律影マウス"
   },
-  "artist": {
-    "en": "Yuzhechiyu",
-    "zh": "愚者吃鱼",
-    "jp": "愚者吃鱼"
-  },
+  "artist": "愚者吃鱼",
   "authorLinks": [
     {
       "url": "https://www.mihuashi.com/profiles/306494"

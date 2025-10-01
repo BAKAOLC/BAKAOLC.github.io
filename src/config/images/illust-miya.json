@@ -10,11 +10,7 @@
     "zh": "Miya的作品",
     "jp": "Miyaの作品"
   },
-  "artist": {
-    "en": "Miota Miya",
-    "zh": "喵田弥夜Miya",
-    "jp": "喵田弥夜Miya"
-  },
+  "artist": "喵田弥夜Miya",
   "authorLinks": [
     {
       "url": "https://space.bilibili.com/846180"

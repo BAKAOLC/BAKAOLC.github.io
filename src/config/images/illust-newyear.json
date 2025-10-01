@@ -10,11 +10,7 @@
     "zh": "新年主题头像",
     "jp": "新年テーマのアバター"
   },
-  "artist": {
-    "en": "Hanamoto",
-    "zh": "花本",
-    "jp": "花本"
-  },
+  "artist": "花本",
   "authorLinks": [
     {
       "url": "https://www.mihuashi.com/profiles/307437"

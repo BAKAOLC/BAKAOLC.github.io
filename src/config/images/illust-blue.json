@@ -10,11 +10,7 @@
     "zh": "蓝色主题作品",
     "jp": "青テーマの作品"
   },
-  "artist": {
-    "en": "いーたん＆mikokoたん",
-    "zh": "いーたん＆mikokoたん",
-    "jp": "いーたん＆mikokoたん"
-  },
+  "artist": "いーたん＆mikokoたん",
   "authorLinks": [
     {
       "url": "https://skeb.jp/@mikoko1"

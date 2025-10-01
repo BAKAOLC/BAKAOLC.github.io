@@ -10,11 +10,7 @@
     "zh": "柠檬水中的小律影",
     "jp": "レモネードの中の律影"
   },
-  "artist": {
-    "en": "Jiangxin",
-    "zh": "江欣",
-    "jp": "江欣"
-  },
+  "artist": "江欣",
   "authorLinks": [
     {
       "url": "https://www.pixiv.net/users/20662828"

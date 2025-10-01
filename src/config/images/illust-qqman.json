@@ -3,18 +3,14 @@
   "name": {
     "en": "QQ-style Little Ritsukage",
     "zh": "Q版小律影",
-    "jp": "Q版小律影"
+    "jp": "Q版の小律影"
   },
   "description": {
     "en": "QQ-style chibi artwork",
     "zh": "Q版小律影，QQ人风格",
     "jp": "QQスタイルのちび律影"
   },
-  "artist": {
-    "en": "Yuetuo Yayoi",
-    "zh": "月兔弥生",
-    "jp": "月兔弥生"
-  },
+  "artist": "月兔弥生",
   "authorLinks": [
     {
       "url": "https://space.bilibili.com/105158"

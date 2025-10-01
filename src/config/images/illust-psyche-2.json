@@ -1,20 +1,16 @@
 {
   "id": "illust-psyche-2",
   "name": {
-    "en": "プシュケーLo-2",
-    "zh": "プシュケーLo-2",
-    "jp": "プシュケーLo-2"
+    "en": "プシュケーLo Artwork 2",
+    "zh": "プシュケーLo作品2",
+    "jp": "プシュケーLo作品2"
   },
   "description": {
     "en": "Artwork by プシュケーLo",
     "zh": "プシュケーLo作品",
     "jp": "プシュケーLoの作品"
   },
-  "artist": {
-    "en": "プシュケーLo",
-    "zh": "プシュケーLo",
-    "jp": "プシュケーLo"
-  },
+  "artist": "プシュケーLo",
   "authorLinks": [
     {
       "url": "https://www.pixiv.net/users/942719"

@@ -10,11 +10,7 @@
     "zh": "浴衣主题作品",
     "jp": "浴衣テーマの作品"
   },
-  "artist": {
-    "en": "Mist Bell Tong Yu",
-    "zh": "霧鈴桐喻",
-    "jp": "霧鈴桐喻"
-  },
+  "artist": "霧鈴桐喻",
   "src": "/assets/category/ritsukage-utsumabo/miscellaneous/雾酱绘浴衣律影.jpg",
   "tags": [
     "commission",

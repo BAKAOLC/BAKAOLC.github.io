@@ -1,26 +1,22 @@
 {
   "id": "design-2",
   "name": {
-    "en": "Cat Girl Form",
-    "zh": "猫娘形态",
-    "jp": "猫娘形態"
+    "en": "Lively Cat Girl Form",
+    "zh": "活泼猫猫",
+    "jp": "活発な猫娘形態"
   },
   "description": {
-    "en": "Cat girl form character design",
-    "zh": "猫娘形态角色设定",
-    "jp": "猫娘形態のキャラクター設定"
+    "en": "Lively cat girl form character design",
+    "zh": "活泼的猫娘形态角色设定",
+    "jp": "活発な猫娘形態のキャラクターデザイン"
   },
-  "artist": {
-    "en": "Chengling",
-    "zh": "橙灵光",
-    "jp": "橙灵光"
-  },
+  "artist": "橙灵光",
   "authorLinks": [
     {
       "url": "https://www.mihuashi.com/profiles/3858"
     }
   ],
-  "src": "/assets/category/ritsukage-utsumabo/design/new/2.png",
+  "src": "/assets/category/ritsukage-utsumabo/design/new/2/2-Full.png",
   "tags": [
     "commission",
     "design"

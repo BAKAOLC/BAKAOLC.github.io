@@ -2,7 +2,7 @@
   "gallery": true,
   "links": true,
   "articles": true,
-  "characterProfiles": false,
+  "characterProfiles": true,
   "comments": true,
   "viewer": {
     "showImageList": true,

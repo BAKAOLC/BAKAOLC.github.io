@@ -10,11 +10,7 @@
     "zh": "阳光主题作品",
     "jp": "日光テーマの作品"
   },
-  "artist": {
-    "en": "Nekomura Yuyuko",
-    "zh": "猫村ゆゆこ",
-    "jp": "猫村ゆゆこ"
-  },
+  "artist": "猫村ゆゆこ",
   "authorLinks": [
     {
       "url": "https://skeb.jp/@yuyuco015"

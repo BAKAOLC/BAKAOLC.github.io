@@ -10,11 +10,7 @@
     "zh": "打拳主题表情包",
     "jp": "パンチテーマスタンプ"
   },
-  "artist": {
-    "en": "Kongjiang",
-    "zh": "空酱",
-    "jp": "空酱"
-  },
+  "artist": "空酱",
   "authorLinks": [
     {
       "url": "https://www.mihuashi.com/profiles/44444"

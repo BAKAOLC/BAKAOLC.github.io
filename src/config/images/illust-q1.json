@@ -3,18 +3,14 @@
   "name": {
     "en": "Q-style Ritsukage",
     "zh": "Q版小律影",
-    "jp": "Q版小律影"
+    "jp": "Q版の小律影"
   },
   "description": {
     "en": "Q-style chibi artwork",
     "zh": "Q版萌系作品",
-    "jp": "Q版萌え系作品"
+    "jp": "Q版萌え系アートワーク"
   },
-  "artist": {
-    "en": "Lanwu",
-    "zh": "岚舞",
-    "jp": "岚舞"
-  },
+  "artist": "岚舞",
   "authorLinks": [
     {
       "url": "https://www.mihuashi.com/profiles/383"
