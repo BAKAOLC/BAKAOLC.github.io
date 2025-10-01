@@ -222,26 +222,19 @@ export const getI18nText = (
 ): string => {
   const { t } = i18n.global as any;
 
-  // 如果是字符串，检查是否为i18n引用
-  if (typeof text === 'string') {
-    // 检查是否为i18n引用格式：$t:key.path
-    if (text.startsWith('$t:')) {
-      return resolveI18nReference(text, t, params);
-    }
-    // 普通字符串直接返回
-    return text;
+  // 如果是 undefined 或 null，返回空字符串
+  if (!text || (typeof text !== 'string' && typeof text !== 'object')) {
+    return '';
   }
 
-  // 如果是 undefined 或 null，返回空字符串
-  if (!text || typeof text !== 'object') {
-    return '';
+  if (typeof text === 'string') {
+    return processTextWithParams(text, t, params);
   }
 
   // 优先返回当前语言的文本
   if (text[currentLang]) {
     return processTextWithParams(text[currentLang], t, params);
   }
-
   // 尝试fallback语言
   const fallbackLang = getFallbackLanguage();
   if (text[fallbackLang]) {
