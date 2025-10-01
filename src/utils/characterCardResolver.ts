@@ -230,6 +230,7 @@ export class CharacterCardResolver {
 
   /**
    * 构建卡片解析上下文
+   * 收集所有层级的卡片，用于 from 引用解析
    * @param character 角色配置对象
    * @param variantId 可选的变体ID
    * @param imageId 可选的图像ID
@@ -310,43 +311,51 @@ export class CharacterCardResolver {
     variantId?: string,
     imageId?: string,
   ): ResolvedCharacterInfoCard[] {
-    const context = this.buildContext(character, variantId, imageId);
-    const resolvedCards: ResolvedCharacterInfoCard[] = [];
-
-    // 按优先级顺序查找卡片：图像级 > 变体级 > 角色级
-    // 重要：区分"未定义"和"定义为空"
-    // - 未定义 (undefined) → 使用上级
-    // - 定义为空 ([]) → 显示空，不使用上级
+    // 首先确定要使用哪一级的卡片
     let cardsToResolve: any[] = [];
-    let cardsFound = false;
+
+    // 按优先级顺序查找：图像级 > 变体级 > 角色级
+    // 重要：直接检查原始配置对象中是否定义了 infoCards 字段
+    // - 已定义字段 → 使用该级别的卡片（可能为空数组）
+    // - 未定义字段 → 向上查找
 
     // 1. 首先尝试图像级卡片
     if (variantId && imageId) {
       const variant = character.variants.find((v: any) => v.id === variantId);
       const image = variant?.images.find((img: any) => img.id === imageId);
+
       if (image && 'infoCards' in image) {
         // 图像明确定义了 infoCards 字段（可能是空数组）
         cardsToResolve = image.infoCards ?? [];
-        cardsFound = true;
+      } else if (variant && 'infoCards' in variant) {
+        // 如果图像存在但未定义 infoCards，继续向上查找
+        // 变体明确定义了 infoCards 字段（可能是空数组）
+        cardsToResolve = variant.infoCards ?? [];
+      } else {
+        // 如果变体也未定义 infoCards，使用角色级
+        cardsToResolve = character.infoCards ?? [];
       }
-    }
-
-    // 2. 如果图像级没有定义 infoCards，尝试变体级卡片
-    if (!cardsFound && variantId) {
+    } else if (variantId) {
+      // 2. 如果没有指定图像，尝试变体级卡片
       const variant = character.variants.find((v: any) => v.id === variantId);
+
       if (variant && 'infoCards' in variant) {
         // 变体明确定义了 infoCards 字段（可能是空数组）
         cardsToResolve = variant.infoCards ?? [];
-        cardsFound = true;
+      } else {
+        // 如果变体未定义 infoCards，使用角色级
+        cardsToResolve = character.infoCards ?? [];
       }
-    }
-
-    // 3. 如果变体级也没有定义 infoCards，使用角色级卡片
-    if (!cardsFound && character.infoCards) {
+    } else {
+      // 3. 默认使用角色级卡片
       cardsToResolve = character.infoCards ?? [];
     }
 
+    // 构建解析上下文（包含所有层级的卡片，用于 from 引用解析）
+    const context = this.buildContext(character, variantId, imageId);
+
     // 解析选中的卡片
+    const resolvedCards: ResolvedCharacterInfoCard[] = [];
     for (const card of cardsToResolve) {
       resolvedCards.push(this.resolveCard(card, context, currentLanguage));
     }

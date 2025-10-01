@@ -203,24 +203,6 @@ function characterProfilesConfigPlugin() {
   }
 
   /**
-   * 处理角色配置对象，设置默认值
-   */
-  function processCharacterProfile(profile) {
-    const processed = { ...profile };
-
-    // 确保每个 variant 都有 images 和 infoCards 数组
-    if (processed.variants) {
-      processed.variants = processed.variants.map(variant => ({
-        ...variant,
-        images: variant.images || [],
-        infoCards: variant.infoCards || []
-      }));
-    }
-
-    return processed;
-  }
-
-  /**
    * 合并角色配置文件
    */
   function mergeCharacterProfilesConfig() {
@@ -279,7 +261,7 @@ function characterProfilesConfigPlugin() {
                         const validProfiles = data.filter(item => {
               const validation = isValidCharacterProfileObject(item);
               return validation.valid;
-            }).map(item => processCharacterProfile(item));
+            });
             if (validProfiles.length !== data.length) {
               console.warn(`⚠️  [character-profiles-config] ${fileName}.json 中有 ${data.length - validProfiles.length} 个无效角色配置对象被跳过`);
             }
@@ -288,7 +270,7 @@ function characterProfilesConfigPlugin() {
           } else if (typeof data === 'object' && data !== null) {
             const validation = isValidCharacterProfileObject(data);
             if (validation.valid) {
-              allCharacterProfiles.push(processCharacterProfile(data));
+              allCharacterProfiles.push(data);
               hasChanges = true;
             } else {
               console.warn(`⚠️  [character-profiles-config] 跳过 ${file}: 角色配置对象格式无效`);
