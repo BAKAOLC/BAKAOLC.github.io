@@ -134,6 +134,7 @@ import { useModalManager } from '@/composables/useModalManager';
 import characterProfilesData from '@/config/character-profiles.json';
 import { useLanguageStore } from '@/stores/language';
 import type { CharacterProfile, CharacterVariant, CharacterVariantImage } from '@/types';
+import { CharacterConfigManager } from '@/utils/characterConfigManager';
 import { getI18nText } from '@/utils/i18nText';
 
 // 导入角色设定配置
@@ -146,19 +147,19 @@ const modalManager = useModalManager();
 // 获取当前语言
 const currentLanguage = computed(() => languageStore.currentLanguage);
 
-// 计算显示的信息卡片（子info优先，如果没有就显示父info）
+// 计算显示的信息卡片（使用新的解析器）
 const displayInfoCards = computed(() => {
-  if (!selectedImage.value || !selectedVariant.value) {
-    return selectedVariant.value?.infoCards ?? [];
+  if (!selectedCharacter.value || !selectedVariant.value) {
+    return [];
   }
 
-  // 如果有选中的图片且图片有infoCards，优先显示图片的infoCards
-  if (selectedImage.value.infoCards && selectedImage.value.infoCards.length > 0) {
-    return selectedImage.value.infoCards;
-  }
-
-  // 否则显示variant的infoCards
-  return selectedVariant.value.infoCards ?? [];
+  // 使用CharacterConfigManager获取解析后的信息卡片
+  return CharacterConfigManager.getCharacterCards(
+    selectedCharacter.value,
+    currentLanguage.value,
+    selectedVariant.value.id,
+    selectedImage.value?.id,
+  );
 });
 
 // 响应式数据
