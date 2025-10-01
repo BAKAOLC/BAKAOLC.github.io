@@ -60,13 +60,13 @@ function isValidCharacterProfileObject(obj) {
   }
 
   // 验证 name 字段 (I18nText)
-  const nameValidation = validateI18nText(obj.name, 'name', `角色 ${obj.id || '未知'}`, true);
+  const nameValidation = validateI18nText(obj.name, 'name', `角色 ${obj.id ?? '未知'}`, true);
   errors.push(...nameValidation.errors);
   warnings.push(...nameValidation.warnings);
 
   // 必须有 variants 数组
   if (!Array.isArray(obj.variants) || obj.variants.length === 0) {
-    errors.push(`角色 ${obj.id || '未知'}: 必须有非空的 variants 数组`);
+    errors.push(`角色 ${obj.id ?? '未知'}: 必须有非空的 variants 数组`);
   }
 
   // 验证信息卡片模板
@@ -149,29 +149,29 @@ function isValidCharacterProfileObject(obj) {
   if (Array.isArray(obj.variants)) {
     for (const variant of obj.variants) {
       if (!variant.id || typeof variant.id !== 'string') {
-        errors.push(`角色 ${obj.id || '未知'}: variant 必须有字符串类型的 id`);
+        errors.push(`角色 ${obj.id ?? '未知'}: variant 必须有字符串类型的 id`);
       } else {
         // 验证变体名称
-        const variantNameValidation = validateI18nText(variant.name, 'name', `角色 ${obj.id || '未知'}, 变体 ${variant.id}`, true);
+        const variantNameValidation = validateI18nText(variant.name, 'name', `角色 ${obj.id ?? '未知'}, 变体 ${variant.id}`, true);
         errors.push(...variantNameValidation.errors);
         warnings.push(...variantNameValidation.warnings);
 
         // images 必须是数组（可以为空）
         if (variant.images && !Array.isArray(variant.images)) {
-          errors.push(`角色 ${obj.id || '未知'}, 变体 ${variant.id}: images 必须是数组`);
+          errors.push(`角色 ${obj.id ?? '未知'}, 变体 ${variant.id}: images 必须是数组`);
         }
 
         // 验证变体级信息卡片
-        validateInfoCards(variant.infoCards, `角色 ${obj.id || '未知'}, 变体 ${variant.id}`);
+        validateInfoCards(variant.infoCards, `角色 ${obj.id ?? '未知'}, 变体 ${variant.id}`);
 
         // 验证每个 image
         if (variant.images) {
           for (const image of variant.images) {
             if (!image.id || typeof image.id !== 'string') {
-              errors.push(`角色 ${obj.id || '未知'}, 变体 ${variant.id}: image 必须有字符串类型的 id`);
+              errors.push(`角色 ${obj.id ?? '未知'}, 变体 ${variant.id}: image 必须有字符串类型的 id`);
             } else {
               // 验证图像级信息卡片
-              validateInfoCards(image.infoCards, `角色 ${obj.id || '未知'}, 变体 ${variant.id}, 图像 ${image.id}`);
+              validateInfoCards(image.infoCards, `角色 ${obj.id ?? '未知'}, 变体 ${variant.id}, 图像 ${image.id}`);
             }
           }
         }
