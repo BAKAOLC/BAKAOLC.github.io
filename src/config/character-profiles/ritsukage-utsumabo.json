@@ -14,7 +14,7 @@
         "jp": "基本情報"
       },
       "content": {
-        "en": "Name:\t\t{name}\nGender:\t{gender}\nAge:\t\t{age}\nHeight:\t{height}\nWeight:\t{weight}\nSpecies:\t{species}",
+        "en": "Name:\t\t{name}\nGender:\t{gender}\nAge:\t\t\t{age}\nHeight:\t{height}\nWeight:\t{weight}\nSpecies:\t{species}",
         "zh": "姓名:\t{name}\n性别:\t{gender}\n年龄:\t{age}\n身高:\t{height}\n体重:\t{weight}\n种族:\t{species}",
         "jp": "名前:\t{name}\n性別:\t{gender}\n年齢:\t{age}\n身長:\t{height}\n体重:\t{weight}\n種族:\t{species}"
       }
