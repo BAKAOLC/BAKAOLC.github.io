@@ -9,6 +9,16 @@
       "zh": "工具",
       "en": "Tool",
       "jp": "ツール"
+    },
+    "ai": {
+      "zh": "AI",
+      "en": "AI",
+      "jp": "AI"
+    },
+    "music": {
+      "zh": "音乐",
+      "en": "Music",
+      "jp": "音楽"
     }
   },
   "categories": [
@@ -65,6 +75,50 @@
           },
           "tags": [
             "blog"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "neuro",
+      "name": {
+        "zh": "Neuro",
+        "en": "Neuro",
+        "jp": "Neuro"
+      },
+      "description": {
+        "zh": "Neuro 相关的内容",
+        "en": "Neuro related content",
+        "jp": "Neuro関連のコンテンツ"
+      },
+      "links": [
+        {
+          "id": "vedal987",
+          "name": "Vedal & Neuro-sama",
+          "url": "https://www.twitch.tv/vedal987",
+          "avatar": "https://static-cdn.jtvnw.net/jtv_user_pictures/dd956f46-3776-4dfd-8bc3-e4f74c5ede67-profile_image-70x70.png",
+          "description": {
+            "zh": "Vedal 和 Neuro-sama 的 Twitch 直播",
+            "en": "Vedal & Neuro-sama's Twitch stream",
+            "jp": "VedalとNeuro-samaのTwitchストリーム"
+          },
+          "tags": [
+            "ai"
+          ]
+        },
+        {
+          "id": "swarm-fm",
+          "name": "Swarm FM",
+          "url": "https://player.sw.arm.fm/",
+          "avatar": "https://player.sw.arm.fm/favicon.svg",
+          "description": {
+            "zh": "Swarm FM 音乐电台",
+            "en": "Swarm FM music radio",
+            "jp": "Swarm FMミュージックラジオ"
+          },
+          "tags": [
+            "ai",
+            "music"
           ]
         }
       ]
