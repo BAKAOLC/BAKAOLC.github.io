@@ -17,43 +17,8 @@
         "en": "Name:\t\t{name}\nGender:\t{gender}\nAge:\t\t\t{age}\nHeight:\t{height}\nWeight:\t{weight}\nSpecies:\t{species}",
         "zh": "姓名:\t{name}\n性别:\t{gender}\n年龄:\t{age}\n身高:\t{height}\n体重:\t{weight}\n种族:\t{species}",
         "jp": "名前:\t{name}\n性別:\t{gender}\n年齢:\t{age}\n身長:\t{height}\n体重:\t{weight}\n種族:\t{species}"
-      }
-    },
-    {
-      "id": "artist-info",
-      "title": {
-        "en": "Artist",
-        "zh": "画师",
-        "jp": "画家"
       },
-      "content": "{artist}"
-    },
-    {
-      "id": "warnings",
-      "content": {
-        "en": "Unauthorized use for commercial or AI training purposes is prohibited.",
-        "zh": "未经授权，请勿擅自用于商业或AI训练等用途。",
-        "jp": "無断で商業目的やAIトレーニングなどに使用しないでください。"
-      },
-      "color": "#ff0000"
-    }
-  ],
-  "infoCards": [
-    {
-      "id": "ritsukage-utsumabo-warnings",
-      "template": "warnings"
-    },
-    {
-      "id": "ritsukage-utsumabo-artist-info",
-      "template": "artist-info",
-      "variables": {
-        "artist": "橙灵光"
-      },
-      "color": "#ffa500"
-    },
-    {
-      "id": "ritsukage-utsumabo-basic-info",
-      "template": "basic-info",
+      "color": "#708090",
       "variables": {
         "name": {
           "en": "Ritsukage Utsumabo",
@@ -80,12 +45,67 @@
       }
     },
     {
+      "id": "artist-info",
+      "title": {
+        "en": "Artist",
+        "zh": "画师",
+        "jp": "画家"
+      },
+      "content": "{artist}",
+      "color": "#ffa500"
+    },
+    {
+      "id": "warnings",
+      "content": {
+        "en": "Unauthorized use for commercial or AI training purposes is prohibited.",
+        "zh": "未经授权，请勿擅自用于商业或AI训练等用途。",
+        "jp": "無断で商業目的やAIトレーニングなどに使用しないでください。"
+      },
+      "color": "#ff0000"
+    },
+    {
+      "id": "appearance-guide",
+      "title": {
+        "en": "Common Features",
+        "zh": "通常特征",
+        "jp": "一般的特徴"
+      },
+      "content": {
+        "en": "Unkempt, flowing long silver hair, may lean towards white or gray, with allowed blue/purple undertones.\nSky blue heterochromia, right eye darker, left eye lighter, but same-colored eyes are also acceptable.\nCommon accessories: Lace black parasol, black top hat, giant sky blue bow.",
+        "zh": "未经梳理的披散银色长发，允许偏白或灰，允许带有蓝/紫色的附加色调。\n天蓝色异色瞳，右眼偏深，左眼偏浅，但同色亦可。\n常见配饰：花边黑色阳伞、黑色礼帽，巨型天蓝色蝴蝶结。",
+        "jp": "手入れされていない流れるような銀色の長髪、白やグレーに寄ることも可能で、青/紫の色調を帯びることも許される。\n空色のオッドアイ、右目は濃く、左目は薄く、ただし同色も可。\n一般的なアクセサリー：レースの黒い日傘、黒いシルクハット、巨大な空色のリボン。"
+      },
+      "color": "#4a90e2"
+    }
+  ],
+  "infoCards": [
+    {
+      "id": "ritsukage-utsumabo-warnings",
+      "template": "warnings"
+    },
+    {
+      "id": "ritsukage-utsumabo-artist-info",
+      "template": "artist-info",
+      "variables": {
+        "artist": "橙灵光"
+      }
+    },
+    {
+      "id": "ritsukage-utsumabo-basic-info",
+      "template": "basic-info"
+    },
+    {
+      "id": "ritsukage-utsumabo-appearance-guide",
+      "template": "appearance-guide"
+    },
+    {
       "id": "ritsukage-utsumabo-description-1",
       "content": {
         "en": "Ritsukage Utsumabo is a higher-dimensional being whose true form cannot be fully comprehended within lower-dimensional space. What we perceive is merely a projection - the inevitable result of information loss and distortion when higher dimensions are projected into lower ones.\n\nJust as viewing a mountain from various angles reveals completely different silhouettes, she manifests diverse forms in the external world for different reasons. She may appear with entirely different appearances, genders, personalities, or even species, but each represents an incomplete yet authentic manifestation of her higher-dimensional essence. Due to this characteristic of higher-dimensional projection, she may even exist simultaneously as multiple different projections within the same space-time - these seemingly independent individuals actually all originate from the same higher-dimensional being, resulting in these entities being able to share memories, knowledge, and experiences.\n\nBy nature, she originally cannot act or interact within lower dimensions. However, through her distinctive abilities, she can selectively materialize certain aspects of herself, granting herself temporary physical presence and interaction capabilities with specific objects or individuals. This allows her to selectively interact with the external world, and thus she remains fundamentally untainted by external impurities - she cannot be soiled even when traversing through muddy or contaminated environments, as long as she doesn't wish to be.",
         "zh": "律影映幻是一个高维存在，其真实形态无法在低维空间中被完全理解，因此我们所见的仅是一个投影——高维向低维投射时不可避免的信息损失和扭曲的结果。\n\n正如从各个角度观察山峰会呈现出截然不同的轮廓，她会因各种原因而在外界展现出迥异的形态。她可能以全然不同的外观、性别、性格甚至种族出现，但每一种都是其高维本质的不完整却真实的体现。由于这种高维投影的特性，她甚至可能同时以多个不同的投影存在于相同的时空之中——这些看似独立的个体实际上都源自同一高维存在，导致这些个体之间还能够共享记忆、知识与经验。\n\n从本质而言，她原本无法在低维度中活动或交互。然而，凭借独特的能力，她可以选择性地物质化自身的某些层面，赋予自己暂时的物理存在及与特定事物或个体交互的能力。这使她能够有选择地与外界互动，也因此从根本上不受外界污秽的玷污——即便穿行于泥泞或污浊的环境中也不会被弄脏，只要她不愿意。",
         "jp": "律影映幻は高次元存在であり、その真の姿は低次元空間では完全に理解することができない。我々が見るものは単なる投影に過ぎず——高次元から低次元への投射時に避けられない情報損失と歪みの結果である。\n\n様々な角度から山を見ると全く違うシルエットが見えるように、彼女は様々な理由により外界では迥異な形態を示す。全く異なる外観、性別、性格、さらには種族で現れることもあるが、それぞれが彼女の高次元本質の不完全ながらも真実の体現なのである。この高次元投影の特性により、彼女は同一の時空内に複数の異なる投影として同時に存在することすらある——これらの一見独立した個体は実際には全て同一の高次元存在に由来しており、そのためこれらの個体間では記憶、知識、経験を共有することができるのである。\n\n本質的に言えば、彼女は本来低次元内で行動や相互作用をすることはできない。しかし、その独特な能力により、選択的に自身のある側面を物質化し、自分に一時的な物理的存在および特定の事物や個体との相互作用能力を付与することができる。これにより選択的に外界と相互作用することができ、そのため根本的には外界の汚れに染まることはない——泥濘や汚濁した環境を通行しても、彼女が望まない限り汚れることはないのである。"
-      }
+      },
+      "color": "#9370db"
     },
     {
       "id": "ritsukage-utsumabo-description-2",
@@ -93,7 +113,8 @@
         "en": "Ritsukage Utsumabo possesses the ability to alter properties and states, whether adding, removing, or modifying them. For example, she can grant wings to a dog, enabling it to control them as naturally as if born with wings (though whether it can truly fly depends on other attributes).\n\nAlthough she is essentially a projection that should only have visual existence, she can utilize this ability to endow herself with other basic physical properties, allowing her to engage in eating and entertainment like an ordinary person.\n\nHowever, she is not enthusiastic about using this ability and typically employs it only when necessary - such as supplementing herself with missing physical attributes. This makes it difficult for people to perceive any difference between her and ordinary individuals in most situations.",
         "zh": "律影映幻拥有改变属性和状态的能力，无论是添加、删除或是修改都能做到。例如，她可以为某只狗添加翅膀，使其能够像天生拥有翅膀一般自如地操控（但能否真正飞行取决于其他属性）。\n\n正如前文所述，她本质上是投影，原本应该只具有视觉上的存在。但她正是通过这种属性操控能力为自己赋予其他基本的物理属性，从而能够像普通人一样进行饮食和娱乐活动。\n\n然而，她并不热衷于使用这项能力，通常仅在必要时才会动用——正如为自己补充所缺失的物理属性那样。这种克制使得她在大多数情况下都很难被人察觉出与常人的差异。",
         "jp": "律影映幻は属性や状態を変更する能力を持っており、追加、削除、修正のいずれも可能である。例えば、彼女は犬に翼を付与することができ、その犬は生まれつき翼を持っているかのように自在に操ることができるようになる（ただし、真に飛行できるかどうかは他の属性による）。\n\n彼女は本質的には投影であり、本来は視覚的な存在のみであるはずだが、この能力を運用して自分に他の基本的な物理属性を付与し、普通の人のように飲食や娯楽を行うことができる。\n\nしかし、彼女はこの能力の使用に熱心ではなく、通常は必要な時のみ動用する——自分に欠けている物理属性を補完する場合のように。これにより、ほとんどの状況において人々が彼女と普通の人との差異を察知することは困難である。"
-      }
+      },
+      "color": "#9370db"
     }
   ],
   "variants": [
