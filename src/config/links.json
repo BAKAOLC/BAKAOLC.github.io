@@ -122,6 +122,38 @@
           ]
         }
       ]
+    },
+    {
+      "id": "tools",
+      "name": {
+        "zh": "工具",
+        "en": "Tools",
+        "jp": "ツール"
+      },
+      "description": {
+        "zh": "一些有用的工具",
+        "en": "Some useful tools",
+        "jp": "いくつかの便利なツール"
+      },
+      "links": [
+        {
+          "id": "sticker-quick-format-editor",
+          "name": {
+            "zh": "贴纸快速格式编辑器",
+            "en": "Sticker Quick Format Editor",
+            "jp": "ステッカークイックフォーマットエディタ"
+          },
+          "url": "https://sticker-quick-format-editor.ritsukage.com",
+          "description": {
+            "zh": "一个快速编辑贴纸格式的工具",
+            "en": "A tool for quickly editing sticker formats",
+            "jp": "ステッカー形式を迅速に編集するためのツール"
+          },
+          "tags": [
+            "tool"
+          ]
+        }
+      ]
     }
   ],
   "settings": {
