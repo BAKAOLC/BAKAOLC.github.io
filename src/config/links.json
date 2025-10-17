@@ -138,11 +138,7 @@
       "links": [
         {
           "id": "sticker-quick-format-editor",
-          "name": {
-            "zh": "贴纸快速格式编辑器",
-            "en": "Sticker Quick Format Editor",
-            "jp": "ステッカークイックフォーマットエディタ"
-          },
+          "name": "贴纸快速格式编辑器",
           "url": "https://sticker-quick-format-editor.ritsukage.com",
           "description": {
             "zh": "一个快速编辑贴纸格式的工具",
