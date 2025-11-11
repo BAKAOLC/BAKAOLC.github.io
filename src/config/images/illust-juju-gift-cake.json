@@ -1,0 +1,47 @@
+{
+  "id": "illust-juju-gift-cake",
+  "name": {
+    "en": "Cake Ritsukage",
+    "zh": "律影蛋糕",
+    "jp": "律影ケーキ"
+  },
+  "description": {
+    "en": "Cake Ritsukage gifted by 橘橘",
+    "zh": "橘橘赠送的律影小蛋糕",
+    "jp": "橘橘から贈られた律影ケーキ"
+  },
+  "artist": "五十根炸虾",
+  "authorLinks": [
+    {
+      "url": "https://www.mihuashi.com/profiles/571437"
+    }
+  ],
+  "tags": [
+    "gift",
+    "illustration"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ],
+  "date": "2025-11-10",
+  "childImages": [
+    {
+      "id": "illust-juju-gift-cake-1",
+      "listName": {
+        "en": "Cake Ritsukage",
+        "zh": "律影蛋糕",
+        "jp": "律影ケーキ"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/miscellaneous/橘橘赠图/律影蛋糕.png"
+    },
+    {
+      "id": "illust-juju-gift-cake-2",
+      "listName": {
+        "en": "Cake Ritsukage (Outlined)",
+        "zh": "律影蛋糕-描边",
+        "jp": "律影ケーキ（アウトライン）"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/miscellaneous/橘橘赠图/律影蛋糕-描边.png"
+    }
+  ]
+}
