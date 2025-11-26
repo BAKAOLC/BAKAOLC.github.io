@@ -562,6 +562,64 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-13",
+      "name": {
+        "en": "Deep Sea Chaos",
+        "zh": "深海混沌",
+        "jp": "深海混沌"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-13-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-13-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-13-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/13/13-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Deep Sea Chaos",
+            "zh": "律影映幻 - 深海混沌",
+            "jp": "律影映幻 - 深海混沌"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-14",
+      "name": {
+        "en": "Magic Science Style",
+        "zh": "魔科学风格",
+        "jp": "魔科学スタイル"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-14-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-14-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-14-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/14/14-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Magic Science Style",
+            "zh": "律影映幻 - 魔科学风格",
+            "jp": "律影映幻 - 魔科学スタイル"
+          }
+        }
+      ]
     }
   ]
 }
