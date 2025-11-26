@@ -372,6 +372,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-8",
+      "name": {
+        "en": "Assassin",
+        "zh": "暗杀者",
+        "jp": "暗殺者"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-8-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-8-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-8-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/8/08-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Assassin",
+            "zh": "律影映幻 - 暗杀者",
+            "jp": "律影映幻 - 暗殺者"
+          }
+        }
+      ]
     }
   ]
 }
