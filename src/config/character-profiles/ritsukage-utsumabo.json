@@ -184,6 +184,35 @@
       ]
     },
     {
+      "id": "ritsukage-utsumabo-3",
+      "name": {
+        "en": "Swimwear",
+        "zh": "泳装",
+        "jp": "水着"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-3-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-3-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-3-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/3/03-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Swimwear",
+            "zh": "律影映幻 - 泳装",
+            "jp": "律影映幻 - 水着"
+          }
+        }
+      ]
+    },
+    {
       "id": "ritsukage-utsumabo-4",
       "name": {
         "en": "Opposite of Self-Restriction",
