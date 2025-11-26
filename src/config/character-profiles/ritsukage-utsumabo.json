@@ -314,6 +314,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-7",
+      "name": {
+        "en": "Sleeping Outfit",
+        "zh": "睡衣",
+        "jp": "寝衣"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-7-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-7-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-7-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/7/07-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Sleeping Outfit",
+            "zh": "律影映幻 - 睡衣",
+            "jp": "律影映幻 - 寝衣"
+          }
+        }
+      ]
     }
   ]
 }
