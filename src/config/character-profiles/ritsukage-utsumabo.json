@@ -393,7 +393,16 @@
       "images": [
         {
           "id": "ritsukage-utsumabo-8-reference-1",
-          "src": "/assets/category/ritsukage-utsumabo/design/draft/8/08-AI绘制角色参考.png",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/8/08-AI绘制角色参考1.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Assassin",
+            "zh": "律影映幻 - 暗杀者",
+            "jp": "律影映幻 - 暗殺者"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-8-reference-2",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/8/08-AI绘制角色参考2.png",
           "alt": {
             "en": "Ritsukage Utsumabo - Assassin",
             "zh": "律影映幻 - 暗杀者",
@@ -460,7 +469,16 @@
       "images": [
         {
           "id": "ritsukage-utsumabo-10-reference-1",
-          "src": "/assets/category/ritsukage-utsumabo/design/draft/10/10-AI绘制角色参考.png",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/10/10-AI绘制角色参考1.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Bride",
+            "zh": "律影映幻 - 花嫁",
+            "jp": "律影映幻 - 花嫁"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-10-reference-2",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/10/10-AI绘制角色参考2.png",
           "alt": {
             "en": "Ritsukage Utsumabo - Bride",
             "zh": "律影映幻 - 花嫁",
@@ -489,11 +507,58 @@
       "images": [
         {
           "id": "ritsukage-utsumabo-11-reference-1",
-          "src": "/assets/category/ritsukage-utsumabo/design/draft/11/11-AI绘制角色参考.png",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/11/11-AI绘制角色参考1.png",
           "alt": {
             "en": "Ritsukage Utsumabo - School Uniform",
             "zh": "律影映幻 - 学生服",
             "jp": "律影映幻 - 学生服"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-11-reference-2",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/11/11-AI绘制角色参考2.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - School Uniform",
+            "zh": "律影映幻 - 学生服",
+            "jp": "律影映幻 - 学生服"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-12",
+      "name": {
+        "en": "Steampunk",
+        "zh": "蒸汽朋克",
+        "jp": "スチームパンク"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-12-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-12-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-12-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/12/12-AI绘制角色参考1.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Steampunk",
+            "zh": "律影映幻 - 蒸汽朋克",
+            "jp": "律影映幻 - スチームパンク"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-12-reference-2",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/12/12-AI绘制角色参考2.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Steampunk",
+            "zh": "律影映幻 - 蒸汽朋克",
+            "jp": "律影映幻 - スチームパンク"
           }
         }
       ]
