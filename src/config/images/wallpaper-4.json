@@ -1,0 +1,23 @@
+{
+  "id": "wallpaper-4",
+  "name": {
+    "en": "Battle",
+    "zh": "战斗",
+    "jp": "戦闘"
+  },
+  "description": {
+    "en": "Game entertainment themed wallpaper",
+    "zh": "游戏娱乐战斗主题壁纸",
+    "jp": "ゲームエンタメ戦闘テーマの壁紙"
+  },
+  "tags": [
+    "commission",
+    "wallpaper"
+  ],
+  "characters": [
+    "ritsukage-utsumabo",
+    "RaitoOrange"
+  ],
+  "date": "2025-11-19",
+  "src": "/assets/category/ritsukage-utsumabo/wallpaper/4/4.jpg"
+}
