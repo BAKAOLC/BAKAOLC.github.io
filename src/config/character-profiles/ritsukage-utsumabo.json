@@ -422,11 +422,78 @@
       "images": [
         {
           "id": "ritsukage-utsumabo-9-reference-1",
-          "src": "/assets/category/ritsukage-utsumabo/design/draft/9/09-AI绘制角色参考.png",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/9/09-AI绘制角色参考1.png",
           "alt": {
             "en": "Ritsukage Utsumabo - Magical Girl",
             "zh": "律影映幻 - 魔法少女",
             "jp": "律影映幻 - 魔法少女"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-9-reference-2",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/9/09-AI绘制角色参考2.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Magical Girl",
+            "zh": "律影映幻 - 魔法少女",
+            "jp": "律影映幻 - 魔法少女"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-10",
+      "name": {
+        "en": "Bride",
+        "zh": "花嫁",
+        "jp": "花嫁"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-10-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-10-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-10-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/10/10-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Bride",
+            "zh": "律影映幻 - 花嫁",
+            "jp": "律影映幻 - 花嫁"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-11",
+      "name": {
+        "en": "School Uniform",
+        "zh": "学生服",
+        "jp": "学生服"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-11-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-11-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-11-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/11/11-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - School Uniform",
+            "zh": "律影映幻 - 学生服",
+            "jp": "律影映幻 - 学生服"
           }
         }
       ]
