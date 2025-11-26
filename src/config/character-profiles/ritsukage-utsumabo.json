@@ -401,6 +401,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-9",
+      "name": {
+        "en": "Magical Girl",
+        "zh": "魔法少女",
+        "jp": "魔法少女"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-9-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-9-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-9-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/9/09-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Magical Girl",
+            "zh": "律影映幻 - 魔法少女",
+            "jp": "律影映幻 - 魔法少女"
+          }
+        }
+      ]
     }
   ]
 }
