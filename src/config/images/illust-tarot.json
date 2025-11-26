@@ -1,28 +1,221 @@
 {
   "id": "illust-tarot",
   "name": {
-    "en": "Tarot Empress",
-    "zh": "塔罗牌 女皇",
-    "jp": "タロット 女帝"
+    "en": "Tarot Cards",
+    "zh": "塔罗牌",
+    "jp": "タロットカード"
   },
   "description": {
-    "en": "Tarot Empress card artwork",
-    "zh": "塔罗牌女皇卡牌作品",
-    "jp": "タロット女帝カードの作品"
+    "en": "Complete set of tarot card artwork",
+    "zh": "完整的塔罗牌卡牌作品集",
+    "jp": "完全なタロットカードの作品集"
   },
-  "artist": "栗粟Liz",
-  "authorLinks": [
-    {
-      "url": "https://www.mihuashi.com/profiles/338318"
-    }
-  ],
-  "src": "/assets/category/ritsukage-utsumabo/miscellaneous/塔罗牌 女皇 律影.jpg",
   "tags": [
-    "commission",
-    "illustration"
+    "illustration",
+    "ai-generated"
   ],
   "characters": [
     "ritsukage-utsumabo"
   ],
-  "date": "2022-01-21"
+  "date": "2025-11-24",
+  "childImages": [
+    {
+      "id": "illust-tarot-0",
+      "listName": {
+        "en": "The Fool",
+        "zh": "愚者",
+        "jp": "愚者"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/0 - THE FOOL.jpeg"
+    },
+    {
+      "id": "illust-tarot-1",
+      "listName": {
+        "en": "The Magician",
+        "zh": "魔术师",
+        "jp": "魔術師"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/1 - THE MAGICIAN.jpeg"
+    },
+    {
+      "id": "illust-tarot-2",
+      "listName": {
+        "en": "The High Priestess",
+        "zh": "女祭司",
+        "jp": "女司祭"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/2 - THE HIGH PRIESTESS.jpeg"
+    },
+    {
+      "id": "illust-tarot-3",
+      "listName": {
+        "en": "The Empress",
+        "zh": "皇后",
+        "jp": "女帝"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/3 - THE EMPRESS.jpeg"
+    },
+    {
+      "id": "illust-tarot-4",
+      "listName": {
+        "en": "The Emperor",
+        "zh": "皇帝",
+        "jp": "皇帝"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/4 - THE EMPEROR.jpeg"
+    },
+    {
+      "id": "illust-tarot-5",
+      "listName": {
+        "en": "The Hierophant",
+        "zh": "教皇",
+        "jp": "法王"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/5 - THE HIEROPHANT.jpeg"
+    },
+    {
+      "id": "illust-tarot-6",
+      "listName": {
+        "en": "The Lovers",
+        "zh": "恋人",
+        "jp": "恋人"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/6 - THE LOVERS.jpeg"
+    },
+    {
+      "id": "illust-tarot-7",
+      "listName": {
+        "en": "The Chariot",
+        "zh": "战车",
+        "jp": "戦車"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/7 - THE CHARIOT.jpeg"
+    },
+    {
+      "id": "illust-tarot-8",
+      "listName": {
+        "en": "Strength",
+        "zh": "力量",
+        "jp": "力"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/8 - STRENGTH.jpeg"
+    },
+    {
+      "id": "illust-tarot-9",
+      "listName": {
+        "en": "The Hermit",
+        "zh": "隐者",
+        "jp": "隠者"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/9 - THE HERMIT.jpeg"
+    },
+    {
+      "id": "illust-tarot-10",
+      "listName": {
+        "en": "The Wheel of Fortune",
+        "zh": "命运之轮",
+        "jp": "運命の輪"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/10 - THE WHEEL OF FORTUNE.jpeg"
+    },
+    {
+      "id": "illust-tarot-11",
+      "listName": {
+        "en": "Justice",
+        "zh": "正义",
+        "jp": "正義"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/11 - THE JUSTICE.jpeg"
+    },
+    {
+      "id": "illust-tarot-12",
+      "listName": {
+        "en": "The Hanged Man",
+        "zh": "倒吊人",
+        "jp": "吊された男"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/12 - THE HANGED MAN.jpeg"
+    },
+    {
+      "id": "illust-tarot-13",
+      "listName": {
+        "en": "Death",
+        "zh": "死神",
+        "jp": "死神"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/13 - DEATH.jpeg"
+    },
+    {
+      "id": "illust-tarot-14",
+      "listName": {
+        "en": "Temperance",
+        "zh": "节制",
+        "jp": "節制"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/14 - TEMPERANCE.jpeg"
+    },
+    {
+      "id": "illust-tarot-15",
+      "listName": {
+        "en": "The Devil",
+        "zh": "恶魔",
+        "jp": "悪魔"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/15 - THE DEVIL.jpeg"
+    },
+    {
+      "id": "illust-tarot-16",
+      "listName": {
+        "en": "The Tower",
+        "zh": "塔",
+        "jp": "塔"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/16 - THE TOWER.jpeg"
+    },
+    {
+      "id": "illust-tarot-17",
+      "listName": {
+        "en": "The Star",
+        "zh": "星星",
+        "jp": "星"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/17 - THE STAR.jpeg"
+    },
+    {
+      "id": "illust-tarot-18",
+      "listName": {
+        "en": "The Moon",
+        "zh": "月亮",
+        "jp": "月"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/18 - THE MOON.jpeg"
+    },
+    {
+      "id": "illust-tarot-19",
+      "listName": {
+        "en": "The Sun",
+        "zh": "太阳",
+        "jp": "太陽"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/19 - THE SUN.jpeg"
+    },
+    {
+      "id": "illust-tarot-20",
+      "listName": {
+        "en": "The Judgement",
+        "zh": "审判",
+        "jp": "審判"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/20 - THE JUDEMENT.jpeg"
+    },
+    {
+      "id": "illust-tarot-21",
+      "listName": {
+        "en": "The World",
+        "zh": "世界",
+        "jp": "世界"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/tarot/21 - THE WORLD.jpeg"
+    }
+  ]
 }

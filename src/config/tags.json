@@ -100,6 +100,16 @@
     "icon": "smile"
   },
   {
+    "id": "ai-generated",
+    "name": {
+      "en": "AI Generated",
+      "zh": "AI生成",
+      "jp": "AI生成"
+    },
+    "color": "#3b82f6",
+    "icon": "robot"
+  },
+  {
     "id": "nsfw",
     "name": {
       "en": "NSFW",
