@@ -23,6 +23,7 @@
     "character-profiles-config:merge": "node scripts/manage-character-profiles.cjs merge",
     "character-profiles-config:cleanup": "node scripts/manage-character-profiles.cjs cleanup",
     "generate-thumbnails": "node scripts/generate-thumbnails.cjs",
+    "convert-to-webp": "node scripts/convert-to-webp.cjs",
     "cleanup-backups": "node scripts/cleanup-backups.cjs",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
