@@ -107,7 +107,8 @@
       "jp": "AI生成"
     },
     "color": "#3b82f6",
-    "icon": "robot"
+    "icon": "robot",
+    "isRestricted": true
   },
   {
     "id": "nsfw",
