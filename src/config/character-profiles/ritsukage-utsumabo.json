@@ -330,6 +330,15 @@
             "zh": "律影映幻 - 融化的光与暗",
             "jp": "律影映幻 - 融ける光と闇"
           }
+        },
+        {
+          "id": "ritsukage-utsumabo-5-reference-4",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/5/05-AI绘制角色参考4.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Melting Light and Darkness",
+            "zh": "律影映幻 - 融化的光与暗",
+            "jp": "律影映幻 - 融ける光と闇"
+          }
         }
       ]
     },
@@ -353,7 +362,16 @@
       "images": [
         {
           "id": "ritsukage-utsumabo-6-reference-1",
-          "src": "/assets/category/ritsukage-utsumabo/design/draft/6/06-AI绘制角色参考.jpeg",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/6/06-AI绘制角色参考1.jpeg",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Fox of the Far East",
+            "zh": "律影映幻 - 异域华舞之狐",
+            "jp": "律影映幻 - 異域華舞の狐"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-6-reference-2",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/6/06-AI绘制角色参考2.png",
           "alt": {
             "en": "Ritsukage Utsumabo - Fox of the Far East",
             "zh": "律影映幻 - 异域华舞之狐",
@@ -549,6 +567,15 @@
             "zh": "律影映幻 - 学生服",
             "jp": "律影映幻 - 学生服"
           }
+        },
+        {
+          "id": "ritsukage-utsumabo-11-reference-3",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/11/11-AI绘制角色参考3.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - School Uniform",
+            "zh": "律影映幻 - 学生服",
+            "jp": "律影映幻 - 学生服"
+          }
         }
       ]
     },
@@ -587,6 +614,15 @@
             "zh": "律影映幻 - 蒸汽朋克",
             "jp": "律影映幻 - スチームパンク"
           }
+        },
+        {
+          "id": "ritsukage-utsumabo-12-reference-3",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/12/12-AI绘制角色参考3.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Steampunk",
+            "zh": "律影映幻 - 蒸汽朋克",
+            "jp": "律影映幻 - スチームパンク"
+          }
         }
       ]
     },
@@ -610,7 +646,16 @@
       "images": [
         {
           "id": "ritsukage-utsumabo-13-reference-1",
-          "src": "/assets/category/ritsukage-utsumabo/design/draft/13/13-AI绘制角色参考.png",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/13/13-AI绘制角色参考1.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Deep Sea Chaos",
+            "zh": "律影映幻 - 深海混沌",
+            "jp": "律影映幻 - 深海混沌"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-13-reference-2",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/13/13-AI绘制角色参考2.png",
           "alt": {
             "en": "Ritsukage Utsumabo - Deep Sea Chaos",
             "zh": "律影映幻 - 深海混沌",
@@ -649,6 +694,15 @@
         {
           "id": "ritsukage-utsumabo-14-reference-2",
           "src": "/assets/category/ritsukage-utsumabo/design/draft/14/14-AI绘制角色参考2.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Magic Science Style",
+            "zh": "律影映幻 - 魔科学风格",
+            "jp": "律影映幻 - 魔科学スタイル"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-14-reference-3",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/14/14-AI绘制角色参考3.png",
           "alt": {
             "en": "Ritsukage Utsumabo - Magic Science Style",
             "zh": "律影映幻 - 魔科学风格",
