@@ -203,7 +203,16 @@
       "images": [
         {
           "id": "ritsukage-utsumabo-3-reference-1",
-          "src": "/assets/category/ritsukage-utsumabo/design/draft/3/03-AI绘制角色参考.jpg",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/3/03-AI绘制角色参考1.jpg",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Swimwear",
+            "zh": "律影映幻 - 泳装",
+            "jp": "律影映幻 - 水着"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-3-reference-2",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/3/03-AI绘制角色参考2.png",
           "alt": {
             "en": "Ritsukage Utsumabo - Swimwear",
             "zh": "律影映幻 - 泳装",
@@ -339,6 +348,15 @@
             "zh": "律影映幻 - 融化的光与暗",
             "jp": "律影映幻 - 融ける光と闇"
           }
+        },
+        {
+          "id": "ritsukage-utsumabo-5-reference-5",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/5/05-AI绘制角色参考5.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Melting Light and Darkness",
+            "zh": "律影映幻 - 融化的光与暗",
+            "jp": "律影映幻 - 融ける光と闇"
+          }
         }
       ]
     },
@@ -372,6 +390,15 @@
         {
           "id": "ritsukage-utsumabo-6-reference-2",
           "src": "/assets/category/ritsukage-utsumabo/design/draft/6/06-AI绘制角色参考2.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Fox of the Far East",
+            "zh": "律影映幻 - 异域华舞之狐",
+            "jp": "律影映幻 - 異域華舞の狐"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-6-reference-3",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/6/06-AI绘制角色参考3.png",
           "alt": {
             "en": "Ritsukage Utsumabo - Fox of the Far East",
             "zh": "律影映幻 - 异域华舞之狐",
@@ -491,6 +518,15 @@
             "zh": "律影映幻 - 魔法少女",
             "jp": "律影映幻 - 魔法少女"
           }
+        },
+        {
+          "id": "ritsukage-utsumabo-9-reference-3",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/9/09-AI绘制角色参考3.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Magical Girl",
+            "zh": "律影映幻 - 魔法少女",
+            "jp": "律影映幻 - 魔法少女"
+          }
         }
       ]
     },
@@ -524,6 +560,15 @@
         {
           "id": "ritsukage-utsumabo-10-reference-2",
           "src": "/assets/category/ritsukage-utsumabo/design/draft/10/10-AI绘制角色参考2.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Bride",
+            "zh": "律影映幻 - 花嫁",
+            "jp": "律影映幻 - 花嫁"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-10-reference-3",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/10/10-AI绘制角色参考3.png",
           "alt": {
             "en": "Ritsukage Utsumabo - Bride",
             "zh": "律影映幻 - 花嫁",
