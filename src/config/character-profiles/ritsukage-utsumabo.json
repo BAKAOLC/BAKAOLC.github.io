@@ -815,6 +815,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-18",
+      "name": {
+        "en": "Succubus",
+        "zh": "魅魔",
+        "jp": "サキュバス"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-18-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-18-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-18-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/18/18-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Succubus",
+            "zh": "律影映幻 - 魅魔",
+            "jp": "律影映幻 - サキュバス"
+          }
+        }
+      ]
     }
   ]
 }
