@@ -757,6 +757,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-16",
+      "name": {
+        "en": "Ninja",
+        "zh": "忍者",
+        "jp": "忍者"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-16-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-16-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-16-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/16/16-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Ninja",
+            "zh": "律影映幻 - 忍者",
+            "jp": "律影映幻 - 忍者"
+          }
+        }
+      ]
     }
   ]
 }
