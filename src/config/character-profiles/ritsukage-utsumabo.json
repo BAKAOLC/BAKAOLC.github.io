@@ -844,6 +844,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-19",
+      "name": {
+        "en": "Elf",
+        "zh": "精灵",
+        "jp": "エルフ"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-19-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-19-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-19-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/19/19-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Elf",
+            "zh": "律影映幻 - 精灵",
+            "jp": "律影映幻 - エルフ"
+          }
+        }
+      ]
     }
   ]
 }
