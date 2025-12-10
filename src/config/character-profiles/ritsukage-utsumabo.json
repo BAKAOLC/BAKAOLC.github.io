@@ -929,6 +929,64 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-21",
+      "name": {
+        "en": "Divine Beast (Chicken & Phoenix)",
+        "zh": "神兽（鸡&凤凰）",
+        "jp": "神獣（鶏&鳳凰）"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-21-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-21-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-21-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/21/21-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Divine Beast (Chicken & Phoenix)",
+            "zh": "律影映幻 - 神兽（鸡&凤凰）",
+            "jp": "律影映幻 - 神獣（鶏&鳳凰）"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-22",
+      "name": {
+        "en": "Divine Beast (White Tiger)",
+        "zh": "神兽（白虎）",
+        "jp": "神獣（白虎）"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-22-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-22-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-22-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/22/22-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Divine Beast (White Tiger)",
+            "zh": "律影映幻 - 神兽（白虎）",
+            "jp": "律影映幻 - 神獣（白虎）"
+          }
+        }
+      ]
     }
   ]
 }
