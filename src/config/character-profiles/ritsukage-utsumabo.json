@@ -1045,6 +1045,354 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-25",
+      "name": {
+        "en": "Zodiac (Rat)",
+        "zh": "生肖（鼠）",
+        "jp": "十二支（子）"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-25-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-25-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-25-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/25/25-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Zodiac (Rat)",
+            "zh": "律影映幻 - 生肖（鼠）",
+            "jp": "律影映幻 - 十二支（子）"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-26",
+      "name": {
+        "en": "Zodiac (Ox)",
+        "zh": "生肖（牛）",
+        "jp": "十二支（丑）"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-26-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-26-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-26-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/26/26-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Zodiac (Ox)",
+            "zh": "律影映幻 - 生肖（牛）",
+            "jp": "律影映幻 - 十二支（丑）"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-27",
+      "name": {
+        "en": "Zodiac (Tiger)",
+        "zh": "生肖（虎）",
+        "jp": "十二支（寅）"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-27-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-27-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-27-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/27/27-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Zodiac (Tiger)",
+            "zh": "律影映幻 - 生肖（虎）",
+            "jp": "律影映幻 - 十二支（寅）"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-28",
+      "name": {
+        "en": "Zodiac (Rabbit)",
+        "zh": "生肖（兔）",
+        "jp": "十二支（卯）"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-28-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-28-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-28-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/28/28-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Zodiac (Rabbit)",
+            "zh": "律影映幻 - 生肖（兔）",
+            "jp": "律影映幻 - 十二支（卯）"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-29",
+      "name": {
+        "en": "Zodiac (Dragon)",
+        "zh": "生肖（龙）",
+        "jp": "十二支（辰）"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-29-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-29-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-29-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/29/29-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Zodiac (Dragon)",
+            "zh": "律影映幻 - 生肖（龙）",
+            "jp": "律影映幻 - 十二支（辰）"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-30",
+      "name": {
+        "en": "Zodiac (Snake)",
+        "zh": "生肖（蛇）",
+        "jp": "十二支（巳）"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-30-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-30-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-30-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/30/30-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Zodiac (Snake)",
+            "zh": "律影映幻 - 生肖（蛇）",
+            "jp": "律影映幻 - 十二支（巳）"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-31",
+      "name": {
+        "en": "Zodiac (Horse)",
+        "zh": "生肖（马）",
+        "jp": "十二支（午）"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-31-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-31-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-31-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/31/31-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Zodiac (Horse)",
+            "zh": "律影映幻 - 生肖（马）",
+            "jp": "律影映幻 - 十二支（午）"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-32",
+      "name": {
+        "en": "Zodiac (Goat)",
+        "zh": "生肖（羊）",
+        "jp": "十二支（未）"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-32-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-32-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-32-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/32/32-AI绘制角色参考.jpg",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Zodiac (Goat)",
+            "zh": "律影映幻 - 生肖（羊）",
+            "jp": "律影映幻 - 十二支（未）"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-33",
+      "name": {
+        "en": "Zodiac (Monkey)",
+        "zh": "生肖（猴）",
+        "jp": "十二支（申）"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-33-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-33-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-33-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/33/33-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Zodiac (Monkey)",
+            "zh": "律影映幻 - 生肖（猴）",
+            "jp": "律影映幻 - 十二支（申）"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-34",
+      "name": {
+        "en": "Zodiac (Rooster)",
+        "zh": "生肖（鸡）",
+        "jp": "十二支（酉）"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-34-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-34-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-34-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/34/34-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Zodiac (Rooster)",
+            "zh": "律影映幻 - 生肖（鸡）",
+            "jp": "律影映幻 - 十二支（酉）"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-35",
+      "name": {
+        "en": "Zodiac (Dog)",
+        "zh": "生肖（狗）",
+        "jp": "十二支（戌）"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-35-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-35-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-35-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/35/35-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Zodiac (Dog)",
+            "zh": "律影映幻 - 生肖（狗）",
+            "jp": "律影映幻 - 十二支（戌）"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-36",
+      "name": {
+        "en": "Zodiac (Pig)",
+        "zh": "生肖（猪）",
+        "jp": "十二支（亥）"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-36-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-36-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-36-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/36/36-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Zodiac (Pig)",
+            "zh": "律影映幻 - 生肖（猪）",
+            "jp": "律影映幻 - 十二支（亥）"
+          }
+        }
+      ]
     }
   ]
 }
