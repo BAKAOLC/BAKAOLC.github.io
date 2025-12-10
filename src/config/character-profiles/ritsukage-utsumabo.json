@@ -987,6 +987,64 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-23",
+      "name": {
+        "en": "Divine Beast (Azure Dragon)",
+        "zh": "神兽（青龙）",
+        "jp": "神獣（青龍）"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-23-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-23-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-23-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/23/23-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Divine Beast (Azure Dragon)",
+            "zh": "律影映幻 - 神兽（青龙）",
+            "jp": "律影映幻 - 神獣（青龍）"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-24",
+      "name": {
+        "en": "Divine Beast (Black Tortoise)",
+        "zh": "神兽（玄武）",
+        "jp": "神獣（玄武）"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-24-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-24-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-24-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/24/24-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Divine Beast (Black Tortoise)",
+            "zh": "律影映幻 - 神兽（玄武）",
+            "jp": "律影映幻 - 神獣（玄武）"
+          }
+        }
+      ]
     }
   ]
 }
