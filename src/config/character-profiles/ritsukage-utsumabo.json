@@ -933,9 +933,9 @@
     {
       "id": "ritsukage-utsumabo-21",
       "name": {
-        "en": "Divine Beast (Chicken & Phoenix)",
-        "zh": "神兽（鸡&凤凰）",
-        "jp": "神獣（鶏&鳳凰）"
+        "en": "Divine Beast (Vermilion Bird who likes to cosplay as Chicken & Phoenix)",
+        "zh": "神兽（爱好 cos 鸡&凤凰的朱雀）",
+        "jp": "神獣（鶏&鳳凰をコスプレするのが好きな朱雀）"
       },
       "infoCards": [
         {
@@ -952,9 +952,9 @@
           "id": "ritsukage-utsumabo-21-reference-1",
           "src": "/assets/category/ritsukage-utsumabo/design/draft/21/21-AI绘制角色参考.png",
           "alt": {
-            "en": "Ritsukage Utsumabo - Divine Beast (Chicken & Phoenix)",
-            "zh": "律影映幻 - 神兽（鸡&凤凰）",
-            "jp": "律影映幻 - 神獣（鶏&鳳凰）"
+            "en": "Ritsukage Utsumabo - Divine Beast (Vermilion Bird who likes to cosplay as Chicken & Phoenix)",
+            "zh": "律影映幻 - 神兽（爱好 cos 鸡&凤凰的朱雀）",
+            "jp": "律影映幻 - 神獣（鶏&鳳凰をコスプレするのが好きな朱雀）"
           }
         }
       ]
@@ -1310,9 +1310,9 @@
     {
       "id": "ritsukage-utsumabo-34",
       "name": {
-        "en": "Zodiac (Rooster)",
-        "zh": "生肖（鸡）",
-        "jp": "十二支（酉）"
+        "en": "Zodiac (Rooster who likes Vermilion Bird's color scheme)",
+        "zh": "生肖（喜欢朱雀配色的鸡）",
+        "jp": "十二支（朱雀の配色が好きな酉）"
       },
       "infoCards": [
         {
@@ -1329,9 +1329,9 @@
           "id": "ritsukage-utsumabo-34-reference-1",
           "src": "/assets/category/ritsukage-utsumabo/design/draft/34/34-AI绘制角色参考.png",
           "alt": {
-            "en": "Ritsukage Utsumabo - Zodiac (Rooster)",
-            "zh": "律影映幻 - 生肖（鸡）",
-            "jp": "律影映幻 - 十二支（酉）"
+            "en": "Ritsukage Utsumabo - Zodiac (Rooster who likes Vermilion Bird's color scheme)",
+            "zh": "律影映幻 - 生肖（喜欢朱雀配色的鸡）",
+            "jp": "律影映幻 - 十二支（朱雀の配色が好きな酉）"
           }
         }
       ]
