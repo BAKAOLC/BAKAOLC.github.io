@@ -1460,6 +1460,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-39",
+      "name": {
+        "en": "Paladin",
+        "zh": "圣骑士",
+        "jp": "パラディン"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-39-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-39-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-39-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/39/39-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Paladin",
+            "zh": "律影映幻 - 圣骑士",
+            "jp": "律影映幻 - パラディン"
+          }
+        }
+      ]
     }
   ]
 }

@@ -99,9 +99,10 @@ async function convertToWebp(filePath) {
 
 /**
  * 主函数
+ * @param {boolean} skipConfirmation - 是否跳过确认
  * @returns {Promise<void>}
  */
-async function main() {
+async function main(skipConfirmation = false) {
   console.log('⚠️  警告：此脚本将直接修改原图文件！');
   console.log('⚠️  所有图像将被转换为 WebP 格式（最高质量）');
   console.log('⚠️  文件名将保持不变，但文件内容将被替换');
@@ -148,9 +149,14 @@ async function main() {
   console.log('');
 
   // 用户确认
-  const confirmed = await askConfirmation(
-    `⚠️  确定要继续吗？这将修改 ${imageFiles.length} 个文件！(y/n): `,
-  );
+  let confirmed = true;
+  if (!skipConfirmation) {
+    confirmed = await askConfirmation(
+      `⚠️  确定要继续吗？这将修改 ${imageFiles.length} 个文件！(y/n): `,
+    );
+  } else {
+    console.log(`⚠️  跳过确认，将修改 ${imageFiles.length} 个文件`);
+  }
 
   if (!confirmed) {
     console.log('操作已取消');
@@ -196,7 +202,11 @@ async function main() {
 
 // 如果直接运行此脚本
 if (require.main === module) {
-  main().catch((error) => {
+  // 解析命令行参数
+  const args = process.argv.slice(2);
+  const skipConfirmation = args.includes('--yes') || args.includes('-y');
+  
+  main(skipConfirmation).catch((error) => {
     console.error('转换图像时发生错误:', error);
     process.exit(1);
   });
