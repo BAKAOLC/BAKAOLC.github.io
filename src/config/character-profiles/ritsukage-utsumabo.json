@@ -1431,6 +1431,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-38",
+      "name": {
+        "en": "Fox-eared Shark",
+        "zh": "狐耳鲨",
+        "jp": "狐耳サメ"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-38-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-38-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-38-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/38/38-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Fox-eared Shark",
+            "zh": "律影映幻 - 狐耳鲨",
+            "jp": "律影映幻 - 狐耳サメ"
+          }
+        }
+      ]
     }
   ]
 }
