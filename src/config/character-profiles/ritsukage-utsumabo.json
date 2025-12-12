@@ -1605,6 +1605,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-44",
+      "name": {
+        "en": "Little Wolf",
+        "zh": "小狼",
+        "jp": "子狼"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-44-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-44-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-44-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/44/44-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Little Wolf",
+            "zh": "律影映幻 - 小狼",
+            "jp": "律影映幻 - 子狼"
+          }
+        }
+      ]
     }
   ]
 }
