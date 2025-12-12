@@ -1547,6 +1547,64 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-42",
+      "name": {
+        "en": "Cheongsam",
+        "zh": "旗袍",
+        "jp": "チャイナドレス"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-42-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-42-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-42-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/42/42-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Cheongsam",
+            "zh": "律影映幻 - 旗袍",
+            "jp": "律影映幻 - チャイナドレス"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-43",
+      "name": {
+        "en": "Witch",
+        "zh": "女巫",
+        "jp": "魔女"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-43-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-43-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-43-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/43/43-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Witch",
+            "zh": "律影映幻 - 女巫",
+            "jp": "律影映幻 - 魔女"
+          }
+        }
+      ]
     }
   ]
 }
