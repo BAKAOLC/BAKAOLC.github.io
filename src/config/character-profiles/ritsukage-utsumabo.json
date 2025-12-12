@@ -1634,6 +1634,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-45",
+      "name": {
+        "en": "Sailor Suit",
+        "zh": "水手服",
+        "jp": "セーラー服"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-45-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-45-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-45-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/45/45-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Sailor Suit",
+            "zh": "律影映幻 - 水手服",
+            "jp": "律影映幻 - セーラー服"
+          }
+        }
+      ]
     }
   ]
 }
