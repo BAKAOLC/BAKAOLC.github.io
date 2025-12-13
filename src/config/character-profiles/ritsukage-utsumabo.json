@@ -1942,6 +1942,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-56",
+      "name": {
+        "en": "Sportswear Maid",
+        "zh": "运动服女仆",
+        "jp": "スポーツウェアメイド"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-56-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-56-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-56-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/56/56-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Sportswear Maid",
+            "zh": "律影映幻 - 运动服女仆",
+            "jp": "律影映幻 - スポーツウェアメイド"
+          }
+        }
+      ]
     }
   ]
 }
