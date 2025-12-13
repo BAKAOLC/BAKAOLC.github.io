@@ -1750,6 +1750,64 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-49",
+      "name": {
+        "en": "Maid Outfit",
+        "zh": "女仆服",
+        "jp": "メイド服"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-49-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-49-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-49-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/49/49-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Maid Outfit",
+            "zh": "律影映幻 - 女仆服",
+            "jp": "律影映幻 - メイド服"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-50",
+      "name": {
+        "en": "Suit",
+        "zh": "西装",
+        "jp": "スーツ"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-50-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-50-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-50-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/50/50-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Suit",
+            "zh": "律影映幻 - 西装",
+            "jp": "律影映幻 - スーツ"
+          }
+        }
+      ]
     }
   ]
 }
