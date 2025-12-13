@@ -1875,6 +1875,44 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-54",
+      "name": {
+        "en": "Nun Outfit",
+        "zh": "修女服",
+        "jp": "修道女服"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-54-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-54-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-54-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/54/54-AI绘制角色参考1.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Nun Outfit",
+            "zh": "律影映幻 - 修女服",
+            "jp": "律影映幻 - 修道女服"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-54-reference-2",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/54/54-AI绘制角色参考2.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Nun Outfit",
+            "zh": "律影映幻 - 修女服",
+            "jp": "律影映幻 - 修道女服"
+          }
+        }
+      ]
     }
   ]
 }
