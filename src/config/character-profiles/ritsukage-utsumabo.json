@@ -1810,30 +1810,30 @@
       ]
     },
     {
-      "id": "ritsukage-utsumabo-51",
+      "id": "ritsukage-utsumabo-52",
       "name": {
-        "en": "Yukata",
-        "zh": "浴衣",
-        "jp": "浴衣"
+        "en": "Mecha (Mini)",
+        "zh": "机甲（微）",
+        "jp": "メカ（ミニ）"
       },
       "infoCards": [
         {
-          "id": "ritsukage-utsumabo-51-basic-info",
+          "id": "ritsukage-utsumabo-52-basic-info",
           "template": "basic-info"
         },
         {
-          "id": "ritsukage-utsumabo-51-is-draft-info",
+          "id": "ritsukage-utsumabo-52-is-draft-info",
           "template": "is-draft-info"
         }
       ],
       "images": [
         {
-          "id": "ritsukage-utsumabo-51-reference-1",
-          "src": "/assets/category/ritsukage-utsumabo/design/draft/51/51-AI绘制角色参考.png",
+          "id": "ritsukage-utsumabo-52-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/52/52-AI绘制角色参考.png",
           "alt": {
-            "en": "Ritsukage Utsumabo - Yukata",
-            "zh": "律影映幻 - 浴衣",
-            "jp": "律影映幻 - 浴衣"
+            "en": "Ritsukage Utsumabo - Mecha (Mini)",
+            "zh": "律影映幻 - 机甲（微）",
+            "jp": "律影映幻 - メカ（ミニ）"
           }
         }
       ]
