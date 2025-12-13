@@ -1837,6 +1837,44 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-53",
+      "name": {
+        "en": "Dancer",
+        "zh": "舞者",
+        "jp": "ダンサー"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-53-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-53-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-53-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/53/53-AI绘制角色参考1.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Dancer",
+            "zh": "律影映幻 - 舞者",
+            "jp": "律影映幻 - ダンサー"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-53-reference-2",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/53/53-AI绘制角色参考2.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Dancer",
+            "zh": "律影映幻 - 舞者",
+            "jp": "律影映幻 - ダンサー"
+          }
+        }
+      ]
     }
   ]
 }
