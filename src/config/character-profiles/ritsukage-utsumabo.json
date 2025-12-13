@@ -1808,6 +1808,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-51",
+      "name": {
+        "en": "Yukata",
+        "zh": "浴衣",
+        "jp": "浴衣"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-51-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-51-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-51-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/51/51-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Yukata",
+            "zh": "律影映幻 - 浴衣",
+            "jp": "律影映幻 - 浴衣"
+          }
+        }
+      ]
     }
   ]
 }
