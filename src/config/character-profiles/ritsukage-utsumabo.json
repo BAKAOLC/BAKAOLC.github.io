@@ -1971,6 +1971,122 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-57",
+      "name": {
+        "en": "Spring Outfit",
+        "zh": "季节装（春）",
+        "jp": "季節装（春）"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-57-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-57-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-57-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/57/57-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Spring Outfit",
+            "zh": "律影映幻 - 季节装（春）",
+            "jp": "律影映幻 - 季節装（春）"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-58",
+      "name": {
+        "en": "Summer Outfit",
+        "zh": "季节装（夏）",
+        "jp": "季節装（夏）"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-58-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-58-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-58-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/58/58-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Summer Outfit",
+            "zh": "律影映幻 - 季节装（夏）",
+            "jp": "律影映幻 - 季節装（夏）"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-59",
+      "name": {
+        "en": "Autumn Outfit",
+        "zh": "季节装（秋）",
+        "jp": "季節装（秋）"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-59-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-59-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-59-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/59/59-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Autumn Outfit",
+            "zh": "律影映幻 - 季节装（秋）",
+            "jp": "律影映幻 - 季節装（秋）"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-60",
+      "name": {
+        "en": "Winter Outfit",
+        "zh": "季节装（冬）",
+        "jp": "季節装（冬）"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-60-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-60-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-60-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/60/60-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Winter Outfit",
+            "zh": "律影映幻 - 季节装（冬）",
+            "jp": "律影映幻 - 季節装（冬）"
+          }
+        }
+      ]
     }
   ]
 }
