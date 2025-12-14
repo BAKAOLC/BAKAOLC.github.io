@@ -2087,6 +2087,44 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-61",
+      "name": {
+        "en": "Mermaid",
+        "zh": "人鱼",
+        "jp": "人魚"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-61-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-61-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-61-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/61/61-AI绘制角色参考1.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Mermaid (Fish Tail)",
+            "zh": "律影映幻 - 人鱼（鱼尾版本）",
+            "jp": "律影映幻 - 人魚（魚尾バージョン）"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-61-reference-2",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/61/61-AI绘制角色参考2.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Mermaid (Human Legs)",
+            "zh": "律影映幻 - 人鱼（人腿版本）",
+            "jp": "律影映幻 - 人魚（人足バージョン）"
+          }
+        }
+      ]
     }
   ]
 }
