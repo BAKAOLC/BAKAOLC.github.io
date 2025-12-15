@@ -2163,6 +2163,91 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-63",
+      "name": {
+        "en": "Astronaut Suit",
+        "zh": "宇航服",
+        "jp": "宇宙服"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-63-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-63-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-63-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/63/63-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Astronaut Suit",
+            "zh": "律影映幻 - 宇航服",
+            "jp": "律影映幻 - 宇宙服"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-64",
+      "name": {
+        "en": "Witch Doctor",
+        "zh": "巫医",
+        "jp": "呪医"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-64-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-64-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-64-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/64/64-AI绘制角色参考1.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Witch Doctor",
+            "zh": "律影映幻 - 巫医",
+            "jp": "律影映幻 - 呪医"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-64-reference-2",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/64/64-AI绘制角色参考2.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Witch Doctor",
+            "zh": "律影映幻 - 巫医",
+            "jp": "律影映幻 - 呪医"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-64-reference-3",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/64/64-AI绘制角色参考3.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Witch Doctor",
+            "zh": "律影映幻 - 巫医",
+            "jp": "律影映幻 - 呪医"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-64-reference-4",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/64/64-AI绘制角色参考4.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Witch Doctor",
+            "zh": "律影映幻 - 巫医",
+            "jp": "律影映幻 - 呪医"
+          }
+        }
+      ]
     }
   ]
 }
