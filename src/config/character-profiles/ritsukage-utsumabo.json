@@ -2125,6 +2125,44 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-62",
+      "name": {
+        "en": "Plush Doll Outfit",
+        "zh": "毛绒玩偶服",
+        "jp": "ぬいぐるみ服"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-62-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-62-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-62-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/62/62-AI绘制角色参考1.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Plush Doll Outfit",
+            "zh": "律影映幻 - 毛绒玩偶服",
+            "jp": "律影映幻 - ぬいぐるみ服"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-62-reference-2",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/62/62-AI绘制角色参考2.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Plush Doll Outfit",
+            "zh": "律影映幻 - 毛绒玩偶服",
+            "jp": "律影映幻 - ぬいぐるみ服"
+          }
+        }
+      ]
     }
   ]
 }
