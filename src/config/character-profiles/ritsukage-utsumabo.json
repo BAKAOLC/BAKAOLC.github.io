@@ -2402,6 +2402,44 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-70",
+      "name": {
+        "en": "Cream Chocolate",
+        "zh": "奶油巧克力",
+        "jp": "クリームチョコレート"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-70-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-70-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-70-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/70/70-AI绘制角色参考1.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Cream Chocolate",
+            "zh": "律影映幻 - 奶油巧克力",
+            "jp": "律影映幻 - クリームチョコレート"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-70-reference-2",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/70/70-AI绘制角色参考2.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Cream Chocolate",
+            "zh": "律影映幻 - 奶油巧克力",
+            "jp": "律影映幻 - クリームチョコレート"
+          }
+        }
+      ]
     }
   ]
 }
