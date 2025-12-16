@@ -2248,6 +2248,64 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-65",
+      "name": {
+        "en": "Grim Reaper",
+        "zh": "死神",
+        "jp": "死神"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-65-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-65-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-65-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/65/65-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Grim Reaper",
+            "zh": "律影映幻 - 死神",
+            "jp": "律影映幻 - 死神"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ritsukage-utsumabo-66",
+      "name": {
+        "en": "Fairy Maid",
+        "zh": "小精灵女仆",
+        "jp": "フェアリーメイド"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-66-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-66-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-66-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/66/66-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Fairy Maid",
+            "zh": "律影映幻 - 小精灵女仆",
+            "jp": "律影映幻 - フェアリーメイド"
+          }
+        }
+      ]
     }
   ]
 }
