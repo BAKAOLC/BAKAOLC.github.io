@@ -2440,6 +2440,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "ritsukage-utsumabo-71",
+      "name": {
+        "en": "Shiromuku",
+        "zh": "白无垢",
+        "jp": "白無垢"
+      },
+      "infoCards": [
+        {
+          "id": "ritsukage-utsumabo-71-basic-info",
+          "template": "basic-info"
+        },
+        {
+          "id": "ritsukage-utsumabo-71-is-draft-info",
+          "template": "is-draft-info"
+        }
+      ],
+      "images": [
+        {
+          "id": "ritsukage-utsumabo-71-reference-1",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/71/71-AI绘制角色参考.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Shiromuku",
+            "zh": "律影映幻 - 白无垢",
+            "jp": "律影映幻 - 白無垢"
+          }
+        }
+      ]
     }
   ]
 }
