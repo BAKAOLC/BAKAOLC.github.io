@@ -130,5 +130,11 @@
     "zh": "Skeb",
     "jp": "Skeb",
     "iconUrl": "https://fcdn.skeb.jp/assets/v1/commons/favicon-32x32.png"
+  },
+  "afdian.com": {
+    "en": "AfDian",
+    "zh": "爱发电",
+    "jp": "愛発電",
+    "iconUrl": "https://afdian.com/favicon.ico"
   }
 }

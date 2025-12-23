@@ -42,6 +42,10 @@
       "jp": "Ritsukage Utsumabo"
     }
   ],
+  "animationDelayInterval": 0.1,
+  "actionButtonsWaitForLinks": true,
+  "actionButtonsInitialDelay": 0.1,
+  "actionButtonsAnimationDelayInterval": 0,
   "links": [
     {
       "name": {
@@ -102,6 +106,16 @@
       "url": "mailto:utsumabo@ritsukage.com",
       "icon": "envelope",
       "color": "#ea4335"
+    },
+    {
+      "name": {
+        "en": "AfDian",
+        "zh": "爱发电",
+        "jp": "愛発電"
+      },
+      "url": "https://afdian.com/a/ritsukage",
+      "icon": "heart",
+      "color": "#946ce6"
     }
   ],
   "backgroundImages": [
