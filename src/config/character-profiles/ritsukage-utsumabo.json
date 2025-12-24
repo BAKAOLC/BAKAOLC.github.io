@@ -868,9 +868,9 @@
     {
       "id": "ritsukage-utsumabo-20",
       "name": {
-        "en": "Ghost Taoist",
-        "zh": "幽灵道士",
-        "jp": "幽霊道士"
+        "en": "Ghost",
+        "zh": "幽灵",
+        "jp": "幽霊"
       },
       "infoCards": [
         {
@@ -885,38 +885,11 @@
       "images": [
         {
           "id": "ritsukage-utsumabo-20-reference-1",
-          "src": "/assets/category/ritsukage-utsumabo/design/draft/20/20-AI绘制角色参考1.png",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/20/20-AI绘制角色参考.png",
           "alt": {
-            "en": "Ritsukage Utsumabo - Ghost Taoist",
-            "zh": "律影映幻 - 幽灵道士",
-            "jp": "律影映幻 - 幽霊道士"
-          }
-        },
-        {
-          "id": "ritsukage-utsumabo-20-reference-2",
-          "src": "/assets/category/ritsukage-utsumabo/design/draft/20/20-AI绘制角色参考2.png",
-          "alt": {
-            "en": "Ritsukage Utsumabo - Ghost Taoist",
-            "zh": "律影映幻 - 幽灵道士",
-            "jp": "律影映幻 - 幽霊道士"
-          }
-        },
-        {
-          "id": "ritsukage-utsumabo-20-reference-3",
-          "src": "/assets/category/ritsukage-utsumabo/design/draft/20/20-AI绘制角色参考3.png",
-          "alt": {
-            "en": "Ritsukage Utsumabo - Ghost Taoist",
-            "zh": "律影映幻 - 幽灵道士",
-            "jp": "律影映幻 - 幽霊道士"
-          }
-        },
-        {
-          "id": "ritsukage-utsumabo-20-reference-4",
-          "src": "/assets/category/ritsukage-utsumabo/design/draft/20/20-AI绘制角色参考4.png",
-          "alt": {
-            "en": "Ritsukage Utsumabo - Ghost Taoist",
-            "zh": "律影映幻 - 幽灵道士",
-            "jp": "律影映幻 - 幽霊道士"
+            "en": "Ritsukage Utsumabo - Ghost",
+            "zh": "律影映幻 - 幽灵",
+            "jp": "律影映幻 - 幽霊"
           }
         }
       ]
