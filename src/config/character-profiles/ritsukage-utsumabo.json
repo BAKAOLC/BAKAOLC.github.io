@@ -1523,7 +1523,16 @@
       "images": [
         {
           "id": "ritsukage-utsumabo-42-reference-1",
-          "src": "/assets/category/ritsukage-utsumabo/design/draft/42/42-AI绘制角色参考.png",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/42/42-AI绘制角色参考1.png",
+          "alt": {
+            "en": "Ritsukage Utsumabo - Cheongsam",
+            "zh": "律影映幻 - 旗袍",
+            "jp": "律影映幻 - チャイナドレス"
+          }
+        },
+        {
+          "id": "ritsukage-utsumabo-42-reference-2",
+          "src": "/assets/category/ritsukage-utsumabo/design/draft/42/42-AI绘制角色参考2.png",
           "alt": {
             "en": "Ritsukage Utsumabo - Cheongsam",
             "zh": "律影映幻 - 旗袍",
