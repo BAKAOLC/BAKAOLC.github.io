@@ -120,6 +120,36 @@
             "ai",
             "music"
           ]
+        },
+        {
+          "id": "neuro-and-evil-karaoke-neuro-site",
+          "name": "Neuro & Evil Karaoke Web Player (Neuro Site)",
+          "url": "https://www.neurokaraoke.com/",
+          "avatar": "https://www.neurokaraoke.com/img/favicon/neuro/apple-touch-icon.png",
+          "description": {
+            "zh": "非官方 Neuro & Evil 歌曲在线播放网站",
+            "en": "Unofficial Neuro & Evil song web player",
+            "jp": "非公式Neuro＆Evil曲ウェブプレーヤー"
+          },
+          "tags": [
+            "ai",
+            "music"
+          ]
+        },
+        {
+          "id": "neuro-and-evil-karaoke-evil-site",
+          "name": "Neuro & Evil Karaoke Web Player (Evil Site)",
+          "url": "https://www.evilkaraoke.com/",
+          "avatar": "https://www.evilkaraoke.com/img/favicon/evil/apple-touch-icon.png",
+          "description": {
+            "zh": "非官方 Neuro & Evil 歌曲在线播放网站",
+            "en": "Unofficial Neuro & Evil song web player",
+            "jp": "非公式Neuro＆Evil曲ウェブプレーヤー"
+          },
+          "tags": [
+            "ai",
+            "music"
+          ]
         }
       ]
     },
