@@ -1,0 +1,15 @@
+{
+  "id": "misc/1-first-linux-gui-desktop-experience",
+  "title": {
+    "zh": "第一次完整的使用 Linux GUI 桌面体验",
+    "en": "My First Full Linux GUI Desktop Experience",
+    "jp": "初めての完全なLinux GUIデスクトップ体験",
+  },
+  "categories": [
+    "misc",
+    "tech",
+  ],
+  "date": "2026-01-30 23:42:00 +0800",
+  "markdownPath": "assets/articles/misc/1-first-linux-gui-desktop-experience/zh.md",
+  "cover": "assets/articles/misc/1-first-linux-gui-desktop-experience/cover.png"
+}

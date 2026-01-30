@@ -1,2 +1,30 @@
 {
+  "misc": {
+    "name": {
+      "zh": "碎碎念",
+      "en": "Miscellaneous",
+      "jp": "雑記",
+    },
+    "color": "#FFB6C1",
+  },
+  "projects": {
+    "name": {
+      "zh": "项目",
+      "en": "Projects",
+      "jp": "プロジェクト",
+    },
+    "color": "#87CEEB",
+  },
+  "tech": {
+    "name": {
+      "zh": "技术",
+      "en": "Tech",
+      "jp": "技術",
+    },
+    "color": "#90EE90",
+  },
+  "ai": {
+    "name": "ai",
+    "color": "#FFA500",
+  },
 }
