@@ -23,6 +23,14 @@
     },
     "color": "#90EE90",
   },
+  "promo": {
+    "name": {
+      "zh": "推广",
+      "en": "Promotion",
+      "jp": "プロモーション",
+    },
+    "color": "#60A5FA",
+  },
   "ai": {
     "name": "ai",
     "color": "#FFA500",
