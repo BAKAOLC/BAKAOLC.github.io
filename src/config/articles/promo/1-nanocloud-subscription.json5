@@ -1,5 +1,5 @@
 {
-  "id": "misc/2-nanocloud-subscription",
+  "id": "promo/1-nanocloud-subscription",
   "title": {
     "zh": "NanoCloud 订阅推广",
     "en": "NanoCloud Subscription Promo",
@@ -9,7 +9,7 @@
     "promo",
   ],
   "date": "2026-02-14 17:00:00 +0800",
-  "markdownPath": "assets/articles/misc/2-nanocloud-subscription/zh.md",
+  "markdownPath": "assets/articles/promo/1-nanocloud-subscription/zh.md",
   "summary": {
     "zh": "推广 NanoCloud 订阅：附邀请码 hiaCGaGu，点击按钮即可注册。",
     "en": "Promote NanoCloud subscription with invite code hiaCGaGu. Click the button to register.",

@@ -1,0 +1,23 @@
+{
+  "id": "announcement/1-stopping-luastg-maintenance",
+  "title": {
+    "zh": "关于停止维护 LuaSTG 相关内容的公告",
+    "en": "Announcement on Ceasing Maintenance of LuaSTG Related Content",
+    "jp": "LuaSTG 関連コンテンツの更新・保守終了のお知らせ",
+  },
+  "categories": [
+    "announcement",
+  ],
+  "date": "2026-02-15 10:00:00 +0800",
+  "markdownPath": {
+    "zh": "assets/articles/announcement/1-stopping-luastg-maintenance/zh.md",
+    "en": "assets/articles/announcement/1-stopping-luastg-maintenance/en.md",
+    "jp": "assets/articles/announcement/1-stopping-luastg-maintenance/jp.md",
+  },
+  "summary": {
+    "zh": "由于各种原因，本人决定从即日起不再更新和维护与 LuaSTG 相关的任何内容。",
+    "en": "For various reasons, I have decided to cease all updates and maintenance for LuaSTG-related content starting today.",
+    "jp": "諸般の事情により、本日より LuaSTG 関連の全コンテンツの更新および保守を終了することにいたしました。",
+  },
+  "allowComments": true
+}

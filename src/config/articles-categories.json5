@@ -31,6 +31,14 @@
     },
     "color": "#60A5FA",
   },
+  "announcement": {
+    "name": {
+      "zh": "公告",
+      "en": "Announcement",
+      "jp": "お知らせ",
+    },
+    "color": "#EF4444",
+  },
   "ai": {
     "name": "ai",
     "color": "#FFA500",
