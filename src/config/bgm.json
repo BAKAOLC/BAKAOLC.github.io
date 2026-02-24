@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "autoplay": true,
+  "volume": 0.5,
+  "mode": "single-loop",
+  "tracks": [
+    {
+      "name": "不可探测的谎言",
+      "url": "/assets/bgm/不可探测的谎言.mp3",
+      "loop": {
+        "start": 42,
+        "end": 106
+      }
+    }
+  ]
+}
