@@ -1,0 +1,13 @@
+{
+  "id": "misc/2-this-is-unbearable",
+  "title": {
+    "zh": "这一切让我难以忍受",
+    "en": "All of This Is Unbearable",
+    "jp": "このすべてが耐えがたい",
+  },
+  "categories": [
+    "misc",
+  ],
+  "date": "2026-03-03 00:30:00 +0800",
+  "markdownPath": "assets/articles/misc/2-this-is-unbearable/zh.md"
+}
