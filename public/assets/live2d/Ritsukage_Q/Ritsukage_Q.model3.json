@@ -1,0 +1,69 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "Ritsukage_Q.moc3",
+		"Textures": [
+			"Ritsukage_Q.4096/texture_00.png",
+			"Ritsukage_Q.4096/texture_01.png"
+		],
+		"Physics": "Ritsukage_Q.physics3.json",
+		"DisplayInfo": "Ritsukage_Q.cdi3.json",
+		"Expressions": [
+			{
+				"Name": "0.0",
+				"File": "0.0.exp3.json"
+			},
+			{
+				"Name": "angry",
+				"File": "angry.exp3.json"
+			},
+			{
+				"Name": "heart",
+				"File": "heart.exp3.json"
+			},
+			{
+				"Name": "heilian",
+				"File": "heilian.exp3.json"
+			},
+			{
+				"Name": "maozi",
+				"File": "maozi.exp3.json"
+			},
+			{
+				"Name": "qwq",
+				"File": "qwq.exp3.json"
+			},
+			{
+				"Name": "shy",
+				"File": "shy.exp3.json"
+			},
+			{
+				"Name": "tear",
+				"File": "tear.exp3.json"
+			},
+			{
+				"Name": "toufa",
+				"File": "toufa.exp3.json"
+			}
+		]
+	},
+	"Groups": [
+		{
+			"Target": "Parameter",
+			"Name": "EyeBlink",
+			"Ids": [
+				"ParamEyeLOpen",
+				"ParamEyeROpen"
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Name": "LipSync",
+			"Ids": [
+				"ParamMouthForm",
+				"ParamMouthOpenY"
+			]
+		}
+	],
+	"HitAreas": []
+}
