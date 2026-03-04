@@ -5,7 +5,11 @@
   mode: "single-loop",
   tracks: [
     {
-      name: "不可探测的谎言",
+      name: {
+        zh: "不可探测的谎言",
+        en: "Undetectable Lie",
+        jp: "検出不可能な嘘",
+      },
       url: "/assets/bgm/不可探测的谎言.mp3",
       artist: "猫步, a100xiaoxue",
       loop: {
@@ -14,7 +18,11 @@
       },
     },
     {
-      name: "不可探测的谎言(八音盒)",
+      name: {
+        zh: "不可探测的谎言(八音盒)",
+        en: "Undetectable Lie (Music Box)",
+        jp: "検出不可能な嘘（オルゴール）",
+      },
       url: "/assets/bgm/不可探测的谎言(八音盒).mp3",
       artist: "猫步, a100xiaoxue",
       loop: {
