@@ -48,7 +48,7 @@
           <div class="bgm-progress-bg"></div>
           <!-- 循环区段标记 -->
           <div
-            v-if="currentTrack?.loop && duration > 0"
+            v-if="(currentTrack?.loop || currentTrack?.dualFile) && duration > 0"
             class="bgm-loop-indicator"
             :style="getLoopIndicatorStyle()"
           ></div>
@@ -79,6 +79,16 @@
           </button>
 
           <button
+            v-if="currentTrack?.loop || currentTrack?.dualFile"
+            @click="toggleUseLoop"
+            class="bgm-control-btn"
+            :class="{ 'active-dim': useLoop }"
+            :title="useLoop ? '关闭循环节' : '开启循环节'"
+          >
+            <i class="fas fa-sync-alt"></i>
+          </button>
+
+          <button
             @click="toggleAutoplay"
             class="bgm-control-btn"
             :class="{ 'active-dim': autoplayEnabled }"
@@ -87,7 +97,6 @@
             <i class="fas fa-power-off"></i>
           </button>
 
-          <!-- 音量控制 -->
           <div class="bgm-volume">
             <i class="fas fa-volume-up"></i>
             <input
@@ -140,10 +149,10 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 
-import { useBgmPlayer } from '@/composables/useBgmPlayer';
+import { useBgmPlayerCustom } from '@/composables/useBgmPlayerCustom';
 import { useModalManager } from '@/composables/useModalManager';
 import { useTimers } from '@/composables/useTimers';
-import bgmConfig from '@/config/bgm.json';
+import bgmConfig from '@/config/bgm.json5';
 import type { BgmConfig } from '@/types/bgm';
 import ImageViewerModal from '@/components/modals/ImageViewerModal.vue';
 
@@ -168,19 +177,23 @@ const {
   volume,
   currentMode,
   autoplayEnabled,
+  useLoop,
   playTrack,
   playNext,
   playPrevious,
   togglePlay,
   toggleMode,
   toggleAutoplay,
+  toggleUseLoop,
   setVolume,
   init,
   getCurrentTime,
   getDuration,
+  getIntroDuration,
+  getLoopDuration,
   seek,
   getFrequencyData,
-} = useBgmPlayer(config);
+} = useBgmPlayerCustom(config);
 
 const pulseStyle = computed(() => {
   if (!isPlaying.value) return {};
@@ -307,16 +320,38 @@ const handleProgressClick = (event: MouseEvent): void => {
 };
 
 const getLoopIndicatorStyle = (): Record<string, string> => {
-  if (!currentTrack.value?.loop || duration.value <= 0) return {};
+  if (duration.value <= 0) return {};
 
-  const { start, end } = currentTrack.value.loop;
-  const startPercent = (start / duration.value) * 100;
-  const widthPercent = ((end - start) / duration.value) * 100;
+  const track = currentTrack.value;
+  if (!track) return {};
 
-  return {
-    left: `${startPercent}%`,
-    width: `${widthPercent}%`,
-  };
+  if (track.dualFile) {
+    const introDuration = getIntroDuration();
+    const loopDuration = getLoopDuration();
+    
+    if (introDuration <= 0 || loopDuration <= 0) return {};
+    
+    const startPercent = (introDuration / duration.value) * 100;
+    const widthPercent = (loopDuration / duration.value) * 100;
+
+    return {
+      left: `${startPercent}%`,
+      width: `${widthPercent}%`,
+    };
+  }
+
+  if (track.loop) {
+    const { start, end } = track.loop;
+    const startPercent = (start / duration.value) * 100;
+    const widthPercent = ((end - start) / duration.value) * 100;
+
+    return {
+      left: `${startPercent}%`,
+      width: `${widthPercent}%`,
+    };
+  }
+
+  return {};
 };
 
 const updateAudioIntensity = (): void => {

@@ -1,0 +1,26 @@
+{
+  enabled: true,
+  autoplay: true,
+  volume: 0.5,
+  mode: "single-loop",
+  tracks: [
+    {
+      name: "不可探测的谎言",
+      url: "/assets/bgm/不可探测的谎言.mp3",
+      artist: "猫步, a100xiaoxue",
+      loop: {
+        start: 42,
+        end: 106,
+      },
+    },
+    {
+      name: "不可探测的谎言(八音盒)",
+      url: "/assets/bgm/不可探测的谎言(八音盒).mp3",
+      artist: "猫步, a100xiaoxue",
+      loop: {
+        start: 42,
+        end: 106,
+      },
+    },
+  ],
+}
