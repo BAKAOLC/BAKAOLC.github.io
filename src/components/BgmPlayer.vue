@@ -481,7 +481,7 @@ onUnmounted(() => {
 }
 
 .bgm-player-expanded {
-  width: 380px;
+  width: 420px;
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -1054,7 +1054,7 @@ onUnmounted(() => {
 
   .bgm-player-expanded {
     width: calc(100vw - 32px);
-    max-width: 360px;
+    max-width: 400px;
   }
 
   .bgm-header {
@@ -1125,12 +1125,31 @@ onUnmounted(() => {
 @media (max-width: 480px) {
   .bgm-player-expanded {
     width: calc(100vw - 24px);
-    max-width: 310px;
-    padding: 12px;
+    max-width: 320px;
+    padding: 10px;
+  }
+
+  .bgm-controls {
+    gap: 3px;
+  }
+
+  .bgm-control-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .bgm-play-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .bgm-volume {
+    margin-left: 2px;
+    gap: 4px;
   }
 
   .bgm-volume-slider {
-    min-width: 40px;
+    min-width: 0;
   }
 }
 </style>
