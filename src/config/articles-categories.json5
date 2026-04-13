@@ -43,4 +43,12 @@
     "name": "ai",
     "color": "#FFA500",
   },
+  "random-shit": {
+    "name": {
+      "zh": "随机屎",
+      "en": "Random Shit",
+      "jp": "ランダムクソ",
+    },
+    "color": "#A78BFA",
+  },
 }
