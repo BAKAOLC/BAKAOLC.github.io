@@ -1,0 +1,28 @@
+{
+  "id": "illust-ata-gift",
+  "name": {
+    "en": "Cute Ritsukage",
+    "zh": "可爱律影",
+    "jp": "かわいい律影"
+  },
+  "description": {
+    "en": "Gift artwork by 阿塔",
+    "zh": "阿塔赠送的作品",
+    "jp": "阿塔からのギフト作品"
+  },
+  "artist": "西鸥鸥゜",
+  "authorLinks": [
+    {
+      "url": "https://space.bilibili.com/35163024"
+    }
+  ],
+  "src": "/assets/category/ritsukage-utsumabo/miscellaneous/阿塔赠图/可爱律影.png",
+  "tags": [
+    "gift",
+    "illustration"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ],
+  "date": "2026-05-10 22:00"
+}
