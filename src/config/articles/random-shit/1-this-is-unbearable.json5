@@ -9,5 +9,6 @@
     "random-shit",
   ],
   "date": "2026-03-03 00:30:00 +0800",
-  "markdownPath": "assets/articles/random-shit/1-this-is-unbearable/zh.md"
+  "markdownPath": "assets/articles/random-shit/1-this-is-unbearable/zh.md",
+  "hidden": true
 }
