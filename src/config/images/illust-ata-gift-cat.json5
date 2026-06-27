@@ -1,0 +1,28 @@
+{
+  "id": "illust-ata-gift-cat",
+  "name": {
+    "en": "Cat Ritsukage",
+    "zh": "猫猫律影",
+    "jp": "猫ちゃん律影"
+  },
+  "description": {
+    "en": "Gift artwork by 阿塔, illustrated by silly傻枭",
+    "zh": "阿塔赠送的作品，由silly傻枭绘画",
+    "jp": "阿塔からのギフト作品、silly傻枭が描画"
+  },
+  "artist": "silly傻枭",
+  "authorLinks": [
+    {
+      "url": "https://space.bilibili.com/575710"
+    }
+  ],
+  "src": "/assets/category/ritsukage-utsumabo/miscellaneous/阿塔赠图/猫猫律影.png",
+  "tags": [
+    "gift",
+    "illustration"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ],
+  "date": "2026-06-25 00:13"
+}

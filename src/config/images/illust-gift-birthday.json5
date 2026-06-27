@@ -1,0 +1,48 @@
+{
+  "id": "illust-lemonade-birthday",
+  "name": {
+    "en": "Birthday Ritsukage",
+    "zh": "生日律影",
+    "jp": "誕生日律影"
+  },
+  "description": {
+    "en": "Birthday gift from 橘橘, illustrated by 柠檬静静静静",
+    "zh": "橘橘赠送的生日贺图，由柠檬静静静静创作",
+    "jp": "橘橘から贈られた誕生日ギフト、柠檬静静静静による作品"
+  },
+  "artist": "柠檬静静静静",
+  "authorLinks": [
+    {
+      "url": "https://space.bilibili.com/9004111"
+    }
+  ],
+  "tags": [
+    "gift",
+    "birthday",
+    "illustration"
+  ],
+  "characters": [
+    "ritsukage-utsumabo"
+  ],
+  "date": "2026-06-13",
+  "childImages": [
+    {
+      "id": "illust-lemonade-birthday-1",
+      "listName": {
+        "en": "Birthday Ritsukage",
+        "zh": "生日律影",
+        "jp": "誕生日律影"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/miscellaneous/橘橘赠图/生日律影.png"
+    },
+    {
+      "id": "illust-lemonade-birthday-2",
+      "listName": {
+        "en": "Birthday Ritsukage (Character Only)",
+        "zh": "生日律影-仅人物",
+        "jp": "誕生日律影（キャラクターのみ）"
+      },
+      "src": "/assets/category/ritsukage-utsumabo/miscellaneous/橘橘赠图/生日律影-仅人物.png"
+    }
+  ]
+}
