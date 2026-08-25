@@ -8,6 +8,8 @@
     "strictNullChecks": true
   },
   "include": [
-    "vite.config.ts"
+    "vite.config.ts",
+    "vite.admin.config.ts",
+    "admin/api-plugin.ts"
   ]
 }

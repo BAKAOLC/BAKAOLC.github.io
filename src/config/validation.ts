@@ -1,8 +1,15 @@
 import { z } from 'zod';
 
-import type { BaseSiteConfig, GalleryConfig, SiteConfig } from '@/types';
+import type {
+  Article,
+  BaseSiteConfig,
+  CharacterProfile,
+  GalleryConfig,
+  GroupImage,
+  SiteConfig,
+} from '@/types';
 
-const i18nTextSchema = z.union([
+export const i18nTextSchema = z.union([
   z.string(),
   z.record(z.string(), z.string()),
 ]);
@@ -41,6 +48,66 @@ const groupImageSchema = imageBaseSchema.extend({
     });
   }
 });
+
+const articleSchema = z.object({
+  id: z.string().min(1),
+  hidden: z.boolean().optional(),
+  title: i18nTextSchema,
+  cover: i18nTextSchema.optional(),
+  categories: z.array(z.string()).default([]),
+  date: z.string().regex(
+    /^\d{4}-\d{2}-\d{2}(?:[ T]\d{2}:\d{2}(?::\d{2})?(?:\.\d{1,3})?(?: ?(?:Z|[+-]\d{2}:?\d{2}))?)?$/,
+    'Article date must use YYYY-MM-DD or an ISO-style date and time.',
+  ),
+  content: i18nTextSchema.optional(),
+  markdownPath: i18nTextSchema.optional(),
+  summary: i18nTextSchema.optional(),
+  allowComments: z.boolean().optional(),
+}).passthrough().superRefine((article, context) => {
+  if (article.content === undefined && article.markdownPath === undefined) {
+    context.addIssue({
+      code: 'custom',
+      message: 'Article needs either inline content or an external Markdown path.',
+      path: ['content'],
+    });
+  }
+});
+
+const cardVariablesSchema = z.record(z.string(), i18nTextSchema);
+
+const infoCardSchema = z.object({
+  id: z.string().min(1),
+  title: i18nTextSchema.optional(),
+  content: i18nTextSchema.optional(),
+  color: z.string().optional(),
+  from: z.string().optional(),
+  template: z.string().optional(),
+  variables: cardVariablesSchema.optional(),
+}).passthrough();
+
+const infoCardTemplateSchema = infoCardSchema.omit({
+  from: true,
+  template: true,
+});
+
+const characterProfileSchema = z.object({
+  id: z.string().min(1),
+  name: i18nTextSchema,
+  color: z.string().optional(),
+  infoCardTemplates: z.array(infoCardTemplateSchema).optional(),
+  infoCards: z.array(infoCardSchema).optional(),
+  variants: z.array(z.object({
+    id: z.string().min(1),
+    name: i18nTextSchema,
+    infoCards: z.array(infoCardSchema).optional(),
+    images: z.array(z.object({
+      id: z.string().min(1),
+      src: z.string().min(1),
+      alt: i18nTextSchema,
+      infoCards: z.array(infoCardSchema).optional(),
+    }).passthrough()).min(1),
+  }).passthrough()).min(1),
+}).passthrough();
 
 const siteConfigSchema = z.object({
   app: z.object({
@@ -222,6 +289,66 @@ const assertKnownGalleryReferences = (config: GalleryConfig): void => {
       Object.fromEntries([...unknownImageTags].map(([tagId, imageIds]) => [tagId, [...imageIds]])),
     );
   }
+};
+
+const assertUniqueProfileIds = (profile: CharacterProfile): void => {
+  assertUniqueIds(
+    `character profile "${profile.id}" variants`,
+    profile.variants.map(variant => variant.id),
+  );
+  assertUniqueIds(
+    `character profile "${profile.id}" templates`,
+    profile.infoCardTemplates?.map(template => template.id) ?? [],
+  );
+  assertUniqueIds(
+    `character profile "${profile.id}" cards`,
+    profile.infoCards?.map(card => card.id) ?? [],
+  );
+
+  profile.variants.forEach(variant => {
+    assertUniqueIds(
+      `character profile "${profile.id}" variant "${variant.id}" images`,
+      variant.images.map(image => image.id),
+    );
+    assertUniqueIds(
+      `character profile "${profile.id}" variant "${variant.id}" cards`,
+      variant.infoCards?.map(card => card.id) ?? [],
+    );
+
+    variant.images.forEach(image => {
+      assertUniqueIds(
+        `character profile "${profile.id}" variant "${variant.id}" image "${image.id}" cards`,
+        image.infoCards?.map(card => card.id) ?? [],
+      );
+    });
+  });
+};
+
+export const validateImageEntry = (value: unknown): GroupImage => (
+  groupImageSchema.parse(value) as unknown as GroupImage
+);
+
+export const validateArticleEntry = (value: unknown): Article => (
+  articleSchema.parse(value)
+);
+
+export const validateArticlesConfig = (value: unknown): Article[] => {
+  const parsed = z.array(articleSchema).parse(value) as unknown as Article[];
+  assertUniqueIds('articles', parsed.map(article => article.id));
+  return parsed;
+};
+
+export const validateCharacterProfileEntry = (value: unknown): CharacterProfile => {
+  const parsed = characterProfileSchema.parse(value) as unknown as CharacterProfile;
+  assertUniqueProfileIds(parsed);
+  return parsed;
+};
+
+export const validateCharacterProfilesConfig = (value: unknown): CharacterProfile[] => {
+  const parsed = z.array(characterProfileSchema).parse(value) as unknown as CharacterProfile[];
+  assertUniqueIds('character profiles', parsed.map(profile => profile.id));
+  parsed.forEach(assertUniqueProfileIds);
+  return parsed;
 };
 
 export const validateBaseSiteConfig = (config: unknown): BaseSiteConfig => {

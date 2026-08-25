@@ -3,6 +3,7 @@ const { spawnSync } = require('child_process');
 const steps = [
   ['lint', ['run', 'lint']],
   ['typecheck', ['run', 'typecheck']],
+  ['admin:check', ['run', 'admin:check']],
   ['build', ['run', 'ci-build']],
 ];
 

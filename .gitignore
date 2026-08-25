@@ -47,6 +47,7 @@ public/feeds/
 # Build outputs
 dist
 dist-ssr
+.admin-dist/
 *.local
 
 # Editor directories and files

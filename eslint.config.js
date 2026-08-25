@@ -416,7 +416,7 @@ export default [
   },
   // 配置文件 - TypeScript 文件 (根目录)
   {
-    files: ['*.ts', '*.tsx'],
+    files: ['*.ts', '*.tsx', 'admin/**/*.ts'],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
@@ -538,6 +538,7 @@ export default [
     ignores: [
       'node_modules/**',
       'dist/**',
+      '.admin-dist/**',
       'build/**',
       '*.min.js',
       'coverage/**',
