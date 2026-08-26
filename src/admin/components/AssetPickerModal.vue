@@ -44,6 +44,7 @@ type ContextTarget
     | { kind: 'general' };
 
 const managedRoots = ['public/assets', 'public/articles', 'public/live2d'] as const;
+const INTERNAL_ASSET_DRAG_TYPE = 'application/x-personal-homepage-asset';
 const message = useMessage();
 const dialog = useDialog();
 const { locale: uiLocale, t } = useI18n();
@@ -57,7 +58,11 @@ const assets = ref<AssetItem[]>([]);
 const directories = ref<AssetDirectory[]>([]);
 const loading = ref(false);
 const uploading = ref(false);
-const dragDepth = ref(0);
+const externalDragActive = ref(false);
+const draggedAsset = ref<AssetItem | null>(null);
+const dropTargetDirectory = ref<string | null>(null);
+const dropTargetIsExplicit = ref(false);
+const dropBusy = ref(false);
 const search = ref('');
 const selected = ref<string[]>([]);
 const focusedAsset = ref<AssetItem | null>(null);
@@ -285,9 +290,10 @@ const suppressLongPressClick = (event: MouseEvent): void => {
   event.stopPropagation();
 };
 const renderTreeLabel = ({ option }: { option: TreeOption }): ReturnType<typeof h> => h('span', {
-  class: 'asset-tree-label',
+  class: ['asset-tree-label', { 'drop-target': dropTargetDirectory.value === String(option.key) }],
   'data-context-kind': 'directory',
   'data-context-path': String(option.key),
+  'data-drop-directory': String(option.key),
 }, String(option.label ?? ''));
 
 const expandAncestors = (path: string): void => {
@@ -349,6 +355,10 @@ const refresh = async (): Promise<void> => {
 watch(() => props.show, show => {
   contextMenuShow.value = false;
   cancelLongPress();
+  externalDragActive.value = false;
+  draggedAsset.value = null;
+  dropTargetDirectory.value = null;
+  dropTargetIsExplicit.value = false;
   if (!show) return;
   selected.value = [];
   focusedAsset.value = null;
@@ -393,8 +403,8 @@ const activateAsset = (asset: AssetItem): void => {
   }
 };
 
-const uploadFiles = async (files: File[]): Promise<void> => {
-  if (files.length === 0 || scopeMode.value !== 'directory') return;
+const uploadFiles = async (files: File[], targetDirectory = currentDirectory.value): Promise<void> => {
+  if (files.length === 0 || !directoryMap.value.has(targetDirectory)) return;
   const accepted = props.accept.startsWith('image/') ? files.filter(file => file.type.startsWith('image/')) : files;
   if (accepted.length === 0) {
     message.warning(t('assets.noAccepted'));
@@ -402,35 +412,136 @@ const uploadFiles = async (files: File[]): Promise<void> => {
   }
   uploading.value = true;
   try {
-    await Promise.all(accepted.map(file => uploadAsset(file, currentDirectory.value)));
+    await Promise.all(accepted.map(file => uploadAsset(file, targetDirectory)));
     await refresh();
     emit('assetsChange');
-    message.success(t('assets.uploadDone', { count: accepted.length, directory: currentDirectory.value }));
+    message.success(t('assets.uploadDone', { count: accepted.length, directory: targetDirectory }));
   } catch (error) {
     message.error(error instanceof Error ? error.message : t('assets.uploadFailed'));
   } finally {
     uploading.value = false;
-    dragDepth.value = 0;
+    externalDragActive.value = false;
+    dropTargetDirectory.value = null;
+    dropTargetIsExplicit.value = false;
     if (uploadInput.value) uploadInput.value.value = '';
   }
 };
 const handleUploadInput = (event: Event): void => {
   void uploadFiles([...((event.target as HTMLInputElement).files ?? [])]);
 };
-const hasFiles = (event: DragEvent): boolean => event.dataTransfer?.types.includes('Files') ?? false;
-const handleDragEnter = (event: DragEvent): void => {
-  if (!hasFiles(event) || scopeMode.value !== 'directory') return;
-  event.preventDefault();
-  dragDepth.value += 1;
+const resolveExplicitDropDirectory = (eventTarget: EventTarget | null): string | null => {
+  const element = eventTarget instanceof HTMLElement ? eventTarget : null;
+  const explicitTarget = element?.closest<HTMLElement>('[data-drop-directory]')?.dataset.dropDirectory;
+  if (explicitTarget && directoryMap.value.has(explicitTarget)) return explicitTarget;
+  return null;
 };
-const handleDragLeave = (): void => {
-  dragDepth.value = Math.max(0, dragDepth.value - 1);
+const resolveDropDirectory = (eventTarget: EventTarget | null): string | null => {
+  const explicitTarget = resolveExplicitDropDirectory(eventTarget);
+  if (explicitTarget) return explicitTarget;
+  const element = eventTarget instanceof HTMLElement ? eventTarget : null;
+  if (scopeMode.value === 'directory' && element?.closest('.asset-content-panel')) return currentDirectory.value;
+  return null;
+};
+const hasInternalAsset = (event: DragEvent): boolean => (
+  Boolean(draggedAsset.value) || (event.dataTransfer?.types.includes(INTERNAL_ASSET_DRAG_TYPE) ?? false)
+);
+const hasExternalFiles = (event: DragEvent): boolean => (
+  !hasInternalAsset(event) && (event.dataTransfer?.types.includes('Files') ?? false)
+);
+const validDropDirectory = (event: DragEvent): string | null => {
+  const target = resolveDropDirectory(event.target);
+  if (!target) return null;
+  const sourceDirectory = draggedAsset.value ? `public/${draggedAsset.value.directory}` : null;
+  return sourceDirectory === target ? null : target;
+};
+const resetDragState = (): void => {
+  externalDragActive.value = false;
+  draggedAsset.value = null;
+  dropTargetDirectory.value = null;
+  dropTargetIsExplicit.value = false;
+};
+const handleAssetDragStart = (event: DragEvent, asset: AssetItem): void => {
+  if (!event.dataTransfer || dropBusy.value) {
+    event.preventDefault();
+    return;
+  }
+  draggedAsset.value = asset;
+  dropTargetDirectory.value = null;
+  dropTargetIsExplicit.value = false;
+  event.dataTransfer.effectAllowed = 'move';
+  event.dataTransfer.setData(INTERNAL_ASSET_DRAG_TYPE, asset.path);
+  event.dataTransfer.setData('text/plain', asset.publicUrl);
+};
+const handleAssetDragEnd = (): void => resetDragState();
+const handleDragEnter = (event: DragEvent): void => {
+  const recognizedDrag = hasInternalAsset(event) || hasExternalFiles(event);
+  if (!recognizedDrag) return;
+  event.preventDefault();
+  const target = validDropDirectory(event);
+  if (!target) return;
+  dropTargetDirectory.value = target;
+  dropTargetIsExplicit.value = resolveExplicitDropDirectory(event.target) === target;
+  externalDragActive.value = hasExternalFiles(event);
+};
+const handleDragOver = (event: DragEvent): void => {
+  const recognizedDrag = hasInternalAsset(event) || hasExternalFiles(event);
+  if (!recognizedDrag) return;
+  event.preventDefault();
+  const target = validDropDirectory(event);
+  if (!target) {
+    if (event.dataTransfer) event.dataTransfer.dropEffect = 'none';
+    dropTargetDirectory.value = null;
+    dropTargetIsExplicit.value = false;
+    return;
+  }
+  if (event.dataTransfer) event.dataTransfer.dropEffect = hasInternalAsset(event) ? 'move' : 'copy';
+  dropTargetDirectory.value = target;
+  dropTargetIsExplicit.value = resolveExplicitDropDirectory(event.target) === target;
+  externalDragActive.value = hasExternalFiles(event);
+};
+const handleDragLeave = (event: DragEvent): void => {
+  const shell = event.currentTarget instanceof HTMLElement ? event.currentTarget : null;
+  const nextTarget = event.relatedTarget instanceof Node ? event.relatedTarget : null;
+  if (shell && nextTarget && shell.contains(nextTarget)) return;
+  if (hasExternalFiles(event)) externalDragActive.value = false;
+  dropTargetDirectory.value = null;
+  dropTargetIsExplicit.value = false;
+};
+const moveDraggedAsset = async (asset: AssetItem, targetDirectory: string): Promise<void> => {
+  dropBusy.value = true;
+  try {
+    const result = await moveAsset(asset.path, targetDirectory, asset.name, asset.modifiedAt);
+    selected.value = selected.value.map(value => value === asset.publicUrl ? result.publicUrl : value);
+    if (focusedAsset.value?.path === asset.path) focusedAsset.value = result;
+    await refresh();
+    emit('assetsChange');
+    message.warning(t('assets.movedByDrag', { name: asset.name, directory: targetDirectory }));
+  } catch (error) {
+    message.error(error instanceof Error ? error.message : t('ui.operationFailed'));
+  } finally {
+    dropBusy.value = false;
+  }
 };
 const handleDrop = (event: DragEvent): void => {
-  if (!hasFiles(event) || scopeMode.value !== 'directory') return;
+  const recognizedDrag = hasInternalAsset(event) || hasExternalFiles(event);
+  if (!recognizedDrag) return;
   event.preventDefault();
-  dragDepth.value = 0;
-  void uploadFiles([...(event.dataTransfer?.files ?? [])]);
+  const targetDirectory = validDropDirectory(event);
+  const internalAsset = draggedAsset.value;
+  if (!targetDirectory || (!internalAsset && !hasExternalFiles(event))) {
+    resetDragState();
+    return;
+  }
+  if (internalAsset) {
+    resetDragState();
+    void moveDraggedAsset(internalAsset, targetDirectory);
+    return;
+  }
+  const files = [...(event.dataTransfer?.files ?? [])];
+  externalDragActive.value = false;
+  dropTargetDirectory.value = null;
+  dropTargetIsExplicit.value = false;
+  void uploadFiles(files, targetDirectory);
 };
 
 const copyPublicPath = async (asset: AssetItem): Promise<void> => {
@@ -606,7 +717,7 @@ const submitCreateDirectory = async (): Promise<void> => {
       @click.capture="suppressLongPressClick"
       @contextmenu="handleContextMenu"
       @dragenter="handleDragEnter"
-      @dragover.prevent
+      @dragover="handleDragOver"
       @dragleave="handleDragLeave"
       @drop="handleDrop"
       @pointerdown="handlePointerDown"
@@ -646,7 +757,13 @@ const submitCreateDirectory = async (): Promise<void> => {
           <nav class="asset-breadcrumb" :aria-label="t('assets.currentLocation')">
             <template v-for="(crumb, index) in breadcrumbs" :key="crumb.path || crumb.label">
               <AdminIcon v-if="index" name="ChevronRight" :size="13" />
-              <button type="button" :disabled="!crumb.path" @click="crumb.path && navigateDirectory(crumb.path)">{{ crumb.label }}</button>
+              <button
+                type="button"
+                :disabled="!crumb.path"
+                :data-drop-directory="crumb.path || undefined"
+                :class="{ 'drop-target': dropTargetDirectory === crumb.path }"
+                @click="crumb.path && navigateDirectory(crumb.path)"
+              >{{ crumb.label }}</button>
             </template>
           </nav>
           <span class="asset-location-count">{{ t('assets.items', { count: itemCount }) }}</span>
@@ -671,7 +788,15 @@ const submitCreateDirectory = async (): Promise<void> => {
         <NSpin :show="loading" class="asset-browser">
           <div class="asset-scroll-region">
             <div v-if="viewMode === 'grid' && itemCount" class="asset-grid">
-              <article v-for="directory in visibleDirectories" :key="directory.path" class="asset-tile asset-folder-tile" data-context-kind="directory" :data-context-path="directory.path">
+              <article
+                v-for="directory in visibleDirectories"
+                :key="directory.path"
+                class="asset-tile asset-folder-tile"
+                :class="{ 'drop-target': dropTargetDirectory === directory.path }"
+                data-context-kind="directory"
+                :data-context-path="directory.path"
+                :data-drop-directory="directory.path"
+              >
                 <button type="button" class="asset-tile-main" @click="navigateDirectory(directory.path)">
                   <div class="asset-folder-preview"><AdminIcon name="Folder" :size="48" /></div>
                   <strong :title="directory.name">{{ directory.name }}</strong>
@@ -682,10 +807,20 @@ const submitCreateDirectory = async (): Promise<void> => {
                 </NDropdown>
               </article>
 
-              <article v-for="asset in visibleAssets" :key="asset.path" class="asset-tile" :class="{ selected: selected.includes(asset.publicUrl), focused: focusedAsset?.path === asset.path }" data-context-kind="file" :data-context-path="asset.path">
+              <article
+                v-for="asset in visibleAssets"
+                :key="asset.path"
+                class="asset-tile"
+                :class="{ selected: selected.includes(asset.publicUrl), focused: focusedAsset?.path === asset.path, dragging: draggedAsset?.path === asset.path }"
+                data-context-kind="file"
+                :data-context-path="asset.path"
+                :draggable="!dropBusy"
+                @dragstart="handleAssetDragStart($event, asset)"
+                @dragend="handleAssetDragEnd"
+              >
                 <button type="button" class="asset-tile-main" @click="choose(asset)" @dblclick="activateAsset(asset)">
                   <div class="asset-preview">
-                    <img v-if="asset.type === 'image'" :src="resolveAssetUrl(asset.publicUrl)" :alt="asset.name" loading="lazy" decoding="async">
+                    <img v-if="asset.type === 'image'" :src="resolveAssetUrl(asset.publicUrl)" :alt="asset.name" loading="lazy" decoding="async" draggable="false">
                     <AdminIcon v-else :name="assetIcon(asset)" :size="38" />
                   </div>
                   <span v-if="mode === 'select' && selected.includes(asset.publicUrl)" class="asset-selected-mark" :aria-label="t('assets.selectedMark')"><AdminIcon name="Check" :size="14" /></span>
@@ -702,14 +837,32 @@ const submitCreateDirectory = async (): Promise<void> => {
 
             <div v-else-if="itemCount" class="asset-list-view">
               <div class="asset-list-header"><span>{{ t('assets.name') }}</span><span>{{ t('assets.location') }}</span><span>{{ t('assets.size') }}</span><span>{{ t('assets.modifiedTime') }}</span><span /></div>
-              <div v-for="directory in visibleDirectories" :key="directory.path" class="asset-list-row is-folder" data-context-kind="directory" :data-context-path="directory.path">
+              <div
+                v-for="directory in visibleDirectories"
+                :key="directory.path"
+                class="asset-list-row is-folder"
+                :class="{ 'drop-target': dropTargetDirectory === directory.path }"
+                data-context-kind="directory"
+                :data-context-path="directory.path"
+                :data-drop-directory="directory.path"
+              >
                 <button type="button" class="asset-list-name" @click="navigateDirectory(directory.path)"><span class="asset-list-icon"><AdminIcon name="Folder" :size="24" /></span><strong>{{ directory.name }}</strong></button>
                 <span>{{ directory.parent }}</span><span>—</span><span>{{ formatDate(directory.modifiedAt) }}</span>
                 <NDropdown trigger="click" :options="directoryMenuOptions" @select="handleDirectoryMenu($event, directory)"><NButton quaternary circle size="small" :title="t('assets.folderActions')"><AdminIcon name="MoreHorizontal" /></NButton></NDropdown>
               </div>
-              <div v-for="asset in visibleAssets" :key="asset.path" class="asset-list-row" :class="{ selected: selected.includes(asset.publicUrl), focused: focusedAsset?.path === asset.path }" data-context-kind="file" :data-context-path="asset.path">
+              <div
+                v-for="asset in visibleAssets"
+                :key="asset.path"
+                class="asset-list-row"
+                :class="{ selected: selected.includes(asset.publicUrl), focused: focusedAsset?.path === asset.path, dragging: draggedAsset?.path === asset.path }"
+                data-context-kind="file"
+                :data-context-path="asset.path"
+                :draggable="!dropBusy"
+                @dragstart="handleAssetDragStart($event, asset)"
+                @dragend="handleAssetDragEnd"
+              >
                 <button type="button" class="asset-list-name" @click="choose(asset)" @dblclick="activateAsset(asset)">
-                  <span class="asset-list-icon"><img v-if="asset.type === 'image'" :src="resolveAssetUrl(asset.publicUrl)" :alt="asset.name" loading="lazy" decoding="async"><AdminIcon v-else :name="assetIcon(asset)" :size="22" /></span>
+                  <span class="asset-list-icon"><img v-if="asset.type === 'image'" :src="resolveAssetUrl(asset.publicUrl)" :alt="asset.name" loading="lazy" decoding="async" draggable="false"><AdminIcon v-else :name="assetIcon(asset)" :size="22" /></span>
                   <span v-if="mode === 'select' && selected.includes(asset.publicUrl)" class="asset-list-selected-mark" :aria-label="t('assets.selectedMark')"><AdminIcon name="Check" :size="12" /></span>
                   <strong>{{ asset.name }}</strong>
                 </button>
@@ -724,16 +877,24 @@ const submitCreateDirectory = async (): Promise<void> => {
           </div>
         </NSpin>
 
-        <div v-if="dragDepth > 0" class="asset-drop-overlay">
+        <div
+          v-if="externalDragActive && dropTargetDirectory"
+          class="asset-drop-overlay"
+          :class="{ compact: dropTargetIsExplicit }"
+        >
           <AdminIcon name="UploadCloud" :size="42" />
-          <strong>{{ t('assets.dropTitle', { directory: currentDirectory }) }}</strong>
+          <strong>{{ t('assets.dropTitle', { directory: dropTargetDirectory }) }}</strong>
           <span>{{ t('assets.dropBody') }}</span>
+        </div>
+        <div v-else-if="draggedAsset && dropTargetDirectory" class="asset-move-indicator">
+          <AdminIcon name="FolderInput" :size="18" />
+          <span>{{ t('assets.moveDropTitle', { name: draggedAsset.name, directory: dropTargetDirectory }) }}</span>
         </div>
       </section>
 
       <aside v-if="focusedAsset" class="asset-inspector">
         <div class="asset-inspector-preview">
-          <img v-if="focusedAsset.type === 'image'" :src="resolveAssetUrl(focusedAsset.publicUrl)" :alt="focusedAsset.name">
+          <img v-if="focusedAsset.type === 'image'" :src="resolveAssetUrl(focusedAsset.publicUrl)" :alt="focusedAsset.name" draggable="false">
           <AdminIcon v-else :name="assetIcon(focusedAsset)" :size="56" />
         </div>
         <div class="asset-inspector-copy">
