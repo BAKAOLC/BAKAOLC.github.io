@@ -2,16 +2,17 @@
 /* eslint-disable @stylistic/max-len */
 import {
   NButton, NCard, NColorPicker, NDatePicker, NDynamicInput, NFormItem, NInput,
-  NInputNumber, NPopconfirm, NSelect, NSwitch, NTag, useMessage,
+  NDropdown, NInputNumber, NPopconfirm, NSelect, NSwitch, NTag, type DropdownOption, useMessage,
 } from 'naive-ui';
 import Sortable from 'sortablejs';
 import {
-  computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, onUpdated, ref,
+  computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, onUpdated, ref, toRaw,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { assetManagerKey, normalizeAssetDirectory } from '../asset-manager';
 import { resolveAssetUrl } from '../asset-url';
+import { preservesNativeContextMenu, useContextMenuEscape } from '../context-menu';
 import { defaultNowForField, formatLocalDate, parseConfigDate } from '../date-time';
 import { translateDefinition } from '../definition-i18n';
 import type { AdminUiLocale } from '../i18n';
@@ -38,6 +39,11 @@ const dt = (value: string | undefined): string => translateDefinition(value, uiL
 const listRoot = ref<HTMLElement | null>(null);
 const listFileInput = ref<HTMLInputElement | null>(null);
 const importingListImages = ref(false);
+const listContextShow = ref(false);
+const listContextX = ref(0);
+const listContextY = ref(0);
+const listContextIndex = ref<number | null>(null);
+useContextMenuEscape(listContextShow);
 let sortable: Sortable | null = null;
 let objectKeyCounter = 0;
 const objectKeys = new WeakMap<object, string>();
@@ -100,10 +106,15 @@ const defaultForField = (field: AdminField): unknown => {
   if (field.widget === 'number') return 0;
   return '';
 };
-const addListItem = (): void => {
-  const nextItem = props.field.fields ? Object.fromEntries(props.field.fields.map(field => [field.name, defaultForField(field)])) : '';
-  update([...arrayValue.value, nextItem]);
+const createListItem = (): unknown => (
+  props.field.fields ? Object.fromEntries(props.field.fields.map(field => [field.name, defaultForField(field)])) : ''
+);
+const insertListItem = (index: number): void => {
+  const next = [...arrayValue.value];
+  next.splice(index, 0, createListItem());
+  update(next);
 };
+const addListItem = (): void => insertListItem(arrayValue.value.length);
 const updateListItem = (index: number, value: unknown): void => {
   const next = [...arrayValue.value];
   next[index] = value;
@@ -119,6 +130,64 @@ const moveListItem = (index: number, direction: -1 | 1): void => {
   const next = [...arrayValue.value];
   [next[index], next[target]] = [next[target], next[index]];
   update(next);
+};
+const duplicateListItem = (index: number): void => {
+  const item = arrayValue.value[index];
+  const duplicate = structuredClone(toRaw(item));
+  if (typeof duplicate === 'object' && duplicate !== null && !Array.isArray(duplicate) && 'id' in duplicate) {
+    const record = duplicate as Record<string, unknown>;
+    const originalId = String(record.id ?? '').trim();
+    if (originalId) {
+      const existingIds = new Set(arrayValue.value.map(value => (
+        typeof value === 'object' && value !== null && !Array.isArray(value)
+          ? String((value as Record<string, unknown>).id ?? '')
+          : ''
+      )).filter(Boolean));
+      let nextId = `${originalId}-copy`;
+      let suffix = 2;
+      while (existingIds.has(nextId)) nextId = `${originalId}-copy-${suffix++}`;
+      record.id = nextId;
+    }
+  }
+  const next = [...arrayValue.value];
+  next.splice(index + 1, 0, duplicate);
+  update(next);
+};
+const listContextOptions = computed<DropdownOption[]>(() => {
+  const index = listContextIndex.value ?? -1;
+  return [
+    { label: t('schema.insertBefore'), key: 'insert-before' },
+    { label: t('schema.insertAfter'), key: 'insert-after' },
+    { label: t('schema.duplicateItem'), key: 'duplicate' },
+    { type: 'divider', key: 'divider-1' },
+    { label: t('schema.moveUp'), key: 'move-up', disabled: index <= 0 },
+    { label: t('schema.moveDown'), key: 'move-down', disabled: index < 0 || index >= arrayValue.value.length - 1 },
+    { type: 'divider', key: 'divider-2' },
+    { label: t('ui.delete'), key: 'delete', disabled: arrayValue.value.length <= (props.field.min ?? 0) },
+  ];
+});
+const openListContextMenu = (event: MouseEvent, index: number): void => {
+  if (preservesNativeContextMenu(event.target)) {
+    listContextShow.value = false;
+    return;
+  }
+  event.preventDefault();
+  listContextShow.value = false;
+  listContextX.value = event.clientX;
+  listContextY.value = event.clientY;
+  listContextIndex.value = index;
+  void nextTick(() => listContextShow.value = true);
+};
+const handleListContextSelect = (key: string): void => {
+  const index = listContextIndex.value;
+  listContextShow.value = false;
+  if (index === null || index < 0 || index >= arrayValue.value.length) return;
+  if (key === 'insert-before') insertListItem(index);
+  else if (key === 'insert-after') insertListItem(index + 1);
+  else if (key === 'duplicate') duplicateListItem(index);
+  else if (key === 'move-up') moveListItem(index, -1);
+  else if (key === 'move-down') moveListItem(index, 1);
+  else if (key === 'delete') removeListItem(index);
 };
 const localizedText = (value: unknown): string => {
   if (typeof value === 'string') return value;
@@ -262,7 +331,7 @@ onBeforeUnmount(() => sortable?.destroy());
       <p v-if="field.hint" class="field-hint">{{ dt(field.hint) }}</p>
 
       <div v-if="!field.fields" ref="listRoot" class="simple-list">
-        <div v-for="(item, index) in arrayValue" :key="itemKey(item, index)" class="simple-list-item">
+        <div v-for="(item, index) in arrayValue" :key="itemKey(item, index)" class="simple-list-item" @contextmenu.stop="openListContextMenu($event, index)">
           <span role="button" tabindex="0" class="drag-handle" :title="t('schema.dragSort')" @keydown.alt.up.prevent="moveListItem(index, -1)" @keydown.alt.down.prevent="moveListItem(index, 1)"><AdminIcon name="GripVertical" :size="17" /></span>
           <span class="list-index">{{ index + 1 }}</span>
           <NInput :value="String(item ?? '')" @update:value="updateListItem(index, $event)" />
@@ -271,7 +340,7 @@ onBeforeUnmount(() => sortable?.destroy());
       </div>
 
       <div v-else ref="listRoot" class="structured-list">
-        <details v-for="(item, index) in arrayValue" :key="itemKey(item, index)" class="structured-list-item" :class="{ 'has-thumbnail': Boolean(itemThumbnail(item)) }" :open="field.collapsed === false">
+        <details v-for="(item, index) in arrayValue" :key="itemKey(item, index)" class="structured-list-item" :class="{ 'has-thumbnail': Boolean(itemThumbnail(item)) }" :open="field.collapsed === false" @contextmenu.stop="openListContextMenu($event, index)">
           <summary>
             <span role="button" tabindex="0" class="drag-handle" :title="t('schema.dragSort')" @click.stop @keydown.alt.up.prevent="moveListItem(index, -1)" @keydown.alt.down.prevent="moveListItem(index, 1)"><AdminIcon name="GripVertical" :size="17" /></span>
             <div v-if="itemThumbnail(item)" class="list-item-thumb"><img :src="resolveAssetUrl(itemThumbnail(item))" alt=""></div>
@@ -331,5 +400,16 @@ onBeforeUnmount(() => sortable?.destroy());
       <NInput :value="String(modelValue ?? '')" :type="field.widget === 'text' ? 'textarea' : 'text'" :rows="field.widget === 'text' ? 5 : undefined" :placeholder="field.required === false ? t('ui.optional') : undefined" @update:value="update" />
       <template v-if="field.hint" #feedback>{{ dt(field.hint) }}</template>
     </NFormItem>
+
+    <NDropdown
+      trigger="manual"
+      placement="bottom-start"
+      :show="listContextShow"
+      :x="listContextX"
+      :y="listContextY"
+      :options="listContextOptions"
+      @select="handleListContextSelect"
+      @clickoutside="listContextShow = false"
+    />
   </div>
 </template>

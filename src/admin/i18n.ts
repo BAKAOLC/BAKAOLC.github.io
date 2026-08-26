@@ -41,6 +41,7 @@ const messages = {
     schema: {
       items: '{count} 项', item: '项目', add: '添加{item}', importImages: '批量导入图片',
       key: '键', value: '值', dragSort: '拖拽排序；Alt + 方向键也可排序', confirmDelete: '确定删除这个{item}吗？',
+      insertBefore: '在上方插入', insertAfter: '在下方插入', duplicateItem: '创建副本', moveUp: '向上移动', moveDown: '向下移动',
       imageDropTitle: '拖入多张图片快速建项',
       imageOnly: '这里只能批量导入图片文件。', importDone: '{count} 张图片已上传并创建条目；保存配置后写入引用', importFailed: '批量导入失败',
     },
@@ -113,6 +114,7 @@ const messages = {
     schema: {
       items: '{count} items', item: 'item', add: 'Add {item}', importImages: 'Import images',
       key: 'Key', value: 'Value', dragSort: 'Drag to reorder; Alt + arrow keys also work', confirmDelete: 'Delete this {item}?',
+      insertBefore: 'Insert above', insertAfter: 'Insert below', duplicateItem: 'Duplicate item', moveUp: 'Move up', moveDown: 'Move down',
       imageDropTitle: 'Drop images to create items',
       imageOnly: 'Only image files can be imported here.', importDone: '{count} images uploaded and added; save to write the references', importFailed: 'Import failed',
     },
@@ -185,6 +187,7 @@ const messages = {
     schema: {
       items: '{count} 件', item: '項目', add: '{item}を追加', importImages: '画像を一括追加',
       key: 'キー', value: '値', dragSort: 'ドラッグで並べ替え（Alt + 矢印キーも使用可能）', confirmDelete: 'この{item}を削除しますか？',
+      insertBefore: '上に挿入', insertAfter: '下に挿入', duplicateItem: '複製', moveUp: '上へ移動', moveDown: '下へ移動',
       imageDropTitle: '画像をドロップして項目を作成',
       imageOnly: 'ここでは画像ファイルのみ追加できます。', importDone: '{count} 枚の画像を追加しました。保存すると参照が書き込まれます', importFailed: '一括追加に失敗しました',
     },

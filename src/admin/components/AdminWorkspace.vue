@@ -20,7 +20,7 @@ import {
   useDialog,
   useMessage,
 } from 'naive-ui';
-import { computed, defineAsyncComponent, onMounted, provide, ref, toRaw } from 'vue';
+import { computed, defineAsyncComponent, nextTick, onMounted, provide, ref, toRaw } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import {
@@ -36,6 +36,7 @@ import {
 } from '../api';
 import { assetManagerKey, normalizeAssetDirectory, type AssetManagerOpenOptions } from '../asset-manager';
 import { resolveAssetUrl } from '../asset-url';
+import { useContextMenuEscape } from '../context-menu';
 import { defaultNowForField } from '../date-time';
 import { decodeConfig, encodeConfig } from '../formats';
 import { adminResources, adminSections, getAdminResource } from '../schema';
@@ -87,6 +88,11 @@ const fileDialogName = ref('');
 const fileDialogId = ref('');
 const fileDialogBusy = ref(false);
 const managedFile = ref<ConfigFile | null>(null);
+const entryContextShow = ref(false);
+const entryContextX = ref(0);
+const entryContextY = ref(0);
+const entryContextFile = ref<ConfigFile | null>(null);
+useContextMenuEscape(entryContextShow);
 
 const ENTRY_NAME_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
 const fileMenuOptions = computed(() => [
@@ -434,8 +440,17 @@ const requestDeleteFile = async (file: ConfigFile): Promise<void> => {
 };
 
 const handleFileMenu = (key: string, file: ConfigFile): void => {
+  entryContextShow.value = false;
   if (key === 'delete') void requestDeleteFile(file);
   else if (key === 'duplicate' || key === 'rename') void openFileDialog(key, file);
+};
+const openEntryContextMenu = (event: MouseEvent, file: ConfigFile): void => {
+  event.preventDefault();
+  entryContextShow.value = false;
+  entryContextX.value = event.clientX;
+  entryContextY.value = event.clientY;
+  entryContextFile.value = file;
+  void nextTick(() => entryContextShow.value = true);
 };
 
 const reloadCollection = async (): Promise<void> => {
@@ -785,6 +800,7 @@ onMounted(async () => {
                 :key="file.path"
                 class="entry-row"
                 :class="{ active: file.path === activePath }"
+                @contextmenu="openEntryContextMenu($event, file)"
               >
                 <button class="entry-main" @click="loadFile(file)">
                   <div class="entry-thumb">
@@ -945,6 +961,17 @@ onMounted(async () => {
         </NSpace>
       </template>
     </NModal>
+
+    <NDropdown
+      trigger="manual"
+      placement="bottom-start"
+      :show="entryContextShow"
+      :x="entryContextX"
+      :y="entryContextY"
+      :options="fileMenuOptions"
+      @select="entryContextFile && handleFileMenu($event, entryContextFile)"
+      @clickoutside="entryContextShow = false"
+    />
 
     <AssetPickerModal
       :show="pickerShow"

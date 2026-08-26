@@ -1,6 +1,5 @@
 <script setup lang="ts">
 /* eslint-disable @stylistic/max-len */
-import { useEventListener } from '@vueuse/core';
 import {
   NAlert, NButton, NDropdown, NEmpty, NFormItem, NInput, NModal, NSelect,
   NSpace, NSpin, NTag, NTree, type TreeOption, useDialog, useMessage,
@@ -14,6 +13,7 @@ import {
 } from '../api';
 import { normalizeAssetDirectory } from '../asset-manager';
 import { resolveAssetUrl } from '../asset-url';
+import { preservesNativeContextMenu, useContextMenuEscape } from '../context-menu';
 import type { AssetDirectory, AssetItem } from '../types';
 
 import AdminIcon from './AdminIcon.vue';
@@ -82,6 +82,7 @@ const contextTarget = ref<ContextTarget>({ kind: 'general' });
 let longPressTimer: number | null = null;
 let longPressStart: { x: number; y: number } | null = null;
 let suppressClickUntil = 0;
+useContextMenuEscape(contextMenuShow);
 
 const createDirectoryShow = ref(false);
 const createDirectoryBusy = ref(false);
@@ -255,12 +256,16 @@ const resolveContextTarget = (eventTarget: EventTarget | null): ContextTarget | 
   return null;
 };
 const handleContextMenu = (event: MouseEvent): void => {
-  event.preventDefault();
+  if (preservesNativeContextMenu(event.target)) {
+    contextMenuShow.value = false;
+    return;
+  }
   const target = resolveContextTarget(event.target);
   if (!target) {
     contextMenuShow.value = false;
     return;
   }
+  event.preventDefault();
   openContextMenuAt(event.clientX, event.clientY, target);
 };
 const cancelLongPress = (): void => {
@@ -270,6 +275,10 @@ const cancelLongPress = (): void => {
 };
 const handlePointerDown = (event: PointerEvent): void => {
   if (event.pointerType !== 'touch') return;
+  if (preservesNativeContextMenu(event.target)) {
+    contextMenuShow.value = false;
+    return;
+  }
   const target = resolveContextTarget(event.target);
   if (!target) return;
   cancelLongPress();
@@ -370,14 +379,6 @@ watch(() => props.show, show => {
   typeFilter.value = props.accept.startsWith('image/') ? 'image' : 'all';
   void refresh();
 });
-
-const handleGlobalKeydown = (event: KeyboardEvent): void => {
-  if (event.key !== 'Escape' || !contextMenuShow.value) return;
-  event.preventDefault();
-  event.stopImmediatePropagation();
-  contextMenuShow.value = false;
-};
-useEventListener(document, 'keydown', handleGlobalKeydown, { capture: true });
 
 const choose = (asset: AssetItem): void => {
   focusedAsset.value = asset;
@@ -760,6 +761,8 @@ const submitCreateDirectory = async (): Promise<void> => {
               <button
                 type="button"
                 :disabled="!crumb.path"
+                :data-context-kind="crumb.path ? 'directory' : undefined"
+                :data-context-path="crumb.path || undefined"
                 :data-drop-directory="crumb.path || undefined"
                 :class="{ 'drop-target': dropTargetDirectory === crumb.path }"
                 @click="crumb.path && navigateDirectory(crumb.path)"
@@ -892,7 +895,12 @@ const submitCreateDirectory = async (): Promise<void> => {
         </div>
       </section>
 
-      <aside v-if="focusedAsset" class="asset-inspector">
+      <aside
+        v-if="focusedAsset"
+        class="asset-inspector"
+        data-context-kind="file"
+        :data-context-path="focusedAsset.path"
+      >
         <div class="asset-inspector-preview">
           <img v-if="focusedAsset.type === 'image'" :src="resolveAssetUrl(focusedAsset.publicUrl)" :alt="focusedAsset.name" draggable="false">
           <AdminIcon v-else :name="assetIcon(focusedAsset)" :size="56" />
