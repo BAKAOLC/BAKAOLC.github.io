@@ -252,7 +252,7 @@ const resolveContextTarget = (eventTarget: EventTarget | null): ContextTarget | 
     const directory = directoryMap.value.get(path);
     if (directory) return { kind: 'directory', directory };
   }
-  if (element?.closest('.asset-scroll-region, .asset-tree-panel')) return { kind: 'general' };
+  if (element?.closest('.asset-manager-shell')) return { kind: 'general' };
   return null;
 };
 const handleContextMenu = (event: MouseEvent): void => {
@@ -716,7 +716,7 @@ const submitCreateDirectory = async (): Promise<void> => {
     <div
       class="asset-manager-shell"
       @click.capture="suppressLongPressClick"
-      @contextmenu="handleContextMenu"
+      @contextmenu.capture="handleContextMenu"
       @dragenter="handleDragEnter"
       @dragover="handleDragOver"
       @dragleave="handleDragLeave"
