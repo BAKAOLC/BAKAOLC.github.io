@@ -7,10 +7,8 @@ import { useLanguageStore } from '@/stores/language';
 const { t } = useI18n();
 const languageStore = useLanguageStore();
 
-// 根据当前语言获取Feed URL
 const feeds = computed(() => {
   const currentLang = languageStore.currentLanguage;
-  // 假设英语是默认语言，其他语言添加后缀
   const langSuffix = currentLang === 'en' ? '' : `.${currentLang}`;
 
   return [
@@ -35,7 +33,10 @@ const feeds = computed(() => {
 
 <template>
   <section class="feed-links">
-    <h3 class="feed-title">{{ t('common.feeds', 'Feeds') }}</h3>
+    <h3 class="feed-title">
+      <i class="fas fa-rss feed-title-icon" aria-hidden="true"></i>
+      <span>{{ t('common.feeds', 'Feeds') }}</span>
+    </h3>
     <div class="feed-items">
       <a
         v-for="feed in feeds"
@@ -56,23 +57,31 @@ const feeds = computed(() => {
 @reference "@/assets/styles/main.css";
 
 .feed-links {
-  @apply bg-white dark:bg-gray-800;
-  @apply border border-gray-200 dark:border-gray-700;
-  @apply rounded-lg;
-  @apply shadow-sm;
-  padding: 1rem;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  padding: 0.9rem 1rem;
 }
 
 .feed-title {
-  margin: 0 0 0.75rem 0;
-  font-size: 0.9375rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 0.7rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  color: var(--color-text-primary, #1f2937);
+  color: var(--text-primary);
+}
+
+.feed-title-icon {
+  color: var(--accent-primary);
+  font-size: 0.8125rem;
 }
 
 .feed-items {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.45rem;
   flex-wrap: wrap;
 }
 
@@ -80,79 +89,44 @@ const feeds = computed(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  background: white;
-  border: 1px solid #e5e7eb;
-  color: #3b82f6;
+  padding: 0.375rem 0.8rem;
+  border-radius: var(--radius-control);
+  background: var(--surface-muted);
+  border: 1px solid var(--border-subtle);
+  color: var(--accent-primary-hover);
   text-decoration: none;
-  transition: all 0.2s ease;
-  font-size: 0.8125rem;
-  font-weight: 500;
+  font-size: 0.78rem;
+  font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
-  min-width: 60px;
+  flex: 1 1 auto;
+  min-width: 58px;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease,
+    transform 0.16s var(--ease-out-expo),
+    box-shadow 0.16s ease;
+}
+
+.dark .feed-item {
+  color: var(--accent-primary);
 }
 
 .feed-item:hover {
-  background: #3b82f6;
-  color: white;
-  border-color: #3b82f6;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.25);
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-accent);
 }
 
 .feed-item:active {
   transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.15);
 }
 
-@media (prefers-color-scheme: dark) {
-  .feed-links {
-    background: #1f2937;
-    border-color: #374151;
-  }
-
-  .feed-title {
-    color: #f3f4f6;
-  }
-
-  .feed-item {
-    background: #111827;
-    border-color: #374151;
-    color: #60a5fa;
-  }
-
-  .feed-item:hover {
-    background: #60a5fa;
-    border-color: #60a5fa;
-    color: white;
-    box-shadow: 0 4px 8px rgba(96, 165, 250, 0.25);
-  }
-
-  .feed-item:active {
-    box-shadow: 0 2px 4px rgba(96, 165, 250, 0.15);
-  }
-}
-
-@media (max-width: 640px) {
-  .feed-links {
-    padding: 0.75rem;
-  }
-
-  .feed-title {
-    font-size: 0.875rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .feed-items {
-    gap: 0.375rem;
-  }
-
-  .feed-item {
-    padding: 0.375rem 0.75rem;
-    font-size: 0.75rem;
-    min-width: auto;
-  }
+.feed-item:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
 }
 </style>

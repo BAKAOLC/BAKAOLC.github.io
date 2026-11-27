@@ -1,90 +1,126 @@
 <template>
-  <div class="loading-screen" :class="{ 'fade-out': fadeOut, 'is-embedded': !fullscreen }">
-    <div class="loading-container">
-      <div class="loading-logo">
-        <div class="logo-circle">
-          <div class="logo-inner"></div>
-        </div>
+  <div
+    class="loading-screen"
+    :class="{ 'fade-out': fadeOut, 'is-embedded': !fullscreen }"
+    role="status"
+    aria-live="polite"
+    :aria-label="t('loading.title')"
+  >
+    <div class="loading-backdrop" aria-hidden="true"></div>
+
+    <div class="loading-card">
+      <div class="loading-emblem" aria-hidden="true">
+        <div class="emblem-ring"></div>
+        <img
+          v-if="siteConfig.personal.avatar"
+          :src="siteConfig.personal.avatar"
+          alt=""
+          class="emblem-avatar"
+        />
+        <div v-else class="emblem-core"></div>
       </div>
 
       <div class="loading-progress">
-        <div class="progress-bar">
+        <div class="progress-track">
           <div class="progress-fill" :style="{ width: `${progress}%` }"></div>
         </div>
       </div>
-
-      <div class="loading-animation">
-        <div class="dot dot-1"></div>
-        <div class="dot dot-2"></div>
-        <div class="dot dot-3"></div>
-      </div>
     </div>
-    <div class="loading-background"></div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import { useTimers } from '@/composables/useTimers';
+import { siteConfig } from '@/config/site';
 import { lockBodyScroll, unlockBodyScroll } from '@/utils/bodyScrollLock';
 
 const props = withDefaults(defineProps<{
   onComplete?: () => void;
   fullscreen?: boolean;
+  ready?: boolean;
 }>(), {
   fullscreen: true,
   onComplete: undefined,
+  ready: true,
 });
 
 const emit = defineEmits<{
   complete: [];
 }>();
 
+const { t } = useI18n();
 const fadeOut = ref(false);
-const progress = ref(0);
+const progress = ref(12);
 const animationFrameId = ref<number | null>(null);
 const { setTimeout, requestAnimationFrame, cancelAnimationFrame } = useTimers();
 const loadingScreenScrollLockId = 'loading-screen';
 
-// 伪加载进度函数
-const updateProgress = (startTime: number): void => {
-  const now = Date.now();
-  const elapsedTime = now - startTime;
-  const progressValue = Math.min(100, (elapsedTime / 2000) * 100); // 2秒内完成进度
+const MIN_VISIBLE_MS = 260;
+const FADE_OUT_MS = 240;
+let mountedAt = 0;
+let isFinishing = false;
 
-  progress.value = progressValue;
+const finishLoading = (): void => {
+  if (isFinishing) return;
+  isFinishing = true;
 
-  if (progressValue < 100) {
-    // 继续更新进度
-    animationFrameId.value = requestAnimationFrame(() => updateProgress(startTime));
-  } else {
-    // 进度达到100%，等待0.5秒后开始淡出
-    setTimeout(() => {
-      fadeOut.value = true;
-      setTimeout(() => {
-        emit('complete');
-        if (props.onComplete) props.onComplete();
-      }, 500); // 500ms是淡出动画的时间
-    }, 500); // 等待0.5秒
+  if (animationFrameId.value !== null) {
+    cancelAnimationFrame(animationFrameId.value);
+    animationFrameId.value = null;
   }
+
+  progress.value = 100;
+
+  const elapsed = Date.now() - mountedAt;
+  const remaining = Math.max(0, MIN_VISIBLE_MS - elapsed);
+
+  setTimeout(() => {
+    fadeOut.value = true;
+    setTimeout(() => {
+      emit('complete');
+      props.onComplete?.();
+    }, FADE_OUT_MS);
+  }, remaining);
 };
 
-// 初始化加载
+const tickProgress = (): void => {
+  if (isFinishing) return;
+
+  const elapsed = Date.now() - mountedAt;
+  if (props.ready && elapsed >= MIN_VISIBLE_MS * 0.7) {
+    finishLoading();
+    return;
+  }
+
+  // Smooth ease-out curve that approaches 88% while waiting
+  const target = 12 + (1 - Math.exp(-elapsed / 180)) * 76;
+  progress.value = Math.min(88, Math.max(progress.value, target));
+  animationFrameId.value = requestAnimationFrame(tickProgress);
+};
+
+watch(() => props.ready, (isReady) => {
+  if (isReady && mountedAt > 0) {
+    finishLoading();
+  }
+});
+
 onMounted(() => {
+  mountedAt = Date.now();
   if (props.fullscreen) {
     lockBodyScroll(loadingScreenScrollLockId);
   }
 
-  // 延迟0.5秒后开始填充进度条
+  animationFrameId.value = requestAnimationFrame(tickProgress);
+
+  // Hard safety cap so splash never stalls under any condition
   setTimeout(() => {
-    const startTime = Date.now();
-    // 开始伪进度加载
-    animationFrameId.value = requestAnimationFrame(() => updateProgress(startTime));
-  }, 500); // 延迟0.5秒开始
+    finishLoading();
+  }, 600);
 });
 
-// 清理
 onBeforeUnmount(() => {
   if (props.fullscreen) {
     unlockBodyScroll(loadingScreenScrollLockId);
@@ -105,8 +141,9 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
-  transition: opacity 500ms;
+  background-color: var(--bg-canvas);
+  opacity: 1;
+  transition: opacity 240ms var(--ease-out-expo);
 }
 
 .loading-screen.is-embedded {
@@ -114,141 +151,89 @@ onBeforeUnmount(() => {
   z-index: 30;
 }
 
-:global(.dark) .loading-screen {
-  background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
-}
-
 .loading-screen.fade-out {
   opacity: 0;
+  pointer-events: none;
 }
 
-.loading-container {
+.loading-backdrop {
+  position: absolute;
+  inset: 0;
+}
+
+.loading-card {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  width: 100%;
-  max-width: 24rem;
-  gap: 2rem;
+  gap: 1.5rem;
+  width: min(260px, calc(100vw - 3rem));
+  padding: 2rem 1.75rem 1.75rem;
+  border-radius: var(--radius-modal);
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-lg);
 }
 
-/* 加载图标 */
-.loading-logo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.logo-circle {
-  width: 5rem;
-  height: 5rem;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.loading-emblem {
   position: relative;
-  animation: pulse 2s infinite;
+  width: 4.5rem;
+  height: 4.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.logo-inner {
+.emblem-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  border: 2.5px solid var(--border-subtle);
+  border-top-color: var(--accent-primary);
+  animation: spin 0.9s linear infinite;
+}
+
+.emblem-avatar {
+  width: 3.75rem;
+  height: 3.75rem;
+  border-radius: 9999px;
+  object-fit: cover;
+  border: 2px solid var(--border-subtle);
+}
+
+.emblem-core {
   width: 3rem;
   height: 3rem;
-  border-radius: 50%;
-  background-color: rgba(59, 130, 246, 0.7);
-  position: relative;
-  overflow: hidden;
+  border-radius: 9999px;
+  background: var(--accent-primary);
 }
 
-.logo-inner::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: conic-gradient(transparent, rgba(255, 255, 255, 0.5), transparent 30%);
-  animation: rotate 3s linear infinite;
-}
-
-/* 进度条 */
 .loading-progress {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
 }
 
-.progress-bar {
+.progress-track {
   width: 100%;
-  height: 0.5rem;
-  background-color: rgba(255, 255, 255, 0.1);
+  height: 4px;
   border-radius: 9999px;
+  background: var(--surface-muted);
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background-color: #3b82f6;
   border-radius: 9999px;
-  transition: width 300ms ease-out;
+  background: var(--accent-primary);
+  transition: width 160ms var(--ease-out-expo);
 }
 
-/* 加载动画 */
-.loading-animation {
-  display: flex;
-  justify-content: center;
-  gap: 0.75rem;
-}
-
-.dot {
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: 50%;
-  background-color: #3b82f6;
-}
-
-.dot-1 {
-  animation: bounce 1.4s ease infinite 0s;
-}
-
-.dot-2 {
-  animation: bounce 1.4s ease infinite 0.2s;
-}
-
-.dot-3 {
-  animation: bounce 1.4s ease infinite 0.4s;
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5);
-  }
-  70% {
-    box-shadow: 0 0 0 1rem rgba(59, 130, 246, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
-  }
-}
-
-@keyframes rotate {
+@keyframes spin {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
-  }
-}
-
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-0.75rem);
   }
 }
 </style>

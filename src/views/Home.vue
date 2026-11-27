@@ -12,7 +12,10 @@ import PersonalSection from '@/components/PersonalSection.vue';
 @reference "@/assets/styles/main.css";
 
 .home-page {
-  @apply h-full;
-  @apply flex flex-col;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 </style>

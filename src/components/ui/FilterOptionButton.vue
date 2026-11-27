@@ -49,7 +49,7 @@ const props = withDefaults(defineProps<Props>(), {
   count: undefined,
   countVisible: true,
   icon: undefined,
-  color: '#8b5cf6',
+  color: '#0ea5e9',
   hoverColor: undefined,
   variant: 'default',
 });
@@ -60,7 +60,7 @@ defineEmits<{
 
 const optionStyle = computed(() => ({
   '--filter-color': props.color,
-  '--filter-hover-color': props.hoverColor ?? `${props.color}20`,
+  '--filter-hover-color': props.hoverColor ?? `color-mix(in srgb, ${props.color} 14%, transparent)`,
 }));
 </script>
 
@@ -72,114 +72,89 @@ const optionStyle = computed(() => ({
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  background-color: #f3f4f6;
-  color: #4b5563;
-  border: 1px solid transparent;
-  transition: all 200ms;
-  cursor: pointer;
-  font-size: 0.875rem;
-  font-weight: 500;
   width: 100%;
+  padding: 0.5rem 0.6875rem;
+  border-radius: var(--radius-control);
+  background: var(--surface-card-solid);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.8125rem;
+  font-weight: 500;
   text-align: left;
+  cursor: pointer;
   box-sizing: border-box;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-@media (max-width: 767px) {
-  .filter-option-button {
-    min-width: 11rem;
-    width: auto;
-    padding: 0.5rem 1rem;
-  }
-}
-
-.dark .filter-option-button {
-  background-color: #1f2937;
-  color: #d1d5db;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease,
+    transform 0.16s var(--ease-out-expo),
+    box-shadow 0.16s ease;
 }
 
 .filter-option-button:hover {
-  background-color: var(--filter-hover-color, #e5e7eb);
-  border-color: var(--filter-color, #8b5cf6);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--filter-color, #0ea5e9) 10%, var(--surface-card-solid));
+  border-color: color-mix(in srgb, var(--filter-color, #0ea5e9) 45%, var(--border-subtle));
+  color: var(--text-primary);
 }
 
-.dark .filter-option-button:hover {
-  background-color: #374151;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+.filter-option-button:active {
+  transform: scale(0.985);
+}
+
+.filter-option-button:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
 }
 
 .filter-option-button.active {
-  background-color: var(--filter-color, #8b5cf6);
-  border-color: var(--filter-color, #8b5cf6);
-  color: white;
+  background: var(--filter-color, #0ea5e9);
+  border-color: var(--filter-color, #0ea5e9);
+  color: #ffffff;
   font-weight: 600;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px -4px color-mix(in srgb, var(--filter-color, #0ea5e9) 65%, transparent);
 }
 
 .filter-option-button.restricted {
-  background-color: #fef2f2;
-  border-color: #fecaca;
-  color: #7f1d1d;
-  gap: 0.75rem;
-}
-
-.dark .filter-option-button.restricted {
-  background-color: #1f1f1f;
-  border-color: #374151;
-  color: #dc2626;
+  background: var(--danger-soft);
+  border-color: var(--danger-border);
+  color: var(--danger-text);
+  gap: 0.625rem;
 }
 
 .filter-option-button.restricted:hover {
-  background-color: #fee2e2;
-  border-color: #fca5a5;
-}
-
-.dark .filter-option-button.restricted:hover {
-  background-color: #2d1b1b;
-  border-color: #4b5563;
+  background: color-mix(in srgb, var(--filter-color, #dc2626) 16%, transparent);
+  border-color: color-mix(in srgb, var(--filter-color, #dc2626) 52%, transparent);
 }
 
 .filter-option-button.restricted.active {
-  background-color: rgba(220, 38, 38, 0.1);
+  background: color-mix(in srgb, var(--filter-color, #dc2626) 18%, var(--surface-card-solid));
   border-color: var(--filter-color, #dc2626);
   color: var(--filter-color, #dc2626);
-}
-
-.dark .filter-option-button.restricted.active {
-  background-color: rgba(220, 38, 38, 0.2);
+  box-shadow: none;
 }
 
 .restricted-indicator {
-  width: 1.25rem;
-  height: 1.25rem;
-  border-radius: 50%;
-  border: 2px solid #fca5a5;
-  display: flex;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 9999px;
+  border: 1.5px solid color-mix(in srgb, var(--filter-color, #dc2626) 55%, transparent);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: all 200ms;
   flex-shrink: 0;
-}
-
-.dark .restricted-indicator {
-  border-color: #7f1d1d;
+  transition: background-color 0.16s ease, border-color 0.16s ease;
 }
 
 .filter-option-button.restricted.active .restricted-indicator {
-  background-color: var(--filter-color, #dc2626);
+  background: var(--filter-color, #dc2626);
   border-color: var(--filter-color, #dc2626);
 }
 
 .indicator-icon {
-  font-size: 0.75rem;
+  font-size: 0.625rem;
   opacity: 0;
-  transition: opacity 200ms;
-  color: white;
+  color: #ffffff;
+  transition: opacity 0.16s ease;
 }
 
 .filter-option-button.restricted.active .indicator-icon {
@@ -189,24 +164,23 @@ const optionStyle = computed(() => ({
 .filter-option-left {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
   flex: 1;
   min-width: 0;
 }
 
 .filter-option-icon {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1rem;
+  height: 1rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  line-height: 1;
-  font-size: 1rem;
+  font-size: 0.85rem;
   flex-shrink: 0;
+  opacity: 0.85;
 }
 
 .filter-option-label {
-  margin-right: 0.25rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -216,29 +190,38 @@ const optionStyle = computed(() => ({
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-left: 0.25rem;
-  padding: 0 0.375rem;
-  min-width: 1.25rem;
+  padding: 0 0.425rem;
+  min-width: 1.375rem;
   height: 1.25rem;
   border-radius: 9999px;
-  background-color: #e5e7eb;
-  color: #4b5563;
-  font-size: 0.75rem;
+  background: var(--surface-muted);
+  color: var(--text-muted);
+  font-size: 0.7rem;
   font-weight: 600;
-}
-
-.dark .filter-option-count {
-  background-color: #4b5563;
-  color: #e5e7eb;
+  flex-shrink: 0;
 }
 
 .filter-option-button.active .filter-option-count {
-  background-color: rgba(255, 255, 255, 0.3);
-  color: white;
+  background: rgba(255, 255, 255, 0.24);
+  color: #ffffff;
+}
+
+.filter-option-button.restricted.active .filter-option-count {
+  background: color-mix(in srgb, var(--filter-color, #dc2626) 20%, transparent);
+  color: var(--filter-color, #dc2626);
 }
 
 .filter-option-count.invisible {
   opacity: 0;
   visibility: hidden;
+}
+
+@media (max-width: 767px) {
+  .filter-option-button {
+    width: auto;
+    min-width: 0;
+    max-width: 100%;
+    padding: 0.45rem 0.75rem;
+  }
 }
 </style>

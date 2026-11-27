@@ -536,25 +536,23 @@ onBeforeUnmount(() => {
 }
 
 .notification-item {
-  --notification-accent: #3b82f6;
-  --notification-accent-soft: rgba(59, 130, 246, 0.14);
-  --notification-surface: rgba(255, 255, 255, 0.96);
-  --notification-border: rgba(17, 24, 39, 0.1);
-  --notification-title: #111827;
-  --notification-text: #4b5563;
-  --notification-shadow: rgba(15, 23, 42, 0.16);
+  --notification-accent: #0ea5e9;
+  --notification-accent-soft: rgba(14, 165, 233, 0.14);
+  --notification-surface: var(--surface-elevated);
+  --notification-border: var(--border-default);
+  --notification-title: var(--text-primary);
+  --notification-text: var(--text-secondary);
+  --notification-shadow: rgba(15, 23, 42, 0.14);
   pointer-events: auto;
   position: absolute;
   right: 0;
   overflow: hidden;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.9), var(--notification-surface)),
-    var(--notification-surface);
+  background: var(--notification-surface);
+  backdrop-filter: blur(18px) saturate(165%);
+  -webkit-backdrop-filter: blur(18px) saturate(165%);
   border: 1px solid var(--notification-border);
-  border-radius: 8px;
-  box-shadow:
-    0 14px 36px var(--notification-shadow),
-    0 4px 10px rgba(15, 23, 42, 0.08);
+  border-radius: 0.875rem;
+  box-shadow: var(--shadow-lg);
   color: var(--notification-text);
   display: flex;
   align-items: stretch;
@@ -564,7 +562,7 @@ onBeforeUnmount(() => {
   transition:
     border-color 0.18s ease,
     box-shadow 0.18s ease,
-    background 0.18s ease;
+    background-color 0.18s ease;
   outline: none;
 }
 
@@ -596,19 +594,12 @@ onBeforeUnmount(() => {
 }
 
 .notification-item.info {
-  --notification-accent: #3b82f6;
-  --notification-accent-soft: rgba(59, 130, 246, 0.14);
+  --notification-accent: #0ea5e9;
+  --notification-accent-soft: rgba(14, 165, 233, 0.14);
 }
 
 .dark .notification-item {
-  --notification-surface: rgba(17, 24, 39, 0.94);
-  --notification-border: rgba(255, 255, 255, 0.12);
-  --notification-title: #f9fafb;
-  --notification-text: #d1d5db;
-  --notification-shadow: rgba(0, 0, 0, 0.44);
-  background:
-    linear-gradient(135deg, rgba(31, 41, 55, 0.78), var(--notification-surface)),
-    var(--notification-surface);
+  --notification-shadow: rgba(0, 0, 0, 0.48);
 }
 
 .notification-accent {

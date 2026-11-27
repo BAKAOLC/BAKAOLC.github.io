@@ -140,43 +140,57 @@ const getModalDescription = (modal: ModalInstance): string => `Dialog content fo
 }
 
 .modal-wrapper {
-  @apply fixed inset-0 flex items-center justify-center;
-  @apply opacity-0 pointer-events-none;
-  @apply transition-opacity duration-300 ease-in-out;
-  @apply p-2;
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s var(--ease-out-expo);
+  padding: 0.75rem;
 }
 
 .modal-wrapper.visible {
-  @apply opacity-100 pointer-events-auto;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .modal-wrapper.fullscreen {
-  @apply p-0;
+  padding: 0;
 }
 
 .modal-mask {
-  @apply absolute inset-0;
-  @apply bg-black/50;
-  @apply backdrop-blur-sm;
-  @apply transition-all duration-300;
+  position: absolute;
+  inset: 0;
+  background: rgba(9, 15, 29, 0.56);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: opacity 0.22s ease;
 }
 
 .modal-content {
-  @apply relative;
-  @apply overflow-hidden;
-  @apply flex flex-col;
-  @apply transform scale-95 translate-y-5;
-  @apply transition-transform duration-300 ease-in-out;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transform: scale(0.96) translateY(10px);
+  transition: transform 0.24s var(--ease-out-expo);
+  outline: none;
 }
 
 .modal-wrapper.visible .modal-content {
-  @apply transform scale-100 translate-y-0;
+  transform: scale(1) translateY(0);
 }
 
 .modal-wrapper.fullscreen .modal-content {
-  @apply w-screen h-screen max-w-none max-h-none;
-  @apply rounded-none;
-  @apply transform-none;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  border-radius: 0;
+  transform: none;
 }
 
 .modal-content.custom-size {
@@ -187,15 +201,16 @@ const getModalDescription = (modal: ModalInstance): string => `Dialog content fo
 /* 移动端适配 */
 @media (max-width: 640px) {
   .modal-wrapper {
-    @apply p-2;
+    padding: 0.5rem;
   }
 
   .modal-content {
-    @apply w-full rounded-lg;
+    width: 100%;
+    border-radius: var(--radius-card);
   }
 
   .modal-wrapper:not(.fullscreen) .modal-content {
-    @apply max-h-[calc(100vh-1rem)];
+    max-height: calc(100dvh - 1rem);
   }
 }
 </style>

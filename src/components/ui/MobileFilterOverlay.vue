@@ -8,6 +8,9 @@
           class="mobile-filter-content"
           :aria-describedby="describedBy"
         >
+          <div class="sheet-handle-bar" aria-hidden="true">
+            <span class="sheet-handle"></span>
+          </div>
           <header class="mobile-filter-header">
             <DialogTitle :id="titleId" class="mobile-filter-title">{{ title }}</DialogTitle>
             <DialogClose
@@ -86,86 +89,103 @@ const handleOpenChange = (open: boolean): void => {
 .mobile-filter-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(9, 15, 29, 0.52);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   touch-action: none;
   pointer-events: auto;
+  animation: overlayFadeIn 0.2s ease-out;
 }
 
 .mobile-filter-content {
   position: relative;
   width: 100%;
-  max-height: 80vh;
-  background: white;
-  border-radius: 1rem 1rem 0 0;
+  max-height: 82vh;
+  max-height: 82dvh;
+  background: var(--surface-elevated);
+  backdrop-filter: blur(22px) saturate(165%);
+  -webkit-backdrop-filter: blur(22px) saturate(165%);
+  border-top: 1px solid var(--border-default);
+  border-radius: 1.25rem 1.25rem 0 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   pointer-events: auto;
-  box-shadow: 0 -16px 40px rgba(0, 0, 0, 0.22);
-  animation: mobileFilterIn 0.2s ease-out;
+  box-shadow: 0 -20px 48px rgba(0, 0, 0, 0.28);
+  outline: none;
+  animation: mobileFilterIn 0.24s var(--ease-out-expo);
 }
 
-.dark .mobile-filter-content {
-  background: rgb(31, 41, 55);
+.sheet-handle-bar {
+  display: flex;
+  justify-content: center;
+  padding-top: 0.625rem;
+}
+
+.sheet-handle {
+  width: 2.5rem;
+  height: 4px;
+  border-radius: 9999px;
+  background: var(--border-strong);
 }
 
 .mobile-filter-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid rgb(229, 231, 235);
-}
-
-.dark .mobile-filter-header {
-  border-bottom-color: rgb(75, 85, 99);
+  padding: 0.75rem 1.25rem 0.875rem;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
 }
 
 .mobile-filter-title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: rgb(17, 24, 39);
-}
-
-.dark .mobile-filter-title {
-  color: rgb(243, 244, 246);
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .close-button {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 2rem;
   height: 2rem;
+  border: 1px solid var(--border-subtle);
   border-radius: 0.5rem;
-  background: rgb(243, 244, 246);
-  color: rgb(75, 85, 99);
-  transition: background-color 0.2s;
-}
-
-.dark .close-button {
-  background: rgb(55, 65, 81);
-  color: rgb(209, 213, 219);
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease;
 }
 
 .close-button:hover {
-  background: rgb(229, 231, 235);
+  background: var(--surface-muted-hover);
+  color: var(--text-primary);
 }
 
-.dark .close-button:hover {
-  background: rgb(75, 85, 99);
-}
-
-.close-button:focus {
-  outline: 2px solid rgb(59, 130, 246);
+.close-button:focus-visible {
+  outline: 2px solid var(--accent-primary);
   outline-offset: 2px;
 }
 
 .mobile-filter-body {
-  flex: 1;
+  flex: 1 1 0%;
+  min-height: 0;
   overflow-y: auto;
-  padding: 1.5rem;
-  @apply flex flex-col gap-3;
+  padding: 1rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes mobileFilterIn {
@@ -174,12 +194,6 @@ const handleOpenChange = (open: boolean): void => {
   }
   to {
     transform: translateY(0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .mobile-filter-content {
-    animation: none;
   }
 }
 </style>

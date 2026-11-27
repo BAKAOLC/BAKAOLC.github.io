@@ -1,168 +1,195 @@
 <template>
   <div class="character-profiles-page">
-    <div class="container mx-auto px-4 py-2 h-full flex flex-col">
-
-      <!-- 主内容布局 -->
-      <div class="character-profiles-content">
-        <!-- 选择器区域 -->
-        <div class="selector-section">
-          <div class="selector-container">
-            <!-- 角色选择器 -->
-            <div class="character-selector">
-              <div
-                ref="characterScrollContainer"
-                class="selector-scroll-container"
-                :class="{ 'expanded': isCharacterListExpanded }"
-              >
-                <button
-                  v-for="character in characterProfiles"
-                  :key="character.id"
-                  :data-character-id="character.id"
-                  :ref="element => setCharacterButtonRef(character.id, element)"
-                  @click="selectCharacter(character)"
-                  class="selector-button"
-                  :class="{ 'active': selectedCharacter?.id === character.id }"
-                >
-                  {{ getI18nText(character.name, currentLanguage) }}
-                </button>
-              </div>
+    <div class="profiles-shell">
+      <!-- 顶部角色 / 差分选择器 -->
+      <div class="selector-section">
+        <div class="selector-container">
+          <!-- 角色选择器 -->
+          <div class="character-selector">
+            <div
+              ref="characterScrollContainer"
+              class="selector-scroll-container"
+              :class="{ 'expanded': isCharacterListExpanded }"
+            >
               <button
-                v-if="showCharacterExpandButton"
-                class="expand-toggle-button"
-                @click="toggleCharacterListExpanded"
-                :title="isCharacterListExpanded ? '收起列表' : '展开列表'"
+                v-for="character in characterProfiles"
+                :key="character.id"
+                :ref="element => setCharacterButtonRef(character.id, element)"
+                type="button"
+                :data-character-id="character.id"
+                class="selector-button"
+                :class="{ 'active': selectedCharacter?.id === character.id }"
+                @click="selectCharacter(character)"
               >
-                <i class="fa" :class="getIconClass(isCharacterListExpanded ? 'chevron-up' : 'chevron-down')"></i>
+                {{ getI18nText(character.name, currentLanguage) }}
               </button>
             </div>
+            <button
+              v-if="showCharacterExpandButton"
+              type="button"
+              class="expand-toggle-button"
+              :aria-expanded="isCharacterListExpanded"
+              @click="toggleCharacterListExpanded"
+            >
+              <i
+                class="fa"
+                :class="getIconClass(isCharacterListExpanded ? 'chevron-up' : 'chevron-down')"
+                aria-hidden="true"
+              ></i>
+            </button>
+          </div>
 
-            <!-- 差分选择器 -->
-            <div v-if="selectedCharacter" class="variant-selector">
-              <div
-                ref="variantScrollContainer"
-                class="selector-scroll-container"
-                :class="{ 'expanded': isVariantListExpanded }"
-              >
-                <button
-                  v-for="(variant, index) in selectedCharacter.variants"
-                  :key="variant.id"
-                  :data-variant-id="variant.id"
-                  :ref="element => setVariantButtonRef(variant.id, element)"
-                  @click="selectVariant(variant)"
-                  class="selector-button"
-                  :class="{ 'active': selectedVariant?.id === variant.id }"
-                >
-                  <span class="variant-number">{{ index + 1 }}.</span>
-                  {{ getI18nText(variant.name, currentLanguage) }}
-                </button>
-              </div>
+          <!-- 差分选择器 -->
+          <div v-if="selectedCharacter" class="variant-selector">
+            <div
+              ref="variantScrollContainer"
+              class="selector-scroll-container"
+              :class="{ 'expanded': isVariantListExpanded }"
+            >
               <button
-                v-if="showVariantExpandButton"
-                class="expand-toggle-button"
-                @click="toggleVariantListExpanded"
-                :title="isVariantListExpanded ? '收起列表' : '展开列表'"
+                v-for="(variant, index) in selectedCharacter.variants"
+                :key="variant.id"
+                :ref="element => setVariantButtonRef(variant.id, element)"
+                type="button"
+                :data-variant-id="variant.id"
+                class="selector-button variant-button"
+                :class="{ 'active': selectedVariant?.id === variant.id }"
+                @click="selectVariant(variant)"
               >
-                <i class="fa" :class="getIconClass(isVariantListExpanded ? 'chevron-up' : 'chevron-down')"></i>
+                <span class="variant-number">{{ index + 1 }}</span>
+                <span>{{ getI18nText(variant.name, currentLanguage) }}</span>
               </button>
             </div>
+            <button
+              v-if="showVariantExpandButton"
+              type="button"
+              class="expand-toggle-button"
+              :aria-expanded="isVariantListExpanded"
+              @click="toggleVariantListExpanded"
+            >
+              <i
+                class="fa"
+                :class="getIconClass(isVariantListExpanded ? 'chevron-up' : 'chevron-down')"
+                aria-hidden="true"
+              ></i>
+            </button>
           </div>
-        </div>
-
-        <!-- 主内容区域 -->
-        <div v-if="isProfilesLoading" class="empty-state" role="status" aria-live="polite">
-          <i class="fas fa-spinner"></i>
-          <h3>{{ $t('common.loading') }}</h3>
-        </div>
-
-        <div v-else-if="profilesLoadError" class="empty-state" role="alert">
-          <i class="fas fa-exclamation-triangle"></i>
-          <h3>{{ $t('common.error') }}</h3>
-        </div>
-
-        <div v-else-if="selectedCharacter && selectedVariant" class="main-content">
-          <!-- 左侧信息卡片区域 -->
-          <div class="info-section">
-            <div ref="infoCardsContainer" class="info-cards">
-              <div
-                v-for="card in displayInfoCards"
-                :key="card.id"
-                class="info-card"
-                :style="{ '--card-color': card.color ?? '#667eea' }"
-              >
-                <h3
-                  v-if="card.title"
-                  class="card-title">{{ getI18nText(card.title, currentLanguage) }}</h3>
-                <p
-                  v-if="card.content"
-                  class="card-content">{{ getI18nText(card.content, currentLanguage) }}</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- 右侧内容区域 -->
-          <div class="right-content-section">
-            <!-- 主图片区域 -->
-            <div class="main-image-section">
-              <div class="main-image-container">
-                <div v-if="selectedImage" class="main-image-wrapper">
-                  <ProgressiveImage
-                    :src="selectedImage.src"
-                    :alt="getI18nText(selectedImage.alt, currentLanguage)"
-                    class="main-image"
-                    object-fit="contain"
-                    display-type="original"
-                    @click="openImageViewer(selectedImage)"
-                  />
-                </div>
-                <div v-else class="no-image-placeholder">
-                  <i class="fas fa-image"></i>
-                  <p>{{ $t('characterProfiles.noImageSelected') }}</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- 图片列表区域 -->
-            <div class="image-list-section">
-              <div v-if="selectedVariant.images.length > 0" class="image-list">
-                <button
-                  v-for="image in selectedVariant.images"
-                  :key="image.id"
-                  @click="selectImage(image)"
-                  class="image-item"
-                  :class="{ 'active': selectedImage?.id === image.id }"
-                >
-                  <ProgressiveImage
-                    :src="image.src"
-                    :alt="getI18nText(image.alt, currentLanguage)"
-                    class="image-thumbnail"
-                    object-fit="contain"
-                    display-type="thumbnail"
-                    display-size="medium"
-                  />
-                </button>
-              </div>
-              <div v-else class="no-images-placeholder">
-                <i class="fas fa-images"></i>
-                <p>{{ $t('characterProfiles.noImages') }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 空状态 -->
-        <div v-else class="empty-state">
-          <i class="fas fa-user-circle"></i>
-          <h3>{{ $t('characterProfiles.noCharacterSelected') }}</h3>
-          <p>{{ $t('characterProfiles.selectCharacterToView') }}</p>
         </div>
       </div>
 
+      <!-- 主内容区域 -->
+      <div v-if="isProfilesLoading" class="empty-state" role="status" aria-live="polite">
+        <i class="fas fa-spinner fa-spin state-icon" aria-hidden="true"></i>
+        <h3>{{ $t('common.loading') }}</h3>
+      </div>
+
+      <div v-else-if="profilesLoadError" class="empty-state is-error" role="alert">
+        <i class="fas fa-exclamation-triangle state-icon" aria-hidden="true"></i>
+        <h3>{{ $t('common.error') }}</h3>
+      </div>
+
+      <div v-else-if="selectedCharacter && selectedVariant" class="profiles-workspace">
+        <!-- 左侧设定信息卡片 -->
+        <aside class="info-section" :aria-label="$t('characterProfiles.title')">
+          <div ref="infoCardsContainer" class="info-cards">
+            <article
+              v-for="card in displayInfoCards"
+              :key="card.id"
+              class="info-card"
+              :style="{ '--card-color': card.color ?? '#0ea5e9' }"
+            >
+              <h3 v-if="card.title" class="card-title">
+                {{ getI18nText(card.title, currentLanguage) }}
+              </h3>
+              <p v-if="card.content" class="card-content">
+                {{ getI18nText(card.content, currentLanguage) }}
+              </p>
+            </article>
+          </div>
+        </aside>
+
+        <!-- 展示舞台 + 缩略图栏 -->
+        <div class="showcase-section">
+          <div class="main-image-stage">
+            <div
+              v-if="selectedImage"
+              class="main-image-wrapper"
+              role="button"
+              tabindex="0"
+              :aria-label="$t('gallery.viewFullscreen')"
+              @click="openImageViewer(selectedImage)"
+              @keydown.enter="openImageViewer(selectedImage)"
+              @keydown.space.prevent="openImageViewer(selectedImage)"
+            >
+              <ProgressiveImage
+                :key="selectedImage.id"
+                :src="selectedImage.src"
+                :alt="getI18nText(selectedImage.alt, currentLanguage)"
+                class="main-image"
+                object-fit="contain"
+                display-type="original"
+              />
+              <span class="zoom-hint" aria-hidden="true">
+                <i class="fas fa-expand"></i>
+              </span>
+            </div>
+            <div v-else class="no-image-placeholder">
+              <i class="fas fa-image" aria-hidden="true"></i>
+              <p>{{ $t('characterProfiles.noImageSelected') }}</p>
+            </div>
+          </div>
+
+          <!-- 缩略图栏（宽屏右侧竖排，中/小屏底部横排，均正常滚动不溢出） -->
+          <div class="image-list-section">
+            <div v-if="selectedVariant.images.length > 0" class="image-list">
+              <button
+                v-for="image in selectedVariant.images"
+                :key="image.id"
+                type="button"
+                class="image-item"
+                :class="{ 'active': selectedImage?.id === image.id }"
+                :aria-pressed="selectedImage?.id === image.id"
+                @click="selectImage(image)"
+              >
+                <ProgressiveImage
+                  :src="image.src"
+                  :alt="getI18nText(image.alt, currentLanguage)"
+                  class="image-thumbnail"
+                  object-fit="contain"
+                  display-type="thumbnail"
+                  display-size="medium"
+                />
+              </button>
+            </div>
+            <div v-else class="no-images-placeholder">
+              <i class="fas fa-images" aria-hidden="true"></i>
+              <p>{{ $t('characterProfiles.noImages') }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 空状态 -->
+      <div v-else class="empty-state">
+        <i class="fas fa-user-circle state-icon" aria-hidden="true"></i>
+        <h3>{{ $t('characterProfiles.noCharacterSelected') }}</h3>
+        <p>{{ $t('characterProfiles.selectCharacterToView') }}</p>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, watch, type ComponentPublicInstance } from 'vue';
+import {
+  computed,
+  defineAsyncComponent,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  ref,
+  watch,
+  type ComponentPublicInstance,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -177,9 +204,6 @@ import { getI18nText } from '@/utils/i18nText';
 import { getIconClass } from '@/utils/icons';
 import { encodeKey, parseParam } from '@/utils/idHashMap';
 
-// 导入角色设定配置
-
-// 不需要使用 useI18n 的返回值
 useI18n();
 const ImageViewerModal = defineAsyncComponent(() => import('@/components/modals/ImageViewerModal.vue'));
 const languageStore = useLanguageStore();
@@ -187,10 +211,8 @@ const modalManager = useModalManager();
 const route = useRoute();
 const router = useRouter();
 
-// 获取当前语言
 const currentLanguage = computed(() => languageStore.currentLanguage);
 
-// 响应式数据
 const characterProfiles = ref<CharacterProfile[]>([]);
 const isProfilesLoading = ref(false);
 const profilesLoadError = ref<unknown | null>(null);
@@ -198,33 +220,25 @@ const selectedCharacter = ref<CharacterProfile | null>(null);
 const selectedVariant = ref<CharacterVariant | null>(null);
 const selectedImage = ref<CharacterVariantImage | null>(null);
 
-// 列表展开状态
 const isCharacterListExpanded = ref(false);
 const isVariantListExpanded = ref(false);
 
-// 滚动容器引用
 const characterScrollContainer = ref<HTMLElement | null>(null);
 const variantScrollContainer = ref<HTMLElement | null>(null);
 const infoCardsContainer = ref<HTMLElement | null>(null);
 const characterButtonRefs = new Map<string, HTMLElement>();
 const variantButtonRefs = new Map<string, HTMLElement>();
 
-// 是否显示展开按钮
 const showCharacterExpandButton = ref(false);
 const showVariantExpandButton = ref(false);
 
-// 检测容器是否溢出（仅在未展开时检查）
 const checkOverflow = (element: HTMLElement | null): boolean => {
   if (!element) return false;
-  // 未展开时，检查横向溢出
-  return element.scrollWidth > element.clientWidth;
+  return element.scrollWidth > element.clientWidth + 2;
 };
 
-// 更新按钮显示状态
 const updateButtonVisibility = (): void => {
   nextTick(() => {
-    // 如果已展开，始终显示按钮以便缩回
-    // 如果未展开，根据溢出情况决定是否显示
     showCharacterExpandButton.value = isCharacterListExpanded.value || checkOverflow(characterScrollContainer.value);
     showVariantExpandButton.value = isVariantListExpanded.value || checkOverflow(variantScrollContainer.value);
   });
@@ -263,7 +277,6 @@ const scrollButtonIntoView = (refs: Map<string, HTMLElement>, id: string): void 
   });
 };
 
-// ResizeObserver 实例
 let characterResizeObserver: ResizeObserver | null = null;
 let variantResizeObserver: ResizeObserver | null = null;
 
@@ -276,25 +289,21 @@ const createButtonVisibilityResizeObserver = (): ResizeObserver | null => {
   });
 };
 
-// 切换角色列表展开状态
 const toggleCharacterListExpanded = (): void => {
   isCharacterListExpanded.value = !isCharacterListExpanded.value;
   updateButtonVisibility();
 };
 
-// 切换差分列表展开状态
 const toggleVariantListExpanded = (): void => {
   isVariantListExpanded.value = !isVariantListExpanded.value;
   updateButtonVisibility();
 };
 
-// 计算显示的信息卡片（使用新的解析器）
 const displayInfoCards = computed(() => {
   if (!selectedCharacter.value || !selectedVariant.value) {
     return [];
   }
 
-  // 使用CharacterConfigManager获取解析后的信息卡片
   return CharacterConfigManager.getCharacterCards(
     selectedCharacter.value,
     currentLanguage.value,
@@ -303,7 +312,6 @@ const displayInfoCards = computed(() => {
   );
 });
 
-// 监听卡片更新，自动滚动到顶部
 watch(displayInfoCards, () => {
   nextTick(() => {
     if (infoCardsContainer.value) {
@@ -312,16 +320,12 @@ watch(displayInfoCards, () => {
   });
 });
 
-// 是否正在从URL初始化（避免循环更新）
 const isInitializingFromUrl = ref(false);
 
-// 更新URL参数（使用路径参数）
 const updateUrl = (characterId?: string, variantId?: string, imageId?: string): void => {
-  // 如果正在从URL初始化，不更新URL
   if (isInitializingFromUrl.value) return;
 
   const params: Record<string, string> = {};
-  // 采用合并 key 的方式查询 hash
   const keyParts = [characterId, variantId, imageId].filter(Boolean) as string[];
   if (keyParts.length > 0) {
     const hashed = encodeKey(keyParts);
@@ -334,7 +338,6 @@ const updateUrl = (characterId?: string, variantId?: string, imageId?: string): 
     }
   }
 
-  // 检查是否需要更新URL（避免不必要的更新）
   const currentCharacter = route.params.character as string | undefined;
   const currentVariant = route.params.variant as string | undefined;
   const currentImage = route.params.image as string | undefined;
@@ -351,10 +354,8 @@ const updateUrl = (characterId?: string, variantId?: string, imageId?: string): 
   }
 };
 
-// 选择角色
 const selectCharacter = (character: CharacterProfile, skipUrlUpdate = false): void => {
   selectedCharacter.value = character;
-  // 自动选择第一个差分
   if (character.variants.length > 0) {
     selectVariant(character.variants[0], skipUrlUpdate);
   } else {
@@ -365,15 +366,12 @@ const selectCharacter = (character: CharacterProfile, skipUrlUpdate = false): vo
     }
   }
 
-  // 滚动到选中的角色按钮
   scrollButtonIntoView(characterButtonRefs, character.id);
 };
 
-// 选择差分
 const selectVariant = (variant: CharacterVariant, skipUrlUpdate = false): void => {
   selectedVariant.value = variant;
 
-  // 自动选择第一张图片
   if (variant.images.length > 0) {
     selectImage(variant.images[0], skipUrlUpdate);
   } else {
@@ -383,11 +381,9 @@ const selectVariant = (variant: CharacterVariant, skipUrlUpdate = false): void =
     }
   }
 
-  // 滚动到选中的差分按钮
   scrollButtonIntoView(variantButtonRefs, variant.id);
 };
 
-// 选择图片
 const selectImage = (image: CharacterVariantImage, skipUrlUpdate = false): void => {
   selectedImage.value = image;
   if (!skipUrlUpdate && selectedCharacter.value && selectedVariant.value) {
@@ -395,7 +391,6 @@ const selectImage = (image: CharacterVariantImage, skipUrlUpdate = false): void 
   }
 };
 
-// 打开图片查看器
 const openImageViewer = (image: CharacterVariantImage): void => {
   if (!selectedCharacter.value || !selectedVariant.value) return;
 
@@ -404,14 +399,12 @@ const openImageViewer = (image: CharacterVariantImage): void => {
     src: image.src,
   };
 
-  const imageList = [imageData];
-
   modalManager.open({
     id: `character-image-viewer-${Date.now()}`,
     component: ImageViewerModal,
     props: {
       imageId: image.id,
-      imageList: imageList,
+      imageList: [imageData],
       viewerUIConfig: {
         imageList: false,
         imageGroupList: false,
@@ -436,34 +429,30 @@ const openImageViewer = (image: CharacterVariantImage): void => {
   });
 };
 
-// 监听角色列表变化，更新按钮显示
 watch([characterProfiles, currentLanguage], () => {
   updateButtonVisibility();
 });
 
-// 监听选中的角色变化，更新按钮显示
 watch(selectedCharacter, () => {
   nextTick(() => {
     updateButtonVisibility();
-    // 重新设置 variant 的 ResizeObserver
-    if (variantResizeObserver && variantScrollContainer.value) {
+    if (variantResizeObserver) {
       variantResizeObserver.disconnect();
+    }
+    if (variantScrollContainer.value) {
       variantResizeObserver = createButtonVisibilityResizeObserver();
       variantResizeObserver?.observe(variantScrollContainer.value);
     }
   });
 });
 
-// 根据URL参数初始化选择
 const initializeFromUrl = (): void => {
   isInitializingFromUrl.value = true;
 
-  // 支持以 hash 作为单一参数（优先）或老式的分段参数
   let characterId = route.params.character as string | undefined;
   let variantId = route.params.variant as string | undefined;
   let imageId = route.params.image as string | undefined;
 
-  // 如果 characterId 看起来像 hash，尝试解码为原始 key
   if (characterId) {
     const parsed = parseParam(characterId);
     if (parsed.isHash && parsed.parts.length > 0) {
@@ -495,7 +484,6 @@ const initializeFromUrl = (): void => {
       }
 
       isInitializingFromUrl.value = false;
-      // 如果URL参数不完整，更新URL
       if (selectedCharacter.value && selectedVariant.value && selectedImage.value) {
         updateUrl(selectedCharacter.value.id, selectedVariant.value.id, selectedImage.value.id);
       } else if (selectedCharacter.value && selectedVariant.value) {
@@ -508,13 +496,11 @@ const initializeFromUrl = (): void => {
   }
 
   isInitializingFromUrl.value = false;
-  // 如果没有URL参数或找不到对应的角色，选择第一个角色
   if (characterProfiles.value.length > 0) {
     selectCharacter(characterProfiles.value[0]);
   }
 };
 
-// 组件挂载时根据URL参数初始化或选择第一个角色
 const loadCharacterProfiles = async (): Promise<void> => {
   isProfilesLoading.value = true;
   profilesLoadError.value = null;
@@ -533,7 +519,6 @@ const loadCharacterProfiles = async (): Promise<void> => {
 onMounted(() => {
   void loadCharacterProfiles();
 
-  // 设置 ResizeObserver 监听容器大小变化
   if (characterScrollContainer.value) {
     characterResizeObserver = createButtonVisibilityResizeObserver();
     characterResizeObserver?.observe(characterScrollContainer.value);
@@ -544,16 +529,12 @@ onMounted(() => {
     variantResizeObserver?.observe(variantScrollContainer.value);
   }
 
-  // 初始检查
   updateButtonVisibility();
 });
 
-// 监听路由变化，当URL参数改变时更新选择（仅在浏览器前进/后退时）
 watch(() => route.params, (newParams, oldParams) => {
-  // 如果正在初始化，跳过
   if (isInitializingFromUrl.value) return;
 
-  // 检查是否是外部URL变化（浏览器前进/后退）
   const newCharacterId = newParams.character as string | undefined;
   const newVariantId = newParams.variant as string | undefined;
   const newImageId = newParams.image as string | undefined;
@@ -562,13 +543,11 @@ watch(() => route.params, (newParams, oldParams) => {
   const oldVariantId = oldParams?.variant as string | undefined;
   const oldImageId = oldParams?.image as string | undefined;
 
-  // 只有当URL参数真正改变时才重新初始化
   if (
     newCharacterId !== oldCharacterId
     || newVariantId !== oldVariantId
     || newImageId !== oldImageId
   ) {
-    // 检查是否需要更新选择
     if (
       (newCharacterId && newCharacterId !== selectedCharacter.value?.id)
       || (newVariantId && newVariantId !== selectedVariant.value?.id)
@@ -579,774 +558,489 @@ watch(() => route.params, (newParams, oldParams) => {
   }
 }, { deep: true });
 
-// 组件卸载时清理 ResizeObserver
 onUnmounted(() => {
-  if (characterResizeObserver) {
-    characterResizeObserver.disconnect();
-  }
-  if (variantResizeObserver) {
-    variantResizeObserver.disconnect();
-  }
+  characterResizeObserver?.disconnect();
+  variantResizeObserver?.disconnect();
 });
 </script>
 
 <style scoped>
 @reference "@/assets/styles/main.css";
 
-/* 页面基础样式 */
 .character-profiles-page {
+  height: 100%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  height: 100%;
   overflow: hidden;
 }
 
-/* 主内容布局 */
-.character-profiles-content {
+.profiles-shell {
+  flex: 1 1 0%;
+  min-height: 0;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0.875rem 1.25rem 1rem;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - 2rem);
-  overflow-y: auto;
-  padding-right: 8px; /* 给滚动条留出空间 */
-  margin-right: -8px; /* 抵消padding，保持内容对齐 */
+  gap: 0.875rem;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
-/* 选择器区域 */
+/* Selector Bar */
 .selector-section {
-  @apply mb-2 flex-shrink-0;
+  flex-shrink: 0;
 }
 
 .selector-container {
-  @apply bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 px-4 py-2;
-  @apply shadow-sm;
-  max-width: 100%;
-  overflow: hidden;
-}
-
-.character-selector {
-  @apply mb-2;
-  /* 确保独立的滚动上下文 */
-  position: relative;
-  overflow: hidden;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  padding: 0.5rem 0.75rem;
   display: flex;
   flex-direction: column;
+  gap: 0.45rem;
+}
+
+.character-selector,
+.variant-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
 }
 
 .variant-selector {
-  @apply border-t border-gray-200 dark:border-gray-700 pt-2;
-  /* 确保独立的滚动上下文 */
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.variant-number {
-  @apply text-gray-500 dark:text-gray-400;
-  font-weight: 600;
-  margin-right: 0.25rem;
-}
-
-.selector-button.active .variant-number {
-  @apply text-white opacity-90;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 0.45rem;
 }
 
 .selector-scroll-container {
-  @apply flex gap-2 overflow-x-auto;
-  padding: 0.5rem;
-  scrollbar-width: thin;
-  scrollbar-color: #cbd5e0 transparent; /* 滚动条滑块颜色，轨道透明 */
-  scroll-behavior: smooth;
-  width: 100%;
+  flex: 1 1 0%;
   min-width: 0;
-  /* 启用移动端平滑滚动 */
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding: 0.2rem 0.125rem;
+  scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  /* 确保每个容器都有独立的滚动上下文 */
-  position: relative;
-  isolation: isolate;
-  transition: all 0.3s ease;
 }
 
 .selector-scroll-container.expanded {
   flex-wrap: wrap;
-  overflow-y: auto;
   overflow-x: hidden;
-  max-height: 400px;
-  padding: 0.5rem;
-}
-
-.expand-toggle-button {
-  @apply w-full py-2.5 rounded-b text-sm;
-  @apply text-gray-600 dark:text-gray-400;
-  @apply transition-all duration-300 ease-in-out;
-  @apply border-t border-gray-200 dark:border-gray-700;
-  @apply shadow-sm hover:shadow-md;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(to bottom, #f9fafb 0%, #f3f4f6 100%);
-  font-weight: 500;
-}
-
-.dark .expand-toggle-button {
-  background: linear-gradient(to bottom, #374151 0%, #1f2937 100%);
-}
-
-.expand-toggle-button:hover {
-  background: linear-gradient(to bottom, #f3f4f6 0%, #e5e7eb 100%);
-  @apply text-gray-700 dark:text-gray-300;
-}
-
-.dark .expand-toggle-button:hover {
-  background: linear-gradient(to bottom, #4b5563 0%, #374151 100%);
-}
-
-.expand-toggle-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.expand-toggle-button:hover::before {
-  left: 100%;
-}
-
-.dark .expand-toggle-button::before {
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
-}
-
-.expand-toggle-button:hover {
-  @apply border-gray-300 dark:border-gray-600;
-  transform: translateY(-1px);
-}
-
-.expand-toggle-button:active {
-  transform: translateY(0);
-  @apply shadow-sm;
-}
-
-.expand-toggle-button i {
-  font-size: 0.875rem;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  opacity: 0.8;
-}
-
-.expand-toggle-button:hover i {
-  transform: scale(1.15);
-  opacity: 1;
-}
-
-.selector-scroll-container::-webkit-scrollbar {
-  height: 8px;
-}
-
-/* 移动端使用更大的滚动条 */
-@media (max-width: 767px) {
-  .selector-scroll-container::-webkit-scrollbar {
-    height: 12px;
-  }
-}
-
-.selector-scroll-container.expanded::-webkit-scrollbar {
-  width: 8px;
-  height: auto;
-}
-
-@media (max-width: 767px) {
-  .selector-scroll-container.expanded::-webkit-scrollbar {
-    width: 12px;
-  }
-}
-
-.selector-scroll-container::-webkit-scrollbar-track {
-  background: transparent; /* 隐藏滚动条轨道背景 */
-  border-radius: 0;
-}
-
-.selector-scroll-container::-webkit-scrollbar-thumb {
-  @apply bg-gray-400 dark:bg-gray-500 rounded;
-}
-
-.selector-scroll-container::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-500 dark:bg-gray-400;
+  overflow-y: auto;
+  max-height: 11rem;
 }
 
 .selector-button {
-  @apply px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap;
-  @apply bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300;
-  @apply hover:bg-gray-200 dark:hover:bg-gray-600;
-  @apply transition-colors duration-200;
-  @apply border border-transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
   flex-shrink: 0;
-  min-width: fit-content;
-  /* 为键盘选择器边框提供额外空间 */
-  margin: 0.125rem;
-  /* 确保按钮不会超出容器，但允许滚动 */
-  position: relative;
+  cursor: pointer;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease;
+}
+
+.selector-button:hover {
+  background: var(--surface-muted-hover);
+  color: var(--text-primary);
+}
+
+.selector-button:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
 }
 
 .selector-button.active {
-  @apply bg-primary-500 text-white;
-  @apply hover:bg-primary-600;
-  @apply border-primary-500;
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #ffffff;
+  font-weight: 600;
 }
 
-/* 主内容区域 - 三列布局 */
-.main-content {
-  @apply flex gap-6;
-  min-height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - 3rem);
-  flex: 1;
-  margin-top: 2rem;
+.selector-button.active:hover {
+  background: var(--accent-primary-hover);
+  border-color: var(--accent-primary-hover);
+  color: #ffffff;
 }
 
-/* 左侧信息卡片区域 */
+.variant-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.25rem;
+  border-radius: 9999px;
+  background: var(--surface-card-solid);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.selector-button.active .variant-number {
+  background: rgba(255, 255, 255, 0.24);
+  color: #ffffff;
+}
+
+.expand-toggle-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+.expand-toggle-button:hover {
+  background: var(--surface-muted-hover);
+  color: var(--text-primary);
+}
+
+/* Main Three-Column Artbook Workspace */
+.profiles-workspace {
+  flex: 1 1 0%;
+  min-height: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 1.25rem;
+  overflow: hidden;
+}
+
 .info-section {
-  @apply w-80 flex-shrink-0;
-}
-
-/* 优化 768-1024px 级别的信息卡片区域宽度 */
-@media (min-width: 768px) and (max-width: 1024px) {
-  .info-section {
-    @apply w-72;
-  }
-}
-
-/* 桌面端信息卡片区域 */
-@media (min-width: 768px) {
-  .info-section {
-    @apply h-full;
-  }
+  width: 20rem;
+  flex-shrink: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .info-cards {
-  @apply space-y-3 h-full overflow-y-auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
-}
-
-.info-cards::-webkit-scrollbar {
-  width: 6px;
-}
-
-.info-cards::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.info-cards::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.5);
-  border-radius: 3px;
-}
-
-.info-cards::-webkit-scrollbar-thumb:hover {
-  background: rgba(156, 163, 175, 0.7);
-}
-
-.dark .info-cards::-webkit-scrollbar-thumb {
-  background: rgba(75, 85, 99, 0.5);
-}
-
-.dark .info-cards::-webkit-scrollbar-thumb:hover {
-  background: rgba(75, 85, 99, 0.7);
+  flex: 1 1 0%;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-right: 0.25rem;
+  scrollbar-gutter: stable;
 }
 
 .info-card {
-  @apply p-4 rounded-lg border-l-4;
-  @apply bg-white dark:bg-gray-800;
-  @apply border-gray-200 dark:border-gray-700;
-  @apply shadow-sm;
-  border-left-color: var(--card-color, #667eea);
-}
-
-.dark .info-card {
-  border-left-color: var(--card-color, #667eea);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  padding: 0.95rem 1.05rem;
+  border-radius: var(--radius-card);
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--card-color, #0ea5e9);
+  box-shadow: var(--shadow-sm);
 }
 
 .card-title {
-  @apply text-lg font-semibold mb-2;
-  @apply text-gray-900 dark:text-white;
+  margin: 0 0 0.4rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .card-content {
-  @apply text-sm text-gray-600 dark:text-gray-300;
-  line-height: 1.5;
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
   white-space: pre-wrap;
 }
 
-/* 中间主图片区域 */
-.main-image-section {
-  @apply flex-1 flex items-center justify-center h-full;
-  min-width: 0; /* 允许flex项目收缩 */
-  min-height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - 3rem);
+/* Showcase: Image Stage + Thumbnail Strip */
+.showcase-section {
+  flex: 1 1 0%;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  overflow: hidden;
 }
 
-.main-image-container {
-  @apply w-full h-full flex items-center justify-center;
-  @apply bg-gray-50 dark:bg-gray-900 rounded-lg;
-  @apply border border-gray-200 dark:border-gray-700;
+.main-image-stage {
+  flex: 1 1 0%;
+  min-width: 0;
+  min-height: 0;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
-  min-height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - 3rem);
+  overflow: hidden;
 }
 
 .main-image-wrapper {
-  @apply w-full h-full flex items-center justify-center p-4;
-  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
-  min-height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - 3rem);
+  cursor: zoom-in;
 }
 
-.no-image-placeholder {
-  @apply flex flex-col items-center justify-center text-gray-400 dark:text-gray-500;
-  @apply p-8;
+.main-image-wrapper:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: -3px;
+  border-radius: var(--radius-card);
 }
 
-.no-image-placeholder i {
-  @apply text-4xl mb-2;
+.zoom-hint {
+  position: absolute;
+  right: 0.875rem;
+  bottom: 0.875rem;
+  width: 2.125rem;
+  height: 2.125rem;
+  border-radius: 9999px;
+  background: var(--surface-glass-strong);
+  border: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  box-shadow: var(--shadow-sm);
+  opacity: 0.72;
+  transition: opacity 0.18s ease, transform 0.2s var(--ease-out-expo), color 0.16s ease;
+  pointer-events: none;
 }
 
-/* 右侧图片列表区域 */
+.main-image-wrapper:hover .zoom-hint {
+  opacity: 1;
+  color: var(--accent-primary);
+  transform: scale(1.06);
+}
+
 .image-list-section {
-  @apply w-32 flex-shrink-0;
+  width: 6.25rem;
+  flex-shrink: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  padding: 0.45rem;
+  box-sizing: border-box;
 }
 
-/* 优化 768-1024px 级别的图片列表区域宽度 */
-@media (min-width: 768px) and (max-width: 1024px) {
-  .image-list-section {
-    @apply w-28;
-  }
-}
-
-/* 桌面端图片列表区域 */
-@media (min-width: 768px) {
-  .image-list-section {
-    @apply h-full;
-  }
-}
-
+/* Properly scrollable thumbnail rail! */
 .image-list {
-  @apply flex flex-col gap-2 h-full overflow-y-auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
-  /* 为键盘选择器提供额外空间 */
-  padding: 0.25rem;
-  /* 确保容器不会裁剪子元素的边框 */
-  overflow: visible;
-}
-
-.image-list::-webkit-scrollbar {
-  width: 6px;
-}
-
-.image-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.image-list::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.5);
-  border-radius: 3px;
-}
-
-.image-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(156, 163, 175, 0.7);
-}
-
-.dark .image-list::-webkit-scrollbar-thumb {
-  background: rgba(75, 85, 99, 0.5);
-}
-
-.dark .image-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(75, 85, 99, 0.7);
+  flex: 1 1 0%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.15rem;
 }
 
 .image-item {
-  @apply w-20 h-20 rounded-lg overflow-hidden;
-  @apply border-2 border-transparent;
-  @apply hover:border-primary-300 dark:hover:border-primary-600;
-  @apply transition-colors duration-200;
+  width: 4.5rem;
+  height: 4.5rem;
+  padding: 0.2rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background: var(--surface-muted);
   cursor: pointer;
   flex-shrink: 0;
-  @apply bg-gray-50 dark:bg-gray-800;
-  /* 为键盘选择器边框提供额外空间 */
-  margin: 0.125rem;
+  box-sizing: border-box;
+  transition: border-color 0.16s ease, transform 0.16s var(--ease-out-expo), box-shadow 0.16s ease;
+}
+
+.image-item:hover {
+  border-color: var(--border-strong);
+  transform: scale(1.03);
 }
 
 .image-item.active {
-  @apply border-primary-500;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px var(--accent-soft);
 }
 
+.image-item:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.no-image-placeholder,
 .no-images-placeholder {
-  @apply flex flex-col items-center justify-center text-gray-400 dark:text-gray-500;
-  @apply p-4 h-full;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-align: center;
+  color: var(--text-muted);
+  padding: 1.5rem;
+  height: 100%;
+  font-size: 0.85rem;
 }
 
+.no-image-placeholder i,
 .no-images-placeholder i {
-  @apply text-2xl mb-2;
+  font-size: 2rem;
+  opacity: 0.55;
 }
 
-/* 空状态 */
 .empty-state {
-  @apply flex flex-col items-center justify-center;
-  @apply text-gray-400 dark:text-gray-500;
-  @apply p-12;
+  flex: 1 1 0%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-align: center;
+  color: var(--text-muted);
+  background: var(--surface-card);
+  border: 1px dashed var(--border-default);
+  border-radius: var(--radius-card);
+  padding: 2rem;
 }
 
-.empty-state i {
-  @apply text-6xl mb-4;
+.state-icon {
+  font-size: 2.5rem;
+  color: var(--accent-primary);
+  opacity: 0.8;
+}
+
+.empty-state.is-error .state-icon {
+  color: var(--danger-text);
 }
 
 .empty-state h3 {
-  @apply text-xl font-semibold mb-2;
-  @apply text-gray-600 dark:text-gray-400;
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .empty-state p {
-  @apply text-sm;
+  margin: 0;
+  font-size: 0.875rem;
 }
 
-/* 移动端布局 */
-.mobile-layout {
-  @apply space-y-4;
-}
-
-.mobile-selectors {
-  @apply space-y-3;
-}
-
-.mobile-character-selector,
-.mobile-variant-selector {
-  @apply bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 px-4 py-2;
-}
-
-.selector-label {
-  @apply text-sm font-medium text-gray-700 dark:text-gray-300 mb-2;
-}
-
-.mobile-info-cards {
-  @apply space-y-2;
-}
-
-/* 移动端主图片 */
-.mobile-main-image {
-  @apply w-full;
-}
-
-.mobile-main-image-container {
-  @apply w-full bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700;
-  min-height: 300px;
-  @apply flex items-center justify-center;
-}
-
-.mobile-main-image-wrapper {
-  @apply w-full h-full flex items-center justify-center p-4;
-  cursor: pointer;
-}
-
-.mobile-main-image-content {
-  @apply max-w-full max-h-full;
-}
-
-.mobile-no-image-placeholder {
-  @apply flex flex-col items-center justify-center text-gray-400 dark:text-gray-500;
-  @apply p-8;
-}
-
-.mobile-no-image-placeholder i {
-  @apply text-4xl mb-2;
-}
-
-/* 移动端图像列表 */
-.mobile-image-list {
-  @apply space-y-3;
-}
-
-.gallery-title {
-  @apply text-lg font-semibold text-gray-900 dark:text-white;
-}
-
-.mobile-image-list-container {
-  @apply flex gap-2 overflow-x-auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
-  padding: 0.25rem;
-}
-
-.mobile-image-list-container::-webkit-scrollbar {
-  height: 6px;
-}
-
-.mobile-image-list-container::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.mobile-image-list-container::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.5);
-  border-radius: 3px;
-}
-
-.mobile-image-list-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(156, 163, 175, 0.7);
-}
-
-.dark .mobile-image-list-container::-webkit-scrollbar-thumb {
-  background: rgba(75, 85, 99, 0.5);
-}
-
-.dark .mobile-image-list-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(75, 85, 99, 0.7);
-}
-
-.mobile-image-item {
-  @apply w-20 h-20 rounded-lg overflow-hidden;
-  @apply border-2 border-transparent;
-  @apply hover:border-primary-300 dark:hover:border-primary-600;
-  @apply transition-colors duration-200;
-  cursor: pointer;
-  flex-shrink: 0;
-  @apply bg-gray-50 dark:bg-gray-800;
-}
-
-.mobile-image-item.active {
-  @apply border-primary-500;
-}
-
-.mobile-empty-state {
-  @apply flex flex-col items-center justify-center;
-  @apply text-gray-400 dark:text-gray-500;
-  @apply p-8;
-}
-
-.mobile-empty-state i {
-  @apply text-4xl mb-3;
-}
-
-.mobile-empty-state h3 {
-  @apply text-lg font-semibold mb-2;
-  @apply text-gray-600 dark:text-gray-400;
-}
-
-.mobile-empty-state p {
-  @apply text-sm text-center;
-}
-
-/* 右侧内容区域 */
-.right-content-section {
-  @apply flex-1;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
-/* 移动端布局 - 全竖 */
-@media (max-width: 767px) {
-  .main-content {
-    @apply flex-col gap-8;
+/* Tablet (768px - 1199px): Left info cards, Right image stage + horizontal thumbnail rail */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .profiles-shell {
+    padding: 0.75rem 0.875rem 0.875rem;
   }
 
   .info-section {
-    @apply w-full;
+    width: 17.5rem;
   }
 
-  .right-content-section {
-    @apply w-full;
-  }
-
-  .main-image-section {
-    @apply w-full;
-  }
-
-  .image-list-section {
-    @apply w-full;
-    margin-top: 1.5rem;
-  }
-
-  .image-list {
-    @apply flex-row gap-3 overflow-x-auto;
-    @apply h-24;
-    /* 为移动端键盘选择器提供额外空间 */
-    padding: 0.25rem;
-    overflow: visible;
-  }
-
-  .image-item {
-    @apply w-20 h-20 flex-shrink-0;
-  }
-}
-
-/* 中等屏幕布局 - 右边竖 */
-@media (min-width: 768px) and (max-width: 1280px) {
-  .main-content {
-    @apply flex-row gap-8;
-    height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - 4rem);
-  }
-
-  .info-section {
-    @apply w-80 flex-shrink-0;
-    height: 100%;
-  }
-
-  .info-cards {
-    height: 100%;
-    max-height: none;
-  }
-
-  .right-content-section {
-    @apply flex-1;
-    height: 100%;
-    display: flex;
+  .showcase-section {
     flex-direction: column;
-    gap: 1.5rem;
-    max-width: calc(100% - 20rem - 2rem); /* 容器宽度 - 左侧卡片宽度(20rem) - 主内容gap(2rem) */
-  }
-
-  .main-image-section {
-    @apply flex-1;
-    min-height: 0;
-    width: 100%;
-  }
-
-  .main-image-container {
-    @apply flex-1;
-    min-height: 0;
-    width: 100%;
-  }
-
-  .main-image-wrapper {
-    @apply h-full;
-    min-height: 0;
-    width: 100%;
+    gap: 0.75rem;
   }
 
   .image-list-section {
-    @apply w-full;
+    width: 100%;
     height: auto;
+    flex-shrink: 0;
   }
 
   .image-list {
-    @apply flex-row gap-3 overflow-x-auto;
-    @apply h-24;
-    @apply justify-start;
-    /* 为中等屏幕键盘选择器提供额外空间 */
-    padding: 0.25rem;
-    overflow: visible;
-  }
-
-  .image-item {
-    @apply w-20 h-20 flex-shrink-0;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.15rem 0.25rem;
   }
 }
 
-/* 桌面端布局 - 全横 */
-@media (min-width: 1281px) {
-  .main-content {
-    @apply flex-row gap-8;
-    min-height: calc(100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) - 3rem);
+/* Mobile (< 768px): Single scrollable column, Artwork FIRST so character is immediately visible */
+@media (max-width: 767px) {
+  .profiles-shell {
+    padding: 0.625rem 0.75rem 4.5rem;
+    gap: 0.75rem;
+    overflow-y: auto;
+  }
+
+  .profiles-workspace {
+    flex: none;
+    flex-direction: column;
+    gap: 0.875rem;
+    overflow: visible;
+  }
+
+  .showcase-section {
+    order: 1;
+    flex: none;
+    flex-direction: column;
+    gap: 0.625rem;
+    overflow: visible;
+  }
+
+  .main-image-stage {
+    flex: none;
+    height: clamp(280px, 48dvh, 420px);
+  }
+
+  .image-list-section {
+    width: 100%;
+    height: auto;
+    padding: 0.4rem;
+  }
+
+  .image-list {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.125rem;
+  }
+
+  .image-item {
+    width: 4rem;
+    height: 4rem;
   }
 
   .info-section {
-    @apply w-80 flex-shrink-0;
-    @apply h-full;
+    order: 2;
+    width: 100%;
+    flex: none;
   }
 
   .info-cards {
-    @apply h-full;
-    max-height: none;
-  }
-
-  .right-content-section {
-    @apply flex-1;
-    @apply h-full;
-    display: flex;
-    flex-direction: row;
-    gap: 2rem;
-  }
-
-  .main-image-section {
-    @apply flex-1;
-    min-height: 0;
-  }
-
-  .main-image-container {
-    @apply flex-1;
-    min-height: 0;
-  }
-
-  .main-image-wrapper {
-    @apply flex-1;
-    min-height: 0;
-  }
-
-  .image-list-section {
-    @apply w-28 flex-shrink-0;
-    @apply h-full;
-  }
-
-  .image-list {
-    @apply flex flex-col gap-3 h-full overflow-y-auto;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
-    /* 为桌面端键盘选择器提供额外空间 */
-    padding: 0.25rem;
     overflow: visible;
-  }
-
-  .image-list::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .image-list::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .image-list::-webkit-scrollbar-thumb {
-    background: rgba(156, 163, 175, 0.5);
-    border-radius: 3px;
-  }
-
-  .image-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(156, 163, 175, 0.7);
-  }
-
-  .dark .image-list::-webkit-scrollbar-thumb {
-    background: rgba(75, 85, 99, 0.5);
-  }
-
-  .dark .image-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(75, 85, 99, 0.7);
-  }
-
-  .image-item {
-    @apply w-20 h-20 rounded-lg overflow-hidden;
-    @apply border-2 border-transparent;
-    @apply hover:border-primary-300 dark:hover:border-primary-600;
-    @apply transition-colors duration-200;
-    cursor: pointer;
-    flex-shrink: 0;
-    @apply bg-gray-50 dark:bg-gray-800;
-  }
-
-  .image-item.active {
-    @apply border-primary-500;
-  }
-}
-
-/* 为减少动画偏好的用户禁用过渡 */
-@media (prefers-reduced-motion: reduce) {
-  .character-profiles-page,
-  .character-profiles-header,
-  .character-profiles-title,
-  .selector-button,
-  .main-image,
-  .image-item {
-    transition: none !important;
+    padding-right: 0;
   }
 }
 </style>

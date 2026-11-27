@@ -1,66 +1,69 @@
 <template>
   <div class="links-page">
-    <div class="container mx-auto px-4 py-4 flex-1 h-full overflow-hidden">
-      <div class="links-header">
+    <div class="links-shell">
+      <header class="links-header">
         <div class="header-title-section">
           <h1 class="links-title">{{ $t('links.title') }}</h1>
           <p class="links-subtitle">{{ $t('links.subtitle') }}</p>
         </div>
-        <!-- 统一搜索栏 -->
-        <div class="unified-search-bar" role="search" :aria-label="$t('links.searchResults')">
-          <div class="search-input-container">
+
+        <div class="page-toolbar links-toolbar" role="search" :aria-label="$t('links.searchResults')">
+          <div class="page-toolbar-input-wrap">
             <label for="links-search-input" class="sr-only">{{ $t('links.searchPlaceholder') }}</label>
+            <i class="fas fa-search page-toolbar-search-icon" aria-hidden="true"></i>
             <input
               id="links-search-input"
               type="text"
               :value="searchQuery"
-              @input="e => updateSearchQuery((e.target as HTMLInputElement).value)"
               :placeholder="$t('links.searchPlaceholder')"
-              class="search-input"
+              class="page-toolbar-input"
               :aria-describedby="searchQuery ? 'search-results-info' : undefined"
               autocomplete="off"
+              @input="e => updateSearchQuery((e.target as HTMLInputElement).value)"
             />
             <button
               v-if="searchQuery"
-              @click="clearSearch"
-              class="search-clear"
-              :aria-label="$t('links.clearSearch')"
               type="button"
+              class="page-toolbar-clear"
+              :aria-label="$t('links.clearSearch')"
+              @click="clearSearch"
             >
               <i :class="getIconClass('times')" aria-hidden="true"></i>
             </button>
           </div>
 
-          <div class="control-buttons-group">
-            <!-- 生成友链信息按钮 -->
+          <div class="page-toolbar-actions">
             <button
-              @click="generateFriendLinkInfo"
-              class="generate-button group"
+              type="button"
+              class="page-toolbar-btn generate-button"
               :title="$t('links.generateFriendLinkDesc')"
               :aria-label="$t('links.generateFriendLinkDesc')"
-              type="button"
+              @click="generateFriendLinkInfo"
             >
-              <i :class="getIconClass('code')" class="icon" aria-hidden="true"></i>
-              <span class="button-text">{{ $t('links.generateFriendLink') }}</span>
+              <i :class="getIconClass('code')" aria-hidden="true"></i>
+              <span class="btn-label">{{ $t('links.generateFriendLink') }}</span>
             </button>
           </div>
         </div>
-      </div>
+      </header>
 
       <div class="links-content">
-        <!-- 分类筛选 -->
         <aside class="links-sidebar" role="complementary" :aria-label="$t('links.categories')">
           <button
-            class="sidebar-toggle md:hidden"
-            @click="toggleMobileSidebar"
+            class="sidebar-toggle"
+            type="button"
             :aria-expanded="isMobileSidebarOpen"
             :aria-controls="isMobileSidebarOpen ? 'mobile-filter-content' : undefined"
             :aria-label="$t('links.categories')"
-            type="button"
+            @click="toggleMobileSidebar"
           >
-            <i :class="getIconClass('filter')" class="icon" aria-hidden="true"></i>
-            {{ $t('links.categories') }}
+            <span class="sidebar-toggle-left">
+              <i :class="getIconClass('filter')" class="icon" aria-hidden="true"></i>
+              <span>{{ $t('links.categories') }}</span>
+            </span>
+            <i class="fas fa-sliders-h sidebar-toggle-chevron" aria-hidden="true"></i>
           </button>
+
           <div
             id="category-filter-panel"
             class="sidebar-content"
@@ -78,9 +81,12 @@
           </div>
         </aside>
 
-        <!-- 友链列表 -->
-        <main class="links-main" ref="linksMain" @scroll="handleScroll" role="main" :aria-label="$t('links.title')">
-          <!-- 搜索结果信息 -->
+        <section
+          ref="linksMain"
+          class="links-main"
+          :aria-label="$t('links.title')"
+          @scroll="handleScroll"
+        >
           <div v-if="searchQuery" id="search-results-info" class="sr-only" aria-live="polite">
             {{ $t('links.searchResults') }}: {{ filteredLinks.length }}
             {{ $t('links.linkCount', { count: filteredLinks.length }) }}
@@ -100,15 +106,20 @@
               class="category-section"
               :aria-labelledby="`category-${category.id}-title`"
             >
-              <h2 :id="`category-${category.id}-title`" class="category-section-title">
-                {{ t(category.name, currentLanguage) }}
-                <span class="category-count" :aria-label="$t('links.categoryCount', { count: category.links.length })">
-                  ({{ category.links.length }})
-                </span>
-              </h2>
-              <p class="category-section-description">
-                {{ t(category.description, currentLanguage) }}
-              </p>
+              <div class="category-section-head">
+                <h2 :id="`category-${category.id}-title`" class="category-section-title">
+                  <span>{{ t(category.name, currentLanguage) }}</span>
+                  <span
+                    class="category-count"
+                    :aria-label="$t('links.categoryCount', { count: category.links.length })"
+                  >
+                    {{ category.links.length }}
+                  </span>
+                </h2>
+                <p v-if="t(category.description, currentLanguage)" class="category-section-description">
+                  {{ t(category.description, currentLanguage) }}
+                </p>
+              </div>
 
               <div
                 class="links-cards"
@@ -119,14 +130,14 @@
                   v-for="link in category.links"
                   :key="link.id"
                   class="link-card"
-                  @click="visitLink(link.url)"
-                  @keydown.enter="visitLink(link.url)"
-                  @keydown.space.prevent="visitLink(link.url)"
                   role="listitem"
                   tabindex="0"
                   :aria-label="$t('links.visitWebsite', { name: t(link.name, currentLanguage) })"
+                  @click="visitLink(link.url)"
+                  @keydown.enter="visitLink(link.url)"
+                  @keydown.space.prevent="visitLink(link.url)"
                 >
-                  <div class="link-avatar" v-if="linksConfig.settings.showAvatar">
+                  <div v-if="linksConfig.settings.showAvatar" class="link-avatar">
                     <ProgressiveImage
                       :src="link.avatar ?? linksConfig.settings.defaultAvatar"
                       :alt="$t('links.avatarAlt', { name: t(link.name, currentLanguage) })"
@@ -163,7 +174,7 @@
               </div>
             </section>
           </div>
-        </main>
+        </section>
       </div>
     </div>
 
@@ -184,7 +195,6 @@
       />
     </MobileFilterOverlay>
 
-    <!-- 返回顶部按钮 -->
     <ScrollToTopButton
       :visible="showScrollToTop"
       :aria-label="$t('common.scrollToTop')"
@@ -203,7 +213,6 @@ import ProgressiveImage from '@/components/ProgressiveImage.vue';
 import MobileFilterOverlay from '@/components/ui/MobileFilterOverlay.vue';
 import ScrollToTopButton from '@/components/ui/ScrollToTopButton.vue';
 import { useDebouncedSetter } from '@/composables/useDebouncedSetter';
-import { useDynamicElementHeights } from '@/composables/useDynamicElementHeights';
 import { useMobileFilterOverlay } from '@/composables/useMobileFilterOverlay';
 import { useModalManager } from '@/composables/useModalManager';
 import { useNotificationManager } from '@/composables/useNotificationManager';
@@ -221,8 +230,6 @@ import { parseLinksConfig } from '@/utils/linksConfig';
 import { toAbsoluteUrl } from '@/utils/url';
 import { filterVisible } from '@/utils/visibility';
 
-// 导入友链配置
-
 const { t: $t } = useI18n();
 const languageStore = useLanguageStore();
 const modalManager = useModalManager();
@@ -230,12 +237,10 @@ const notificationManager = useNotificationManager();
 const { isMobile, onScreenChange } = useMobileDetection();
 const JsonViewerModal = defineAsyncComponent(() => import('@/components/modals/JsonViewerModal.vue'));
 
-// 友链配置
 const linksConfig = parseLinksConfig(linksConfigData);
 const personalInfoConfig = personalConfig as PersonalInfo;
 const htmlMetaConfig = htmlConfig as { title: string };
 
-// 响应式状态
 const searchQuery = ref('');
 const selectedCategory = ref('');
 const isCategoriesExpanded = ref(true);
@@ -252,7 +257,6 @@ const {
   close: closeMobileSidebar,
 } = useMobileFilterOverlay(mobileSidebarScrollLockId);
 
-// 当前语言
 const currentLanguage = computed(() => languageStore.currentLanguage);
 
 const visibleLinkCategories = computed(() => {
@@ -262,12 +266,10 @@ const visibleLinkCategories = computed(() => {
   }));
 });
 
-// 本地化辅助函数
 const t = (text: I18nText, lang: string): string => {
   return getI18nText(text, lang);
 };
 
-// 标签本地化辅助函数
 const getTagText = (tagId: string, lang: string): string => {
   const tagConfig = linksConfig.tags?.[tagId];
   if (tagConfig) {
@@ -300,18 +302,14 @@ const searchedLinkCategories = computed<LinkCategory[]>(() => {
   }));
 });
 
-// 过滤后的友链
 const filteredLinks = computed<FriendLinkWithCategory[]>(() => {
   return filteredCategories.value.flatMap(
     category => category.links.map(link => ({ ...link, categoryId: category.id })),
   );
 });
 
-// 分类计数（包括搜索后的计数）
 const categoryCounts = computed(() => {
   const counts: Record<string, number> = {};
-
-  // 计算总数
   let totalCount = 0;
 
   searchedLinkCategories.value.forEach(category => {
@@ -319,12 +317,11 @@ const categoryCounts = computed(() => {
     totalCount += category.links.length;
   });
 
-  counts[''] = totalCount; // 全部分类的计数
+  counts[''] = totalCount;
 
   return counts;
 });
 
-// 过滤后的分类（用于显示）
 const filteredCategories = computed(() => {
   const categories = selectedCategory.value
     ? searchedLinkCategories.value.filter(cat => cat.id === selectedCategory.value)
@@ -333,7 +330,6 @@ const filteredCategories = computed(() => {
   return categories.filter(category => category.links.length > 0);
 });
 
-// 可见的分类（过滤掉计数为0的分类）
 const visibleCategories = computed(() => {
   return visibleLinkCategories.value.filter(category => {
     const count = categoryCounts.value[category.id] ?? 0;
@@ -341,9 +337,6 @@ const visibleCategories = computed(() => {
   });
 });
 
-const { updateDynamicHeightsAfterRender } = useDynamicElementHeights([
-  { selector: '.links-header', variable: '--links-header-height' },
-]);
 const {
   setDebouncedValue: updateSearchQuery,
   setValueImmediately: setSearchQueryImmediately,
@@ -351,17 +344,14 @@ const {
   searchQuery.value = value;
 });
 
-// 搜索功能
 const clearSearch = (): void => {
   setSearchQueryImmediately('');
 };
 
-// 访问链接
 const visitLink = (url: string): void => {
   getBrowserWindow()?.open(url, '_blank', 'noopener,noreferrer');
 };
 
-// 生成友链信息
 const generateFriendLinkInfo = async (): Promise<void> => {
   const currentUrl = getCurrentOrigin() ?? '';
   const name = getI18nText(personalInfoConfig.name, currentLanguage.value);
@@ -385,7 +375,6 @@ const generateFriendLinkInfo = async (): Promise<void> => {
   showJsonModal(jsonString);
 };
 
-// 打开JSON弹窗
 const showJsonModal = (jsonString: string): void => {
   modalManager.openModal(JsonViewerModal, {
     title: $t('links.friendLinkGenerated'),
@@ -393,27 +382,19 @@ const showJsonModal = (jsonString: string): void => {
   });
 };
 
-// 屏幕变化处理
 const handleScreenChange = ({ isMobile }: ScreenInfo): void => {
   if (!isMobile) {
     closeMobileSidebar();
   }
-
-  updateDynamicHeightsAfterRender();
 };
 
-// 屏幕变化监听器取消函数
 let unsubscribeScreenChange: (() => void) | null = null;
 
 onMounted(() => {
-  // 注册屏幕变化监听器
   unsubscribeScreenChange = onScreenChange(handleScreenChange);
-
-  updateDynamicHeightsAfterRender();
 });
 
 onBeforeUnmount(() => {
-  // 取消屏幕变化监听器
   if (unsubscribeScreenChange) {
     unsubscribeScreenChange();
     unsubscribeScreenChange = null;
@@ -425,572 +406,266 @@ onBeforeUnmount(() => {
 @reference "@/assets/styles/main.css";
 
 .links-page {
+  height: 100%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  height: 100%;
   overflow: hidden;
 }
 
+.links-shell {
+  flex: 1 1 0%;
+  min-height: 0;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1rem 1.25rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-sizing: border-box;
+}
+
 .links-header {
-  @apply flex flex-wrap items-center justify-between mb-4;
-  @apply border-b border-gray-200 dark:border-gray-700 pb-3;
-  transition: transform 0.3s ease, opacity 0.3s ease, margin-bottom 0.3s ease;
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.25rem;
+  padding-bottom: 0.875rem;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .header-title-section {
-  @apply flex flex-col;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
 }
 
 .links-title {
-  @apply text-2xl font-bold;
-  @apply text-gray-900 dark:text-white;
-  transition: font-size 0.3s ease, margin-bottom 0.3s ease;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
 }
 
 .links-subtitle {
-  @apply text-gray-600 dark:text-gray-400;
-  @apply text-sm;
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
 }
 
-/* 统一搜索栏样式 */
-.unified-search-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  background-color: rgb(249, 250, 251);
-  border: 1px solid rgb(229, 231, 235);
-  border-radius: 0.75rem;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.dark .unified-search-bar {
-  background-color: rgb(31, 41, 55);
-  border-color: rgb(75, 85, 99);
-}
-
-.unified-search-bar .search-input-container {
-  flex: 1;
-  min-width: 200px;
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-.unified-search-bar .control-buttons-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-shrink: 0;
-}
-
-.unified-search-bar .search-input {
-  width: 100%;
-  padding: 0.5rem;
-  padding-right: 2.5rem;
-  border: 1px solid rgb(209, 213, 219);
-  border-radius: 0.375rem;
-  background-color: rgb(255, 255, 255);
-  color: rgb(17, 24, 39);
-  font-size: 0.875rem;
-  transition: all 0.2s ease;
-}
-
-.dark .unified-search-bar .search-input {
-  background-color: rgb(55, 65, 81);
-  border-color: rgb(75, 85, 99);
-  color: rgb(243, 244, 246);
-}
-
-.unified-search-bar .search-input:focus {
-  outline: none;
-  border-color: rgb(59, 130, 246);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-}
-
-.dark .unified-search-bar .search-input:focus {
-  border-color: rgb(96, 165, 250);
-  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
-}
-
-.unified-search-bar .search-clear {
-  position: absolute;
-  right: 0.5rem;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: rgb(156, 163, 175);
-  cursor: pointer;
-  padding: 0.25rem;
-  border-radius: 0.25rem;
-  transition: all 0.2s ease;
-}
-
-.unified-search-bar .search-clear:hover {
-  color: rgb(107, 114, 128);
-  background-color: rgb(243, 244, 246);
-}
-
-.dark .unified-search-bar .search-clear:hover {
-  color: rgb(209, 213, 219);
-  background-color: rgb(55, 65, 81);
+.links-toolbar {
+  flex: 1 1 380px;
+  max-width: 640px;
 }
 
 .generate-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid rgb(209, 213, 219);
-  border-radius: 0.375rem;
-  background-color: white;
-  color: rgb(107, 114, 128);
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  white-space: nowrap;
+  background: var(--accent-soft);
+  border-color: rgba(14, 165, 233, 0.25);
+  color: var(--accent-primary-hover);
 }
 
 .dark .generate-button {
-  background-color: rgb(55, 65, 81);
-  border-color: rgb(75, 85, 99);
-  color: rgb(156, 163, 175);
+  color: var(--accent-primary);
 }
 
 .generate-button:hover {
-  background-color: rgb(243, 244, 246);
-  color: rgb(55, 65, 81);
-}
-
-.dark .generate-button:hover {
-  background-color: rgb(75, 85, 99);
-  color: rgb(209, 213, 219);
-}
-
-.generate-button:active {
-  transform: scale(0.98);
-}
-
-.generate-button .icon {
-  @apply w-4 h-4;
-}
-
-.generate-button .button-text {
-  font-size: 0.875rem;
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #ffffff;
 }
 
 .links-content {
+  flex: 1 1 0%;
+  min-height: 0;
   display: flex;
-  gap: 1.5rem;
   flex-direction: row;
-  height: calc(
-    100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) -
-    var(--links-header-height, 0px) - 3rem
-  );
-  transition: height 0.3s ease, flex-direction 0.3s ease, gap 0.3s ease;
-}
-
-@media (max-width: 767px) {
-  .links-header {
-    @apply flex-col items-center text-center gap-2 mb-3;
-    padding-bottom: 0.75rem;
-  }
-
-  .header-title-section {
-    @apply text-center mb-2;
-  }
-
-  .links-title {
-    @apply text-xl;
-    margin-bottom: 0.5rem;
-    transition: font-size 0.3s ease, margin-bottom 0.3s ease;
-  }
-
-  .links-subtitle {
-    @apply text-xs;
-  }
-
-  .links-content {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .unified-search-bar {
-    gap: 0.375rem;
-    padding: 0.375rem;
-    margin-bottom: 0.5rem;
-    transition: gap 0.3s ease, padding 0.3s ease, margin-bottom 0.3s ease;
-  }
-
-  .unified-search-bar .control-buttons-group {
-    gap: 0.375rem;
-  }
-
-  .generate-button .button-text {
-    display: none;
-  }
-
-  .generate-button {
-    min-width: 44px;
-    padding: 0.375rem;
-    height: 2rem;
-  }
-
-  .unified-search-bar .search-input {
-    height: 2rem;
-    padding: 0.375rem;
-    padding-right: 2rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .generate-button .button-text {
-    display: inline;
-  }
+  gap: 1.25rem;
+  overflow: hidden;
 }
 
 .links-sidebar {
-  width: 100%;
+  width: 16.5rem;
   flex-shrink: 0;
-  transition: width 0.3s ease;
-}
-
-@media (min-width: 768px) {
-  .links-sidebar {
-    width: 16rem;
-    position: sticky;
-    top: 1rem;
-  }
-}
-
-/* 优化 768-1024px 级别的侧边栏宽度 */
-@media (min-width: 768px) and (max-width: 1024px) {
-  .links-sidebar {
-    width: 14rem;
-  }
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 1rem;
 }
 
 .sidebar-toggle {
-  @apply w-full flex items-center justify-between gap-2 py-3 px-4 mb-3 rounded-lg;
-  @apply bg-white dark:bg-gray-800;
-  @apply border border-gray-200 dark:border-gray-700;
-  @apply text-gray-700 dark:text-gray-300;
-  @apply font-medium;
-  @apply shadow-sm;
-  @apply cursor-pointer;
+  display: none;
 }
 
 .sidebar-content {
-  @apply flex flex-col gap-3;
-  @apply overflow-hidden max-h-0 transition-all duration-300;
-  @apply bg-white dark:bg-gray-800 rounded-lg p-0;
-  @apply border border-transparent;
-}
-
-.sidebar-content.active {
-  @apply max-h-[500px] p-4 mb-4;
-  @apply border-gray-200 dark:border-gray-700;
-  @apply overflow-y-auto;
+  flex: 0 1 auto;
+  max-height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.875rem;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
   scrollbar-gutter: stable;
-}
-
-/* 移动端滚动条样式 */
-.sidebar-content.active::-webkit-scrollbar {
-  width: 6px;
-}
-
-.sidebar-content.active::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.sidebar-content.active::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.5);
-  border-radius: 3px;
-}
-
-.sidebar-content.active::-webkit-scrollbar-thumb:hover {
-  background: rgba(156, 163, 175, 0.7);
-}
-
-.dark .sidebar-content.active::-webkit-scrollbar-thumb {
-  background: rgba(75, 85, 99, 0.5);
-}
-
-.dark .sidebar-content.active::-webkit-scrollbar-thumb:hover {
-  background: rgba(75, 85, 99, 0.7);
-}
-
-@media (min-width: 768px) {
-  .sidebar-toggle {
-    display: none;
-  }
-
-  .sidebar-content {
-    @apply max-h-[calc(100vh-16rem)];
-    @apply flex flex-col gap-3;
-    padding: 1rem;
-    @apply bg-white dark:bg-gray-800 rounded-lg;
-    @apply border border-gray-200 dark:border-gray-700;
-    @apply shadow-sm overflow-y-auto;
-    @apply sticky top-4;
-    scrollbar-gutter: stable;
-  }
-
-  /* 细滚动条样式 */
-  .sidebar-content::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .sidebar-content::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .sidebar-content::-webkit-scrollbar-thumb {
-    background: rgba(156, 163, 175, 0.5);
-    border-radius: 3px;
-  }
-
-  .sidebar-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(156, 163, 175, 0.7);
-  }
-
-  .dark .sidebar-content::-webkit-scrollbar-thumb {
-    background: rgba(75, 85, 99, 0.5);
-  }
-
-  .dark .sidebar-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(75, 85, 99, 0.7);
-  }
 }
 
 .links-main {
-  flex: 1;
-  position: relative;
-  height: 100%;
+  flex: 1 1 0%;
+  min-width: 0;
+  min-height: 0;
   overflow-y: auto;
-  padding-left: 16px;
-  padding-right: 16px;
-  padding-top: 2rem;
-  padding-bottom: 1rem;
-  transition: padding 0.3s ease;
+  padding: 0.125rem 0.25rem 1.5rem;
   scrollbar-gutter: stable;
 }
 
-/* 优化 768-1024px 级别的内边距 */
-@media (min-width: 768px) and (max-width: 1024px) {
-  .links-main {
-    padding-left: 8px;
-    padding-right: 8px;
-  }
-}
-
-/* 细滚动条样式 */
-.links-main::-webkit-scrollbar {
-  width: 8px;
-}
-
-.links-main::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.links-main::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.5);
-  border-radius: 4px;
-}
-
-.links-main::-webkit-scrollbar-thumb:hover {
-  background: rgba(156, 163, 175, 0.7);
-}
-
-.dark .links-main::-webkit-scrollbar-thumb {
-  background: rgba(75, 85, 99, 0.5);
-}
-
-.dark .links-main::-webkit-scrollbar-thumb:hover {
-  background: rgba(75, 85, 99, 0.7);
-}
-
 .no-links {
-  @apply flex flex-col items-center justify-center;
-  @apply text-center py-16;
-  @apply text-gray-500 dark:text-gray-400;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 4rem 1.5rem;
+  text-align: center;
+  color: var(--text-muted);
+  background: var(--surface-card);
+  border: 1px dashed var(--border-default);
+  border-radius: var(--radius-card);
 }
 
 .no-links-icon {
-  @apply text-4xl mb-4;
+  font-size: 2rem;
+  opacity: 0.55;
 }
 
 .no-links-text {
-  @apply text-lg;
+  margin: 0;
+  font-size: 0.9375rem;
 }
 
 .links-grid {
-  @apply space-y-8;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
 }
 
 .category-section {
-  @apply space-y-4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.category-section-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
 }
 
 .category-section-title {
-  @apply text-2xl font-bold;
-  @apply text-gray-900 dark:text-white;
-  @apply flex items-center gap-2;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .category-count {
-  @apply text-sm font-normal;
-  @apply text-gray-500 dark:text-gray-400;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.375rem;
+  padding: 0 0.45rem;
+  border-radius: 9999px;
+  background: var(--surface-muted);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 .category-section-description {
-  @apply text-gray-600 dark:text-gray-400;
-  @apply -mt-2;
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--text-muted);
 }
 
 .links-cards {
   display: grid;
-  gap: 1.5rem;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-}
-
-@media (max-width: 767px) {
-  .links-cards {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .links-main {
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-top: 1rem;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1023px) {
-  .links-cards {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  }
-}
-
-@media (min-width: 1024px) {
-  .links-cards {
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  }
+  gap: 0.875rem;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
 }
 
 .link-card {
-  @apply bg-white dark:bg-gray-800;
-  @apply border border-gray-200 dark:border-gray-700;
-  @apply rounded-xl shadow-sm hover:shadow-md;
-  @apply p-4 cursor-pointer;
-  @apply transition-all duration-300;
-  @apply transform hover:-translate-y-1;
-  @apply flex items-start gap-4;
-  @apply h-full;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  padding: 1rem;
+  border-radius: var(--radius-card);
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
   min-width: 0;
+  transition:
+    transform 0.22s var(--ease-out-expo),
+    box-shadow 0.22s var(--ease-out-expo),
+    border-color 0.18s ease;
 }
 
 .link-card:hover {
-  @apply border-blue-300 dark:border-blue-600;
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent-primary) 45%, var(--border-default));
+  box-shadow: var(--shadow-md);
+}
+
+.link-card:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
 }
 
 .link-avatar {
-  @apply flex-shrink-0;
+  flex-shrink: 0;
 }
 
 .avatar-img {
-  @apply w-12 h-12 rounded-full object-cover;
-  @apply border-2 border-gray-200 dark:border-gray-600;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  overflow: hidden;
+  border: 2px solid var(--border-subtle);
+  background: transparent;
 }
 
 .link-content {
-  @apply flex-1 min-w-0;
-  @apply flex flex-col;
-  @apply h-full;
-  @apply justify-between;
-}
-
-.link-info {
-  @apply flex-1;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+  height: 100%;
 }
 
 .link-name {
-  @apply text-lg font-semibold;
-  @apply text-gray-900 dark:text-white;
-  @apply mb-2;
+  margin: 0 0 0.25rem;
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: var(--text-primary);
   word-break: break-word;
 }
 
 .link-description {
-  @apply text-gray-600 dark:text-gray-400;
-  @apply text-sm leading-relaxed;
-  @apply line-clamp-2;
-}
-
-.link-tags {
-  @apply flex flex-wrap gap-1;
-  @apply mt-3;
-}
-
-.link-tag {
-  @apply px-2 py-1 text-xs;
-  @apply bg-gray-100 dark:bg-gray-700;
-  @apply text-gray-600 dark:text-gray-400;
-  @apply rounded-full;
-}
-
-.link-action {
-  @apply flex-shrink-0 self-center;
-  @apply text-gray-400 dark:text-gray-500;
-  @apply transition-colors duration-200;
-}
-
-.link-card:hover .link-action {
-  @apply text-blue-500 dark:text-blue-400;
-}
-
-.external-icon {
-  @apply w-5 h-5;
-}
-
-/* 响应式布局过渡动画 */.icon {
-  @apply w-4 h-4;
-}
-
-/* 响应式布局过渡动画 */
-@media (prefers-reduced-motion: no-preference) {
-  .links-page {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .links-header,
-  .links-content,
-  .links-sidebar,
-  .links-main {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-}
-
-/* 为减少动画偏好的用户禁用过渡 */
-@media (prefers-reduced-motion: reduce) {
-  .links-page,
-  .links-header,
-  .links-content,
-  .links-sidebar,
-  .links-main {
-    transition: none !important;
-  }
-}
-
-/* 文本截断样式 */
-.line-clamp-2 {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -998,38 +673,132 @@ onBeforeUnmount(() => {
   overflow: hidden;
 }
 
-/* 屏幕阅读器专用样式 */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+.link-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
 }
 
-/* 确保焦点可见性 */
-.link-card:focus {
-  outline: 2px solid rgb(59, 130, 246);
-  outline-offset: 2px;
+.link-tag {
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  background: var(--surface-muted);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 500;
 }
 
-.generate-button:focus,
-.search-clear:focus {
-  outline: 2px solid rgb(59, 130, 246);
-  outline-offset: 2px;
+.link-action {
+  flex-shrink: 0;
+  align-self: center;
+  color: var(--text-muted);
+  transition: color 0.16s ease, transform 0.2s var(--ease-out-expo);
 }
 
-/* 为减少动画偏好的用户禁用过渡 */
-@media (prefers-reduced-motion: reduce) {
-  .link-card:focus,
-  .generate-button:focus,
-  .search-clear:focus {
-    outline: 2px solid rgb(59, 130, 246);
-    outline-offset: 2px;
+.link-card:hover .link-action {
+  color: var(--accent-primary);
+  transform: translate(2px, -2px);
+}
+
+.external-icon {
+  font-size: 0.85rem;
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .links-shell {
+    padding: 0.875rem 0.875rem 0;
+  }
+
+  .links-sidebar {
+    width: 14.5rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .links-shell {
+    padding: 0.75rem 0.75rem 0;
+    gap: 0.75rem;
+  }
+
+  .links-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.625rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .links-title {
+    font-size: 1.25rem;
+  }
+
+  .links-toolbar {
+    flex: none;
+    max-width: none;
+    width: 100%;
+  }
+
+  .links-toolbar .btn-label {
+    display: none;
+  }
+
+  .links-toolbar .page-toolbar-btn {
+    min-width: 2.25rem;
+    height: 2.125rem;
+    padding: 0 0.55rem;
+  }
+
+  .links-toolbar .page-toolbar-input {
+    height: 2.125rem;
+  }
+
+  .links-content {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .links-sidebar {
+    width: 100%;
+    padding-bottom: 0;
+  }
+
+  .sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    border-radius: var(--radius-control);
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-xs);
+    cursor: pointer;
+  }
+
+  .sidebar-toggle-left {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .sidebar-toggle-chevron {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+
+  .sidebar-content {
+    display: none;
+  }
+
+  .links-main {
+    padding: 0 0 4.5rem;
+  }
+
+  .links-cards {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
 }
 </style>

@@ -195,11 +195,13 @@ const summonBtnStyle = computed(() => {
   position: absolute;
   top: 6px;
   right: 6px;
-  width: 24px;
-  height: 24px;
-  border: none;
+  width: 26px;
+  height: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(15, 23, 42, 0.52);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: #fff;
   font-size: 11px;
   cursor: pointer;
@@ -207,43 +209,58 @@ const summonBtnStyle = computed(() => {
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, background-color 0.2s ease, transform 0.18s ease;
   pointer-events: auto;
   z-index: 10;
 }
 
-.live2d-widget:hover .live2d-close-btn {
+.live2d-widget:hover .live2d-close-btn,
+.live2d-close-btn:focus-visible {
   opacity: 1;
 }
 
 .live2d-close-btn:hover {
-  background: rgba(220, 38, 38, 0.75);
+  background: rgba(220, 38, 38, 0.85);
+  transform: scale(1.06);
 }
 
 /* ── 唤出按钮 ────────────────────────────────────────────────────── */
 .live2d-summon-btn {
   position: fixed;
   z-index: 100;
-  width: 38px;
-  height: 38px;
-  border: none;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border-default);
   border-radius: 50%;
-  background: var(--color-bg-elevated, rgba(255, 255, 255, 0.85));
-  color: var(--color-text-secondary, #666);
+  background: var(--surface-glass-strong);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  color: var(--text-secondary);
   font-size: 18px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  transition: box-shadow 0.2s ease, transform 0.2s ease, background 0.2s ease;
+  box-shadow: var(--shadow-md);
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s var(--ease-spring),
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
   pointer-events: auto;
 }
 
 .live2d-summon-btn:hover {
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-accent);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
   transform: scale(1.08);
-  background: var(--color-bg-elevated, #fff);
+}
+
+.live2d-summon-btn:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
 }
 
 /* ── 加载 / 错误状态 ─────────────────────────────────────────────── */
@@ -256,7 +273,7 @@ const summonBtnStyle = computed(() => {
   gap: 6px;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-muted, #aaa);
+  color: var(--text-muted);
   font-size: 13px;
   pointer-events: none;
 }
@@ -266,7 +283,7 @@ const summonBtnStyle = computed(() => {
 }
 
 .live2d-error {
-  color: var(--color-danger, #ef4444);
+  color: var(--danger-text);
 }
 
 /* ── 过渡动画 ────────────────────────────────────────────────────── */

@@ -1,20 +1,20 @@
 <template>
-  <main
+  <section
     class="personal-section"
+    :class="{ 'has-wallpaper': hasBackgroundImage }"
     :style="backgroundStyle"
-    role="main"
     :aria-label="$t('personal.mainPage')"
   >
+    <div v-if="hasBackgroundImage" class="wallpaper-scrim" aria-hidden="true"></div>
 
-    <div class="container mx-auto px-4 py-8">
+    <div class="personal-stage">
       <article
         class="content-card"
         :class="{ 'glass-effect': hasBackgroundImage }"
-        role="article"
         aria-labelledby="personal-name"
         aria-describedby="personal-description"
       >
-        <header class="text-center mb-8">
+        <header class="profile-header">
           <div class="avatar-container">
             <ProgressiveImage
               :src="personal.avatar"
@@ -46,6 +46,7 @@
               v-for="(line, index) in personal.description"
               :key="index"
               class="description-line"
+              :class="{ 'is-spacer': !getI18nText(line, currentLanguage).trim() }"
             >
               {{ getI18nText(line, currentLanguage) }}
             </p>
@@ -53,39 +54,34 @@
         </header>
 
         <nav
+          v-if="visibleSocialLinks.length > 0"
           class="social-links"
-          role="navigation"
           :aria-label="$t('personal.socialMediaLinks')"
         >
-          <template v-for="(link, index) in personal.links" :key="link.url ?? index">
-            <a
-              v-if="link.url && link.name"
-              :href="link.url"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="social-link"
-              :style="{
-                '--link-color': link.color ?? '#333',
-                'animation-delay': `${(index + 1) * animationDelayInterval}s`
-              }"
-              :aria-label="$t('personal.visitLink', { name: getI18nText(link.name, currentLanguage) })"
-              :title="$t('personal.openInNewWindow', { name: getI18nText(link.name, currentLanguage) })"
-              role="link"
-            >
-              <i
-                :class="getIconClass(link.icon ?? 'link')"
-                class="icon"
-                :aria-hidden="true"
-              ></i>
-              <span class="link-name">{{ getI18nText(link.name, currentLanguage) }}</span>
-            </a>
-          </template>
+          <a
+            v-for="(link, index) in visibleSocialLinks"
+            :key="link.url ?? index"
+            :href="link.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="social-link"
+            :style="{
+              '--link-color': link.color ?? '#0ea5e9',
+              'animation-delay': `${Math.min(index * effectiveDelayInterval, 0.35)}s`,
+            }"
+            :aria-label="$t('personal.visitLink', { name: getI18nText(link.name, currentLanguage) })"
+            :title="$t('personal.openInNewWindow', { name: getI18nText(link.name, currentLanguage) })"
+          >
+            <span class="social-icon-badge" aria-hidden="true">
+              <i :class="getIconClass(link.icon ?? 'link')" class="icon"></i>
+            </span>
+            <span class="link-name">{{ getI18nText(link.name, currentLanguage) }}</span>
+          </a>
         </nav>
 
         <nav
           v-if="enabledActionButtons.length > 0"
           class="action-buttons"
-          role="navigation"
           :aria-label="$t('personal.pageNavigation')"
         >
           <component
@@ -102,21 +98,19 @@
             :title="button.type === 'external'
               ? $t('personal.openInNewWindow', { name: getI18nText(button.text, currentLanguage) })
               : getI18nText(button.text, currentLanguage)"
-            role="button"
-            tabindex="0"
           >
             <i
               v-if="button.icon"
               :class="getIconClass(button.icon)"
               class="button-icon"
-              :aria-hidden="true"
+              aria-hidden="true"
             ></i>
             <span class="button-text">{{ getI18nText(button.text, currentLanguage) }}</span>
           </component>
         </nav>
       </article>
     </div>
-  </main>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -137,47 +131,42 @@ const { t: $t } = useI18n();
 const { personal } = siteConfig;
 const currentLanguage = computed(() => languageStore.currentLanguage);
 
-// 动画延迟间隔（秒），默认 0.1
-const animationDelayInterval = computed(() => personal.animationDelayInterval ?? 0.1);
+const animationDelayInterval = computed(() => personal.animationDelayInterval ?? 0.06);
+const effectiveDelayInterval = computed(() => Math.min(animationDelayInterval.value, 0.055));
 
-// 操作按钮是否等待社交链接动画完成，默认 true
 const actionButtonsWaitForLinks = computed(() => personal.actionButtonsWaitForLinks ?? true);
+const actionButtonsAnimationDelayInterval = computed(() => (
+  personal.actionButtonsAnimationDelayInterval !== undefined
+    ? Math.min(personal.actionButtonsAnimationDelayInterval, 0.06)
+    : effectiveDelayInterval.value
+));
+const actionButtonsInitialDelay = computed(() => Math.min(personal.actionButtonsInitialDelay ?? 0.08, 0.12));
 
-// 操作按钮动画延迟间隔（秒），默认使用通用的 animationDelayInterval
-const actionButtonsAnimationDelayInterval = computed(() => personal.actionButtonsAnimationDelayInterval !== undefined
-  ? personal.actionButtonsAnimationDelayInterval
-  : animationDelayInterval.value);
+const visibleSocialLinks = computed(() => {
+  return (personal.links ?? []).filter(link => Boolean(link.url && link.name));
+});
 
-// 操作按钮初始等待时间（秒），默认 0.1
-const actionButtonsInitialDelay = computed(() => personal.actionButtonsInitialDelay ?? 0.1);
-
-// 启用的操作按钮
 const enabledActionButtons = computed(() => {
   if (!personal.actionButtons) return [];
   return personal.actionButtons.filter(button => button.enabled !== false);
 });
 
-// 随机背景图像
 const currentBackgroundImage = ref<string | null>(null);
+const hasBackgroundImage = computed(() => Boolean(currentBackgroundImage.value));
 
-// 计算属性：是否有背景图像
-const hasBackgroundImage = computed(() => !!currentBackgroundImage.value);
-
-// 计算属性：背景样式
 const backgroundStyle = computed(() => {
   if (!currentBackgroundImage.value) {
     return {};
   }
 
   return {
-    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${currentBackgroundImage.value})`,
+    backgroundImage: `url(${currentBackgroundImage.value})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
   };
 });
 
-// 选择随机背景图像
 const selectRandomBackground = (): void => {
   if (personal.backgroundImages && personal.backgroundImages.length > 0) {
     const randomIndex = Math.floor(Math.random() * personal.backgroundImages.length);
@@ -185,7 +174,6 @@ const selectRandomBackground = (): void => {
   }
 };
 
-// 组件挂载时选择随机背景
 onMounted(() => {
   selectRandomBackground();
 });
@@ -193,348 +181,294 @@ onMounted(() => {
 const computeActionButtonStyle = (button: ActionButton, index: number): Record<string, string> => {
   const baseDelay = actionButtonsInitialDelay.value + (index + 1) * actionButtonsAnimationDelayInterval.value;
   const extraLinksDelay = actionButtonsWaitForLinks.value
-    ? ((personal.links?.length ?? 0) * animationDelayInterval.value)
+    ? Math.min(visibleSocialLinks.value.length * effectiveDelayInterval.value, 0.28)
     : 0;
-  const delay = baseDelay + extraLinksDelay;
+  const delay = Math.min(baseDelay + extraLinksDelay, 0.45);
 
   return {
-    '--button-color': button.color ?? '#667eea',
+    '--button-color': button.color ?? '#0ea5e9',
     'animation-delay': `${delay}s`,
   };
 };
-
 </script>
 
 <style scoped>
 @reference "@/assets/styles/main.css";
 
 .personal-section {
-  @apply h-full flex flex-col justify-center;
-  @apply bg-gradient-to-b from-white to-gray-100;
-  @apply dark:from-gray-900 dark:to-gray-800;
-  @apply overflow-auto;
-  @apply py-8;
-  @apply relative;
-  transition: all 0.5s ease-in-out;
+  position: relative;
+  flex: 1 1 0%;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* 内容卡片 */
+.wallpaper-scrim {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.dark .wallpaper-scrim {
+  background: rgba(0, 0, 0, 0.36);
+}
+
+.personal-stage {
+  position: relative;
+  z-index: 1;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1.25rem, 3.5vh, 2.75rem) 1rem;
+  box-sizing: border-box;
+}
+
 .content-card {
-  @apply relative;
-  @apply max-w-2xl mx-auto;
-  z-index: 2;
-  transition: all 0.5s ease-in-out;
+  width: min(640px, 100%);
+  margin: auto;
+  padding: clamp(1.75rem, 4vw, 2.5rem) clamp(1.25rem, 4vw, 2.25rem);
+  border-radius: 1rem;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-lg);
+  animation: cardReveal 0.42s var(--ease-out-expo) both;
 }
 
-/* 优化 768-1024px 级别的内容卡片宽度 */
-@media (min-width: 768px) and (max-width: 1024px) {
-  .content-card {
-    @apply max-w-4xl;
-  }
-}
-
-/* 磨砂玻璃效果 */
-.glass-effect {
-  @apply backdrop-blur-md;
-  @apply border border-white/30 dark:border-gray-700/30;
-  @apply rounded-2xl;
-  @apply shadow-2xl;
-  @apply p-8;
-  @apply max-w-2xl;
-  margin: 0 auto;
+/* 保留高通透度磨砂玻璃，让背景插画清晰透出 */
+.content-card.glass-effect {
+  background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
-
-  /* 亮色主题：偏白的混合色 - 增加不透明度 */
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.35) 100%
-  );
+  border: 1px solid rgba(255, 255, 255, 0.38);
   box-shadow:
-    0 8px 32px 0 rgba(31, 38, 135, 0.37),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
+    0 12px 36px rgba(15, 23, 42, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42);
 }
 
-/* 暗色主题：偏黑的混合色 - 增加不透明度 */
-.dark .glass-effect {
-  background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.5) 0%,
-    rgba(0, 0, 0, 0.4) 100%
-  );
+.dark .content-card.glass-effect {
+  background: rgba(15, 23, 42, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow:
-    0 8px 32px 0 rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
+    0 16px 40px rgba(0, 0, 0, 0.48),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.profile-header {
+  text-align: center;
+  margin-bottom: 1.75rem;
 }
 
 .avatar-container {
-  @apply flex justify-center mb-6;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.125rem;
 }
 
 .avatar {
-  @apply w-32 h-32 rounded-full object-cover;
-  @apply border-4 border-white dark:border-gray-800;
-  @apply shadow-lg;
-  @apply transition-transform duration-500;
-  @apply hover:scale-110;
-  animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  animation-fill-mode: both;
+  width: clamp(5.5rem, 12vw, 7.5rem);
+  height: clamp(5.5rem, 12vw, 7.5rem);
+  border-radius: 9999px;
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.85);
+  box-shadow: var(--shadow-md);
+  transition: transform 0.3s var(--ease-out-expo);
+}
+
+.dark .avatar {
+  border-color: rgba(30, 41, 59, 0.9);
+}
+
+.avatar:hover {
+  transform: scale(1.05);
 }
 
 .name {
-  @apply text-4xl font-bold mb-4;
-  @apply text-gray-900 dark:text-white;
-  @apply animate-text;
-  animation: slideInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-  animation-fill-mode: both;
-  animation-delay: 0.2s;
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.85rem, 4.5vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  color: var(--text-primary);
 }
 
-/* 有背景图像时的文字颜色优化 */
 .glass-effect .name {
-  @apply text-gray-900 dark:text-white;
-  text-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.5),
-    0 1px 2px rgba(0, 0, 0, 0.3);
-  font-weight: 700;
+  color: #0f172a;
+}
+
+.dark .glass-effect .name {
+  color: #f8fafc;
 }
 
 .description {
-  @apply max-w-md mx-auto mb-8;
-  @apply text-gray-600 dark:text-gray-300;
-  @apply space-y-2;
-  animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  animation-fill-mode: both;
-  animation-delay: 0.3s;
+  max-width: 28rem;
+  margin: 0 auto;
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.65;
 }
 
 .glass-effect .description {
-  @apply text-gray-900 dark:text-gray-100;
-  text-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.4),
-    0 1px 1px rgba(0, 0, 0, 0.2);
+  color: #0f172a;
   font-weight: 500;
 }
 
+.dark .glass-effect .description {
+  color: #f1f5f9;
+}
+
 .description-line {
-  @apply leading-relaxed;
+  margin: 0.15rem 0;
+}
+
+.description-line.is-spacer {
+  height: 0.6rem;
+  margin: 0;
 }
 
 .social-links {
-  @apply flex flex-wrap justify-center gap-2 mb-8;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.625rem;
+  margin-bottom: 1.5rem;
 }
 
 .social-link {
-  @apply flex items-center px-4 py-2 rounded-lg;
-  @apply text-sm font-medium;
-  @apply transition-all duration-300;
-  @apply transform hover:-translate-y-1;
-  background-color: var(--link-color);
-  @apply text-white;
-  @apply shadow-md hover:shadow-lg;
-  animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  animation-fill-mode: both;
-  transform-origin: center;
-  min-width: 120px;
-  width: 120px;
-  position: relative;
-  /* 焦点管理 */
-  @apply focus:outline-none focus:ring-2 focus:ring-white/50;
-  @apply focus:ring-offset-2 focus:ring-offset-gray-800;
-  /* 键盘导航支持 */
-  cursor: pointer;
-}
-
-.social-link .icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.social-link .link-name {
-  margin-left: 28px;
-  text-align: center;
-  flex: 1;
-}
-
-/* 响应式变化时的特殊动画 */
-@media (max-width: 640px) {
-  .social-link {
-    animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1), layoutTransition 0.3s ease-in-out 0.1s;
-  }
-}
-
-/* 桌面端悬停效果 */
-@media (min-width: 641px) {
-  .social-link:hover {
-    transform: scale(1.05) translateY(-3px);
-  }
-}
-
-.icon {
-  @apply w-4 h-4;
-}
-
-.action-buttons {
-  @apply flex justify-center flex-wrap gap-3;
-}
-
-.action-button {
-  @apply inline-flex items-center gap-2 px-5 py-2.5;
-  @apply text-white no-underline;
-  @apply rounded-lg shadow-md hover:shadow-lg;
-  @apply transition-all duration-300;
-  @apply font-medium;
-  @apply cursor-pointer;
-  background-color: var(--button-color, #667eea);
-  animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  animation-fill-mode: both;
-  /* 焦点管理 */
-  @apply focus:outline-none focus:ring-2 focus:ring-white/50;
-  @apply focus:ring-offset-2 focus:ring-offset-gray-800;
-  /* 键盘导航支持 */
-  text-decoration: none;
-}
-
-.action-button:hover {
-  transform: translateY(-1px);
-  text-decoration: none;
-  background-color: color-mix(in srgb, var(--button-color, #667eea) 85%, black 15%);
-}
-
-.button-icon {
-  @apply w-4 h-4 flex-shrink-0;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-}
-
-.button-text {
-  @apply flex-1;
-}
-
-.glass-effect .action-button {
-  backdrop-filter: blur(8px);
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--button-color, #667eea) 90%, transparent 10%) 0%,
-    color-mix(in srgb, var(--button-color, #667eea) 80%, black 20%) 100%
-  ) !important;
-  box-shadow: 0 4px 16px color-mix(in srgb, var(--button-color, #667eea) 40%, transparent);
-  border: 1px solid color-mix(in srgb, var(--button-color, #667eea) 30%, transparent);
-}
-
-.glass-effect .action-button:hover {
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--button-color, #667eea) 95%, white 5%) 0%,
-    color-mix(in srgb, var(--button-color, #667eea) 75%, black 25%) 100%
-  ) !important;
-  box-shadow: 0 6px 20px color-mix(in srgb, var(--button-color, #667eea) 60%, transparent);
-  transform: translateY(-2px);
+  gap: 0.55rem;
+  min-width: 7.25rem;
+  padding: 0.475rem 0.85rem 0.475rem 0.525rem;
+  border-radius: var(--radius-control);
+  text-decoration: none;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--surface-card-solid);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-xs);
+  cursor: pointer;
+  animation: itemReveal 0.36s var(--ease-out-expo) both;
+  transition:
+    transform 0.2s var(--ease-out-expo),
+    box-shadow 0.2s ease,
+    border-color 0.18s ease,
+    background-color 0.18s ease,
+    color 0.18s ease;
 }
 
 .glass-effect .social-link {
-  backdrop-filter: blur(8px);
-  /* 保持原有的颜色，只添加透明度和模糊效果 */
-  background-color: var(--link-color) !important;
-  opacity: 0.95;
-  box-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.2),
-    0 2px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
-.glass-effect .social-link:hover {
-  opacity: 1;
-  transform: scale(1.05) translateY(-2px);
-  box-shadow:
-    0 6px 20px rgba(0, 0, 0, 0.3),
-    0 3px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* 暗色主题下的社交链接 */
 .dark .glass-effect .social-link {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.4),
-    0 2px 8px rgba(0, 0, 0, 0.2);
+  background: rgba(15, 23, 42, 0.68);
+  border-color: rgba(255, 255, 255, 0.14);
 }
 
-.button-icon {
-  @apply w-5 h-5;
+.social-icon-badge {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.375rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  background: var(--link-color);
+  color: #ffffff;
+  font-size: 0.8125rem;
+  transition: transform 0.2s var(--ease-out-expo);
 }
 
-/* 高度不足时，无论屏幕宽度如何都从顶部开始布局 */
-@media (max-height: 700px) {
-  .personal-section {
-    @apply justify-start py-4;
-    @apply h-full;
-  }
-
-  .container {
-    @apply py-2;
-  }
-
-  .avatar {
-    @apply w-24 h-24;
-  }
-
-  .name {
-    @apply text-3xl mb-3;
-  }
-
-  .description {
-    @apply mb-4;
-  }
-
-  .social-links {
-    @apply mb-4;
-  }
+.social-link:hover {
+  transform: translateY(-2px);
+  border-color: var(--link-color);
+  background: var(--surface-card-solid);
+  box-shadow: var(--shadow-md);
 }
 
-/* 极小高度时进一步压缩 */
-@media (max-height: 600px) {
-  .personal-section {
-    @apply py-2;
-  }
-
-  .container {
-    @apply py-1;
-  }
-
-  .avatar {
-    @apply w-20 h-20;
-  }
-
-  .name {
-    @apply text-2xl mb-2;
-  }
-
-  .description {
-    @apply mb-3 text-sm;
-  }
-
-  .social-links {
-    @apply mb-3;
-  }
-
-  .social-link {
-    @apply px-2 py-1 text-xs;
-  }
+.social-link:hover .social-icon-badge {
+  transform: scale(1.06);
 }
 
-/* 动画关键帧 */
-@keyframes slideInUp {
+.social-link:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.social-link:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.link-name {
+  flex: 1;
+  text-align: center;
+  padding-right: 0.2rem;
+  white-space: nowrap;
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  padding-top: 0.25rem;
+}
+
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius-control);
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  background-color: var(--button-color, #0284c7);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: var(--shadow-sm);
+  animation: itemReveal 0.38s var(--ease-out-expo) both;
+  transition:
+    transform 0.2s var(--ease-out-expo),
+    box-shadow 0.2s ease,
+    background-color 0.18s ease;
+}
+
+.action-button:hover {
+  transform: translateY(-2px);
+  background-color: color-mix(in srgb, var(--button-color, #0284c7) 88%, #000000 12%);
+  box-shadow: var(--shadow-md);
+  text-decoration: none;
+}
+
+.action-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.action-button:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 3px;
+}
+
+.button-icon {
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+@keyframes cardReveal {
   from {
     opacity: 0;
-    transform: translateY(30px) scale(0.95);
+    transform: translateY(14px) scale(0.985);
   }
   to {
     opacity: 1;
@@ -542,67 +476,76 @@ const computeActionButtonStyle = (button: ActionButton, index: number): Record<s
   }
 }
 
-@keyframes layoutTransition {
-  0% {
-    transform: scale(1);
+@keyframes itemReveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  50% {
-    transform: scale(0.95);
-  }
-  100% {
-    transform: scale(1);
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@media (max-width: 640px) {
-  .personal-section {
-    @apply justify-start py-4;
-    @apply h-full;
+@media (max-width: 560px) {
+  .personal-stage {
+    padding: 1rem 0.75rem;
   }
 
-  .glass-effect {
-    @apply p-6;
-    @apply max-w-full;
-    margin: 0 0.5rem;
-    /* 移动端保持与桌面端相同的模糊效果 */
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
+  .content-card {
+    border-radius: 0.75rem;
+    padding: 1.5rem 1.125rem;
+  }
+
+  .profile-header {
+    margin-bottom: 1.25rem;
   }
 
   .social-links {
-    @apply flex-col items-center;
-    gap: 0.75rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
   }
 
   .social-link {
-    min-width: 200px;
-    width: 200px;
-    max-width: 280px;
-    transform: scale(0.98);
+    min-width: 0;
+    width: 100%;
+    padding: 0.45rem 0.625rem 0.45rem 0.45rem;
   }
 
-  .social-link .icon {
-    left: 16px;
+  .action-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 0.5rem;
   }
 
-  .social-link .link-name {
-    margin-left: 36px;
+  .action-button {
+    width: 100%;
+    padding: 0.625rem 1rem;
+  }
+}
+
+@media (max-height: 680px) {
+  .personal-stage {
+    padding: 0.875rem 1rem;
   }
 
-  .social-link:hover {
-    transform: scale(1.02) translateY(-2px);
+  .content-card {
+    padding: 1.35rem 1.75rem;
+  }
+
+  .profile-header {
+    margin-bottom: 1.125rem;
+  }
+
+  .avatar-container {
+    margin-bottom: 0.75rem;
   }
 
   .avatar {
-    @apply w-24 h-24;
-  }
-
-  .name {
-    @apply text-3xl mb-3;
-  }
-
-  .description {
-    @apply mb-6;
+    width: 5rem;
+    height: 5rem;
   }
 }
 </style>

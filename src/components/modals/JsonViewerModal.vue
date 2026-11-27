@@ -174,44 +174,64 @@ const copyContent = async (): Promise<void> => {
 @reference "@/assets/styles/main.css";
 
 .json-viewer-modal {
-  @apply w-[calc(100vw-1rem)] max-w-4xl;
-  @apply min-h-[200px] max-h-[90vh];
-  @apply flex flex-col;
-  @apply bg-white dark:bg-gray-900;
-  @apply rounded-xl shadow-2xl;
-  @apply overflow-hidden;
-  @apply border border-gray-200 dark:border-gray-700;
+  width: min(760px, calc(100vw - 1.5rem));
+  min-height: 200px;
+  max-height: 88dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-elevated);
+  backdrop-filter: blur(22px) saturate(165%);
+  -webkit-backdrop-filter: blur(22px) saturate(165%);
+  border-radius: var(--radius-modal);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  border: 1px solid var(--border-default);
 }
 
 .modal-header {
-  @apply flex items-center justify-between gap-3;
-  @apply p-5 pb-4;
-  @apply border-b border-gray-200 dark:border-gray-700;
-  @apply flex-shrink-0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
 }
 
 .modal-title {
-  @apply text-lg font-semibold;
-  @apply text-gray-900 dark:text-white;
-  @apply m-0 min-w-0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  min-width: 0;
 }
 
 .header-actions {
-  @apply flex items-center gap-2;
-  @apply flex-shrink-0;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-shrink: 0;
 }
 
 .action-button,
 .modal-close {
-  @apply w-8 h-8;
-  @apply flex items-center justify-center;
-  @apply bg-gray-100 dark:bg-gray-800;
-  @apply text-gray-500 dark:text-gray-400;
-  @apply hover:bg-gray-200 dark:hover:bg-gray-700;
-  @apply hover:text-gray-700 dark:hover:text-gray-200;
-  @apply rounded-lg;
-  @apply transition-colors duration-200;
-  @apply border-none cursor-pointer;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+.action-button:hover,
+.modal-close:hover {
+  background: var(--surface-muted-hover);
+  color: var(--text-primary);
 }
 
 .modal-body {

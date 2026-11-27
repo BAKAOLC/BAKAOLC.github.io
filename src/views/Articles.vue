@@ -1,63 +1,62 @@
 <template>
   <div class="articles-page">
-    <div class="container mx-auto px-4 py-4 flex-1 h-full overflow-hidden">
+    <div class="articles-shell">
       <header class="articles-header" role="banner">
         <div class="header-title-section">
           <h1 class="articles-title">{{ $t('articles.title') }}</h1>
           <p class="articles-subtitle">{{ $t('articles.subtitle') }}</p>
         </div>
-        <!-- 统一搜索栏 -->
-        <div class="unified-search-bar" role="search" :aria-label="$t('articles.searchArticles')">
-          <div class="search-input-container">
+
+        <div class="page-toolbar articles-toolbar" role="search" :aria-label="$t('articles.searchArticles')">
+          <div class="page-toolbar-input-wrap">
             <label for="article-search" class="sr-only">{{ $t('articles.searchPlaceholder') }}</label>
+            <i class="fas fa-search page-toolbar-search-icon" aria-hidden="true"></i>
             <input
               id="article-search"
-              type="text"
               v-model="searchQuery"
+              type="text"
               :placeholder="$t('articles.searchPlaceholder')"
-              class="search-input"
+              class="page-toolbar-input"
               :aria-describedby="searchQuery ? 'search-results-info' : undefined"
               autocomplete="off"
             />
             <button
               v-if="searchQuery"
-              @click="clearSearch"
-              class="search-clear"
-              :aria-label="$t('articles.clearSearch')"
               type="button"
+              class="page-toolbar-clear"
+              :aria-label="$t('articles.clearSearch')"
+              @click="clearSearch"
             >
               <i :class="getIconClass('times')" aria-hidden="true"></i>
             </button>
           </div>
 
-          <div class="control-buttons-group" role="group" :aria-label="$t('articles.sortAndFilterControls')">
-            <!-- 排序按钮 -->
+          <div class="page-toolbar-actions" role="group" :aria-label="$t('articles.sortAndFilterControls')">
             <button
-              @click="toggleSortOrder"
-              class="sort-order-button"
+              type="button"
+              class="page-toolbar-btn sort-order-button"
               :aria-label="$t(sortOrder === 'asc' ? 'articles.sortAsc' : 'articles.sortDesc')"
               :aria-pressed="sortOrder === 'asc'"
-              type="button"
+              @click="toggleSortOrder"
             >
               <i
                 :class="getIconClass(sortOrder === 'asc' ? 'sort-alpha-down' : 'sort-alpha-up')"
                 aria-hidden="true"
               ></i>
-              <span class="sort-order-text">{{
+              <span class="btn-label">{{
                 $t(sortOrder === 'asc' ? 'articles.sortAsc' : 'articles.sortDesc')
               }}</span>
             </button>
 
-            <!-- 排序方式按钮 -->
             <button
-              @click="toggleSortBy"
-              class="sort-by-button"
+              type="button"
+              class="page-toolbar-btn sort-by-button"
               :aria-label="sortBy.includes('date') ? $t('articles.sortDate') : $t('articles.sortTitle')"
               :aria-pressed="sortBy.includes('date')"
-              type="button"
+              @click="toggleSortBy"
             >
               <i :class="getIconClass(sortBy.includes('date') ? 'calendar' : 'font')" aria-hidden="true"></i>
-              <span class="button-text">{{
+              <span class="btn-label">{{
                 sortBy.includes('date') ? $t('articles.sortDate') : $t('articles.sortTitle')
               }}</span>
             </button>
@@ -74,97 +73,98 @@
         </div>
       </header>
 
-      <div class="articles-content" ref="articlesMain" @scroll="handleScroll">
-        <!-- 左侧边栏 -->
+      <div class="articles-content">
+        <!-- 侧边栏（桌面端独立滚动，移动端收起为筛选按钮，避免挤压首屏文章） -->
         <aside class="articles-sidebar" role="complementary" :aria-label="$t('articles.sidebar')">
-          <!-- 个人信息框 - 始终显示 -->
-          <section class="personal-info-card" :aria-label="$t('articles.authorInfo')">
-            <div class="avatar-container">
+          <button
+            type="button"
+            class="sidebar-toggle"
+            :aria-expanded="isMobileSidebarOpen"
+            @click="toggleMobileSidebar"
+          >
+            <span class="sidebar-toggle-left">
+              <i :class="getIconClass('filter')" class="icon" aria-hidden="true"></i>
+              <span>{{ $t('articles.categories') }}</span>
+            </span>
+            <i class="fas fa-sliders-h sidebar-toggle-chevron" aria-hidden="true"></i>
+          </button>
+
+          <div class="sidebar-desktop-stack">
+            <!-- 作者卡片 -->
+            <section class="personal-info-card" :aria-label="$t('articles.authorInfo')">
               <img
                 :src="personalInfo.avatar"
                 :alt="getI18nText(personalInfo.name, currentLanguage)"
                 class="avatar"
                 role="img"
               />
-            </div>
-            <div class="social-links" role="list" :aria-label="$t('articles.socialLinks')">
-              <a
-                v-for="(link, index) in personalInfo.links"
-                :key="link.url"
-                :href="link.url"
-                :title="getI18nText(link.name, currentLanguage)"
-                :aria-label="getI18nText(link.name, currentLanguage)"
-                class="social-link"
-                :style="{
-                  '--icon-color': link.color ?? '#333',
-                  'animation-delay': `${(index + 1) * animationDelayInterval}s`
-                }"
-                target="_blank"
-                rel="noopener noreferrer"
-                role="listitem"
-              >
-                <i :class="getIconClass(link.icon)" aria-hidden="true"></i>
-              </a>
-            </div>
-          </section>
+              <div class="author-name">{{ getI18nText(personalInfo.name, currentLanguage) }}</div>
+              <div class="social-links" role="list" :aria-label="$t('articles.socialLinks')">
+                <a
+                  v-for="link in personalInfo.links"
+                  :key="link.url"
+                  :href="link.url"
+                  :title="getI18nText(link.name, currentLanguage)"
+                  :aria-label="getI18nText(link.name, currentLanguage)"
+                  class="social-link"
+                  :style="{ '--icon-color': link.color ?? '#0ea5e9' }"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  role="listitem"
+                >
+                  <i :class="getIconClass(link.icon)" aria-hidden="true"></i>
+                </a>
+              </div>
+            </section>
 
-          <!-- 桌面端分类筛选 - 可折叠样式 -->
-          <section class="category-selector hidden md:block" :aria-label="$t('articles.categories')">
-            <ArticleCategoryFilter
-              v-model:selected-category="selectedCategory"
-              v-model:expanded="isCategoriesExpanded"
-              :categories="visibleCategories"
-              :category-counts="categoryCounts"
-              :total-count="totalArticlesCount"
-              :search-result-count="filteredArticles.length"
-              :is-searching="isArticleSearchActive"
-              options-id="categories-list"
-            />
-          </section>
-
-          <!-- 额外的信息卡片列表 - 在分类下面 -->
-          <div v-if="infoCards && infoCards.length > 0" class="info-cards-section">
-          <div
-            v-for="card in infoCards"
-            :key="card.id"
-            class="info-card"
-          >
-            <div class="info-card-image-container">
-              <img
-                :src="getCardImage(card.image)"
-                :alt="getI18nText(card.title, currentLanguage)"
-                class="info-card-image"
+            <!-- 分类筛选 -->
+            <section class="category-selector-card" :aria-label="$t('articles.categories')">
+              <ArticleCategoryFilter
+                v-model:selected-category="selectedCategory"
+                v-model:expanded="isCategoriesExpanded"
+                :categories="visibleCategories"
+                :category-counts="categoryCounts"
+                :total-count="totalArticlesCount"
+                :search-result-count="filteredArticles.length"
+                :is-searching="isArticleSearchActive"
+                options-id="categories-list"
               />
+            </section>
+
+            <!-- 额外信息卡片 -->
+            <div v-if="infoCards && infoCards.length > 0" class="info-cards-section">
+              <div v-for="card in infoCards" :key="card.id" class="info-card">
+                <img
+                  :src="getCardImage(card.image)"
+                  :alt="getI18nText(card.title, currentLanguage)"
+                  class="info-card-image"
+                />
+              </div>
             </div>
-          </div>
-          </div>
 
-          <!-- Feed 链接 -->
-          <FeedLinks class="hidden md:block" />
-
-          <!-- 移动端分类筛选切换按钮 - 在卡片下面 -->
-          <div class="sidebar-toggle md:hidden" @click="toggleMobileSidebar">
-            <i :class="getIconClass('filter')" class="icon"></i>
-            {{ $t('articles.categories') }}
+            <!-- Feed 链接 -->
+            <FeedLinks />
           </div>
-
         </aside>
 
-        <!-- 主内容区域 -->
-        <main class="articles-main" role="main" :aria-label="$t('articles.articlesList')">
-          <!-- 搜索结果信息 -->
+        <!-- 文章列表主滚动区 -->
+        <section
+          ref="articlesMain"
+          class="articles-main"
+          :aria-label="$t('articles.articlesList')"
+          @scroll="handleScroll"
+        >
           <div v-if="searchQuery" id="search-results-info" class="sr-only" aria-live="polite">
             {{ $t('articles.searchResults', { count: filteredArticles.length, query: searchQuery }) }}
           </div>
 
-          <!-- 文章列表 -->
-          <div ref="articlesListRef" class="articles-list" role="list" :aria-label="$t('articles.articlesList')">
+          <div class="articles-list" role="list" :aria-label="$t('articles.articlesList')">
             <div v-if="isArticlesLoading" class="no-articles" role="status" aria-live="polite">
-              <i :class="getIconClass('spinner')" class="no-articles-icon" aria-hidden="true"></i>
+              <i :class="getIconClass('spinner')" class="fa-spin no-articles-icon" aria-hidden="true"></i>
               <p class="no-articles-text">{{ $t('common.loading') }}</p>
             </div>
 
-            <div v-else-if="articlesLoadError" class="no-articles" role="alert">
+            <div v-else-if="articlesLoadError" class="no-articles is-error" role="alert">
               <i :class="getIconClass('exclamation-triangle')" class="no-articles-icon" aria-hidden="true"></i>
               <p class="no-articles-text">{{ $t('common.error') }}</p>
             </div>
@@ -181,70 +181,69 @@
                 v-for="article in paginatedArticles"
                 :key="article.id"
                 class="article-card"
-                @click="openArticle(article)"
-                @keydown.enter="openArticle(article)"
-                @keydown.space.prevent="openArticle(article)"
                 role="listitem"
                 :tabindex="0"
                 :aria-label="$t('articles.readArticle', { title: getI18nText(article.title, currentLanguage) })"
+                @click="openArticle(article)"
+                @keydown.enter="openArticle(article)"
+                @keydown.space.prevent="openArticle(article)"
               >
-              <!-- 文章封面 -->
-              <div v-if="getArticleCover(article.cover, currentLanguage)" class="article-cover">
-                <img
-                  :src="getArticleCover(article.cover, currentLanguage)"
-                  :alt="getI18nText(article.title, currentLanguage)"
-                  class="cover-image"
-                  role="img"
-                />
-              </div>
+                <div v-if="getArticleCover(article.cover, currentLanguage)" class="article-cover">
+                  <img
+                    :src="getArticleCover(article.cover, currentLanguage)"
+                    :alt="getI18nText(article.title, currentLanguage)"
+                    class="cover-image"
+                    role="img"
+                  />
+                </div>
 
-              <!-- 文章信息 -->
-              <div class="article-info">
-                <h2 class="article-title">{{ getI18nText(article.title, currentLanguage) }}</h2>
+                <div class="article-info">
+                  <div class="article-info-top">
+                    <h2 class="article-title">{{ getI18nText(article.title, currentLanguage) }}</h2>
 
-                <div class="article-meta">
-                  <time
-                    class="article-date"
-                    :datetime="article.date"
-                    :aria-label="$t('articles.publishedDate', { date: formatDate(article.date) })"
-                  >
-                    <i :class="getIconClass('calendar')" class="meta-icon" aria-hidden="true"></i>
-                    {{ formatDate(article.date) }}
-                  </time>
+                    <div class="article-meta">
+                      <time
+                        class="article-date"
+                        :datetime="article.date"
+                        :aria-label="$t('articles.publishedDate', { date: formatDate(article.date) })"
+                      >
+                        <i :class="getIconClass('calendar')" class="meta-icon" aria-hidden="true"></i>
+                        {{ formatDate(article.date) }}
+                      </time>
 
-                  <div class="article-categories" role="list" :aria-label="$t('articles.articleCategories')">
-                    <span
-                      v-for="categoryId in article.categories"
-                      :key="categoryId"
-                      class="category-tag"
-                      :style="{
-                        backgroundColor: `${getCategoryColor(categoryId)}20`,
-                        color: getCategoryColor(categoryId)
-                      }"
-                      role="listitem"
-                      :aria-label="$t('articles.category', {
-                        name: getCategoryName(categoryId)
-                      })"
+                      <div class="article-categories" role="list" :aria-label="$t('articles.articleCategories')">
+                        <span
+                          v-for="categoryId in article.categories"
+                          :key="categoryId"
+                          class="category-tag"
+                          :style="{
+                            '--cat-color': getCategoryColor(categoryId),
+                          }"
+                          role="listitem"
+                          :aria-label="$t('articles.category', {
+                            name: getCategoryName(categoryId)
+                          })"
+                        >
+                          {{ getCategoryName(categoryId) }}
+                        </span>
+                      </div>
+                    </div>
+
+                    <p class="article-summary">{{ getArticleSummary(article, currentLanguage) }}</p>
+                  </div>
+
+                  <div class="article-actions">
+                    <button
+                      type="button"
+                      class="read-more-btn"
+                      :aria-label="$t('articles.readMoreAbout', { title: getI18nText(article.title, currentLanguage) })"
+                      @click.stop="openArticle(article)"
                     >
-                      {{ getCategoryName(categoryId) }}
-                    </span>
+                      <span>{{ $t('articles.readMore') }}</span>
+                      <i :class="getIconClass('arrow-right')" class="btn-icon" aria-hidden="true"></i>
+                    </button>
                   </div>
                 </div>
-
-                <p class="article-summary">{{ getArticleSummary(article, currentLanguage) }}</p>
-
-                <div class="article-actions">
-                  <button
-                    class="read-more-btn"
-                    @click.stop="openArticle(article)"
-                    :aria-label="$t('articles.readMoreAbout', { title: getI18nText(article.title, currentLanguage) })"
-                    type="button"
-                  >
-                    {{ $t('articles.readMore') }}
-                    <i :class="getIconClass('arrow-right')" class="btn-icon" aria-hidden="true"></i>
-                  </button>
-                </div>
-              </div>
               </article>
             </template>
           </div>
@@ -256,57 +255,55 @@
             role="navigation"
             :aria-label="$t('articles.pagination')"
           >
-            <!-- 第一行：分页按钮 -->
             <div class="pagination-controls">
-              <!-- 上一页按钮 -->
               <button
+                type="button"
                 class="pagination-btn prev-btn"
                 :disabled="!pagination.hasPrev"
-                @click="goToPage(pagination.currentPage - 1)"
                 :aria-label="$t('articles.goToPreviousPage')"
-                type="button"
+                @click="goToPage(pagination.currentPage - 1)"
               >
                 <i :class="getIconClass('chevron-left')" aria-hidden="true"></i>
-                {{ $t('articles.previousPage') }}
+                <span class="pagination-btn-text">{{ $t('articles.previousPage') }}</span>
               </button>
 
-              <!-- 页码按钮 -->
               <div class="pagination-numbers">
                 <template v-for="(page, index) in paginationButtons" :key="index">
                   <button
                     v-if="typeof page === 'number'"
+                    type="button"
                     class="page-btn"
                     :class="{ 'active': page === pagination.currentPage }"
-                    @click="goToPage(page)"
                     :aria-label="$t('articles.goToPageNumber', { page })"
                     :aria-current="page === pagination.currentPage ? 'page' : undefined"
-                    type="button"
+                    @click="goToPage(page)"
                   >
                     {{ page }}
                   </button>
-                  <span v-else class="page-ellipsis" aria-hidden="true">...</span>
+                  <span v-else class="page-ellipsis" aria-hidden="true">…</span>
                 </template>
               </div>
 
-              <!-- 下一页按钮 -->
               <button
+                type="button"
                 class="pagination-btn next-btn"
                 :disabled="!pagination.hasNext"
-                @click="goToPage(pagination.currentPage + 1)"
                 :aria-label="$t('articles.goToNextPage')"
-                type="button"
+                @click="goToPage(pagination.currentPage + 1)"
               >
-                {{ $t('articles.nextPage') }}
+                <span class="pagination-btn-text">{{ $t('articles.nextPage') }}</span>
                 <i :class="getIconClass('chevron-right')" aria-hidden="true"></i>
               </button>
             </div>
 
-            <!-- 第二行：页面信息和快速跳转 -->
             <div class="pagination-info">
-              <span class="page-info" :aria-label="$t('articles.currentPageInfo', {
-                current: pagination.currentPage,
-                total: pagination.totalPages
-              })">
+              <span
+                class="page-info"
+                :aria-label="$t('articles.currentPageInfo', {
+                  current: pagination.currentPage,
+                  total: pagination.totalPages
+                })"
+              >
                 {{ $t('articles.page', { current: pagination.currentPage, total: pagination.totalPages }) }}
               </span>
 
@@ -314,8 +311,8 @@
                 <label for="page-jump-input" class="sr-only">{{ $t('articles.jumpToPage') }}</label>
                 <input
                   id="page-jump-input"
-                  type="number"
                   v-model.number="jumpToPageNumber"
+                  type="number"
                   :min="1"
                   :max="pagination.totalPages"
                   class="page-input"
@@ -323,17 +320,17 @@
                   @keyup.enter="jumpToPage"
                 />
                 <button
-                  @click="jumpToPage"
+                  type="button"
                   class="jump-btn"
                   :aria-label="$t('articles.goToPageNumber', { page: jumpToPageNumber })"
-                  type="button"
+                  @click="jumpToPage"
                 >
                   {{ $t('articles.goToPage') }}
                 </button>
               </div>
             </div>
           </nav>
-        </main>
+        </section>
       </div>
     </div>
 
@@ -344,27 +341,23 @@
       :z-index="60"
       @close="closeMobileSidebar"
     >
-      <!-- 分类筛选 - 使用与桌面端完全相同的结构 -->
-      <div class="category-selector">
-        <ArticleCategoryFilter
-          v-model:selected-category="selectedCategory"
-          v-model:expanded="isCategoriesExpanded"
-          :categories="visibleCategories"
-          :category-counts="categoryCounts"
-          :total-count="totalArticlesCount"
-          :search-result-count="filteredArticles.length"
-          :is-searching="isArticleSearchActive"
-        />
-      </div>
+      <ArticleCategoryFilter
+        v-model:selected-category="selectedCategory"
+        v-model:expanded="isCategoriesExpanded"
+        :categories="visibleCategories"
+        :category-counts="categoryCounts"
+        :total-count="totalArticlesCount"
+        :search-result-count="filteredArticles.length"
+        :is-searching="isArticleSearchActive"
+      />
+      <FeedLinks />
     </MobileFilterOverlay>
 
-    <!-- 返回顶部按钮 -->
     <ScrollToTopButton
       :visible="showScrollToTop"
       :aria-label="$t('articles.scrollToTop')"
       @click="scrollToTop"
     />
-
   </div>
 </template>
 
@@ -412,7 +405,6 @@ import { getIconClass } from '@/utils/icons';
 import { encodeKey, parseParam } from '@/utils/idHashMap';
 import { filterVisible } from '@/utils/visibility';
 
-// Props for route parameters
 interface Props {
   articleId?: string;
 }
@@ -421,7 +413,6 @@ const props = withDefaults(defineProps<Props>(), {
   articleId: undefined,
 });
 
-// 导入配置
 const { t: $t } = useI18n();
 const languageStore = useLanguageStore();
 const themeStore = useThemeStore();
@@ -431,25 +422,22 @@ const router = useRouter();
 const modalManager = useModalManager();
 const ArticleViewerModal = defineAsyncComponent(() => import('@/components/modals/ArticleViewerModal.vue'));
 
-// 响应式数据
 const searchQuery = ref('');
 const selectedCategory = ref<string>('');
 const sortBy = ref<'date-desc' | 'date-asc' | 'title-asc' | 'title-desc'>('date-desc');
 const sortOrder = ref<'asc' | 'desc'>('desc');
-const pageSize = ref<number | 'all'>(10); // Set a fixed number of articles to display per page
+const pageSize = ref<number | 'all'>(10);
 const currentPage = ref(1);
 const jumpToPageNumber = ref(1);
 const selectedArticle = ref<Article | null>(null);
 const isCategoriesExpanded = ref(true);
-const articlesMain = ref<HTMLDivElement | null>(null);
-const articlesListRef = ref<HTMLElement | null>(null);
+const articlesMain = ref<HTMLElement | null>(null);
 const {
   showScrollToTop,
   handleScroll,
   scrollToTop,
 } = useScrollToTop(articlesMain);
 
-// 模态框ID
 const articleViewerModalId = ref<string | null>(null);
 const mobileSidebarScrollLockId = 'articles-mobile-sidebar';
 const {
@@ -460,24 +448,18 @@ const {
 
 const currentLanguage = computed(() => languageStore.currentLanguage);
 
-// 获取卡片图片URL（支持亮色暗色）
 const getCardImage = (image: string | { light: string; dark: string }): string => {
   if (typeof image === 'string') return image;
   return themeStore.isDarkMode ? image.dark : image.light;
 };
 
-// 配置数据
 const articles = ref<Article[]>([]);
 const isArticlesLoading = ref(false);
 const articlesLoadError = ref<unknown | null>(null);
 const articleCategories = ref<ArticleCategoriesConfig>(articleCategoriesConfig as ArticleCategoriesConfig);
 const personalInfo = computed(() => siteConfig.personal);
-
-// 动画延迟间隔（秒），默认 0.1
-const animationDelayInterval = computed(() => personalInfo.value.animationDelayInterval ?? 0.1);
 const infoCards = ref((articlesPageConfig as ArticlesPageConfig).infoCards);
 
-// 计算属性
 const filterState = computed<ArticleFilterState>(() => ({
   selectedCategories: selectedCategory.value ? [selectedCategory.value] : [],
   sortBy: sortBy.value,
@@ -510,24 +492,20 @@ const paginatedArticles = computed(() => {
   );
 });
 
-// 基于所有文章的分类计数（用于显示总数）
 const allCategoryCounts = computed(() => {
   return countArticlesByCategory(articles.value);
 });
 
-// 基于当前筛选结果的分类计数（用于显示搜索结果中的计数）
 const filteredCategoryCounts = computed(() => {
   return countArticlesByCategory(filteredArticles.value);
 });
 
 const isArticleSearchActive = computed(() => searchQuery.value.trim() !== '');
 
-// 根据当前是否在搜索来决定显示哪种计数
 const categoryCounts = computed(() => {
   return isArticleSearchActive.value ? filteredCategoryCounts.value : allCategoryCounts.value;
 });
 
-// 过滤掉计数为0的分类（任何情况下都不显示计数为0的分类）
 const visibleCategories = computed(() => {
   const visibleCats: ArticleCategoriesConfig = {};
   Object.entries(articleCategories.value).forEach(([categoryId, category]) => {
@@ -542,14 +520,12 @@ const totalArticlesCount = computed(() => {
   return visibleArticles.value.length;
 });
 
-// 方法
 const clearSearch = (): void => {
   searchQuery.value = '';
 };
 
 const toggleSortOrder = (): void => {
   sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
-  // 更新 sortBy 以反映新的排序顺序
   if (sortBy.value.includes('date')) {
     sortBy.value = sortOrder.value === 'asc' ? 'date-asc' : 'date-desc';
   } else {
@@ -565,7 +541,6 @@ const toggleSortBy = (): void => {
   }
 };
 
-// 页数选择相关
 const pageSizeOptions = computed<AccessibleSelectOption[]>(() => [
   { label: '10', value: '10' },
   { label: '20', value: '20' },
@@ -590,7 +565,7 @@ const pageSizeValue = computed({
 
 const changePageSize = (size: number | 'all'): void => {
   pageSize.value = size;
-  currentPage.value = 1; // 重置到第一页
+  currentPage.value = 1;
 };
 
 const getCategoryConfig = (categoryId: string): ArticleCategory | undefined => {
@@ -598,7 +573,7 @@ const getCategoryConfig = (categoryId: string): ArticleCategory | undefined => {
 };
 
 const getCategoryColor = (categoryId: string): string => {
-  return getCategoryConfig(categoryId)?.color ?? '#6b7280';
+  return getCategoryConfig(categoryId)?.color ?? '#0ea5e9';
 };
 
 const getCategoryName = (categoryId: string): string => {
@@ -606,17 +581,12 @@ const getCategoryName = (categoryId: string): string => {
   return name ? getI18nText(name, currentLanguage.value) : categoryId;
 };
 
-/**
- * 滚动到文章列表顶部
- */
 const scrollToArticlesList = (): void => {
   nextTick(() => {
-    if (articlesListRef.value) {
-      articlesListRef.value.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }
+    articlesMain.value?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   });
 };
 
@@ -624,7 +594,6 @@ const goToPage = (page: number): void => {
   if (page >= 1 && page <= pagination.value.totalPages) {
     currentPage.value = page;
     jumpToPageNumber.value = page;
-    // 翻页后滚动到文章列表顶部
     scrollToArticlesList();
   }
 };
@@ -632,40 +601,32 @@ const goToPage = (page: number): void => {
 const jumpToPage = (): void => {
   if (jumpToPageNumber.value >= 1 && jumpToPageNumber.value <= pagination.value.totalPages) {
     currentPage.value = jumpToPageNumber.value;
-    // 跳转页面后滚动到文章列表顶部
     scrollToArticlesList();
   }
 };
 
-// 生成分页按钮数组
 const paginationButtons = computed(() => {
   const current = pagination.value.currentPage;
   const total = pagination.value.totalPages;
 
   if (total <= 7) {
-    // 如果总页数小于等于7页，显示所有页码
     return Array.from({ length: total }, (_, i) => i + 1);
   }
 
   const buttons: (number | string)[] = [];
 
   if (current <= 4) {
-    // 当前页在前部分
     buttons.push(1, 2, 3, 4, 5, '...', total);
   } else if (current >= total - 3) {
-    // 当前页在后部分
     buttons.push(1, '...', total - 4, total - 3, total - 2, total - 1, total);
   } else {
-    // 当前页在中间
     buttons.push(1, '...', current - 1, current, current + 1, '...', total);
   }
 
   return buttons;
 });
 
-// 创建文章查看器模态框的辅助函数
 const createArticleViewerModal = (article: Article): ModalConfig => {
-  // 生成文章链接
   const hashedArticle = encodeKey([article.id]);
   const articleParam = hashedArticle ?? article.id;
   const articleLink = `${getCurrentSiteBaseUrl() ?? ''}#/articles/${articleParam}`;
@@ -675,7 +636,7 @@ const createArticleViewerModal = (article: Article): ModalConfig => {
     props: {
       article: article,
       articles: filteredArticles.value,
-      customLink: articleLink, // 传递生成的文章链接
+      customLink: articleLink,
     },
     options: {
       fullscreen: true,
@@ -694,11 +655,8 @@ const createArticleViewerModal = (article: Article): ModalConfig => {
 
 const openArticle = (article: Article): void => {
   selectedArticle.value = article;
-
-  // 使用模态管理器打开文章查看器
   articleViewerModalId.value = modalManager.open(createArticleViewerModal(article));
 
-  // 更新URL但不刷新页面
   const articleParam = encodeKey([article.id]) ?? article.id;
   router.push({ name: 'article-detail', params: { articleId: articleParam } });
 };
@@ -706,13 +664,11 @@ const openArticle = (article: Article): void => {
 const closeArticle = (): void => {
   selectedArticle.value = null;
 
-  // 关闭模态框
   if (articleViewerModalId.value) {
     modalManager.close(articleViewerModalId.value);
     articleViewerModalId.value = null;
   }
 
-  // 返回到文章列表页面
   router.push({ name: 'articles' });
 };
 
@@ -721,21 +677,17 @@ const navigateToArticle = (articleId: string): void => {
   if (article) {
     selectedArticle.value = article;
 
-    // 关闭当前模态框
     if (articleViewerModalId.value) {
       modalManager.close(articleViewerModalId.value);
     }
 
-    // 打开新文章模态框
     articleViewerModalId.value = modalManager.open(createArticleViewerModal(article));
 
-    // 更新URL（优先使用哈希）
     const hashed = encodeKey([article.id]);
     router.push({ name: 'article-detail', params: { articleId: hashed ?? article.id } });
   }
 };
 
-// 从URL参数打开文章
 const openArticleFromRoute = (): void => {
   const rawParam = props.articleId ?? route.params.articleId as string;
   if (rawParam) {
@@ -745,11 +697,8 @@ const openArticleFromRoute = (): void => {
       const article = visibleArticles.value.find(a => a.id === articleId);
       if (article) {
         selectedArticle.value = article;
-
-        // 使用模态管理器打开文章查看器
         articleViewerModalId.value = modalManager.open(createArticleViewerModal(article));
       } else {
-        // 如果文章不存在，重定向到文章列表
         router.replace({ name: 'articles' });
       }
     }
@@ -770,40 +719,38 @@ const loadArticles = async (): Promise<void> => {
   }
 };
 
-// 处理屏幕变化
 const handleScreenChange = ({ isMobile }: ScreenInfo): void => {
   if (!isMobile) {
-    // 切换到桌面端时关闭移动端功能
     closeMobileSidebar();
   }
 };
 
-// 监听器
 watch([searchQuery, selectedCategory, sortBy], () => {
-  currentPage.value = 1; // 筛选条件变化时重置到第一页
+  currentPage.value = 1;
+});
+
+watch(selectedCategory, () => {
+  if (isMobileSidebarOpen.value) {
+    closeMobileSidebar();
+  }
 });
 
 watch(pagination, (newPagination) => {
   jumpToPageNumber.value = newPagination.currentPage;
 });
 
-// 屏幕变化监听器取消函数
 let unsubscribeScreenChange: (() => void) | null = null;
 
 onMounted(() => {
   jumpToPageNumber.value = currentPage.value;
-
-  // 注册屏幕变化监听器
   unsubscribeScreenChange = onScreenChange(handleScreenChange);
 
   void loadArticles().then(() => {
-    // 检查是否需要从URL参数打开文章
     openArticleFromRoute();
   });
 });
 
 onBeforeUnmount(() => {
-  // 取消屏幕变化监听器
   if (unsubscribeScreenChange) {
     unsubscribeScreenChange();
     unsubscribeScreenChange = null;
@@ -815,877 +762,636 @@ onBeforeUnmount(() => {
 @reference "@/assets/styles/main.css";
 
 .articles-page {
-  @apply h-screen flex flex-col;
-  @apply bg-gray-50 dark:bg-gray-900;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.articles-shell {
+  flex: 1 1 0%;
+  min-height: 0;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1rem 1.25rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-sizing: border-box;
 }
 
 .articles-header {
-  @apply flex flex-wrap items-center justify-between mb-4;
-  @apply border-b border-gray-200 dark:border-gray-700 pb-3;
-  transition: transform 0.3s ease, opacity 0.3s ease, margin-bottom 0.3s ease;
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.25rem;
+  padding-bottom: 0.875rem;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .header-title-section {
-  @apply flex flex-col;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
 }
 
 .articles-title {
-  @apply text-2xl font-bold;
-  @apply text-gray-900 dark:text-white;
-  transition: font-size 0.3s ease, margin-bottom 0.3s ease;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
 }
 
 .articles-subtitle {
-  @apply text-gray-600 dark:text-gray-400;
-  @apply text-sm;
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
 }
 
-/* 统一搜索栏样式 */
-.unified-search-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  background-color: rgb(249, 250, 251);
-  border: 1px solid rgb(229, 231, 235);
-  border-radius: 0.75rem;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  flex-wrap: wrap;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.dark .unified-search-bar {
-  background-color: rgb(31, 41, 55);
-  border-color: rgb(75, 85, 99);
-}
-
-.unified-search-bar .search-input-container {
-  flex: 1;
-  min-width: 200px;
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-.unified-search-bar .control-buttons-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-shrink: 0;
-}
-
-.unified-search-bar .search-input {
-  width: 100%;
-  padding: 0.5rem;
-  padding-right: 2.5rem;
-  border: 1px solid rgb(209, 213, 219);
-  border-radius: 0.375rem;
-  background-color: rgb(255, 255, 255);
-  color: rgb(17, 24, 39);
-  font-size: 0.875rem;
-  transition: all 0.2s ease;
-}
-
-.dark .unified-search-bar .search-input {
-  background-color: rgb(55, 65, 81);
-  border-color: rgb(75, 85, 99);
-  color: rgb(243, 244, 246);
-}
-
-.unified-search-bar .search-input:focus {
-  outline: none;
-  border-color: rgb(59, 130, 246);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-}
-
-.dark .unified-search-bar .search-input:focus {
-  border-color: rgb(96, 165, 250);
-  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
-}
-
-.unified-search-bar .search-clear {
-  position: absolute;
-  right: 0.5rem;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: rgb(156, 163, 175);
-  padding: 0.25rem;
-  cursor: pointer;
-  font-size: 0.875rem;
-  border-radius: 9999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.unified-search-bar .search-clear:hover {
-  color: rgb(107, 114, 128);
-  background-color: rgb(243, 244, 246);
-}
-
-.dark .unified-search-bar .search-clear:hover {
-  color: rgb(209, 213, 219);
-  background-color: rgb(55, 65, 81);
-}
-
-.unified-search-bar .sort-select,
-.unified-search-bar .page-size-select {
-  padding: 0.5rem 0.75rem;
-  border: 1px solid rgb(209, 213, 219);
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  background-color: white;
-  color: rgb(17, 24, 39);
-  cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  height: 2.25rem;
-  box-sizing: border-box;
-}
-
-.dark .unified-search-bar .sort-select,
-.dark .unified-search-bar .page-size-select {
-  background-color: rgb(55, 65, 81);
-  border-color: rgb(75, 85, 99);
-  color: rgb(243, 244, 246);
-}
-
-.unified-search-bar .sort-select:focus,
-.unified-search-bar .page-size-select:focus {
-  outline: none;
-  border-color: rgb(59, 130, 246);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-}
-
-.dark .unified-search-bar .sort-select:focus,
-.dark .unified-search-bar .page-size-select:focus {
-  border-color: rgb(96, 165, 250);
-  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
-}
-
-.unified-search-bar .sort-order-button,
-.unified-search-bar .sort-by-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid rgb(209, 213, 219);
-  border-radius: 0.375rem;
-  background-color: white;
-  color: rgb(107, 114, 128);
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: all 0.2s;
-  white-space: nowrap;
-  height: 2.25rem;
-  box-sizing: border-box;
-}
-
-.dark .unified-search-bar .sort-order-button,
-.dark .unified-search-bar .sort-by-button {
-  background-color: rgb(55, 65, 81);
-  border-color: rgb(75, 85, 99);
-  color: rgb(156, 163, 175);
-}
-
-.unified-search-bar .sort-order-button:hover,
-.unified-search-bar .sort-by-button:hover {
-  background-color: rgb(243, 244, 246);
-  color: rgb(55, 65, 81);
-}
-
-.dark .unified-search-bar .sort-order-button:hover,
-.dark .unified-search-bar .sort-by-button:hover {
-  background-color: rgb(75, 85, 99);
-  color: rgb(209, 213, 219);
+.articles-toolbar {
+  flex: 1 1 420px;
+  max-width: 740px;
 }
 
 .articles-content {
-  @apply flex gap-6;
+  flex: 1 1 0%;
+  min-height: 0;
+  display: flex;
   flex-direction: row;
-  position: relative;
-  height: calc(
-    100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) -
-    var(--articles-header-height, 120px) - 3rem
-  );
-  overflow-y: auto;
+  gap: 1.25rem;
+  overflow: hidden;
 }
 
 .articles-sidebar {
-  width: 360px;
+  width: 18.5rem;
   flex-shrink: 0;
-  transition: width 0.3s ease, position 0.3s ease, top 0.3s ease;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar-toggle {
-  @apply flex items-center justify-between gap-2 py-3 px-4 mb-3 rounded-lg;
-  @apply bg-white dark:bg-gray-800;
-  @apply border border-gray-200 dark:border-gray-700;
-  @apply text-gray-700 dark:text-gray-300;
-  @apply font-medium;
-  @apply shadow-sm;
-  @apply cursor-pointer;
+  display: none;
 }
 
-.articles-sidebar {
-  @apply flex flex-col gap-3;
-  padding: 1rem;
-}
-
-@media (min-width: 768px) {
-  .articles-sidebar {
-    width: 360px;
-  }
-
-  .sidebar-toggle {
-    display: none;
-  }
-
-  .category-selector {
-    @apply bg-white dark:bg-gray-800 rounded-lg;
-    @apply border border-gray-200 dark:border-gray-700;
-    @apply shadow-sm;
-    padding: 1rem;
-  }
-
-  .unified-search-bar .sort-order-text,
-  .unified-search-bar .button-text {
-    display: inline;
-  }
-}
-
-/* 优化 768-1024px 级别的侧边栏宽度 */
-@media (min-width: 768px) and (max-width: 1024px) {
-  .articles-sidebar {
-    width: 320px;
-  }
+.sidebar-desktop-stack {
+  flex: 1 1 0%;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  padding-bottom: 1.25rem;
+  padding-right: 0.2rem;
 }
 
 .personal-info-card {
-  @apply bg-white dark:bg-gray-800;
-  @apply border border-gray-200 dark:border-gray-700;
-  @apply rounded-lg p-4;
-  @apply text-center;
-}
-
-.avatar-container {
-  @apply mb-3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.125rem 1rem;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
 }
 
 .avatar {
-  @apply w-16 h-16 rounded-full mx-auto;
-  @apply border-2 border-gray-200 dark:border-gray-700;
+  display: block;
+  width: 3.75rem;
+  height: 3.75rem;
+  border-radius: 9999px;
+  object-fit: cover;
+  border: 2px solid var(--border-subtle);
+  background: transparent;
+}
+
+.author-name {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .social-links {
-  @apply flex flex-wrap justify-center gap-3;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.45rem;
 }
 
 .social-link {
-  @apply flex items-center justify-center;
-  @apply w-10 h-10 rounded-lg;
-  @apply text-sm font-medium;
-  @apply transition-all duration-300;
-  @apply transform hover:-translate-y-1;
-  @apply text-white;
-  @apply shadow-md hover:shadow-lg;
-  /* 使用与PersonalSection相同的渐变背景和边框样式 */
-  background: linear-gradient(135deg, var(--icon-color, #333),
-    color-mix(in srgb, var(--icon-color, #333) 85%, black 15%));
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  animation-fill-mode: both;
-  transform-origin: center;
-  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.125rem;
+  height: 2.125rem;
+  border-radius: var(--radius-control);
+  color: #ffffff;
+  font-size: 0.85rem;
+  background-color: var(--icon-color, #0284c7);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: var(--shadow-xs);
+  transition: transform 0.18s var(--ease-out-expo), opacity 0.16s ease;
 }
 
 .social-link:hover {
-  transform: scale(1.05) translateY(-3px);
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow:
-    0 8px 25px -5px rgba(0, 0, 0, 0.2),
-    0 4px 6px -2px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  opacity: 0.9;
 }
 
-.social-link i {
-  @apply w-4 h-4;
-}
-
-.articles-main {
-  flex: 1;
-  padding-left: 16px;
-  padding-right: 16px;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  transition: padding-left 0.3s ease, padding-right 0.3s ease;
-}
-
-/* 优化 768-1024px 级别的内边距 */
-@media (min-width: 768px) and (max-width: 1024px) {
-  .articles-main {
-    padding-left: 8px;
-    padding-right: 8px;
-  }
-}
-
-.articles-list {
-  @apply space-y-6 mb-8;
-}
-
-.no-articles {
-  @apply text-center py-12;
-}
-
-.no-articles-icon {
-  @apply text-4xl text-gray-400 dark:text-gray-600 mb-4;
-}
-
-.no-articles-text {
-  @apply text-gray-600 dark:text-gray-400;
-}
-
-.article-card {
-  @apply bg-white dark:bg-gray-800;
-  @apply border border-gray-200 dark:border-gray-700;
-  @apply rounded-lg overflow-hidden;
-  @apply hover:shadow-lg dark:hover:shadow-gray-900/20;
-  @apply transition-all duration-200;
-  @apply cursor-pointer;
-  @apply flex flex-col lg:flex-row;
-}
-
-.article-cover {
-  @apply w-full lg:w-48 h-48 lg:h-auto flex-shrink-0;
-  @apply bg-gray-100 dark:bg-gray-700;
-  @apply overflow-hidden;
-  @apply flex items-center justify-center;
-}
-
-.cover-image {
-  @apply w-full h-full object-contain;
-}
-
-.article-info {
-  @apply p-6 flex-1;
-}
-
-.article-title {
-  @apply text-xl font-bold text-gray-900 dark:text-white mb-3;
-  @apply hover:text-primary-600 dark:hover:text-primary-400;
-  @apply transition-colors duration-200;
-}
-
-.article-meta {
-  @apply flex flex-wrap items-center gap-4 mb-3;
-}
-
-.article-date {
-  @apply flex items-center gap-1;
-  @apply text-sm text-gray-600 dark:text-gray-400;
-}
-
-.meta-icon {
-  @apply text-xs;
-}
-
-.article-categories {
-  @apply flex flex-wrap gap-2;
-}
-
-.category-tag {
-  @apply px-2 py-1 rounded-full;
-  @apply text-xs font-medium;
-  border: 1px solid currentColor;
-}
-
-.article-summary {
-  @apply text-gray-700 dark:text-gray-300 mb-4;
-  @apply line-clamp-3;
-}
-
-.article-actions {
-  @apply flex justify-end;
-}
-
-.read-more-btn {
-  @apply flex items-center gap-2;
-  @apply px-4 py-2;
-  @apply bg-primary-600 hover:bg-primary-700;
-  @apply text-white;
-  @apply rounded-lg;
-  @apply transition-all duration-200;
-  @apply font-medium;
-}
-
-.btn-icon {
-  @apply text-sm;
-}
-
-.pagination {
-  @apply flex flex-col gap-3;
-  @apply bg-white dark:bg-gray-800;
-  @apply border border-gray-200 dark:border-gray-700;
-  @apply rounded-lg p-3;
-}
-
-.pagination-controls {
-  @apply flex items-center justify-between;
-  @apply w-full;
-}
-
-.pagination-btn {
-  @apply flex items-center gap-2;
-  @apply px-4 py-2;
-  @apply bg-gray-100 dark:bg-gray-700;
-  @apply text-gray-700 dark:text-gray-300;
-  @apply rounded-lg;
-  @apply hover:bg-gray-200 dark:hover:bg-gray-600;
-  @apply disabled:opacity-50 disabled:cursor-not-allowed;
-  @apply transition-all duration-200;
-}
-
-.pagination-info {
-  @apply flex items-center justify-center gap-4;
-  @apply w-full;
-  @apply text-sm;
-}
-
-.page-jump {
-  @apply flex items-center gap-2;
-}
-
-.page-input {
-  @apply w-12 px-1 py-0.5;
-  @apply border border-gray-300 dark:border-gray-600;
-  @apply rounded;
-  @apply bg-white dark:bg-gray-800;
-  @apply text-gray-900 dark:text-white;
-  @apply text-center;
-  @apply text-xs;
-  @apply h-7;
-}
-
-.jump-btn {
-  @apply px-2 py-0.5;
-  @apply bg-primary-600 hover:bg-primary-700;
-  @apply text-white;
-  @apply rounded;
-  @apply text-xs;
-  @apply transition-all duration-200;
-  @apply h-7;
-}
-
-/* 新分页器样式 */
-.pagination-numbers {
-  @apply flex items-center justify-center;
-  @apply flex-1 gap-0.5;
-}
-
-.page-btn {
-  @apply flex items-center justify-center;
-  @apply min-w-[32px] h-8 px-2;
-  @apply border border-gray-300 dark:border-gray-600;
-  @apply bg-white dark:bg-gray-800;
-  @apply text-gray-700 dark:text-gray-300;
-  @apply rounded;
-  @apply hover:bg-gray-50 dark:hover:bg-gray-700;
-  @apply transition-all duration-200;
-  @apply font-medium;
-  @apply cursor-pointer;
-  @apply text-xs;
-}
-
-.page-btn.active {
-  @apply bg-primary-600;
-  @apply text-white;
-  @apply border-primary-600;
-}
-
-.page-btn.active:hover {
-  @apply bg-primary-700;
-  @apply border-primary-700;
-}
-
-.page-ellipsis {
-  @apply flex items-center justify-center;
-  @apply min-w-[32px] h-8;
-  @apply text-gray-500 dark:text-gray-400;
-  @apply cursor-default;
-  @apply text-xs;
-}
-
-.prev-btn,
-.next-btn {
-  @apply flex items-center gap-1;
-  @apply px-3 py-1.5;
-  @apply bg-gray-100 dark:bg-gray-700;
-  @apply text-gray-700 dark:text-gray-300;
-  @apply rounded;
-  @apply hover:bg-gray-200 dark:hover:bg-gray-600;
-  @apply disabled:opacity-50 disabled:cursor-not-allowed;
-  @apply disabled:hover:bg-gray-100 dark:disabled:hover:bg-gray-700;
-  @apply transition-all duration-200;
-  @apply font-medium;
-  @apply text-sm;
+.category-selector-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  padding: 0.875rem;
 }
 
 .info-cards-section {
-  @apply flex flex-col gap-3;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .info-card {
-  @apply pointer-events-none; /* 禁止点击 */
-}
-
-.info-card-image-container {
-  @apply w-full;
+  pointer-events: none;
 }
 
 .info-card-image {
-  @apply w-full h-auto;
-  @apply object-cover; /* 保持图片比例 */
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
-.category-selector {
-  margin-bottom: 0;
+/* Main Articles Scroll Region */
+.articles-main {
+  flex: 1 1 0%;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0.125rem 0.25rem 1.5rem;
+  scrollbar-gutter: stable;
+}
+
+.articles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.no-articles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 4rem 1.5rem;
+  text-align: center;
+  background: var(--surface-card);
+  border: 1px dashed var(--border-default);
+  border-radius: var(--radius-card);
+  color: var(--text-muted);
+}
+
+.no-articles-icon {
+  font-size: 2rem;
+  opacity: 0.65;
+  color: var(--accent-primary);
+}
+
+.no-articles.is-error .no-articles-icon,
+.no-articles.is-error .no-articles-text {
+  color: var(--danger-text);
+}
+
+.no-articles-text {
+  margin: 0;
+  font-size: 0.9375rem;
+}
+
+.article-card {
+  display: flex;
+  flex-direction: row;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition:
+    transform 0.22s var(--ease-out-expo),
+    box-shadow 0.22s var(--ease-out-expo),
+    border-color 0.18s ease;
+}
+
+.article-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent-primary) 42%, var(--border-default));
+  box-shadow: var(--shadow-md);
+}
+
+.article-card:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.article-cover {
+  width: 14rem;
+  flex-shrink: 0;
+  background: var(--surface-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-right: 1px solid var(--border-subtle);
+}
+
+.cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s var(--ease-out-expo);
+}
+
+.article-card:hover .cover-image {
+  transform: scale(1.04);
+}
+
+.article-info {
+  flex: 1;
+  min-width: 0;
+  padding: 1.25rem 1.375rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.875rem;
+}
+
+.article-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.1875rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text-primary);
+  transition: color 0.16s ease;
+}
+
+.article-card:hover .article-title {
+  color: var(--accent-primary-hover);
+}
+
+.dark .article-card:hover .article-title {
+  color: var(--accent-primary);
+}
+
+.article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.875rem;
+  margin-bottom: 0.625rem;
+}
+
+.article-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.meta-icon {
+  font-size: 0.72rem;
+}
+
+.article-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.category-tag {
+  padding: 0.15rem 0.55rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--cat-color);
+  background: color-mix(in srgb, var(--cat-color) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cat-color) 32%, transparent);
+}
+
+.article-summary {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.article-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.read-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-control);
+  border: 1px solid rgba(14, 165, 233, 0.25);
+  background: var(--accent-soft);
+  color: var(--accent-primary-hover);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease,
+    border-color 0.16s ease,
+    transform 0.16s var(--ease-out-expo);
+}
+
+.dark .read-more-btn {
+  color: var(--accent-primary);
+}
+
+.article-card:hover .read-more-btn,
+.read-more-btn:hover {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #ffffff;
+}
+
+.btn-icon {
+  font-size: 0.75rem;
+  transition: transform 0.18s var(--ease-out-expo);
+}
+
+.article-card:hover .btn-icon {
+  transform: translateX(2px);
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  padding: 0.875rem 1rem;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: var(--surface-muted-hover);
+  color: var(--text-primary);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.pagination-numbers {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-card-solid);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+}
+
+.page-btn:hover {
+  background: var(--surface-muted);
+  color: var(--text-primary);
+}
+
+.page-btn.active {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #ffffff;
+}
+
+.page-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 2rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.pagination-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem 1.25rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.page-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.page-input {
+  width: 3.25rem;
+  height: 1.85rem;
+  padding: 0 0.35rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-default);
+  background: var(--surface-muted);
+  color: var(--text-primary);
+  text-align: center;
+  font-size: 0.78rem;
+}
+
+.jump-btn {
+  height: 1.85rem;
+  padding: 0 0.65rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: var(--accent-primary);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.16s ease;
+}
+
+.jump-btn:hover {
+  filter: brightness(1.08);
+}
+
+@media (max-width: 1024px) {
+  .articles-shell {
+    padding: 0.875rem 0.875rem 0;
+  }
+
+  .articles-sidebar {
+    width: 16rem;
+  }
+
+  .article-card {
+    flex-direction: column;
+  }
+
+  .article-cover {
+    width: 100%;
+    height: 12.5rem;
+    border-right: none;
+    border-bottom: 1px solid var(--border-subtle);
+  }
 }
 
 @media (max-width: 767px) {
+  .articles-shell {
+    padding: 0.75rem 0.75rem 0;
+    gap: 0.75rem;
+  }
+
   .articles-header {
-    @apply flex-col items-center text-center gap-2 mb-3;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.625rem;
     padding-bottom: 0.75rem;
   }
 
   .articles-title {
-    @apply text-xl;
-    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
   }
 
-  .unified-search-bar {
-    gap: 0.375rem;
-    padding: 0.375rem;
-    margin-bottom: 0.5rem;
+  .articles-toolbar {
+    flex: none;
+    max-width: none;
+    width: 100%;
   }
 
-  .unified-search-bar .control-buttons-group {
-    gap: 0.375rem;
-  }
-
-  .unified-search-bar .sort-order-button .sort-order-text,
-  .unified-search-bar .sort-by-button .button-text {
+  .articles-toolbar .btn-label {
     display: none;
   }
 
-  .unified-search-bar .sort-order-button,
-  .unified-search-bar .sort-by-button,
-  .unified-search-bar .page-size-button {
-    min-width: 44px;
-    padding: 0.375rem;
-    height: 2rem;
+  .articles-toolbar .page-toolbar-btn {
+    min-width: 2.25rem;
+    height: 2.125rem;
+    padding: 0 0.55rem;
   }
 
-  .unified-search-bar .search-input {
-    height: 2rem;
-    padding: 0.375rem;
-    padding-right: 2rem;
+  .articles-toolbar .page-toolbar-input {
+    height: 2.125rem;
   }
 
   .articles-content {
     flex-direction: column;
-    height: calc(
-      100vh - var(--app-header-height, 60px) - var(--app-footer-height, 60px) -
-      var(--articles-header-height, 120px) - 3rem
-    );
+    gap: 0.75rem;
   }
 
   .articles-sidebar {
-    width: 360px;
-    max-width: 100%;
-    flex-shrink: 0;
-    margin: 0 auto;
+    width: 100%;
+  }
+
+  .sidebar-desktop-stack {
+    display: none;
+  }
+
+  .sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    border-radius: var(--radius-control);
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-xs);
+    cursor: pointer;
+  }
+
+  .sidebar-toggle-left {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .sidebar-toggle-chevron {
+    color: var(--text-muted);
+    font-size: 0.85rem;
   }
 
   .articles-main {
-    flex: 1;
-    padding-top: 0;
+    padding: 0 0 4.5rem;
   }
 
-  .article-card {
-    @apply flex-col;
+  .article-info {
+    padding: 1rem;
   }
 
-  .article-cover {
-    @apply w-full h-48;
+  .article-title {
+    font-size: 1.0625rem;
   }
 
-  .pagination {
-    @apply flex-col gap-2;
-    @apply p-2;
-  }
-
-  .pagination-controls {
-    @apply flex-row;
-  }
-
-  .pagination-numbers {
-    @apply gap-0.5;
-    @apply flex-wrap;
-    @apply justify-center;
-  }
-
-  .page-btn {
-    @apply min-w-[28px] h-7;
-    @apply px-1;
-    @apply text-xs;
-  }
-
-  .prev-btn,
-  .next-btn {
-    @apply px-2 py-1;
-    @apply text-xs;
-    @apply min-w-[32px];
-  }
-
-  .pagination-info {
-    @apply gap-3;
-    @apply text-xs;
-  }
-
-  .page-ellipsis {
-    @apply min-w-[36px] h-9;
-  }
-
-  .pagination-info {
-    @apply flex-col gap-2;
-    @apply text-center;
-  }
-}
-
-/* 页数选择器样式 */
-.page-size-selector {
-  @apply relative;
-}
-
-.page-size-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid rgb(209, 213, 219);
-  border-radius: 0.375rem;
-  background-color: white;
-  color: rgb(107, 114, 128);
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: all 0.2s;
-  white-space: nowrap;
-  height: 2.25rem;
-  box-sizing: border-box;
-  transform-origin: center;
-  min-width: 80px;
-}
-
-.dark .page-size-button {
-  background-color: rgb(55, 65, 81);
-  border-color: rgb(75, 85, 99);
-  color: rgb(156, 163, 175);
-}
-
-.page-size-button:hover {
-  background-color: rgb(243, 244, 246);
-  color: rgb(55, 65, 81);
-}
-
-.dark .page-size-button:hover {
-  background-color: rgb(75, 85, 99);
-  color: rgb(209, 213, 219);
-}
-
-.page-size-icon {
-  @apply w-4 h-4;
-  flex-shrink: 0;
-}
-
-.page-size-menu {
-  @apply absolute right-0 mt-2 py-1;
-  @apply bg-white dark:bg-gray-800;
-  @apply border border-gray-200 dark:border-gray-700;
-  @apply rounded-lg shadow-lg;
-  @apply w-32 z-10;
-  @apply opacity-0 scale-95 origin-top-right;
-  @apply transition-all duration-300;
-  transform: translateY(-10px) scale(0.95);
-}
-
-.menu-open {
-  @apply opacity-100 scale-100;
-  transform: translateY(0) scale(1);
-}
-
-.page-size-option {
-  @apply flex items-center w-full px-4 py-2;
-  @apply text-left text-sm text-gray-700 dark:text-gray-300;
-  @apply hover:bg-gray-100 dark:hover:bg-gray-700;
-  @apply transition-all duration-200;
-  transform-origin: left center;
-}
-
-.page-size-option.active {
-  @apply bg-primary-50 dark:bg-primary-900/20;
-  @apply text-primary-700 dark:text-primary-400;
-  @apply font-medium;
-}
-
-.page-size-text {
-  transition: all 0.3s ease;
-  overflow: hidden;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.arrow-icon {
-  @apply w-4 h-4 ml-1 transition-all duration-300 ease-in-out;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.arrow-icon.rotate-180 {
-  transform: rotate(180deg);
-}
-
-.info-card-image-container.no-border {
-  border: none;
-}
-
-/* 屏幕阅读器专用样式 */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* 焦点样式优化 */
-.article-card:focus,
-.article-card:focus-visible {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
-}
-
-.sort-order-button:focus,
-.sort-by-button:focus,
-.page-size-button:focus,
-.page-size-button:focus-visible,
-.pagination-btn:focus,
-.pagination-btn:focus-visible,
-.read-more-btn:focus,
-.read-more-btn:focus-visible {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
-}
-
-/* 高对比度模式支持 */
-@media (prefers-contrast: high) {
-  .article-card,
-  .sort-order-button,
-  .sort-by-button,
-  .page-size-button,
-  .pagination-btn,
-  .read-more-btn {
-    border: 2px solid;
-  }
-
-  .article-card:focus,
-  .sort-order-button:focus,
-  .sort-by-button:focus,
-  .page-size-button:focus,
-  .pagination-btn:focus,
-  .read-more-btn:focus {
-    outline: 3px solid;
-    outline-offset: 1px;
-  }
-}
-
-/* 减少动画偏好支持 */
-@media (prefers-reduced-motion: reduce) {
-  .article-card,
-  .sort-order-button,
-  .sort-by-button,
-  .page-size-button,
-  .pagination-btn,
-  .read-more-btn {
-    transition: none !important;
-    transform: none !important;
-  }
-
-  .article-card:hover,
-  .sort-order-button:hover,
-  .sort-by-button:hover,
-  .page-size-button:hover,
-  .pagination-btn:hover,
-  .read-more-btn:hover {
-    transform: none !important;
-  }
-}
-
-/* 中小屏幕（平板和小桌面）- 隐藏分页按钮文本 */
-@media (max-width: 1023px) {
-  .prev-btn,
-  .next-btn {
-    @apply px-2;
-    @apply min-w-[32px];
-    @apply py-1;
-    font-size: 0; /* 隐藏文本 */
-  }
-
-  .prev-btn i,
-  .next-btn i {
-    font-size: 0.875rem; /* 恢复图标尺寸 */
-  }
-
-  .pagination-controls {
-    @apply flex-row;
-  }
-
-  .pagination-numbers {
-    @apply justify-center;
-    @apply gap-0.5;
-  }
-
-  .page-btn {
-    @apply min-w-[28px] h-7 px-1;
-    @apply text-xs;
-  }
-
-  .page-ellipsis {
-    @apply min-w-[28px] h-7;
-  }
-}
-
-/* 动画关键帧 */
-@keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+  .pagination-btn-text {
+    display: none;
   }
 }
 </style>

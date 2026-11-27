@@ -2,33 +2,34 @@
   <div class="filter-section">
     <button
       class="filter-section-button"
+      :class="{ 'is-expanded': expanded, 'is-danger': tone === 'danger' }"
       type="button"
       :aria-expanded="expanded"
       :aria-controls="optionsId"
       :aria-label="buttonAriaLabel"
       @click="expanded = !expanded"
     >
-      <h3 class="filter-section-title" :class="{ 'danger': tone === 'danger' }">
+      <span class="filter-section-title" :class="{ 'danger': tone === 'danger' }">
         <i v-if="icon" :class="getIconClass(icon)" class="title-icon" aria-hidden="true"></i>
-        {{ title }}
-      </h3>
-      <i
-        class="fa expand-icon"
-        :class="getIconClass(expanded ? 'chevron-up' : 'chevron-down')"
-        aria-hidden="true"
-      ></i>
+        <span>{{ title }}</span>
+      </span>
+      <span class="expand-icon" :class="{ 'rotated': expanded }" aria-hidden="true">
+        <i :class="getIconClass('chevron-down')"></i>
+      </span>
     </button>
-    <Transition name="filter-list">
-      <div
-        v-if="expanded"
-        :id="optionsId"
-        class="filter-options"
-        :role="optionsRole"
-        :aria-label="optionsAriaLabel"
-      >
-        <slot />
+
+    <div class="filter-collapse" :class="{ 'is-open': expanded }">
+      <div class="filter-collapse-inner">
+        <div
+          :id="optionsId"
+          class="filter-options"
+          :role="optionsRole"
+          :aria-label="optionsAriaLabel"
+        >
+          <slot />
+        </div>
       </div>
-    </Transition>
+    </div>
   </div>
 </template>
 
@@ -61,149 +62,115 @@ const expanded = defineModel<boolean>('expanded', { required: true });
 @reference "@/assets/styles/main.css";
 
 .filter-section {
-  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .filter-section-button {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.5rem;
   width: 100%;
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  border: 1px solid #e2e8f0;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-muted);
+  color: var(--text-primary);
   cursor: pointer;
-  padding: 0.75rem;
-  margin: 0;
-  border-radius: 0.5rem;
-  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease;
 }
 
 .filter-section-button:hover {
-  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-  border-color: #cbd5e1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transform: translateY(-1px);
+  background: var(--surface-muted-hover);
+  border-color: var(--border-default);
 }
 
-.dark .filter-section-button {
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  border-color: #475569;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+.filter-section-button.is-danger {
+  background: var(--danger-soft);
+  border-color: var(--danger-border);
 }
 
-.dark .filter-section-button:hover {
-  background: linear-gradient(135deg, #334155 0%, #475569 100%);
-  border-color: #64748b;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+.filter-section-button:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
 }
 
 .filter-section-title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  margin: 0;
-  color: #1e293b;
-  text-align: left;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: left;
+  min-width: 0;
 }
 
 .filter-section-title.danger {
-  color: #dc2626;
-}
-
-.dark .filter-section-title {
-  color: #f1f5f9;
-}
-
-.dark .filter-section-title.danger {
-  color: #f87171;
+  color: var(--danger-text);
 }
 
 .title-icon {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1rem;
+  height: 1rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  line-height: 1;
-  font-size: 1rem;
+  font-size: 0.875rem;
+  flex-shrink: 0;
 }
 
 .expand-icon {
-  font-size: 0.75rem;
-  color: #64748b;
-  transition: all 200ms ease-out;
-  width: 1.5rem;
-  height: 1.5rem;
-  display: flex;
+  width: 1.375rem;
+  height: 1.375rem;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0.25rem;
-  background: rgba(100, 116, 139, 0.1);
-  border: 1px solid rgba(100, 116, 139, 0.2);
+  border-radius: 0.375rem;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  flex-shrink: 0;
+  transition: transform 0.24s var(--ease-out-expo), color 0.16s ease;
 }
 
-.dark .expand-icon {
-  color: #94a3b8;
-  background: rgba(148, 163, 184, 0.1);
-  border-color: rgba(148, 163, 184, 0.2);
+.expand-icon.rotated {
+  transform: rotate(180deg);
 }
 
-.filter-section-button:hover .expand-icon {
-  color: #475569;
-  background: rgba(100, 116, 139, 0.15);
-  border-color: rgba(100, 116, 139, 0.3);
-  transform: translateY(-1px);
+/* Smooth Grid Accordion (no max-height lag!) */
+.filter-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.24s var(--ease-out-expo),
+    opacity 0.2s ease;
 }
 
-.dark .filter-section-button:hover .expand-icon {
-  color: #cbd5e1;
-  background: rgba(148, 163, 184, 0.15);
-  border-color: rgba(148, 163, 184, 0.3);
+.filter-collapse.is-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.filter-collapse-inner {
+  overflow: hidden;
 }
 
 .filter-options {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-  margin-bottom: 0;
+  gap: 0.375rem;
+  padding-top: 0.5rem;
 }
 
 @media (max-width: 767px) {
   .filter-options {
-    display: flex;
-    flex-wrap: wrap;
     flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.45rem;
   }
-}
-
-.filter-list-enter-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.filter-list-leave-active {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.6, 1);
-}
-
-.filter-list-enter-from {
-  opacity: 0;
-  transform: translateY(-10px);
-  max-height: 0;
-}
-
-.filter-list-leave-to {
-  opacity: 0;
-  transform: translateY(-5px);
-  max-height: 0;
-}
-
-.filter-list-enter-to,
-.filter-list-leave-from {
-  opacity: 1;
-  transform: translateY(0);
-  max-height: 1000px;
 }
 </style>

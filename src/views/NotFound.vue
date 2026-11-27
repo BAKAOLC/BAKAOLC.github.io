@@ -1,9 +1,12 @@
 <template>
   <div class="not-found">
-    <div class="content">
-      <h1 class="title">404</h1>
+    <div class="not-found-card">
+      <div class="code-badge">404</div>
       <p class="message">{{ t('app.notFound') }}</p>
-      <router-link to="/" class="home-link">{{ t('common.back') }}</router-link>
+      <router-link to="/" class="home-link">
+        <i class="fas fa-arrow-left" aria-hidden="true"></i>
+        <span>{{ t('common.back') }}</span>
+      </router-link>
     </div>
   </div>
 </template>
@@ -18,28 +21,65 @@ const { t } = useI18n();
 @reference "@/assets/styles/main.css";
 
 .not-found {
-  @apply min-h-screen flex items-center justify-center;
-  @apply bg-gray-50 dark:bg-gray-900;
-  @apply p-4;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  overflow-y: auto;
 }
 
-.content {
-  @apply text-center max-w-md;
+.not-found-card {
+  width: min(420px, 100%);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  border-radius: var(--radius-modal);
+  background: var(--surface-glass-strong);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-lg);
 }
 
-.title {
-  @apply text-8xl font-bold text-gray-900 dark:text-white mb-4;
-  @apply animate-text;
+.code-badge {
+  font-size: clamp(4rem, 12vw, 5.5rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  margin-bottom: 0.875rem;
+  color: var(--accent-primary);
 }
 
 .message {
-  @apply text-xl text-gray-600 dark:text-gray-400 mb-8;
+  margin: 0 0 1.75rem;
+  font-size: 1.0625rem;
+  color: var(--text-secondary);
 }
 
 .home-link {
-  @apply inline-block py-2 px-6 rounded-lg;
-  @apply bg-blue-600 text-white;
-  @apply hover:bg-blue-700;
-  @apply transition-colors duration-200;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.375rem;
+  border-radius: var(--radius-control);
+  background: var(--accent-primary);
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s var(--ease-out-expo), background-color 0.18s ease;
+}
+
+.home-link:hover {
+  transform: translateY(-2px);
+  background: var(--accent-primary-hover);
+}
+
+.home-link:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 3px;
 }
 </style>

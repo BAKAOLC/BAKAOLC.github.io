@@ -5,162 +5,222 @@
       :class="{ 'expanded': isExpanded, 'playing': isPlaying }"
       :style="pulseStyle"
     >
-      <!-- 折叠状态：圆形按钮 -->
-      <button
-        v-if="!isExpanded"
-        @click="toggleExpand"
-        class="bgm-toggle-btn"
-        :title="t('bgm.expand')"
-      >
-        <i class="fas fa-music"></i>
-      </button>
+      <Transition name="bgm-morph" mode="out-in">
+        <!-- 折叠状态：悬浮圆形玻璃按钮 -->
+        <button
+          v-if="!isExpanded"
+          key="collapsed"
+          type="button"
+          class="bgm-toggle-btn"
+          :title="t('bgm.expand')"
+          :aria-label="t('bgm.expand')"
+          @click="toggleExpand"
+        >
+          <i class="fas fa-music" aria-hidden="true"></i>
+        </button>
 
-      <!-- 展开状态：完整播放器 -->
-      <div v-else class="bgm-player-expanded">
-        <!-- 顶部：曲目信息和控制按钮 -->
-        <div class="bgm-header">
-          <!-- 封面图（无封面时显示占位） -->
-          <div
-            class="bgm-artwork"
-            :class="{
-              'bgm-artwork-placeholder': !currentTrack?.artwork?.length,
-              'bgm-artwork-clickable': !!currentTrack?.artwork?.length,
-            }"
-            @click="openArtworkViewer"
-          >
-            <img
-              v-if="currentTrack?.artwork?.length"
-              :src="getI18nText(currentTrack.artwork[0].src, currentLanguage)"
-              :alt="t('bgm.cover')"
-              class="bgm-artwork-img"
-            />
-            <i v-else class="fas fa-music"></i>
-          </div>
-          <div class="bgm-track-info">
-            <div ref="trackNameRef" class="bgm-track-name scrolling-text">
-              <span class="scrolling-text-content">{{ getTrackName(currentTrack) }}</span>
+        <!-- 展开状态：磨砂玻璃完整播放器 -->
+        <div v-else key="expanded" class="bgm-player-expanded">
+          <!-- 顶部：封面、曲目信息和收起按钮 -->
+          <div class="bgm-header">
+            <div
+              class="bgm-artwork"
+              :class="{
+                'bgm-artwork-placeholder': !currentTrack?.artwork?.length,
+                'bgm-artwork-clickable': !!currentTrack?.artwork?.length,
+              }"
+              @click="openArtworkViewer"
+            >
+              <img
+                v-if="currentTrack?.artwork?.length"
+                :src="getI18nText(currentTrack.artwork[0].src, currentLanguage)"
+                :alt="t('bgm.cover')"
+                class="bgm-artwork-img"
+              />
+              <i v-else class="fas fa-music" aria-hidden="true"></i>
             </div>
-            <div v-if="getTrackArtist(currentTrack)" ref="trackArtistRef" class="bgm-track-artist scrolling-text">
-              <span class="scrolling-text-content">{{ getTrackArtist(currentTrack) }}</span>
-            </div>
-            <div v-if="getTrackAlbum(currentTrack)" ref="trackAlbumRef" class="bgm-track-album scrolling-text">
-              <span class="scrolling-text-content">{{ getTrackAlbum(currentTrack) }}</span>
-            </div>
-            <div class="bgm-time-display">
-              {{ formatTime(currentTime) }} / {{ formatTime(duration) }}
-            </div>
-          </div>
-          <div class="bgm-header-controls">
-            <button @click="toggleExpand" class="bgm-icon-btn" :title="t('bgm.collapse')">
-              <i class="fas fa-chevron-down"></i>
-            </button>
-          </div>
-        </div>
 
-        <!-- 进度条 -->
-        <div class="bgm-progress-bar" @click="handleProgressClick">
-          <div class="bgm-progress-bg"></div>
-          <!-- 循环区段标记 -->
-          <div
-            v-if="(currentTrack?.loop || currentTrack?.dualFile) && duration > 0"
-            class="bgm-loop-indicator"
-            :style="getLoopIndicatorStyle()"
-          ></div>
-          <!-- 当前进度 -->
-          <div class="bgm-progress-fill" :style="{ width: progressPercent + '%' }"></div>
-        </div>
-
-        <!-- 播放控制 -->
-        <div class="bgm-controls">
-          <button @click="playPrevious" class="bgm-control-btn" :title="t('bgm.previous')">
-            <i class="fas fa-step-backward"></i>
-          </button>
-
-          <button @click="togglePlay" class="bgm-play-btn" :title="isPlaying ? t('bgm.pause') : t('bgm.play')">
-            <i :class="isPlaying ? 'fas fa-pause' : 'fas fa-play'"></i>
-          </button>
-
-          <button @click="playNext" class="bgm-control-btn" :title="t('bgm.next')">
-            <i class="fas fa-step-forward"></i>
-          </button>
-
-          <button
-            @click="toggleMode"
-            class="bgm-control-btn"
-            :title="getModeTitle()"
-          >
-            <i :class="getModeIcon()"></i>
-          </button>
-
-          <button
-            v-if="currentTrack?.loop || currentTrack?.dualFile"
-            @click="toggleUseLoop"
-            class="bgm-control-btn"
-            :class="{ 'active-dim': useLoop }"
-            :title="useLoop ? t('bgm.disableLoop') : t('bgm.enableLoop')"
-          >
-            <i class="fas fa-sync-alt"></i>
-          </button>
-
-          <button
-            @click="toggleAutoplay"
-            class="bgm-control-btn"
-            :class="{ 'active-dim': autoplayEnabled }"
-            :title="autoplayEnabled ? t('bgm.disableAutoplay') : t('bgm.enableAutoplay')"
-          >
-            <i class="fas fa-power-off"></i>
-          </button>
-
-          <div class="bgm-volume">
-            <i class="fas fa-volume-up"></i>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              :value="volume * 100"
-              @input="handleVolumeChange"
-              class="bgm-volume-slider"
-              :title="t('bgm.volume', { value: Math.round(volume * 100) })"
-            />
-          </div>
-        </div>
-
-        <!-- 播放列表切换条 -->
-        <div v-if="config.tracks.length > 0" class="bgm-playlist-wrapper" :class="{ 'open': isPlaylistExpanded }">
-          <button
-            @click="togglePlaylist"
-            class="bgm-playlist-toggle"
-            :class="{ 'open': isPlaylistExpanded }"
-          >
-            <i class="fas fa-list"></i>
-            <span>{{ t('bgm.playlist') }}</span>
-            <i class="fas fa-chevron-up bgm-playlist-toggle-chevron"></i>
-          </button>
-
-          <!-- 曲目列表 -->
-          <Transition name="playlist">
-            <div v-if="isPlaylistExpanded" class="bgm-playlist">
-              <div
-                v-for="(track, index) in config.tracks"
-                :key="index"
-                @click="playTrack(index)"
-                class="bgm-playlist-item"
-                :class="{ 'active': index === currentTrackIndex }"
-              >
-                <i :class="index === currentTrackIndex && isPlaying ? 'fas fa-volume-up' : 'fas fa-music'"></i>
-                <span class="track-info">
-                  <span class="track-name scrolling-text">
-                    <span class="scrolling-text-content">{{ getTrackName(track) }}</span>
-                  </span>
-                  <span v-if="getTrackArtist(track)" class="track-artist scrolling-text">
-                    <span class="scrolling-text-content">{{ getTrackArtist(track) }}</span>
-                  </span>
-                </span>
+            <div class="bgm-track-info">
+              <div ref="trackNameRef" class="bgm-track-name scrolling-text">
+                <span class="scrolling-text-content">{{ getTrackName(currentTrack) }}</span>
+              </div>
+              <div v-if="getTrackArtist(currentTrack)" ref="trackArtistRef" class="bgm-track-artist scrolling-text">
+                <span class="scrolling-text-content">{{ getTrackArtist(currentTrack) }}</span>
+              </div>
+              <div v-if="getTrackAlbum(currentTrack)" ref="trackAlbumRef" class="bgm-track-album scrolling-text">
+                <span class="scrolling-text-content">{{ getTrackAlbum(currentTrack) }}</span>
+              </div>
+              <div class="bgm-time-display">
+                {{ formatTime(currentTime) }} / {{ formatTime(duration) }}
               </div>
             </div>
-          </Transition>
+
+            <div class="bgm-header-controls">
+              <button
+                type="button"
+                class="bgm-icon-btn"
+                :title="t('bgm.collapse')"
+                :aria-label="t('bgm.collapse')"
+                @click="toggleExpand"
+              >
+                <i class="fas fa-chevron-down" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- 支持点击与拖拽的进度条 -->
+          <div
+            ref="progressBarRef"
+            class="bgm-progress-bar"
+            :class="{ 'is-dragging': isScrubbing }"
+            role="slider"
+            tabindex="0"
+            :aria-valuemin="0"
+            :aria-valuemax="Math.round(duration)"
+            :aria-valuenow="Math.round(currentTime)"
+            @pointerdown="handleProgressPointerDown"
+            @pointermove="handleProgressPointerMove"
+            @pointerup="handleProgressPointerUp"
+            @pointercancel="handleProgressPointerUp"
+          >
+            <div class="bgm-progress-track">
+              <div
+                v-if="(currentTrack?.loop || currentTrack?.dualFile) && duration > 0"
+                class="bgm-loop-indicator"
+                :style="getLoopIndicatorStyle()"
+              ></div>
+              <div class="bgm-progress-fill" :style="{ width: `${progressPercent}%` }">
+                <span class="bgm-progress-thumb" aria-hidden="true"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 播放控制与音量 -->
+          <div class="bgm-controls">
+            <div class="bgm-controls-primary">
+              <button
+                type="button"
+                class="bgm-control-btn"
+                :title="t('bgm.previous')"
+                :aria-label="t('bgm.previous')"
+                @click="playPrevious"
+              >
+                <i class="fas fa-step-backward" aria-hidden="true"></i>
+              </button>
+
+              <button
+                type="button"
+                class="bgm-play-btn"
+                :title="isPlaying ? t('bgm.pause') : t('bgm.play')"
+                :aria-label="isPlaying ? t('bgm.pause') : t('bgm.play')"
+                @click="togglePlay"
+              >
+                <i :class="isPlaying ? 'fas fa-pause' : 'fas fa-play'" aria-hidden="true"></i>
+              </button>
+
+              <button
+                type="button"
+                class="bgm-control-btn"
+                :title="t('bgm.next')"
+                :aria-label="t('bgm.next')"
+                @click="playNext"
+              >
+                <i class="fas fa-step-forward" aria-hidden="true"></i>
+              </button>
+
+              <button
+                type="button"
+                class="bgm-control-btn"
+                :title="getModeTitle()"
+                :aria-label="getModeTitle()"
+                @click="toggleMode"
+              >
+                <i :class="getModeIcon()" aria-hidden="true"></i>
+              </button>
+
+              <button
+                v-if="currentTrack?.loop || currentTrack?.dualFile"
+                type="button"
+                class="bgm-control-btn"
+                :class="{ 'active-dim': useLoop }"
+                :title="useLoop ? t('bgm.disableLoop') : t('bgm.enableLoop')"
+                :aria-label="useLoop ? t('bgm.disableLoop') : t('bgm.enableLoop')"
+                @click="toggleUseLoop"
+              >
+                <i class="fas fa-sync-alt" aria-hidden="true"></i>
+              </button>
+
+              <button
+                type="button"
+                class="bgm-control-btn"
+                :class="{ 'active-dim': autoplayEnabled }"
+                :title="autoplayEnabled ? t('bgm.disableAutoplay') : t('bgm.enableAutoplay')"
+                :aria-label="autoplayEnabled ? t('bgm.disableAutoplay') : t('bgm.enableAutoplay')"
+                @click="toggleAutoplay"
+              >
+                <i class="fas fa-power-off" aria-hidden="true"></i>
+              </button>
+            </div>
+
+            <div class="bgm-volume">
+              <i class="fas fa-volume-up" aria-hidden="true"></i>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                :value="volume * 100"
+                class="bgm-volume-slider"
+                :title="t('bgm.volume', { value: Math.round(volume * 100) })"
+                :aria-label="t('bgm.volume', { value: Math.round(volume * 100) })"
+                @input="handleVolumeChange"
+              />
+            </div>
+          </div>
+
+          <!-- 播放列表折叠面板（CSS Grid 平滑折叠） -->
+          <div v-if="config.tracks.length > 0" class="bgm-playlist-wrapper" :class="{ 'open': isPlaylistExpanded }">
+            <button
+              type="button"
+              class="bgm-playlist-toggle"
+              :class="{ 'open': isPlaylistExpanded }"
+              :aria-expanded="isPlaylistExpanded"
+              @click="togglePlaylist"
+            >
+              <i class="fas fa-list" aria-hidden="true"></i>
+              <span>{{ t('bgm.playlist') }} ({{ config.tracks.length }})</span>
+              <i class="fas fa-chevron-down bgm-playlist-toggle-chevron" aria-hidden="true"></i>
+            </button>
+
+            <div class="bgm-playlist-collapse" :class="{ 'open': isPlaylistExpanded }">
+              <div class="bgm-playlist-collapse-inner">
+                <div class="bgm-playlist">
+                  <button
+                    v-for="(track, index) in config.tracks"
+                    :key="index"
+                    type="button"
+                    class="bgm-playlist-item"
+                    :class="{ 'active': index === currentTrackIndex }"
+                    @click="playTrack(index)"
+                  >
+                    <i
+                      :class="index === currentTrackIndex && isPlaying ? 'fas fa-volume-up' : 'fas fa-music'"
+                      aria-hidden="true"
+                    ></i>
+                    <span class="track-info">
+                      <span class="track-name scrolling-text">
+                        <span class="scrolling-text-content">{{ getTrackName(track) }}</span>
+                      </span>
+                      <span v-if="getTrackArtist(track)" class="track-artist scrolling-text">
+                        <span class="scrolling-text-content">{{ getTrackArtist(track) }}</span>
+                      </span>
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </Transition>
     </div>
   </div>
 </template>
@@ -180,7 +240,8 @@ import { getI18nText } from '@/utils/i18nText';
 const config = bgmConfig as BgmConfig;
 const ImageViewerModal = defineAsyncComponent(() => import('@/components/modals/ImageViewerModal.vue'));
 const isExpanded = ref(false);
-const isPlaylistExpanded = ref(true);
+const isPlaylistExpanded = ref(false);
+const isScrubbing = ref(false);
 const currentTime = ref(0);
 const duration = ref(0);
 const progressPercent = ref(0);
@@ -203,6 +264,7 @@ let progressInterval: number | null = null;
 let intensityAnimationId: number | null = null;
 let scrollingTextTimeoutId: number | null = null;
 
+const progressBarRef = ref<HTMLElement | null>(null);
 const trackNameRef = ref<HTMLElement | null>(null);
 const trackArtistRef = ref<HTMLElement | null>(null);
 const trackAlbumRef = ref<HTMLElement | null>(null);
@@ -221,7 +283,7 @@ const updateScrollingTextElement = (element: HTMLElement | null, text: string): 
 
   if (content.scrollWidth > element.clientWidth) {
     element.classList.add('overflow');
-    content.textContent = `${text} ${text}`;
+    content.textContent = `${text}   ${text}`;
   }
 };
 
@@ -276,12 +338,10 @@ const {
 const pulseStyle = computed(() => {
   if (!isPlaying.value) return {};
 
-  const scaleMultiplier = isExpanded.value ? 0.15 : 0.5;
+  const scaleMultiplier = isExpanded.value ? 0.06 : 0.36;
   const scale = 1 + (audioIntensity.value * scaleMultiplier);
-  const opacity = 0.3 + (audioIntensity.value * 0.5);
-
-  const brightness = 59 + (audioIntensity.value * 170);
-  const borderColor = `rgb(${brightness}, ${130 + audioIntensity.value * 125}, 246)`;
+  const opacity = 0.28 + (audioIntensity.value * 0.45);
+  const borderColor = `rgba(14, 165, 233, ${(0.45 + audioIntensity.value * 0.5).toFixed(2)})`;
 
   return {
     '--pulse-scale': scale.toString(),
@@ -336,7 +396,7 @@ const togglePlaylist = (): void => {
 
 const handleVolumeChange = (event: Event): void => {
   const target = event.target as HTMLInputElement;
-  setVolume(parseInt(target.value) / 100);
+  setVolume(parseInt(target.value, 10) / 100);
 };
 
 const formatTime = (seconds: number): string => {
@@ -388,6 +448,8 @@ const getTrackAlbum = (track: BgmTrack | null): string => {
 };
 
 const updateProgress = (): void => {
+  if (isScrubbing.value) return;
+
   const time = getCurrentTime();
   const dur = getDuration();
 
@@ -395,20 +457,45 @@ const updateProgress = (): void => {
   duration.value = dur;
 
   if (dur > 0) {
-    progressPercent.value = (time / dur) * 100;
+    progressPercent.value = Math.min(100, Math.max(0, (time / dur) * 100));
   } else {
     progressPercent.value = 0;
   }
 };
 
-const handleProgressClick = (event: MouseEvent): void => {
-  const target = event.currentTarget as HTMLElement;
-  const rect = target.getBoundingClientRect();
-  const x = event.clientX - rect.left;
-  const percent = x / rect.width;
-  const newTime = percent * duration.value;
+const seekFromPointer = (clientX: number): void => {
+  const bar = progressBarRef.value;
+  if (!bar || duration.value <= 0) return;
 
+  const rect = bar.getBoundingClientRect();
+  if (rect.width <= 0) return;
+
+  const percent = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+  const newTime = percent * duration.value;
+  progressPercent.value = percent * 100;
+  currentTime.value = newTime;
   seek(newTime);
+};
+
+const handleProgressPointerDown = (event: PointerEvent): void => {
+  const target = event.currentTarget as HTMLElement | null;
+  target?.setPointerCapture?.(event.pointerId);
+  isScrubbing.value = true;
+  seekFromPointer(event.clientX);
+};
+
+const handleProgressPointerMove = (event: PointerEvent): void => {
+  if (!isScrubbing.value) return;
+  seekFromPointer(event.clientX);
+};
+
+const handleProgressPointerUp = (event: PointerEvent): void => {
+  if (!isScrubbing.value) return;
+  const target = event.currentTarget as HTMLElement | null;
+  if (target?.hasPointerCapture?.(event.pointerId)) {
+    target.releasePointerCapture(event.pointerId);
+  }
+  isScrubbing.value = false;
   updateProgress();
 };
 
@@ -510,7 +597,7 @@ watch([currentTrack, currentLanguage], () => {
 
 watch(isExpanded, (expanded) => {
   if (expanded) {
-    scheduleScrollingTextUpdate(100);
+    scheduleScrollingTextUpdate(200);
   }
 });
 
@@ -527,56 +614,33 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+@reference "@/assets/styles/main.css";
+
 .bgm-player {
   position: fixed;
-  bottom: 60px;
-  left: 20px;
-  z-index: 40;
+  bottom: 48px;
+  left: 16px;
+  z-index: 50;
 }
 
 .bgm-player-container {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-}
-
-.bgm-toggle-btn {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: none;
-  background: rgb(59, 130, 246);
-  color: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  transition: all 0.3s ease;
-  position: relative;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-}
-
-.bgm-toggle-btn:hover {
-  background: rgb(37, 99, 235);
-  transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
 }
 
 .bgm-player-container::before {
   content: '';
   position: absolute;
   inset: -4px;
-  border: 2px solid var(--pulse-border-color, rgb(59, 130, 246));
+  border: 2px solid var(--pulse-border-color, var(--accent-primary));
   opacity: 0;
   transform: scale(1);
-  transition: transform 0.3s ease-out, opacity 0.3s ease-out, border-color 0.1s ease-out, border-radius 0.3s ease;
+  transition: transform 0.2s ease-out, opacity 0.2s ease-out, border-radius 0.22s ease;
   pointer-events: none;
 }
 
 .bgm-player-container.playing::before {
-  opacity: var(--pulse-opacity, 0.6);
+  opacity: var(--pulse-opacity, 0.55);
   transform: scale(var(--pulse-scale, 1));
-  transition: transform 0.1s ease-out, opacity 0.1s ease-out, border-color 0.1s ease-out, border-radius 0.3s ease;
 }
 
 .bgm-player-container:not(.expanded)::before {
@@ -584,61 +648,99 @@ onUnmounted(() => {
 }
 
 .bgm-player-container.expanded::before {
-  border-radius: 12px;
+  border-radius: calc(var(--radius-card) + 3px);
+}
+
+.bgm-toggle-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--accent-primary);
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  box-shadow: var(--shadow-accent);
+  transition: transform 0.2s var(--ease-out-expo), background-color 0.18s ease, box-shadow 0.2s ease;
+}
+
+.bgm-toggle-btn:hover {
+  transform: scale(1.06);
+  background: var(--accent-primary-hover);
+}
+
+.bgm-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+.bgm-toggle-btn:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 3px;
 }
 
 .bgm-player-expanded {
-  width: 420px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  padding: 16px;
+  width: min(392px, calc(100vw - 32px));
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-lg);
+  padding: 0.9rem;
+  transform-origin: bottom left;
 }
 
-.dark .bgm-player-expanded {
-  background: rgb(31, 41, 55);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+/* Smooth Morph Transition */
+.bgm-morph-enter-active {
+  transition: opacity 0.2s var(--ease-out-expo), transform 0.22s var(--ease-out-expo);
+}
+
+.bgm-morph-leave-active {
+  transition: opacity 0.14s ease-in, transform 0.14s ease-in;
+}
+
+.bgm-morph-enter-from,
+.bgm-morph-leave-to {
+  opacity: 0;
+  transform: scale(0.92) translateY(8px);
 }
 
 .bgm-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 12px;
-  gap: 12px;
+  margin-bottom: 0.75rem;
+  gap: 0.75rem;
 }
 
 .bgm-artwork {
   flex-shrink: 0;
   width: 48px;
   height: 48px;
-  border-radius: 6px;
+  border-radius: 0.625rem;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-xs);
 }
 
 .bgm-artwork-clickable {
   cursor: pointer;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: opacity 0.18s ease, transform 0.2s var(--ease-out-expo);
 }
 
 .bgm-artwork-clickable:hover {
-  opacity: 0.85;
+  opacity: 0.9;
   transform: scale(1.04);
 }
 
 .bgm-artwork-placeholder {
-  background: rgb(219, 234, 254);
+  background: var(--accent-soft);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgb(59, 130, 246);
-  font-size: 20px;
-}
-
-.dark .bgm-artwork-placeholder {
-  background: rgb(30, 58, 138);
-  color: rgb(147, 197, 253);
+  color: var(--accent-primary);
+  font-size: 18px;
 }
 
 .bgm-artwork-img {
@@ -654,17 +756,11 @@ onUnmounted(() => {
 }
 
 .bgm-track-name {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
-  color: rgb(31, 41, 55);
+  color: var(--text-primary);
   margin-bottom: 2px;
-  word-break: break-word;
-  line-height: 1.4;
-  overflow: hidden;
-}
-
-.dark .bgm-track-name {
-  color: rgb(243, 244, 246);
+  line-height: 1.35;
 }
 
 .scrolling-text {
@@ -678,12 +774,12 @@ onUnmounted(() => {
 }
 
 .scrolling-text.overflow {
-  mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
 }
 
 .scrolling-text.overflow .scrolling-text-content {
-  animation: scroll-text 15s linear infinite;
+  animation: scroll-text 16s linear infinite;
 }
 
 @keyframes scroll-text {
@@ -700,231 +796,206 @@ onUnmounted(() => {
 }
 
 .bgm-track-artist {
-  font-size: 12px;
-  color: rgb(59, 130, 246);
+  font-size: 0.75rem;
+  color: var(--accent-primary-hover);
   margin-bottom: 1px;
   line-height: 1.3;
-  overflow: hidden;
 }
 
 .dark .bgm-track-artist {
-  color: rgb(96, 165, 250);
+  color: var(--accent-primary);
 }
 
 .bgm-track-album {
-  font-size: 11px;
-  color: rgb(107, 114, 128);
+  font-size: 0.7rem;
+  color: var(--text-muted);
   margin-bottom: 2px;
   line-height: 1.3;
-  overflow: hidden;
-}
-
-.dark .bgm-track-album {
-  color: rgb(156, 163, 175);
 }
 
 .bgm-time-display {
-  font-size: 11px;
-  color: rgb(107, 114, 128);
-}
-
-.dark .bgm-time-display {
-  color: rgb(156, 163, 175);
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
 }
 
 .bgm-header-controls {
   display: flex;
-  gap: 6px;
+  gap: 0.35rem;
   flex-shrink: 0;
 }
 
 .bgm-icon-btn {
   width: 28px;
   height: 28px;
-  border-radius: 6px;
-  border: none;
-  background: rgb(243, 244, 246);
-  color: rgb(107, 114, 128);
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-muted);
+  color: var(--text-secondary);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
-
-.dark .bgm-icon-btn {
-  background: rgb(55, 65, 81);
-  color: rgb(156, 163, 175);
+  font-size: 12px;
+  transition: background-color 0.16s ease, color 0.16s ease;
 }
 
 .bgm-icon-btn:hover {
-  background: rgb(229, 231, 235);
-  color: rgb(59, 130, 246);
+  background: var(--surface-muted-hover);
+  color: var(--accent-primary);
 }
 
-.dark .bgm-icon-btn:hover {
-  background: rgb(75, 85, 99);
-  color: rgb(59, 130, 246);
-}
-
-.bgm-icon-btn.active {
-  background: rgb(59, 130, 246);
-  color: white;
-}
-
-.dark .bgm-icon-btn.active {
-  background: rgb(59, 130, 246);
-  color: white;
-}
-
+/* Interactive Draggable Progress Bar */
 .bgm-progress-bar {
-  height: 6px;
-  background: rgb(229, 231, 235);
-  border-radius: 3px;
+  padding: 6px 0;
+  margin-bottom: 0.5rem;
   cursor: pointer;
+  touch-action: none;
+}
+
+.bgm-progress-track {
   position: relative;
-  margin-bottom: 16px;
-}
-
-.dark .bgm-progress-bar {
-  background: rgb(55, 65, 81);
-}
-
-.bgm-progress-bg {
-  position: absolute;
-  inset: 0;
-  border-radius: 3px;
+  height: 6px;
+  background: var(--surface-muted);
+  border-radius: 9999px;
 }
 
 .bgm-loop-indicator {
   position: absolute;
   top: 0;
   height: 100%;
-  background: rgba(59, 130, 246, 0.2);
-  border-left: 2px solid rgb(59, 130, 246);
-  border-right: 2px solid rgb(59, 130, 246);
+  background: var(--accent-soft);
+  border-left: 2px solid var(--accent-primary);
+  border-right: 2px solid var(--accent-primary);
   pointer-events: none;
   z-index: 1;
 }
 
-.dark .bgm-loop-indicator {
-  background: rgba(59, 130, 246, 0.3);
-}
-
 .bgm-progress-fill {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   height: 100%;
-  background: rgb(59, 130, 246);
-  border-radius: 3px;
-  transition: width 0.1s linear;
+  background: var(--accent-primary);
+  border-radius: 9999px;
   z-index: 2;
 }
 
+.bgm-progress-thumb {
+  position: absolute;
+  right: -5px;
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  border-radius: 9999px;
+  background: var(--surface-card-solid);
+  border: 2px solid var(--accent-primary);
+  box-shadow: var(--shadow-xs);
+  transform: translateY(-50%) scale(0);
+  transition: transform 0.16s var(--ease-spring);
+}
+
+.bgm-progress-bar:hover .bgm-progress-thumb,
+.bgm-progress-bar.is-dragging .bgm-progress-thumb {
+  transform: translateY(-50%) scale(1);
+}
+
+/* Controls Layout */
 .bgm-controls {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.65rem;
+}
+
+.bgm-controls-primary {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
 }
 
 .bgm-control-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: none;
-  background: rgb(243, 244, 246);
-  color: rgb(31, 41, 55);
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  background: var(--surface-muted);
+  color: var(--text-secondary);
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  transition: all 0.2s ease;
+  font-size: 13px;
+  transition: background-color 0.16s ease, color 0.16s ease, transform 0.16s var(--ease-out-expo);
   flex-shrink: 0;
 }
 
-.dark .bgm-control-btn {
-  background: rgb(55, 65, 81);
-  color: rgb(243, 244, 246);
-}
-
 .bgm-control-btn:hover {
-  background: rgb(229, 231, 235);
+  background: var(--surface-muted-hover);
+  color: var(--text-primary);
   transform: scale(1.05);
 }
 
-.dark .bgm-control-btn:hover {
-  background: rgb(75, 85, 99);
-}
-
 .bgm-control-btn.active-dim {
-  background: rgba(59, 130, 246, 0.15);
-  color: rgb(59, 130, 246);
+  background: var(--accent-soft);
+  color: var(--accent-primary-hover);
+  border-color: rgba(14, 165, 233, 0.28);
 }
 
 .dark .bgm-control-btn.active-dim {
-  background: rgba(59, 130, 246, 0.25);
-  color: rgb(96, 165, 250);
+  color: var(--accent-primary);
 }
 
 .bgm-play-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  border-radius: 9999px;
   border: none;
-  background: rgb(59, 130, 246);
-  color: white;
+  background: var(--accent-primary);
+  color: #ffffff;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  transition: all 0.2s ease;
+  font-size: 14px;
+  box-shadow: var(--shadow-accent);
+  transition: transform 0.18s var(--ease-out-expo), background-color 0.16s ease;
   flex-shrink: 0;
 }
 
 .bgm-play-btn:hover {
-  background: rgb(37, 99, 235);
   transform: scale(1.05);
+  background: var(--accent-primary-hover);
+}
+
+.bgm-play-btn:active {
+  transform: scale(0.95);
 }
 
 .bgm-volume {
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex: 1;
-  margin-left: 8px;
-  min-width: 0;
+  gap: 0.45rem;
+  flex: 1 1 92px;
+  min-width: 84px;
 }
 
 .bgm-volume i {
-  color: rgb(107, 114, 128);
-  font-size: 14px;
+  color: var(--text-muted);
+  font-size: 13px;
   flex-shrink: 0;
-}
-
-.dark .bgm-volume i {
-  color: rgb(156, 163, 175);
 }
 
 .bgm-volume-slider {
   flex: 1;
-  min-width: 60px;
+  min-width: 52px;
   height: 4px;
-  border-radius: 2px;
+  border-radius: 9999px;
   outline: none;
   -webkit-appearance: none;
   appearance: none;
-  background: rgb(229, 231, 235);
+  background: var(--surface-muted-hover);
   cursor: pointer;
-}
-
-.dark .bgm-volume-slider {
-  background: rgb(55, 65, 81);
 }
 
 .bgm-volume-slider::-webkit-slider-thumb {
@@ -932,9 +1003,9 @@ onUnmounted(() => {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: rgb(59, 130, 246);
+  background: var(--accent-primary);
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform 0.16s ease;
 }
 
 .bgm-volume-slider::-webkit-slider-thumb:hover {
@@ -945,78 +1016,47 @@ onUnmounted(() => {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: rgb(59, 130, 246);
+  background: var(--accent-primary);
   cursor: pointer;
   border: none;
-  transition: transform 0.2s ease;
 }
 
-.bgm-volume-slider::-moz-range-thumb:hover {
-  transform: scale(1.2);
-}
-
+/* Playlist */
 .bgm-playlist-wrapper {
-  margin-top: 4px;
-  border-radius: 6px;
+  border-radius: var(--radius-control);
   overflow: hidden;
-  border: 1px solid rgb(229, 231, 235);
-  transition: border-color 0.2s ease;
-}
-
-.dark .bgm-playlist-wrapper {
-  border-color: rgb(55, 65, 81);
+  border: 1px solid var(--border-subtle);
+  transition: border-color 0.18s ease;
 }
 
 .bgm-playlist-wrapper.open {
-  border-color: rgba(59, 130, 246, 0.35);
-}
-
-.dark .bgm-playlist-wrapper.open {
-  border-color: rgba(59, 130, 246, 0.4);
+  border-color: rgba(14, 165, 233, 0.32);
 }
 
 .bgm-playlist-toggle {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.45rem;
   width: 100%;
-  padding: 6px 10px;
+  padding: 0.45rem 0.65rem;
   border: none;
-  border-radius: 0;
-  background: rgb(243, 244, 246);
-  color: rgb(107, 114, 128);
-  font-size: 12px;
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 0;
-  margin-bottom: 0;
+  transition: background-color 0.16s ease, color 0.16s ease;
 }
 
-.dark .bgm-playlist-toggle {
-  background: rgb(55, 65, 81);
-  color: rgb(156, 163, 175);
-}
-
-.bgm-playlist-toggle:hover {
-  background: rgb(229, 231, 235);
-  color: rgb(59, 130, 246);
-}
-
-.dark .bgm-playlist-toggle:hover {
-  background: rgb(75, 85, 99);
-  color: rgb(59, 130, 246);
-}
-
+.bgm-playlist-toggle:hover,
 .bgm-playlist-toggle.open {
-  background: rgba(59, 130, 246, 0.08);
-  color: rgb(59, 130, 246);
-  border-radius: 0;
-  margin-bottom: 0;
+  background: var(--accent-soft);
+  color: var(--accent-primary-hover);
 }
 
+.dark .bgm-playlist-toggle:hover,
 .dark .bgm-playlist-toggle.open {
-  background: rgba(59, 130, 246, 0.15);
-  color: rgb(96, 165, 250);
+  color: var(--accent-primary);
 }
 
 .bgm-playlist-toggle span {
@@ -1025,7 +1065,7 @@ onUnmounted(() => {
 }
 
 .bgm-playlist-toggle-chevron {
-  transition: transform 0.3s ease;
+  transition: transform 0.22s var(--ease-out-expo);
   font-size: 11px;
 }
 
@@ -1033,92 +1073,63 @@ onUnmounted(() => {
   transform: rotate(180deg);
 }
 
+.bgm-playlist-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.24s var(--ease-out-expo);
+}
+
+.bgm-playlist-collapse.open {
+  grid-template-rows: 1fr;
+}
+
+.bgm-playlist-collapse-inner {
+  overflow: hidden;
+}
+
 .bgm-playlist {
-  max-height: 160px;
+  max-height: 152px;
   overflow-y: auto;
-  border-top: 1px solid rgb(229, 231, 235);
-  padding-top: 4px;
-  padding-bottom: 4px;
-  margin: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-.dark .bgm-playlist {
-  border-top-color: rgb(55, 65, 81);
-}
-
-/* 播放列表展开/收起过渡动画 */
-.playlist-enter-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
-}
-
-.playlist-leave-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
-}
-
-.playlist-enter-from {
-  max-height: 0;
-  opacity: 0;
-  padding-top: 0;
-  margin-top: 0;
-  border-top-width: 0;
-}
-
-.playlist-leave-to {
-  max-height: 0 !important;
-  opacity: 0;
-  padding-top: 0;
-  margin-top: 0;
-  border-top-width: 0;
-}
-
-.playlist-enter-to {
-  max-height: 160px;
-  opacity: 1;
-}
-
-.playlist-leave-from {
-  opacity: 1;
+  border-top: 1px solid var(--border-subtle);
+  padding: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .bgm-playlist-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px;
-  border-radius: 6px;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.45rem 0.55rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: transparent;
   cursor: pointer;
-  transition: all 0.2s ease;
-  color: rgb(31, 41, 55);
-  font-size: 13px;
-}
-
-.dark .bgm-playlist-item {
-  color: rgb(243, 244, 246);
+  text-align: left;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .bgm-playlist-item:hover {
-  background: rgb(243, 244, 246);
-}
-
-.dark .bgm-playlist-item:hover {
-  background: rgb(55, 65, 81);
+  background: var(--surface-muted);
+  color: var(--text-primary);
 }
 
 .bgm-playlist-item.active {
-  background: rgba(59, 130, 246, 0.1);
-  color: rgb(59, 130, 246);
+  background: var(--accent-soft);
+  color: var(--accent-primary-hover);
+  font-weight: 600;
 }
 
 .dark .bgm-playlist-item.active {
-  background: rgba(59, 130, 246, 0.2);
+  color: var(--accent-primary);
 }
 
 .bgm-playlist-item i:first-child {
-  font-size: 12px;
+  font-size: 11px;
   flex-shrink: 0;
 }
 
@@ -1131,157 +1142,30 @@ onUnmounted(() => {
 }
 
 .bgm-playlist-item .track-name {
-  line-height: 1.4;
-  overflow: hidden;
+  line-height: 1.35;
 }
 
 .bgm-playlist-item .track-artist {
-  font-size: 11px;
-  opacity: 0.65;
-  line-height: 1.3;
-  overflow: hidden;
-}
-
-.bgm-playlist::-webkit-scrollbar {
-  width: 4px;
-}
-
-.bgm-playlist::-webkit-scrollbar-track {
-  background: rgb(243, 244, 246);
-  border-radius: 2px;
-}
-
-.dark .bgm-playlist::-webkit-scrollbar-track {
-  background: rgb(55, 65, 81);
-}
-
-.bgm-playlist::-webkit-scrollbar-thumb {
-  background: rgb(209, 213, 219);
-  border-radius: 2px;
-}
-
-.dark .bgm-playlist::-webkit-scrollbar-thumb {
-  background: rgb(75, 85, 99);
-}
-
-.bgm-playlist::-webkit-scrollbar-thumb:hover {
-  background: rgb(156, 163, 175);
-}
-
-.dark .bgm-playlist::-webkit-scrollbar-thumb:hover {
-  background: rgb(107, 114, 128);
+  font-size: 0.68rem;
+  opacity: 0.72;
+  line-height: 1.25;
 }
 
 @media (max-width: 767px) {
   .bgm-player {
-    bottom: 56px;
-    left: 16px;
+    bottom: 42px;
+    left: 12px;
   }
 
   .bgm-toggle-btn {
-    width: 44px;
-    height: 44px;
-    font-size: 16px;
-  }
-
-  .bgm-player-expanded {
-    width: calc(100vw - 32px);
-    max-width: 400px;
-  }
-
-  .bgm-header {
-    gap: 8px;
-  }
-
-  .bgm-track-name {
-    font-size: 13px;
-  }
-
-  .bgm-time-display {
-    font-size: 10px;
-  }
-
-  .bgm-icon-btn {
-    width: 26px;
-    height: 26px;
-    font-size: 12px;
-  }
-
-  .bgm-header-controls {
-    gap: 4px;
-  }
-
-  .bgm-controls {
-    gap: 6px;
-  }
-
-  .bgm-control-btn {
-    width: 32px;
-    height: 32px;
-    font-size: 13px;
-  }
-
-  .bgm-play-btn {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     font-size: 15px;
   }
 
-  .bgm-volume {
-    margin-left: 6px;
-    gap: 6px;
-  }
-
-  .bgm-volume i {
-    font-size: 13px;
-  }
-
-  .bgm-volume-slider {
-    min-width: 50px;
-  }
-
-  .bgm-playlist {
-    max-height: 140px;
-  }
-
-  .playlist-enter-to {
-    max-height: 140px;
-  }
-
-  .bgm-playlist-item {
-    padding: 6px;
-    font-size: 12px;
-  }
-}
-
-@media (max-width: 480px) {
   .bgm-player-expanded {
-    width: calc(100vw - 24px);
-    max-width: 320px;
-    padding: 10px;
-  }
-
-  .bgm-controls {
-    gap: 3px;
-  }
-
-  .bgm-control-btn {
-    width: 28px;
-    height: 28px;
-  }
-
-  .bgm-play-btn {
-    width: 36px;
-    height: 36px;
-  }
-
-  .bgm-volume {
-    margin-left: 2px;
-    gap: 4px;
-  }
-
-  .bgm-volume-slider {
-    min-width: 0;
+    width: min(350px, calc(100vw - 24px));
+    padding: 0.75rem;
   }
 }
 </style>

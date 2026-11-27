@@ -1,41 +1,63 @@
 <template>
-  <div class="language-switcher">
-    <button ref="buttonRef" @click="toggleLanguageMenu"
-     class="language-button" :aria-expanded="isOpen" aria-haspopup="true">
-      <GlobeIcon class="icon" />
+  <div class="language-switcher" @keydown.esc="closeMenu">
+    <button
+      ref="buttonRef"
+      type="button"
+      class="language-button"
+      :class="{ 'is-open': isOpen }"
+      :aria-expanded="isOpen"
+      aria-haspopup="listbox"
+      :aria-label="displayLanguage"
+      @click="toggleLanguageMenu"
+    >
+      <GlobeIcon class="icon" aria-hidden="true" />
       <span class="language-text">{{ displayLanguage }}</span>
-      <ChevronDownIcon class="arrow-icon" :class="{ 'rotate-180': isOpen }" />
+      <ChevronDownIcon class="arrow-icon" :class="{ 'rotate-180': isOpen }" aria-hidden="true" />
     </button>
 
-    <div ref="menuRef" v-show="isOpen" class="language-menu" :class="{ 'menu-open': isOpen }">
-      <button v-for="lang in languages" :key="lang.value" @click="changeLanguage(lang.value)" class="language-option"
-        :class="{ 'active': currentLanguage === lang.value }">
-        {{ lang.label }}
-      </button>
-    </div>
+    <Transition name="dropdown-pop">
+      <div
+        v-if="isOpen"
+        ref="menuRef"
+        class="language-menu"
+        role="listbox"
+        :aria-label="displayLanguage"
+      >
+        <button
+          v-for="lang in languages"
+          :key="lang.value"
+          type="button"
+          class="language-option"
+          :class="{ 'active': currentLanguage === lang.value }"
+          role="option"
+          :aria-selected="currentLanguage === lang.value"
+          @click="changeLanguage(lang.value)"
+        >
+          <span class="option-label">{{ lang.label }}</span>
+          <CheckIcon v-if="currentLanguage === lang.value" class="check-icon" aria-hidden="true" />
+        </button>
+      </div>
+    </Transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ChevronDownIcon, GlobeIcon } from '@lucide/vue';
+import { CheckIcon, ChevronDownIcon, GlobeIcon } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useClickOutside } from '@/composables/useClickOutside';
-import { useTimers } from '@/composables/useTimers';
 import { useLanguageStore } from '@/stores/language';
 import type { Language } from '@/types';
 import { getEnabledLanguages, getLanguageNativeName } from '@/utils/language';
 
 const { locale } = useI18n();
 const languageStore = useLanguageStore();
-const { setTimeout } = useTimers();
 
 const isOpen = ref(false);
 const menuRef = ref<HTMLDivElement | null>(null);
 const buttonRef = ref<HTMLButtonElement | null>(null);
 
-// 从配置文件获取语言列表
 const enabledLanguages = getEnabledLanguages();
 
 const languages = computed(() => {
@@ -51,17 +73,14 @@ const displayLanguage = computed(() => {
   return getLanguageNativeName(currentLanguage.value);
 });
 
-const toggleLanguageMenu = (event: MouseEvent): void => {
-  // 添加点击动画效果
-  const button = event.target as HTMLElement;
-  if (button) {
-    button.style.transform = 'scale(0.95)';
-    setTimeout(() => {
-      button.style.transform = '';
-    }, 150);
-  }
-
+const toggleLanguageMenu = (): void => {
   isOpen.value = !isOpen.value;
+};
+
+const closeMenu = (): void => {
+  if (!isOpen.value) return;
+  isOpen.value = false;
+  buttonRef.value?.focus();
 };
 
 const changeLanguage = (lang: Language): void => {
@@ -80,106 +99,156 @@ useClickOutside({
 </script>
 
 <style scoped>
-@reference "@/assets/styles/main.css";;
+@reference "@/assets/styles/main.css";
 
 .language-switcher {
-  @apply relative;
+  position: relative;
 }
 
 .language-button {
-  @apply flex items-center gap-2 py-2 px-3 rounded-lg;
-  @apply bg-white dark:bg-gray-800;
-  @apply text-gray-700 dark:text-gray-300;
-  @apply border border-gray-200 dark:border-gray-700;
-  @apply hover:bg-gray-50 dark:hover:bg-gray-700;
-  @apply transition-all duration-300;
-  @apply focus:outline-none focus:ring-2 focus:ring-primary-500;
-  transform-origin: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  height: 2.25rem;
+  padding: 0 0.75rem;
+  border-radius: var(--radius-control);
+  background: var(--surface-card-solid);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: var(--shadow-xs);
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease,
+    transform 0.16s var(--ease-out-expo);
 }
 
-.language-button:hover {
-  transform: scale(1.02);
+.language-button:hover,
+.language-button.is-open {
+  background: var(--surface-muted);
+  border-color: var(--border-default);
+  color: var(--text-primary);
+}
+
+.language-button:active {
+  transform: scale(0.96);
+}
+
+.language-button:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
 }
 
 .icon {
-  @apply w-4 h-4;
+  width: 1rem;
+  height: 1rem;
   flex-shrink: 0;
-}
-
-.language-menu {
-  @apply absolute right-0 mt-2 py-1;
-  @apply bg-white dark:bg-gray-800;
-  @apply border border-gray-200 dark:border-gray-700;
-  @apply rounded-lg shadow-lg;
-  @apply w-40 z-10;
-  @apply opacity-0 scale-95 origin-top-right;
-  @apply transition-all duration-300;
-  @apply overflow-hidden;
-  transform: translateY(-10px) scale(0.95);
-}
-
-.menu-open {
-  @apply opacity-100 scale-100;
-  transform: translateY(0) scale(1);
-}
-
-.language-option {
-  @apply flex items-center w-full px-4 py-2;
-  @apply text-left text-sm text-gray-700 dark:text-gray-300;
-  @apply hover:bg-gray-100 dark:hover:bg-gray-700;
-  @apply transition-colors duration-200;
-}
-
-.language-option.active {
-  @apply bg-primary-50 dark:bg-primary-900/20;
-  @apply text-primary-700 dark:text-primary-400;
-  @apply font-medium;
 }
 
 .language-text {
-  @apply sm:inline;
-  transition: all 0.3s ease;
-  overflow: hidden;
   white-space: nowrap;
-  flex-shrink: 0;
-}
-
-@media (max-width: 640px) {
-  .language-text {
-    width: 0;
-    opacity: 0;
-    margin: 0;
-    flex-shrink: 1;
-  }
 }
 
 .arrow-icon {
-  @apply w-4 h-4 ml-1 transition-all duration-300 ease-in-out;
-  overflow: hidden;
+  width: 0.875rem;
+  height: 0.875rem;
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: transform 0.2s var(--ease-out-expo);
+}
+
+.arrow-icon.rotate-180 {
+  transform: rotate(180deg);
+}
+
+.language-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.45rem);
+  z-index: 60;
+  min-width: 9.5rem;
+  padding: 0.3rem;
+  border-radius: 0.875rem;
+  background: var(--surface-elevated);
+  backdrop-filter: blur(18px) saturate(165%);
+  -webkit-backdrop-filter: blur(18px) saturate(165%);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-lg);
+  transform-origin: top right;
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.language-option:hover {
+  background: var(--surface-muted);
+  color: var(--text-primary);
+}
+
+.language-option.active {
+  background: var(--accent-soft);
+  color: var(--accent-primary-hover);
+  font-weight: 600;
+}
+
+.dark .language-option.active {
+  color: var(--accent-primary);
+}
+
+.check-icon {
+  width: 0.875rem;
+  height: 0.875rem;
   flex-shrink: 0;
 }
 
-@media (max-width: 640px) {
-  .arrow-icon {
-    width: 0;
-    opacity: 0;
-    margin: 0;
-    flex-shrink: 1;
-  }
+.dropdown-pop-enter-active {
+  transition: opacity 0.18s var(--ease-out-expo), transform 0.18s var(--ease-out-expo);
+}
+
+.dropdown-pop-leave-active {
+  transition: opacity 0.13s ease-in, transform 0.13s ease-in;
+}
+
+.dropdown-pop-enter-from,
+.dropdown-pop-leave-to {
+  opacity: 0;
+  transform: translateY(-6px) scale(0.96);
 }
 
 @media (max-width: 640px) {
   .language-button {
-    @apply p-2;
+    width: 2.125rem;
+    height: 2.125rem;
+    padding: 0;
     gap: 0;
-    min-width: 2.5rem;
-    width: 2.5rem;
-    height: 2.5rem;
-    justify-content: center;
+  }
+
+  .language-text,
+  .arrow-icon {
+    display: none;
   }
 
   .language-menu {
-    @apply w-32;
+    min-width: 8.5rem;
   }
 }
 </style>

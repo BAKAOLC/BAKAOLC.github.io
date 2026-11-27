@@ -366,12 +366,6 @@ onUnmounted(() => {
   background-color: transparent;
 }
 
-@media (prefers-color-scheme: dark) {
-  .progressive-image {
-    background-color: transparent;
-  }
-}
-
 .thumbnail {
   position: absolute;
   top: 0;
@@ -380,15 +374,13 @@ onUnmounted(() => {
   height: 100%;
   object-fit: v-bind(objectFit);
   opacity: 1;
-  transition: opacity 0.3s ease-out;
+  transition: opacity 0.26s ease-out;
   z-index: 1;
-  /* 添加轻微的模糊效果以表明这是预览图 */
-  filter: blur(1px);
+  filter: blur(2px);
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  /* 禁止拖拽 */
   -webkit-user-drag: none;
   -webkit-touch-callout: none;
   pointer-events: auto;
@@ -396,11 +388,11 @@ onUnmounted(() => {
 
 .thumbnail.fade-out {
   opacity: 0;
-  transition: opacity 0.4s ease-out;
+  transition: opacity 0.32s ease-out;
 }
 
 .thumbnail.loaded {
-  filter: blur(0.2px);
+  filter: blur(0.4px);
 }
 
 .progressive-image img:not(.thumbnail) {
@@ -411,13 +403,12 @@ onUnmounted(() => {
   height: 100%;
   object-fit: v-bind(objectFit);
   opacity: 0;
-  transition: opacity 0.4s ease-in;
+  transition: opacity 0.32s var(--ease-out-expo);
   z-index: 2;
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  /* 禁止拖拽 */
   -webkit-user-drag: none;
   -webkit-touch-callout: none;
   pointer-events: auto;
@@ -428,10 +419,13 @@ onUnmounted(() => {
 }
 
 .loading-spinner {
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 50%;
-  padding: 6px;
-  backdrop-filter: blur(4px);
+  background: var(--surface-glass-strong);
+  border: 1px solid var(--border-subtle);
+  border-radius: 9999px;
+  padding: 7px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-sm);
 }
 
 .loading-container {
@@ -443,7 +437,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .progress-container {
@@ -452,53 +446,42 @@ onUnmounted(() => {
   align-items: center;
   gap: 4px;
   min-width: 120px;
+  padding: 6px 10px;
+  border-radius: 0.625rem;
+  background: var(--surface-glass-strong);
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .progress-bar {
   width: 100%;
   height: 4px;
-  background-color: rgba(255, 255, 255, 0.3);
-  border-radius: 2px;
+  background-color: var(--surface-muted);
+  border-radius: 9999px;
   overflow: hidden;
-  backdrop-filter: blur(4px);
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #3b82f6, #60a5fa);
-  border-radius: 2px;
+  background: var(--accent-primary);
+  border-radius: 9999px;
   transition: width 0.2s ease-out;
 }
 
 .progress-text {
-  font-size: 12px;
-  color: #374151;
-  font-weight: 500;
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
-}
-
-@media (prefers-color-scheme: dark) {
-  .loading-spinner {
-    background-color: rgba(0, 0, 0, 0.8);
-  }
-
-  .progress-bar {
-    background-color: rgba(0, 0, 0, 0.3);
-  }
-
-  .progress-text {
-    color: #d1d5db;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-  }
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 600;
 }
 
 .spinner {
-  width: 24px;
-  height: 24px;
-  border: 2px solid rgba(59, 130, 246, 0.3);
-  border-top: 2px solid #3b82f6;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--accent-soft);
+  border-top: 2px solid var(--accent-primary);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.85s linear infinite;
 }
 
 @keyframes spin {
@@ -506,19 +489,10 @@ onUnmounted(() => {
   100% { transform: rotate(360deg); }
 }
 
-/* 深色模式下的loading spinner */
-@media (prefers-color-scheme: dark) {
-  .spinner {
-    border: 2px solid rgba(96, 165, 250, 0.3);
-    border-top: 2px solid #60a5fa;
-  }
-}
-
-/* 响应式优化 */
 @media (max-width: 640px) {
   .spinner {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
   }
 
   .loading-spinner {
@@ -530,7 +504,7 @@ onUnmounted(() => {
   }
 
   .progress-text {
-    font-size: 11px;
+    font-size: 10px;
   }
 }
 </style>

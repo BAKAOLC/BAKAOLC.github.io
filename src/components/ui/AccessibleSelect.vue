@@ -89,70 +89,128 @@ const handleValueChange = (value: unknown): void => {
 @reference "@/assets/styles/main.css";
 
 .accessible-select-trigger {
-  @apply inline-flex items-center justify-center gap-2;
-  @apply h-9 min-w-24 px-3;
-  @apply rounded-md border border-gray-300 dark:border-gray-600;
-  @apply bg-white dark:bg-gray-700;
-  @apply text-sm font-medium text-gray-600 dark:text-gray-300;
-  @apply transition-colors duration-200;
-  @apply whitespace-nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  height: 2.25rem;
+  min-width: 5.75rem;
+  padding: 0 0.75rem;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-card-solid);
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease;
 }
 
 .accessible-select-trigger:hover {
-  @apply bg-gray-100 dark:bg-gray-600;
-  @apply text-gray-800 dark:text-gray-100;
+  background: var(--surface-muted);
+  border-color: var(--border-default);
+  color: var(--text-primary);
 }
 
 .accessible-select-trigger:focus-visible {
-  @apply outline-none ring-2 ring-blue-500/60 ring-offset-2 ring-offset-white dark:ring-offset-gray-900;
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
 }
 
 .accessible-select-leading,
 .accessible-select-icon {
-  @apply flex h-4 w-4 shrink-0 items-center justify-center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.9rem;
+  height: 0.9rem;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.accessible-select-icon {
+  font-size: 0.7rem;
 }
 
 .accessible-select-value {
-  @apply min-w-0 truncate;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .accessible-select-content {
-  @apply z-[3200] min-w-[var(--reka-select-trigger-width)];
-  @apply overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700;
-  @apply bg-white dark:bg-gray-800;
-  @apply shadow-xl;
+  z-index: 3200;
+  min-width: var(--reka-select-trigger-width);
+  overflow: hidden;
+  border-radius: 0.875rem;
+  border: 1px solid var(--border-default);
+  background: var(--surface-elevated);
+  backdrop-filter: blur(18px) saturate(165%);
+  -webkit-backdrop-filter: blur(18px) saturate(165%);
+  box-shadow: var(--shadow-lg);
 }
 
 .accessible-select-viewport {
-  @apply p-1;
+  padding: 0.3rem;
 }
 
 .accessible-select-item {
-  @apply relative flex min-h-9 cursor-pointer select-none items-center rounded-md;
-  @apply py-2 pl-3 pr-8;
-  @apply text-sm text-gray-700 dark:text-gray-200;
-  @apply outline-none transition-colors duration-150;
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 2.125rem;
+  padding: 0.45rem 2rem 0.45rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  transition: background-color 0.14s ease, color 0.14s ease;
 }
 
 .accessible-select-item[data-highlighted] {
-  @apply bg-gray-100 dark:bg-gray-700;
+  background: var(--surface-muted);
+  color: var(--text-primary);
 }
 
 .accessible-select-item[data-state="checked"] {
-  @apply bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300;
+  background: var(--accent-soft);
+  color: var(--accent-primary-hover);
+  font-weight: 600;
+}
+
+.dark .accessible-select-item[data-state="checked"] {
+  color: var(--accent-primary);
 }
 
 .accessible-select-item[data-disabled] {
-  @apply pointer-events-none opacity-50;
+  pointer-events: none;
+  opacity: 0.45;
 }
 
 .accessible-select-indicator {
-  @apply absolute right-2 inline-flex h-4 w-4 items-center justify-center;
+  position: absolute;
+  right: 0.625rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.875rem;
+  height: 0.875rem;
+  font-size: 0.7rem;
 }
 
 @media (max-width: 767px) {
   .accessible-select-trigger {
-    @apply h-8 min-w-11 px-2;
+    height: 2.125rem;
+    min-width: 4.5rem;
+    padding: 0 0.6rem;
+    gap: 0.35rem;
   }
 }
 </style>

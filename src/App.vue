@@ -1,33 +1,35 @@
 <template>
   <div id="app" class="app">
-    <LoadingScreen v-if="isLoading" @complete="onLoadingComplete" />
+    <LoadingScreen v-if="isLoading" :ready="isPreloadReady" @complete="onLoadingComplete" />
 
     <template v-else>
       <header class="header">
-        <!-- 第一行：标题和功能菜单 -->
-        <div class="header-top">
-          <div class="header-content">
+        <div class="header-inner">
+          <div class="header-bar">
             <router-link to="/" class="logo-link">
               <img :src="siteConfig.personal.avatar" :alt="t('common.logo')" class="logo" />
               <h1 class="site-title">{{ appTitle }}</h1>
             </router-link>
+
+            <div class="header-nav-desktop">
+              <NavigationBar />
+            </div>
 
             <div class="header-controls">
               <LanguageSwitcher class="language-control" />
               <ThemeToggle class="theme-control" />
             </div>
           </div>
-        </div>
 
-        <!-- 第二行：导航栏 -->
-        <div class="header-nav">
-          <NavigationBar />
+          <div class="header-nav-mobile">
+            <NavigationBar />
+          </div>
         </div>
       </header>
 
       <main class="main">
         <router-view v-slot="{ Component }">
-          <transition name="fade" mode="out-in">
+          <transition name="page-fade" mode="out-in">
             <component :is="Component" />
           </transition>
         </router-view>
@@ -35,7 +37,7 @@
 
       <footer class="footer">
         <div class="footer-content">
-          <p>{{ appCopyright }}</p>
+          <p class="footer-text">{{ appCopyright }}</p>
         </div>
       </footer>
     </template>
@@ -85,42 +87,35 @@ const Live2DWidget = defineAsyncComponent(() => import('@/components/Live2DWidge
 const ModalContainer = defineAsyncComponent(() => import('@/components/modals/ModalContainer.vue'));
 const NotificationContainer = defineAsyncComponent(() => import('@/components/NotificationContainer.vue'));
 
-// 应用配置的计算属性
 const appTitle = computed(() => getAppTitle(languageStore.currentLanguage));
 const appCopyright = computed(() => getAppCopyright(languageStore.currentLanguage));
 
-// 存储预加载的图片引用，用于清理
 const preloadedImages = ref<HTMLImageElement[]>([]);
-
-// 加载状态
+const isPreloadReady = ref(false);
 const isLoading = computed(() => appStore.isLoading);
 
-// 预加载基本图像（不包括画廊图片）
+// 轻量预加载基础头像资源，设置最大 420ms 上限，不阻塞首屏体验
 const preloadImages = async (): Promise<void> => {
-  // 获取基本图片URL
   const imageUrls = new Set<string>();
 
-  // 添加基本图像（如头像）
   if (siteConfig.personal.avatar) {
     imageUrls.add(siteConfig.personal.avatar);
   }
 
-  // 添加角色头像
   siteConfig.characters.forEach(character => {
     if (character.avatar) {
       imageUrls.add(character.avatar);
     }
   });
 
-  // 注意：不再预加载画廊图片，因为已经有预览图处理
-  // 画廊图片将在需要时按需加载
+  if (imageUrls.size === 0) {
+    isPreloadReady.value = true;
+    return;
+  }
 
-  // 开始预加载
-  const promises = Array.from(imageUrls).map(url => {
+  const imagePromises = Array.from(imageUrls).map(url => {
     return new Promise<void>((resolve) => {
       const img = new Image();
-
-      // 添加到预加载图片列表中，用于后续清理
       preloadedImages.value.push(img);
 
       const settle = (): void => {
@@ -133,64 +128,47 @@ const preloadImages = async (): Promise<void> => {
     });
   });
 
-  // 确保至少有2秒的加载时间，即使资源很快加载完
-  await Promise.all([
-    Promise.all(promises),
-    new Promise<void>(resolve => setTimeout(() => resolve(), 2000)),
+  await Promise.race([
+    Promise.all(imagePromises),
+    new Promise<void>(resolve => setTimeout(() => resolve(), 420)),
   ]);
+
+  isPreloadReady.value = true;
 };
 
-// 加载完成
 const onLoadingComplete = (): void => {
   appStore.isLoading = false;
 };
 
-// 更新浏览器标题（用于语言切换时）
 const updateDocumentTitle = (): void => {
   titleManager.updateCurrentTitle();
 };
 
-// 系统主题监听器清理函数
 let cleanupSystemThemeListener: (() => void) | null = null;
 
-// 初始化
 onMounted(() => {
-  // 初始化屏幕管理服务
   getScreenManagerService().initialize();
-
-  // 设置初始主题
   themeStore.applyTheme();
-
-  // 设置系统主题监听器
   cleanupSystemThemeListener = themeStore.setupSystemThemeListener();
-
-  // 开始预加载图像
-  preloadImages();
+  void preloadImages();
 });
 
-// 监听语言变化，更新浏览器标题
 watch(locale, () => {
   updateDocumentTitle();
 }, { immediate: false });
 
-// 组件销毁时清理预加载的图片
 onBeforeUnmount(() => {
-  // 清理所有预加载的图片引用
   preloadedImages.value.forEach(img => {
-    // 清理事件监听器
     img.onload = null;
     img.onerror = null;
-    // 清空src以停止可能正在进行的加载
     img.src = '';
   });
   preloadedImages.value = [];
 
-  // 清理系统主题监听器
   if (cleanupSystemThemeListener) {
     cleanupSystemThemeListener();
   }
 
-  // 清理所有服务
   try {
     getScreenManagerService().destroy();
     getEventManagerService().destroy();
@@ -206,149 +184,208 @@ onBeforeUnmount(() => {
 @reference "@/assets/styles/main.css";
 
 .app {
-  @apply flex flex-col h-screen;
-  @apply overflow-hidden;
-  /* 防止整体滚动 */
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
 }
 
 .header {
-  @apply bg-white dark:bg-gray-800;
-  @apply border-b border-gray-200 dark:border-gray-700;
-  @apply shadow-sm;
-  @apply transition-all duration-500;
+  position: relative;
+  z-index: 40;
+  flex-shrink: 0;
+  background: var(--surface-glass);
+  backdrop-filter: blur(18px) saturate(165%);
+  -webkit-backdrop-filter: blur(18px) saturate(165%);
+  border-bottom: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-xs);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
-.header-top {
-  @apply border-b border-gray-100 dark:border-gray-700;
-  min-height: 48px;
+.header-inner {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
 }
 
-.header-content {
-  @apply container mx-auto px-4;
-  @apply flex items-center justify-between;
-  min-height: 48px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.header-nav {
-  @apply bg-gray-50 dark:bg-gray-800/50;
-  @apply transition-all duration-500;
-  @apply flex items-center;
-  min-height: 40px;
-  /* 为键盘选择器提供额外空间，避免边框被裁剪 */
-  @apply py-1;
-  overflow: visible;
-}
-
-/* 优化 768-1024px 级别的容器宽度 */
-@media (min-width: 768px) and (max-width: 1024px) {
-  .header-content {
-    @apply px-2;
-    max-width: calc(100vw - 2rem);
-  }
+.header-bar {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  min-height: 58px;
 }
 
 .logo-link {
-  @apply flex items-center gap-3;
-  @apply text-gray-900 dark:text-white;
-  @apply no-underline;
-  @apply justify-self-start;
-  @apply flex-shrink-0;
-  @apply min-w-0;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  min-width: 0;
+  padding: 0.25rem 0.375rem 0.25rem 0.25rem;
+  border-radius: 0.75rem;
+  transition: opacity 0.18s ease, transform 0.2s var(--ease-out-expo);
+}
+
+.logo-link:hover {
+  opacity: 0.88;
+}
+
+.logo-link:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
 }
 
 .logo {
-  @apply w-8 h-8 rounded-full;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1.5px solid var(--border-default);
+  box-shadow: var(--shadow-xs);
 }
 
 .site-title {
-  @apply text-xl font-bold;
-  @apply whitespace-nowrap;
-  @apply flex-shrink-0;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-nav-desktop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.header-nav-mobile {
+  display: none;
 }
 
 .header-controls {
-  @apply flex items-center gap-3;
-  @apply justify-self-end;
-  @apply flex-shrink-0;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .main {
-  @apply flex-1;
-  @apply bg-gray-50 dark:bg-gray-900;
-  @apply transition-colors duration-500;
-  @apply overflow-hidden;
-  /* 防止主体区域滚动，让内部组件自己控制滚动 */
+  flex: 1 1 0%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
 }
 
 .footer {
-  @apply bg-white dark:bg-gray-800;
-  @apply border-t border-gray-200 dark:border-gray-700;
-  @apply transition-colors duration-500;
-  height: 40px;
-  /* 固定底部高度 */
+  flex-shrink: 0;
+  height: 36px;
+  background: var(--surface-glass);
+  backdrop-filter: blur(14px) saturate(150%);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  border-top: 1px solid var(--border-subtle);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
 .footer-content {
-  @apply container mx-auto px-4;
-  @apply flex items-center justify-center;
-  @apply text-gray-500 dark:text-gray-400;
-  @apply text-xs;
   height: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* 优化 768-1024px 级别的容器宽度 */
-@media (min-width: 768px) and (max-width: 1024px) {
-  .footer-content {
-    @apply px-2;
-    max-width: calc(100vw - 2rem);
-  }
+.footer-text {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Page Transitions */
-.fade-enter-active,
-.fade-leave-active {
-  @apply transition-opacity duration-300;
+.page-fade-enter-active {
+  transition: opacity 0.22s var(--ease-out-expo), transform 0.22s var(--ease-out-expo);
 }
 
-.fade-enter-from,
-.fade-leave-to {
-  @apply opacity-0;
+.page-fade-leave-active {
+  transition: opacity 0.14s ease-in;
 }
 
-@media (max-width: 640px) {
-  .header-top {
-    min-height: auto;
+.page-fade-enter-from {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.page-fade-leave-to {
+  opacity: 0;
+}
+
+/* Tablet tightening */
+@media (max-width: 1024px) {
+  .header-inner {
+    padding: 0 0.875rem;
   }
 
-  .header-content {
-    @apply py-2;
-    min-height: auto;
+  .header-bar {
+    gap: 0.625rem;
+  }
+}
+
+/* Mobile: compact top bar + full-width 1-tap horizontal pill nav strip */
+@media (max-width: 767px) {
+  .header-inner {
+    padding: 0 0.75rem;
+  }
+
+  .header-bar {
+    display: flex;
+    justify-content: space-between;
+    min-height: 50px;
     gap: 0.5rem;
   }
 
-  .logo-link {
-    gap: 0.5rem;
+  .header-nav-desktop {
+    display: none;
+  }
+
+  .header-nav-mobile {
+    display: block;
+    border-top: 1px solid var(--border-subtle);
+    margin: 0 -0.75rem;
+    padding: 0.375rem 0.75rem;
   }
 
   .logo {
-    @apply w-5 h-5;
+    width: 1.75rem;
+    height: 1.75rem;
   }
 
   .site-title {
-    @apply text-base;
+    font-size: 0.9375rem;
   }
 
   .header-controls {
-    @apply gap-1;
+    gap: 0.375rem;
   }
 
-  .header-nav {
-    min-height: 36px;
+  .footer {
+    height: 32px;
   }
 }
 </style>
